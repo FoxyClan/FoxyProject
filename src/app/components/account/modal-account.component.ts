@@ -1,13 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Web3Service } from "../../services/web3.service";
 import { Subscription } from 'rxjs';
-
-const ETHEREUM_NETWORK = '1';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-account',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './modal-account.component.html',
   styleUrl: './modal-account.component.css'
 })

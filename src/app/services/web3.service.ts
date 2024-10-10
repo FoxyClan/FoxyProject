@@ -27,7 +27,7 @@ export class Web3Service {
 
   constructor() {
     this.checkConnection();
-   }
+  }
 
   startCheckingConnection() {
     if(this.intervalId) return
