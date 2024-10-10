@@ -1,0 +1,19 @@
+<header>
+    <a>Foxy Clan</a> 
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Store</a></li>
+        <li><a href="#">Work</a></li>
+        <li><a href="#">Pages</a></li>
+        <li><a href="#">Cart</a></li>
+    </ul>
+    <div class="button-container">
+        <button class="border-button">
+            <button *ngIf="!isConnected" (click)="connectWallet()" class="connect-button">Connect Wallet</button>
+            <button *ngIf="isConnected" (click)="showAccountModal()" class="connect-button" title="{{ walletAddress }}">{{ shortedWalletAddress() }}</button>
+        </button>
+    </div>
+</header>
+
+<app-account *ngIf="showAccount" [walletAddress]="walletAddress" (close)="closeModal()" #AccountComponent></app-account>

@@ -1,0 +1,12 @@
+-- RARE --
+0 ) black and dark fur with red hairs tips
+1 ) white fur like an angel (maybe with gold and pink hairs tips)
+2 ) black grey fur with gold pharaoh characters 
+3 ) dark green fur, not necessarily like the picture, but dirty and saggy fur
+4 ) ninja suit (all covered)
+5 ) robotic grey fur
+-- COMMON --
+6 ) blond fur
+7 ) light Brown fur
+8 ) orange fur (default)
+

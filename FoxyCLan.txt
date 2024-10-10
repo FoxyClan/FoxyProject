@@ -1,0 +1,202 @@
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+
+/**
+ * @title FoxyClan contract
+ * @dev Extends ERC721 Non-Fungible Token Standard basic implementation
+ */
+contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
+    string public constant FC_PROVENANCE = "";
+
+    bool public saleIsActive = false;
+
+    string private baseURI;
+
+    bool public isAllowListActive = false;
+    // Max supply of Minted Foxy
+    uint256 public constant MAX_SUPPLY = 10000;
+
+    uint256 public constant maxPublicFoxyMint = 10;
+
+    uint256 public constant FC_PRICE = 12500000000000000; //0.0125 ETH
+
+    uint256 public revealTimeStamp;
+
+    mapping(address => uint8) private _allowList;
+
+    constructor(uint256 saleStart) ERC721("FoxyClan", "FOXY") Ownable(msg.sender) {
+        revealTimeStamp = saleStart + (86400 * 7);
+    }
+
+    /**
+     * @dev Sets the sale state (active or inactive).
+     * @param newState The new sale state.
+     */
+    function setSaleState(bool newState) external onlyOwner {
+        saleIsActive = newState;
+    }
+
+    /**
+     * @dev Sets the base URI for token URIs.
+     * @param _baseURI The base URI.
+     */
+    function setBaseURI(string memory _baseURI) external onlyOwner() {
+        baseURI = _baseURI;
+    }
+
+    /**
+     * @dev Sets the reveal timestamp for the collection.
+     * @param _revealTimeStamp The reveal timestamp.
+     */
+    function setRevealTimestamp(uint256 _revealTimeStamp) external onlyOwner {
+        revealTimeStamp = _revealTimeStamp;
+    }
+
+    /**
+     * @dev Sets the allow list status.
+     * @param _isAllowListActive The new allow list status.
+     */
+    function setIsAllowListActive(bool _isAllowListActive) external onlyOwner {
+        isAllowListActive = _isAllowListActive;
+    }
+
+    /**
+     * @dev Sets the allow list for addresses and their corresponding mint limits.
+     * @param addresses An array of addresses that will be allowed to mint FoxyClan nfts.
+     * @param numAllowedToMint The number of tokens allowed to be minted for each address.
+     */
+    function setAllowList(address[] calldata addresses, uint8 numAllowedToMint) external onlyOwner {
+        for (uint256 i = 0; i < addresses.length; i++) {
+            _allowList[addresses[i]] = numAllowedToMint;
+        }
+    }
+
+    /*
+     * @dev Returns the number of tokens available to mint for a specific address.
+     * @param addr The address to check.
+     * @return The number of tokens available to mint for a specific address.
+     */
+    function numAvailableToMint(address addr) external view returns (uint8) {
+        return _allowList[addr];
+    }
+
+    /**
+     * @dev Mints tokens for addresses on the allow list.
+     * @param numberOfTokens The number of tokens to mint.
+    * 
+    * Requirements:
+    * - The allow list must be active.
+    * - The sender must be on the allow list and have sufficient tokens available.
+    * - The total supply must not exceed the max supply.
+    * - The sender must send enough ether to cover the cost of minting.
+    */
+    function mintAllowList(uint8 numberOfTokens) external payable {
+        uint256 supply = totalSupply();
+        require(isAllowListActive, "Allow list is not active");
+        require(numberOfTokens <= _allowList[msg.sender], "Exceeded max available to purchase");
+        require(supply + numberOfTokens <= MAX_SUPPLY, "Purchase would exceed max tokens");
+        require(FC_PRICE * numberOfTokens <= msg.value, "Ether value sent is not correct");
+
+        _allowList[msg.sender] -= numberOfTokens;
+        for (uint256 i = 0; i < numberOfTokens; i++) {
+            _safeMint(msg.sender, supply + i);
+        }
+    }
+
+    /**
+     * @dev Mints tokens for the public sale.
+     * @param numberOfTokens The number of tokens to mint.
+     * 
+     * Requirements:
+     * - The sale must be active.
+     * - The number of tokens to be minted must not exceed the maximum number of public minting.
+     * - The total supply must not exceed the max supply.
+     * - The sender must send enough ether to cover the cost of minting.
+     */
+    function mint(uint numberOfTokens) external payable {
+        uint256 supply = totalSupply();
+        require(saleIsActive, "Sale must be active to mint Foxy");
+        require(numberOfTokens <= maxPublicFoxyMint, "Can only mint 5 tokens at a time");
+        require(supply + numberOfTokens <= MAX_SUPPLY, "Purchase would exceed max tokens");
+        require(FC_PRICE * numberOfTokens <= msg.value, "Ether value sent is not correct");
+
+        for (uint256 i = 0; i < numberOfTokens; i++) {
+            _safeMint(msg.sender, supply + i);
+        }
+    }
+
+    /**
+    * @dev Merges two tokens into one.
+    * 
+    * This function allows you to combine two existing ERC721 tokens into a new token. The two original tokens are burned and a new token is minted.
+    * 
+    * **Prerequisites:**
+    * - The caller must be the owner of both tokens.
+    * - The total supply of tokens must not exceed the maximum supply defined by `MAX_SUPPLY`.
+    * 
+    * **Steps:**
+    * 1. Checks the total supply against the maximum.
+    * 2. Burns the two input tokens.
+    * 3. Mints a new token and assigns it to the caller.
+    * 
+    * @param tokenId1 The ID of the first token to merge.
+    * @param tokenId2 The ID of the second token to merge.
+    */
+    function fusion(uint tokenId1, uint tokenId2) external {
+        uint256 supply = totalSupply();
+        require(supply + 1 <= MAX_SUPPLY, "Purchase would exceed max tokens");
+        require(ownerOf(tokenId1) == msg.sender, "Caller must own token 1");
+        require(ownerOf(tokenId2) == msg.sender, "Caller must own token 2");
+        _burn(tokenId1);
+        _burn(tokenId2);
+        _safeMint(msg.sender, supply);
+    }
+
+    /**
+     * @dev Checks if the contract implements a specific interface. 
+     * This function is inherited from ERC721 and ERC721Enumerable and is essential for 
+     * allowing other contracts and interfaces to interact correctly with this contract.
+     */
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC721Enumerable) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
+    /**
+     * @dev Overridden from ERC721Enumerable.
+     */
+    function _update(address to, uint256 tokenId, address auth) internal virtual override(ERC721, ERC721Enumerable) returns (address) {
+        return super._update(to, tokenId, auth);
+    }
+
+    /**
+     * @dev Overridden from ERC721Enumerable.
+     */
+    function _increaseBalance(address account, uint128 amount) internal virtual override(ERC721, ERC721Enumerable) {
+        return super._increaseBalance(account, amount);
+    }
+
+    /**
+     * @dev Reserves a specified number of tokens for the contract owner.
+     * This function allow the creator to keep a certain number of tokens 
+     * for future uses, such as giveaways, collaborations or special events.
+     */
+    function reserveFoxy(uint256 n) public onlyOwner {
+      uint supply = totalSupply();
+      uint i;
+      for (i = 0; i < n; i++) {
+          _safeMint(msg.sender, supply + i);
+      }
+    }
+    
+    /**
+     * @dev Allows the contract owner to withdraw accumulated funds from the contract.
+     */
+    function withdraw() public onlyOwner {
+        uint balance = address(this).balance;
+        payable(msg.sender).transfer(balance);
+    }
+}

@@ -1,0 +1,29 @@
+lancer web3 avec ganache (sur node):
+node
+const { Web3 } = require('web3');
+const web3 = new Web3('http://localhost:7545');
+
+GETBALANCE :
+web3.eth.getBalance('0xD9490BA485A787BA6aCb9503d4F782d686aeA3B5').then(function(res) { console.log(web3.utils.fromWei(res, "ether"));})
+
+TRANSACTION :
+web3.eth.getAccounts().then(accounts => web3.eth.sendTransaction({ from: '0xe17A736236282F643E9668b97295d06505d57729', to: '0x60083e82389Ac57215045bEE93441E6a6c3B1550', value: web3.utils.toWei('5', 'ether'), gasPrice: web3.utils.toWei('20', 'gwei'), gas: 21000}))
+web3.eth.getAccounts().then(accounts => web3.eth.sendTransaction({ from: '0xe17A736236282F643E9668b97295d06505d57729', to: '0x60083e82389Ac57215045bEE93441E6a6c3B1550', value: web3.utils.toWei('5', 'ether')}))
+
+CALL
+web3.eth.call({from: '0xD9490BA485A787BA6aCb9503d4F782d686aeA3B5', to: '0x9E7dDFCCF9ce57ef2879f83B39bADa079547927f', data: '0xf9bc83ec'}).then(console.log)
+                                                                    -> contract address                               -> hash de la fonction
+
+web3.eth.call({from: '0xD9490BA485A787BA6aCb9503d4F782d686aeA3B5', to: '0x9E7dDFCCF9ce57ef2879f83B39bADa079547927f', data: web3.utils.sha3('nbrFavoris()')}).then(console.log)
+web3.eth.call({from: '0xD9490BA485A787BA6aCb9503d4F782d686aeA3B5', to: '0x9E7dDFCCF9ce57ef2879f83B39bADa079547927f', data: web3.utils.sha3('nbrFavoris()').substring(0,10)}).then(console.log)
+
+RECUPERER UN CONTRACT :
+let contract = new web3.eth.Contract(ABI, '0xcf68ecb15452C8EbB30C2fE2B0ff596899B0159b');
+
+APPELER UNE METHODE :
+CALL
+contract.methods.nbrFavoris().toNumber().call().then(console.log);
+contract.methods.nbrFavoris().call().then(result => {console.log(result.toString())});
+SET
+contract.methods.setNdrFavoris(19).send({from: '0xe17A736236282F643E9668b97295d06505d57729'});
+

@@ -1,0 +1,12 @@
+<div class="background" [class.active]="isAnimated" (click)="closeModal()">
+    <div class="panel" (click)="stopEvent($event)" [class.active]="isAnimated">
+        <h3>{{ walletAddress.substring(0, 6) + '...' + walletAddress.substring(38) }}</h3>
+        <div class="icon-bar">
+            <a href="https://etherscan.io/address/{{ walletAddress }}" target="_blank"><img src="link.png" alt="Etherscan" title="View on Explorer" class="icon"></a>
+            <img src="copy.png" alt="address" title="Copy Adress" class="icon" (click)="copyText()">
+            <a href="https://opensea.io/{{ walletAddress }}" target="_blank"><img src="opensea.png" alt="Opensea" class="icon" title="Opensea"></a>
+            <img src="disconnect.png" alt="Disconnect Wallet" title="Disconnect Wallet" class="icon" (click)="disconnectWallet()">
+        </div>
+        <p>{{ networkId }}</p>
+    </div>
+</div>

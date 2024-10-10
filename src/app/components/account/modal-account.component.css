@@ -1,0 +1,47 @@
+.background {
+    background-color: rgba(0, 0, 0, 0);
+    width: 100%;
+    height: 100%;
+    transition: background-color 0.3s ease-out;
+}
+
+.background.active {
+    background-color: rgba(0, 0, 0, 0.750);
+}
+
+.panel {
+    font-family: "Orbitron", sans-serif;
+    font-weight: 400;
+    color: wheat;
+    width: 25vw;
+    height: 100%;
+    border-radius: 10px;
+    padding: 30px;
+    margin: 10px;
+    background: rgb(29,35,55);
+    position: absolute;
+    right: -30%;
+    transition: right 0.3s ease-in-out;
+}
+
+.panel.active {
+    right: 0;
+}
+
+.icon-bar {
+    display: flex;
+    flex-direction: row;
+}
+
+.icon {
+    margin: 5px 10px 5px 0px;
+    display: flex;
+    width: 25px;
+    height: 25px;
+}
+
+.icon:hover {
+    filter: invert(20%);
+}
+
+
