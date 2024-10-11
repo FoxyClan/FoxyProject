@@ -35,7 +35,7 @@ export class Web3Service {
       if(this.isConnectedSubject) {
         this.checkConnection();
       }
-    }, 3000);
+    }, 1500);
   }
 
   async checkConnection() {
@@ -70,18 +70,7 @@ export class Web3Service {
       try {
         await window.ethereum.request({ method: 'eth_requestAccounts'});
         this.web3 = new Web3(window.ethereum);
-
-        const networkId = (await this.web3.eth.net.getId()).toString();
-            console.log('Current network ID:', networkId);
-
-            if (networkId !== "1") {
-                await window.ethereum.request({
-                    method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: '0x1' }],
-                });
-
-                console.log('Switched to Ethereum network.');
-            }
+        this.connectToEthereum();
         const accounts = await this.web3.eth.getAccounts();
         this.walletAddressSubject.next(accounts[0]);
         this.isConnectedSubject.next(true);
@@ -119,6 +108,25 @@ export class Web3Service {
     } else {
       console.error('Web3 instance not initialized');
     }   
+  }
+
+  async connectToEthereum() {
+    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' && this.web3) {
+      try {
+        const networkId = (await this.web3.eth.net.getId()).toString();
+        if (networkId !== "1") {
+          await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x1' }],
+          });
+          console.log('Switched to Ethereum network.');
+        }
+      } catch (error) {
+        console.error('Network change error: ', error);
+      }
+    } else {
+      console.error('Web3 instance not initialized');
+    }  
   }
 
 }

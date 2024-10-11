@@ -9,7 +9,9 @@
                 <img src="disconnect.png" alt="Disconnect Wallet" title="Disconnect Wallet" class="icon" (click)="disconnectWallet()">
             </div> 
         </div>
-        <img *ngIf="networkId === '1'" src="ethereum.png"  class="ethLogo" alt="Ethereum Network" title="Ethereum Network">
-        <img *ngIf="networkId !== '1'" src="noethereum.png"  class="ethLogo noEthLogo" alt="Ethereum Network" title="Ethereum Network">
+        <div>
+            <img *ngIf="networkId === '1'" src="ethereum.png"  class="ethLogo" alt="Ethereum Network" title="Ethereum Network Active">
+            <img *ngIf="networkId !== '1'" src="noethereum.png"  class="ethLogo noEthLogo" alt="Ethereum Network" title="Connect to Ethereum Network" (click)="connectToEthereum()" >
+        </div>
     </div>
 </div>

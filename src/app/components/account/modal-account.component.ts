@@ -50,6 +50,10 @@ export class ModalAccount implements OnInit {
     });
   }
 
+  connectToEthereum() {
+    this.web3Service.connectToEthereum();
+  }
+
   disconnectWallet() {
     this.web3Service.disconnectWallet();
     this.closeModal();

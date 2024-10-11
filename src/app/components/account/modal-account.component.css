@@ -55,6 +55,7 @@
     border: 3px solid red;
     background-color: red;
     border-radius: 30%;
+    cursor: pointer;
 }
 
 
