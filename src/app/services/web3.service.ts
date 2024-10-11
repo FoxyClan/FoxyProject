@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 
 interface WindowWithEthereum extends Window {
   ethereum: any;
+  solana: any;
 }
 
 declare const window: WindowWithEthereum;
@@ -25,63 +26,55 @@ export class Web3Service {
 
   private intervalId: any;
   public installedWallets: string[] = [];
+  public selectedWallet: string = '';
 
   constructor() {
     this.checkConnection();
   }
 
-  
 
-  startCheckingConnection() {
+  async startCheckingConnection() {
     if(this.intervalId) return
     this.intervalId = setInterval(() => {
-      if(this.isConnectedSubject) this.checkConnection();
+      if(!this.isConnectedSubject.value) this.detectInstalledWallets();
+      if(this.isConnectedSubject.value) {console.log(this.isConnectedSubject.value); this.checkConnection();} //value ?
     }, 1500);
   }
 
 
   async detectInstalledWallets() {
-    console.log("hey")
-    const wallets: { name: string, condition: boolean }[] = [
-      { name: 'Metamask', condition: typeof (window as any).ethereum !== 'undefined' && (window as any).ethereum.isMetaMask },
-      { name: 'Fantom', condition: typeof (window as any).ethereum !== 'undefined' && (window as any).ethereum.isPhantom },
-      { name: 'Binance Wallet', condition: typeof (window as any).BinanceChain !== 'undefined' },
-      { name: 'Coinbase Wallet', condition: typeof (window as any).ethereum !== 'undefined' && (window as any).ethereum.isCoinbaseWallet },
-      { name: 'Trust Wallet', condition: typeof (window as any).ethereum !== 'undefined' && (window as any).ethereum.isTrust }
-    ];
-    this.installedWallets = wallets.filter(wallet => wallet.condition).map(wallet => wallet.name);
-
-    if ((window as any).ethereum) {
+    if (typeof window !== 'undefined') {
       try {
-        console.log("iiii")
-        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-        console.log(chainId)
-        if (chainId === '0xfa' || chainId === '0xFA') { // Fantom Opera network
-          this.installedWallets.push('Fantom Wallet');
-        }
-      } catch (error) {
-        console.error('Erreur lors de la détection du réseau Fantom', error);
+        if(window.ethereum !== undefined && window.ethereum.isMetaMask) this.installedWallets.push("Metamask")
+        if(window.ethereum !== undefined && window.ethereum.isTrustWallet) this.installedWallets.push("TrustWallet")
+        if(window.ethereum !== undefined && window.ethereum.providerMap !== undefined && typeof window.ethereum.providerMap.has("CoinbaseWallet")) this.installedWallets.push("CoinbaseWallet")
+      } catch(error: any) {
+        console.error('Error Detecting Wallets: ', error);
       }
-    }
-    if (this.installedWallets.length > 0) {
       console.log('Portefeuilles Web3 installés:', this.installedWallets);
-    } else {
-      console.log('Aucun portefeuille Web3 détecté.');
     }
   }
 
+  async selectWallet(selectedWallet: string) {
+    if(!this.installedWallets.includes(selectedWallet)) return
+    this.connectWallet(selectedWallet);
+  }
+
+
   async checkConnection() {
-    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
+    
+    this.detectInstalledWallets();
+    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' && this.selectedWallet !== '') {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_accounts' });
         this.web3 = new Web3(window.ethereum);
-        console.log(accounts)
+        
         if (accounts.length > 0) {
           this.walletAddressSubject.next(accounts[0]);
           if(!this.isConnectedSubject) console.log('Connected to ', this.walletAddressSubject);
           this.isConnectedSubject.next(true);
-          this.startCheckingConnection();
           this.getNetworkId();
+          this.startCheckingConnection();
         } else {
           this.walletAddressSubject.next('');
           this.isConnectedSubject.next(false);
@@ -98,18 +91,20 @@ export class Web3Service {
     }
   }
 
-  async connectWallet() {
-    console.log("yoyo")
-    this.detectInstalledWallets();
-    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
+
+  async connectWallet(selectedWallet: string | null) {
+    if (typeof window !== undefined && window.ethereum !== undefined) {
       try {
         await window.ethereum.request({ method: 'eth_requestAccounts'});
         this.web3 = new Web3(window.ethereum);
+        const provider = await window.ethereum.request({
+          method: 'wallet_getProviders',
+        });
         this.connectToEthereum();
         const accounts = await this.web3.eth.getAccounts();
         this.walletAddressSubject.next(accounts[0]);
         this.isConnectedSubject.next(true);
-        this.getNetworkId();
+        //this.getNetworkId();
         console.log('Connected to wallet', this.walletAddressSubject.value);
         this.startCheckingConnection();
       } catch (error) {
@@ -119,6 +114,7 @@ export class Web3Service {
       alert('No web wallets found');
     }
   }
+
 
   async disconnectWallet() {
     if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
@@ -131,6 +127,7 @@ export class Web3Service {
       console.log('No web wallets found');
     }
   }
+
 
   async getNetworkId() {
     if (this.web3 && this.isConnectedSubject) {
@@ -145,6 +142,7 @@ export class Web3Service {
       console.error('Web3 instance not initialized');
     }   
   }
+
 
   async connectToEthereum() {
     if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' && this.web3) {

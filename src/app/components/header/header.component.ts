@@ -44,7 +44,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   connectWallet() {
-    this.web3Service.connectWallet();
+    this.web3Service.connectWallet("CoinBase Wallet");
   }
 
   
