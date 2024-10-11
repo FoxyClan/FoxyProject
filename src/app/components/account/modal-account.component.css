@@ -30,6 +30,10 @@
     right: 0;
 }
 
+.w-50 {
+    width: 50%;
+}
+
 .icon-bar {
     display: flex;
     flex-direction: row;
@@ -47,8 +51,9 @@
 }
 
 .ethLogo {
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
+    float: right;
 }
 
 .noEthLogo {
