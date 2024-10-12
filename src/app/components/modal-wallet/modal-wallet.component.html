@@ -9,7 +9,7 @@
         <div class="wallet">
             <p class="titles">Wallets Installés</p>
             <p *ngIf="installedWallets.length == 0" class="no-wallet">Aucun Portefeuil Installé</p>
-            <div *ngFor="let wallet of installedWallets">
+            <div *ngFor="let wallet of installedWallets" (click)="connectWallet(wallet)">
                 <div class="list-wallet">
                     <img src="{{ wallet }}.png" alt="{{ wallet }}">
                     <p>{{ wallet }}</p>

@@ -34,8 +34,8 @@ export class ModalWallet implements OnInit {
     event.stopPropagation();
   }
 
-  connectWallet() {
-    this.web3Service.connectWallet("CoinBase Wallet");
+  connectWallet(wallet: string) {
+    this.web3Service.connectWallet(wallet);
   }
 
 }
