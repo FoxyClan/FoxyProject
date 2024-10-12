@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ModalAccount } from "../account/modal-account.component";
+import { ModalAccount } from "../modal-account/modal-account.component";
 import { Web3Service } from "../../services/web3.service";
 import { Subscription, combineLatest } from 'rxjs';
 
