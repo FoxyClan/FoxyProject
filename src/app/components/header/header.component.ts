@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalAccount } from "../modal-account/modal-account.component";
+import { ModalWallet } from "../modal-wallet/modal-wallet.component";
 import { Web3Service } from "../../services/web3.service";
 import { Subscription, combineLatest } from 'rxjs';
 
@@ -11,7 +12,8 @@ import { Subscription, combineLatest } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
-    ModalAccount
+    ModalAccount,
+    ModalWallet
 ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -19,11 +21,13 @@ import { Subscription, combineLatest } from 'rxjs';
 
 export class HeaderComponent implements OnInit, OnDestroy {
   showAccount: boolean = false;
+  showWallet: boolean = false;
   isConnected: boolean = false;
   walletAddress: string = '';
   private subscription: Subscription;
 
-  @ViewChild('AccountComponent') accountComponent! : ModalAccount;
+  @ViewChild('ModalAccount') accountComponent! : ModalAccount;
+  @ViewChild('AccountComponent') accountWallet! : ModalWallet;
 
   constructor(private web3Service: Web3Service) {
     this.subscription = new Subscription();
@@ -47,7 +51,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.web3Service.connectWallet("CoinBase Wallet");
   }
 
-  
   shortedWalletAddress() {
     return this.walletAddress.substring(0, 6) + '...' + this.walletAddress.substring(38);
   }
@@ -59,8 +62,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
+  showWalletModal() {
+    this.showWallet = true;
+  }
+
   closeModal() {
     this.showAccount = false;
+    this.showWallet = false;
   }
 
 }

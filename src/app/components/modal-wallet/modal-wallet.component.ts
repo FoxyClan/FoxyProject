@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
+import { Web3Service } from "../../services/web3.service";
 
 @Component({
   selector: 'app-modal-wallet',
@@ -8,5 +9,21 @@ import { Component } from '@angular/core';
   styleUrl: './modal-wallet.component.css'
 })
 export class ModalWallet {
+  @Output() close = new EventEmitter();
+
+  constructor(private web3Service: Web3Service) {
+
+  }
+  closeModal() {
+    this.close.emit();
+  }
+
+  stopEvent(event: Event) {
+    event.stopPropagation();
+  }
+
+  connectWallet() {
+    this.web3Service.connectWallet("CoinBase Wallet");
+  }
 
 }

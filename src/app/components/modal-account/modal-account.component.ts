@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-account',
+  selector: 'app-modal-account',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './modal-account.component.html',
