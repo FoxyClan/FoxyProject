@@ -1,13 +1,32 @@
 <div class="background" (click)="closeModal()">
     <div class="container" (click)="stopEvent($event)">
+
         <div class="header">
-            <h5>Connecter un portefeuille</h5>
+            <h4>Connecter un portefeuille</h4>
             <img src="close.png" alt="" (click)="closeModal()">
         </div>
+
         <div class="wallet">
+            <p class="titles">Wallets Installés</p>
+            <p *ngIf="installedWallets.length == 0" class="no-wallet">Aucun Portefeuil Installé</p>
+            <div *ngFor="let wallet of installedWallets">
+                <div class="list-wallet">
+                    <img src="{{ wallet }}.png" alt="{{ wallet }}">
+                    <p>{{ wallet }}</p>
+                </div>
+            </div>
+            <p *ngIf="installedWallets.length < 3" class="titles">Plus</p>
+            <div *ngFor="let wallet of allWallets">
+                <div class="list-wallet">
+                    <img src="{{ wallet }}.png" alt="{{ wallet }}">
+                    <p>{{ wallet }}</p>
+                </div>
+            </div>
 
         </div>
-        <div class="wallet-details">       
+
+        <div class="wallet-details"> 
+
         </div>
     </div>
 </div>

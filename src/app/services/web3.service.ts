@@ -23,10 +23,13 @@ export class Web3Service {
 
   private isConnectedSubject = new BehaviorSubject<boolean>(false);
   isConnected$ = this.isConnectedSubject.asObservable();
+  
+  private installedWalletsSubject = new BehaviorSubject<string[]>([]);
+  installedWallets$ = this.installedWalletsSubject.asObservable();
 
+  public selectedWallet: string = "";
   private intervalId: any;
-  public installedWallets: string[] = [];
-  public selectedWallet: string = '';
+
 
   constructor() {
     this.checkConnection();
@@ -45,24 +48,25 @@ export class Web3Service {
   async detectInstalledWallets() {
     if (typeof window !== 'undefined') {
       try {
-        if(window.ethereum !== undefined && window.ethereum.isMetaMask) this.installedWallets.push("Metamask")
-        if(window.ethereum !== undefined && window.ethereum.isTrustWallet) this.installedWallets.push("TrustWallet")
-        if(window.ethereum !== undefined && window.ethereum.providerMap !== undefined && typeof window.ethereum.providerMap.has("CoinbaseWallet")) this.installedWallets.push("CoinbaseWallet")
+        const currentWallets = this.installedWalletsSubject.value;
+        if(window.ethereum !== undefined && window.ethereum.isMetaMask) currentWallets.push("MetaMask")
+        if(window.ethereum !== undefined && window.ethereum.isTrustWallet) currentWallets.push("TrustWallet")
+        if(window.ethereum !== undefined && window.ethereum.providerMap !== undefined && typeof window.ethereum.providerMap.has("CoinbaseWallet")) currentWallets.push("CoinbaseWallet")
+          this.installedWalletsSubject.next(currentWallets);
       } catch(error: any) {
         console.error('Error Detecting Wallets: ', error);
       }
-      console.log('Portefeuilles Web3 installés:', this.installedWallets);
+      console.log('Portefeuilles Web3 installés:', this.installedWalletsSubject.value);
     }
   }
 
   async selectWallet(selectedWallet: string) {
-    if(!this.installedWallets.includes(selectedWallet)) return
+    if(!this.installedWalletsSubject.value.includes(selectedWallet)) return
     this.connectWallet(selectedWallet);
   }
 
 
   async checkConnection() {
-    
     this.detectInstalledWallets();
     if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' && this.selectedWallet !== '') {
       try {

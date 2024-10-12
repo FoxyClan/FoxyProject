@@ -1,3 +1,20 @@
+/* Pour tous les éléments avec une barre de défilement */
+::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  
+/* Style de la zone de fond de la barre */
+::-webkit-scrollbar-track {
+    background: #252835;
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #484d64;
+    border-radius: 20px;
+}
+
 .background {
     background-color: transparent;
     width: 100%;
@@ -10,9 +27,9 @@
 .container {
     font-family: "Orbitron", sans-serif;
     font-weight: 400;
-    color: wheat;
+    color: white;
     width: 40%;
-    height: 40%;
+    height: 50%;
     border-radius: 10px;
     padding: 15px;
     background: rgb(29,35,55);
@@ -23,7 +40,6 @@
 }
 
 .header {
-    border: 2px solid red;
     grid-row: 1 / 2;
     grid-column: 1 / 3;
     justify-content: space-between;
@@ -37,15 +53,53 @@
     cursor: pointer;
 }
 
+.header h4 {
+    font-size: 15px;
+}
+
 .wallet {
-    border: 2px solid red;
+    padding-right: 5px;
     border-right: 1px solid #FED453;
     grid-row: 2 / 3;
     grid-column: 1 / 2;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.titles {
+    align-items: center;
+    padding-top: 5px;
+    font-weight: 100;
+    font-size: 14px;
+    height: 30px;
+}
+
+.no-wallet {
+    color: red;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.list-wallet {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    cursor: pointer;
+    padding: 5px 10px 5px 10px;
+    align-items: center;
+}
+
+.list-wallet:hover {
+    border-radius: 10px;
+    background-color: #424241;
+}
+
+.list-wallet img {
+    width: 30px;
+    height: 30px;
 }
 
 .wallet-details {
-    border: 2px solid red;
     grid-row: 2 / 3;
     grid-column: 2 / 3;
 }
