@@ -18,6 +18,7 @@ export class ModalWallet implements OnInit {
 
   constructor(private web3Service: Web3Service) {
     this.subscription = new Subscription();
+    this.web3Service.detectInstalledWallets();
   }
 
   ngOnInit() {
@@ -25,7 +26,7 @@ export class ModalWallet implements OnInit {
       this.installedWallets = installedWallets;
     });
   }
-
+  
   closeModal() {
     this.close.emit();
   }

@@ -26,8 +26,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   walletAddress: string = '';
   private subscription: Subscription;
 
-  @ViewChild('ModalAccount') accountComponent! : ModalAccount;
-  @ViewChild('AccountComponent') accountWallet! : ModalWallet;
+  @ViewChild('ModalAccount') modalAccount! : ModalAccount;
+  @ViewChild('ModalWallet') modalWallet! : ModalWallet;
 
   constructor(private web3Service: Web3Service) {
     this.subscription = new Subscription();
@@ -58,7 +58,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showAccountModal() {
     this.showAccount = true;
     setTimeout(() => {
-        this.accountComponent.showModal();
+      this.modalAccount.showModal();
     }, 100);
   }
 

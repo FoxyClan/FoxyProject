@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 
 interface WindowWithEthereum extends Window {
   ethereum: any;
-  solana: any;
+  coinbaseWalletExtension: any;
 }
 
 declare const window: WindowWithEthereum;
@@ -39,20 +39,20 @@ export class Web3Service {
   async startCheckingConnection() {
     if(this.intervalId) return
     this.intervalId = setInterval(() => {
-      if(!this.isConnectedSubject.value) this.detectInstalledWallets();
       if(this.isConnectedSubject.value) {console.log(this.isConnectedSubject.value); this.checkConnection();} //value ?
     }, 1500);
   }
 
 
-  async detectInstalledWallets() {
+  detectInstalledWallets() {
     if (typeof window !== 'undefined') {
       try {
         const currentWallets = this.installedWalletsSubject.value;
         if(window.ethereum !== undefined && window.ethereum.isMetaMask) currentWallets.push("MetaMask")
         if(window.ethereum !== undefined && window.ethereum.isTrustWallet) currentWallets.push("TrustWallet")
-        if(window.ethereum !== undefined && window.ethereum.providerMap !== undefined && typeof window.ethereum.providerMap.has("CoinbaseWallet")) currentWallets.push("CoinbaseWallet")
-          this.installedWalletsSubject.next(currentWallets);
+        if(typeof window.coinbaseWalletExtension !== 'undefined') currentWallets.push("CoinbaseWallet")
+        this.installedWalletsSubject.next(currentWallets);
+      console.log(this.installedWalletsSubject.value)
       } catch(error: any) {
         console.error('Error Detecting Wallets: ', error);
       }
@@ -67,7 +67,6 @@ export class Web3Service {
 
 
   async checkConnection() {
-    this.detectInstalledWallets();
     if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' && this.selectedWallet !== '') {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_accounts' });
@@ -97,7 +96,7 @@ export class Web3Service {
 
 
   async connectWallet(selectedWallet: string | null) {
-    if (typeof window !== undefined && window.ethereum !== undefined) {
+    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
       try {
         await window.ethereum.request({ method: 'eth_requestAccounts'});
         this.web3 = new Web3(window.ethereum);
