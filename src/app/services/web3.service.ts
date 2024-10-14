@@ -52,7 +52,7 @@ export class Web3Service {
   detectInstalledWallets() {
     if (typeof window !== 'undefined') {
       try {
-        const currentWallets = this.installedWalletsSubject.value;
+        const currentWallets: string[] = [];
         if(window.ethereum !== undefined && window.ethereum.isMetaMask) currentWallets.push("MetaMask")
         if(window.ethereum !== undefined && window.ethereum.isTrust) currentWallets.push("TrustWallet")
         if(typeof window.coinbaseWalletExtension !== 'undefined') currentWallets.push("CoinbaseWallet")
@@ -68,7 +68,6 @@ export class Web3Service {
     if(!this.installedWalletsSubject.value.includes(selectedWallet)) return
     this.connectWallet(selectedWallet);
   }
-
 
   async checkConnection() {
     if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' && this.selectedWallet !== '') {
@@ -100,7 +99,7 @@ export class Web3Service {
 
 
   async connectWallet(selectedWallet: string | null) {
-    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
+    if (typeof window !== 'undefined') {
       try {
         if(selectedWallet === 'CoinbaseWallet') {
           const CoinbaseWallet = new Coinbase({
@@ -116,9 +115,12 @@ export class Web3Service {
 
           this.web3 = new Web3(ethereumCoinbase);
 
-          const accounts = await ethereumCoinbase.request({
+          await ethereumCoinbase.request({
             method: 'eth_requestAccounts'
           });
+          const accounts = await this.web3.eth.getAccounts();
+          this.walletAddressSubject.next(accounts[0]);
+          this.isConnectedSubject.next(true);
         }
 
         else if(selectedWallet === 'MetaMask') {
@@ -138,24 +140,12 @@ export class Web3Service {
         else if(selectedWallet === 'TrustWallet') {
           await window.trustWallet.request({ method: 'eth_requestAccounts'});
         }
-        
-
-        //
-        /*
-        await window.ethereum.request({ method: 'eth_requestAccounts'});
-        this.web3 = new Web3(window.CoinbaseWalletProvider);
-        const provider = await window.CoinbaseWalletProvider.request({
-          method: 'eth_requestAccounts',
-        });
-        console.log(provider)
+        else {
+          console.error('Unistalled Wallet');
+        }
         this.connectToEthereum();
-        const accounts = await this.web3.eth.getAccounts();
-        this.walletAddressSubject.next(accounts[0]);
-        this.isConnectedSubject.next(true);
-        //this.getNetworkId();
-        console.log('Connected to wallet', this.walletAddressSubject.value);
+        this.getNetworkId();
         this.startCheckingConnection();
-        */
       } catch (error) {
         console.error('Error connecting to wallet', error);
       }
