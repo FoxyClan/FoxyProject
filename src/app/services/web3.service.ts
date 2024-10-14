@@ -28,9 +28,7 @@ export class Web3Service {
   selectedWallet$ = this.selectedWalletSubject.asObservable();
 
   private intervalId: any;
-
-  private sdk: any;
-  private provider: any;
+  private provider: any = null;
 
 
   constructor() {
@@ -66,27 +64,29 @@ export class Web3Service {
 
 
   async checkConnection() {
-    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' && this.selectedWalletSubject.value !== '') {
+    if (typeof window !== 'undefined') {
       try {
-        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-        this.web3 = new Web3(window.ethereum);
-        
-        if (accounts.length > 0) {
-          this.walletAddressSubject.next(accounts[0]);
-          if(!this.isConnectedSubject) console.log('Connected to ', this.walletAddressSubject);
-          this.isConnectedSubject.next(true);
-          this.getNetworkId();
-          this.startCheckingConnection();
+        if(this.provider) {
+          const accounts = await this.provider.request({ method: 'eth_accounts' });
+          if (accounts.length > 0) {
+            this.walletAddressSubject.next(accounts[0]);
+            localStorage.setItem('userAddress', this.walletAddressSubject.value);
+            localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
+            this.getNetworkId();
+            this.startCheckingConnection();
+          } else {
+            this.disconnectWallet();
+          }    
         } else {
-          this.walletAddressSubject.next('');
-          this.isConnectedSubject.next(false);
+          this.detectInstalledWallets();
+          const savedAddress = localStorage.getItem('userAddress');
+          const savedSelectedWallet = localStorage.getItem('selectedWallet');
+          if (savedAddress && savedSelectedWallet) {
+            this.connectWallet(savedSelectedWallet);
+          }
         }
-      } catch (error: any) {
-        if (error.code === -32002) {
-          console.error('Too many requests, please try again later');
-        } else {
+      } catch(error: any) {
           console.error('Error checking wallet connection: ', error);
-        }
       }
     } else {
       console.log('No web wallets found');
@@ -119,6 +119,8 @@ export class Web3Service {
           this.walletAddressSubject.next(accounts[0]);
           this.isConnectedSubject.next(true);
           this.selectedWalletSubject.next(selectedWallet);
+          this.getNetworkId();
+          this.startCheckingConnection();
         }
         else if(selectedWallet === 'MetaMask') { // MetaMask Wallet
           const MMSDK = new MetaMaskSDK({
@@ -142,6 +144,10 @@ export class Web3Service {
                         this.isConnectedSubject.next(true);
                         this.selectedWalletSubject.next(selectedWallet);
                         this.connectToEthereum();
+                        this.getNetworkId();
+                        localStorage.setItem('userAddress', this.walletAddressSubject.value);
+                        localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
+                        this.startCheckingConnection();
                     } else {
                         console.error("No accounts found");
                     }
@@ -167,14 +173,12 @@ export class Web3Service {
           this.isConnectedSubject.next(true);
           this.selectedWalletSubject.next(selectedWallet);
           this.connectToEthereum();
+          this.getNetworkId();
+          this.startCheckingConnection();
         }
         else {
           console.error('Unistalled Wallet');
         }
-        
-        /*
-        this.getNetworkId();
-        this.startCheckingConnection();*/
       } catch (error) {
         console.error('Error connecting to wallet', error);
       }
@@ -190,6 +194,7 @@ export class Web3Service {
     this.isConnectedSubject.next(false);
     clearInterval(this.intervalId);
     this.intervalId = null;
+    this.provider = null;
   }
 
 
@@ -197,7 +202,6 @@ export class Web3Service {
     if (this.web3 && this.isConnectedSubject) {
       try {
         const networkId = (await this.web3.eth.net.getId()).toString();
-        console.log(networkId)
         this.networkIdSubject.next(networkId);
       } catch (error) {
         console.error('Error getting network ID: ', error);

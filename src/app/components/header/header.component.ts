@@ -40,6 +40,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ]).subscribe(([isConnected, walletAddress]) => {
       this.isConnected = isConnected;
       this.walletAddress = walletAddress;
+
+      if (typeof document !== 'undefined') {
+        const button = document.getElementById("walletAddressButton");
+        if(button) button.textContent = (walletAddress.substring(0, 6) + '...' + walletAddress.substring(38)).toUpperCase();
+      }
     });
   }
 
@@ -49,10 +54,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   connectWallet() {
     this.web3Service.connectWallet("CoinBase Wallet");
-  }
-
-  shortedWalletAddress() {
-    return this.walletAddress.substring(0, 6) + '...' + this.walletAddress.substring(38);
   }
 
   showAccountModal() {
