@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
+import Coinbase from '@coinbase/wallet-sdk';
+import { MetaMaskSDK } from "@metamask/sdk"
 import { BehaviorSubject } from 'rxjs';
 
-interface WindowWithEthereum extends Window {
-  ethereum: any;
-  coinbaseWalletExtension: any;
-}
-
-declare const window: WindowWithEthereum;
+declare let window: any;
 
 @Injectable({
   providedIn: 'root'
@@ -30,9 +27,17 @@ export class Web3Service {
   public selectedWallet: string = "";
   private intervalId: any;
 
+  private sdk: any;
+  private ethereumProvider: any;
+
 
   constructor() {
     this.checkConnection();
+  }
+
+  handleProviderAnnouncement(event: any): void {
+    const provider = event.detail.provider;
+    console.log('Portefeuille détecté :', provider);
   }
 
 
@@ -49,10 +54,9 @@ export class Web3Service {
       try {
         const currentWallets = this.installedWalletsSubject.value;
         if(window.ethereum !== undefined && window.ethereum.isMetaMask) currentWallets.push("MetaMask")
-        if(window.ethereum !== undefined && window.ethereum.isTrustWallet) currentWallets.push("TrustWallet")
+        if(window.ethereum !== undefined && window.ethereum.isTrust) currentWallets.push("TrustWallet")
         if(typeof window.coinbaseWalletExtension !== 'undefined') currentWallets.push("CoinbaseWallet")
         this.installedWalletsSubject.next(currentWallets);
-      console.log(this.installedWalletsSubject.value)
       } catch(error: any) {
         console.error('Error Detecting Wallets: ', error);
       }
@@ -98,11 +102,52 @@ export class Web3Service {
   async connectWallet(selectedWallet: string | null) {
     if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
       try {
+        if(selectedWallet === 'CoinbaseWallet') {
+          const CoinbaseWallet = new Coinbase({
+            appName: 'FoxyCLan',
+            appLogoUrl: 'BaseCharacter.jpeg',
+            appChainIds: [1],
+          });
+
+          const ethereumCoinbase = CoinbaseWallet.makeWeb3Provider({
+            options: 'all',
+            keysUrl: 'https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35' //optionnel
+          });
+
+          this.web3 = new Web3(ethereumCoinbase);
+
+          const accounts = await ethereumCoinbase.request({
+            method: 'eth_requestAccounts'
+          });
+        }
+
+        else if(selectedWallet === 'MetaMask') {
+          const MMSDK = new MetaMaskSDK({
+            dappMetadata: {
+              name: "FoxyCLan",
+              url: window.location.href,
+            },
+            infuraAPIKey: 'https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35',
+          });
+          setTimeout(() => {
+            const ethereumMetamask = MMSDK.getProvider();
+            if(ethereumMetamask) ethereumMetamask.request({ method: "eth_requestAccounts", params: [] })
+          }, 0);
+        }
+
+        else if(selectedWallet === 'TrustWallet') {
+          await window.trustWallet.request({ method: 'eth_requestAccounts'});
+        }
+        
+
+        //
+        /*
         await window.ethereum.request({ method: 'eth_requestAccounts'});
-        this.web3 = new Web3(window.ethereum);
-        const provider = await window.ethereum.request({
-          method: 'wallet_getProviders',
+        this.web3 = new Web3(window.CoinbaseWalletProvider);
+        const provider = await window.CoinbaseWalletProvider.request({
+          method: 'eth_requestAccounts',
         });
+        console.log(provider)
         this.connectToEthereum();
         const accounts = await this.web3.eth.getAccounts();
         this.walletAddressSubject.next(accounts[0]);
@@ -110,6 +155,7 @@ export class Web3Service {
         //this.getNetworkId();
         console.log('Connected to wallet', this.walletAddressSubject.value);
         this.startCheckingConnection();
+        */
       } catch (error) {
         console.error('Error connecting to wallet', error);
       }
