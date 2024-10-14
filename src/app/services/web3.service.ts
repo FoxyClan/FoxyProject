@@ -24,11 +24,13 @@ export class Web3Service {
   private installedWalletsSubject = new BehaviorSubject<string[]>([]);
   installedWallets$ = this.installedWalletsSubject.asObservable();
 
-  public selectedWallet: string = "";
+  private selectedWalletSubject = new BehaviorSubject<string>('');
+  selectedWallet$ = this.selectedWalletSubject.asObservable();
+
   private intervalId: any;
 
   private sdk: any;
-  private ethereumProvider: any;
+  private ethereumMetamask: any;
 
 
   constructor() {
@@ -44,7 +46,7 @@ export class Web3Service {
   async startCheckingConnection() {
     if(this.intervalId) return
     this.intervalId = setInterval(() => {
-      if(this.isConnectedSubject.value) {console.log(this.isConnectedSubject.value); this.checkConnection();} //value ?
+      if(this.isConnectedSubject.value) this.checkConnection()
     }, 1500);
   }
 
@@ -64,13 +66,9 @@ export class Web3Service {
     }
   }
 
-  async selectWallet(selectedWallet: string) {
-    if(!this.installedWalletsSubject.value.includes(selectedWallet)) return
-    this.connectWallet(selectedWallet);
-  }
 
   async checkConnection() {
-    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' && this.selectedWallet !== '') {
+    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' && this.selectedWalletSubject.value !== '') {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_accounts' });
         this.web3 = new Web3(window.ethereum);
@@ -98,54 +96,84 @@ export class Web3Service {
   }
 
 
-  async connectWallet(selectedWallet: string | null) {
-    if (typeof window !== 'undefined') {
+  async connectWallet(selectedWallet: string) {
+    if(selectedWallet === '' || typeof selectedWallet !== 'string' || !this.installedWalletsSubject.value.includes(selectedWallet)) {
+      console.error('Selected wallet is not installed or null');
+      return
+    }
+    else if (typeof window !== 'undefined') {
       try {
-        if(selectedWallet === 'CoinbaseWallet') {
+        if(selectedWallet === 'CoinbaseWallet') { // Coinbase Wallet
           const CoinbaseWallet = new Coinbase({
             appName: 'FoxyCLan',
             appLogoUrl: 'BaseCharacter.jpeg',
             appChainIds: [1],
           });
-
           const ethereumCoinbase = CoinbaseWallet.makeWeb3Provider({
             options: 'all',
-            keysUrl: 'https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35' //optionnel
+            keysUrl: 'https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35'
           });
-
           this.web3 = new Web3(ethereumCoinbase);
-
           await ethereumCoinbase.request({
             method: 'eth_requestAccounts'
           });
           const accounts = await this.web3.eth.getAccounts();
           this.walletAddressSubject.next(accounts[0]);
           this.isConnectedSubject.next(true);
+          this.selectedWalletSubject.next(selectedWallet);
         }
-
-        else if(selectedWallet === 'MetaMask') {
+        else if(selectedWallet === 'MetaMask') { // MetaMask Wallet
           const MMSDK = new MetaMaskSDK({
             dappMetadata: {
               name: "FoxyCLan",
               url: window.location.href,
             },
-            infuraAPIKey: 'https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35',
+            infuraAPIKey: '16c76dc3448e4b96a41e908703fa0b35',
           });
           setTimeout(() => {
-            const ethereumMetamask = MMSDK.getProvider();
-            if(ethereumMetamask) ethereumMetamask.request({ method: "eth_requestAccounts", params: [] })
+            this.ethereumMetamask = MMSDK.getProvider();
+            if (this.ethereumMetamask) {
+              this.ethereumMetamask.request({ method: "eth_requestAccounts", params: [] })
+                .then(() => { 
+                    this.web3 = new Web3(this.ethereumMetamask);
+                    return this.web3.eth.getAccounts();
+                })
+                .then((accounts: string[]) => {
+                    if (accounts.length > 0) {
+                        this.walletAddressSubject.next(accounts[0]);
+                        this.isConnectedSubject.next(true);
+                        this.selectedWalletSubject.next(selectedWallet);
+                    } else {
+                        console.error("No accounts found");
+                    }
+                })
+                .catch((err: any) => {
+                  if (err instanceof Error) {
+                      console.error("Error recovering accounts:", err.message);
+                  } else {
+                      console.error("Unknown error:", err);
+                  }
+                });
+              } else {
+                console.error("Provider not found");
+              }
           }, 0);
         }
-
-        else if(selectedWallet === 'TrustWallet') {
+        else if(selectedWallet === 'TrustWallet') { // TrustWallet
           await window.trustWallet.request({ method: 'eth_requestAccounts'});
+          this.web3 = new Web3(window.trustWallet)
+          const accounts = await this.web3.eth.getAccounts();
+          this.walletAddressSubject.next(accounts[0]);
+          this.isConnectedSubject.next(true);
+          this.selectedWalletSubject.next(selectedWallet);
         }
         else {
           console.error('Unistalled Wallet');
         }
+        /*
         this.connectToEthereum();
         this.getNetworkId();
-        this.startCheckingConnection();
+        this.startCheckingConnection();*/
       } catch (error) {
         console.error('Error connecting to wallet', error);
       }
