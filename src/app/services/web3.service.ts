@@ -120,6 +120,8 @@ export class Web3Service {
           this.isConnectedSubject.next(true);
           this.selectedWalletSubject.next(selectedWallet);
           this.getNetworkId();
+          localStorage.setItem('userAddress', this.walletAddressSubject.value);
+          localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
           this.startCheckingConnection();
         }
         else if(selectedWallet === 'MetaMask') { // MetaMask Wallet
@@ -174,6 +176,8 @@ export class Web3Service {
           this.selectedWalletSubject.next(selectedWallet);
           this.connectToEthereum();
           this.getNetworkId();
+          localStorage.setItem('userAddress', this.walletAddressSubject.value);
+          localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
           this.startCheckingConnection();
         }
         else {
