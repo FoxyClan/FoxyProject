@@ -40,10 +40,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ]).subscribe(([isConnected, walletAddress]) => {
       this.isConnected = isConnected;
       this.walletAddress = walletAddress;
+      console.log(this.walletAddress)
 
       if (typeof document !== 'undefined') {
         const button = document.getElementById("walletAddressButton");
-        if(button) button.textContent = (walletAddress.substring(0, 6) + '...' + walletAddress.substring(38)).toUpperCase();
+        if(button) button.textContent = (this.walletAddress.substring(0, 6) + '...' + this.walletAddress.substring(38));
       }
     });
   }

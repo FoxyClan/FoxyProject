@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Web3Service } from "../../services/web3.service";
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -11,13 +11,13 @@ import { CommonModule } from '@angular/common';
   styleUrl: './modal-account.component.css'
 })
 
-export class ModalAccount implements OnInit {
+export class ModalAccount implements OnInit, OnDestroy {
 
   @Input() walletAddress!: string;
   @Output() close = new EventEmitter();
   isAnimated: boolean = false;
   public networkId: string = '';
-  private subscription: Subscription;
+  private subscription: Subscription; 
 
   constructor(private web3Service: Web3Service) {
     this.subscription = new Subscription();
@@ -27,6 +27,10 @@ export class ModalAccount implements OnInit {
     this.subscription = this.web3Service.networkId$.subscribe((networkId) => {
       this.networkId = networkId;
     });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   showModal() {

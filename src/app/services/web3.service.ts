@@ -15,7 +15,7 @@ export class Web3Service {
   private networkIdSubject = new BehaviorSubject<string>('');
   networkId$ = this.networkIdSubject.asObservable();
   
-  private walletAddressSubject = new BehaviorSubject<string>('');
+  private walletAddressSubject = new BehaviorSubject<any>('');
   walletAddress$ = this.walletAddressSubject.asObservable();
 
   private isConnectedSubject = new BehaviorSubject<boolean>(false);
@@ -115,7 +115,7 @@ export class Web3Service {
           await this.provider.request({
             method: 'eth_requestAccounts'
           });
-          const accounts = await this.web3.eth.getAccounts();
+          const accounts = await this.web3.eth.getAccounts();                      ///// conserver le format checksum
           this.walletAddressSubject.next(accounts[0]);
           this.isConnectedSubject.next(true);
           this.selectedWalletSubject.next(selectedWallet);
@@ -137,28 +137,28 @@ export class Web3Service {
             if (this.provider) {
               this.provider.request({ method: "eth_requestAccounts", params: [] })
                 .then(() => { 
-                    this.web3 = new Web3(this.provider);
-                    return this.web3.eth.getAccounts();
+                  this.web3 = new Web3(this.provider);
+                  return this.web3.eth.getAccounts();
                 })
                 .then((accounts: string[]) => {
-                    if (accounts.length > 0) {
-                        this.walletAddressSubject.next(accounts[0]);
-                        this.isConnectedSubject.next(true);
-                        this.selectedWalletSubject.next(selectedWallet);
-                        this.connectToEthereum();
-                        this.getNetworkId();
-                        localStorage.setItem('userAddress', this.walletAddressSubject.value);
-                        localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
-                        this.startCheckingConnection();
-                    } else {
-                        console.error("No accounts found");
-                    }
+                  if (accounts.length > 0) {
+                      this.walletAddressSubject.next(accounts[0]);
+                      this.isConnectedSubject.next(true);
+                      this.selectedWalletSubject.next(selectedWallet);
+                      this.connectToEthereum();
+                      this.getNetworkId();
+                      localStorage.setItem('userAddress', this.walletAddressSubject.value);
+                      localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
+                      this.startCheckingConnection();
+                  } else {
+                      console.error("No accounts found");
+                  }
                 })
                 .catch((err: any) => {
                   if (err instanceof Error) {
-                      console.error("Error recovering accounts:", err.message);
+                    console.error("Error recovering accounts:", err.message);
                   } else {
-                      console.error("Unknown error:", err);
+                    console.error("Unknown error:", err);
                   }
                 });
               } else {

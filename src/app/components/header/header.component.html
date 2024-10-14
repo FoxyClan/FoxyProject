@@ -10,8 +10,8 @@
     </ul>
     <div class="button-container">
         <button class="border-button">
-            <button *ngIf="!isConnected" (click)="showWalletModal()" class="connect-button">Connect Wallet</button>
-            <button *ngIf="isConnected" id="walletAddressButton" (click)="showAccountModal()" class="connect-button" title="{{ walletAddress }}">{{ (walletAddress.substring(0, 6) + '...' + walletAddress.substring(38)).toUpperCase() }}</button>
+            <button *ngIf="!isConnected" (click)="showWalletModal()" class="connect-button">Connect Wallet</button> 
+            <button *ngIf="isConnected" id="walletAddressButton" (click)="showAccountModal()" class="connect-button" title="{{ walletAddress }}">{{ (walletAddress.substring(0, 6) + '...' + walletAddress.substring(38)) }}</button>
         </button>
     </div>
 </header>
