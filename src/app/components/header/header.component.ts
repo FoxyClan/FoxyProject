@@ -4,6 +4,7 @@ import { ModalAccount } from "../modal-account/modal-account.component";
 import { ModalWallet } from "../modal-wallet/modal-wallet.component";
 import { Web3Service } from "../../services/web3.service";
 import { Subscription, combineLatest } from 'rxjs';
+import Web3 from 'web3';
 
 
 
@@ -23,7 +24,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showAccount: boolean = false;
   showWallet: boolean = false;
   isConnected: boolean = false;
-  walletAddress: string = '';
+  walletAddress: any;
   private subscription: Subscription;
 
   @ViewChild('ModalAccount') modalAccount! : ModalAccount;
@@ -39,8 +40,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.web3Service.walletAddress$
     ]).subscribe(([isConnected, walletAddress]) => {
       this.isConnected = isConnected;
-      this.walletAddress = walletAddress;
-      console.log(this.walletAddress)
+
+      if(walletAddress) {
+        const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
+        this.walletAddress = checksumAddress;
+      }
 
       if (typeof document !== 'undefined') {
         const button = document.getElementById("walletAddressButton");
