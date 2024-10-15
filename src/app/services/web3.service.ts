@@ -71,7 +71,7 @@ export class Web3Service {
           if (accounts.length > 0) {
             this.walletAddressSubject.next(accounts[0]);
             localStorage.setItem('userAddress', this.walletAddressSubject.value);
-            localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
+            localStorage.setItem('connectionTime', new Date().getTime().toString());
             this.getNetworkId();
             this.startCheckingConnection();
           } else {
@@ -79,9 +79,9 @@ export class Web3Service {
           }    
         } else {
           this.detectInstalledWallets();
-          const savedAddress = localStorage.getItem('userAddress');
           const savedSelectedWallet = localStorage.getItem('selectedWallet');
-          if (savedAddress && savedSelectedWallet) {
+          const connectionTime = localStorage.getItem('connectionTime');
+          if (connectionTime && savedSelectedWallet && (new Date().getTime() - parseInt(connectionTime)) <= 60000) {
             this.connectWallet(savedSelectedWallet);
           }
         }
@@ -120,7 +120,7 @@ export class Web3Service {
           this.isConnectedSubject.next(true);
           this.selectedWalletSubject.next(selectedWallet);
           this.getNetworkId();
-          localStorage.setItem('userAddress', this.walletAddressSubject.value);
+          localStorage.setItem('connectionTime', new Date().getTime().toString());
           localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
           this.startCheckingConnection();
         }
@@ -149,7 +149,7 @@ export class Web3Service {
                       this.selectedWalletSubject.next(selectedWallet);
                       this.connectToEthereum();
                       this.getNetworkId();
-                      localStorage.setItem('userAddress', this.walletAddressSubject.value);
+                      localStorage.setItem('connectionTime', new Date().getTime().toString());
                       localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
                       this.startCheckingConnection();
                   } else {
@@ -179,7 +179,7 @@ export class Web3Service {
           this.selectedWalletSubject.next(selectedWallet);
           this.connectToEthereum();
           this.getNetworkId();
-          localStorage.setItem('userAddress', this.walletAddressSubject.value);
+          localStorage.setItem('connectionTime', new Date().getTime().toString());
           localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
           this.startCheckingConnection();
         }
