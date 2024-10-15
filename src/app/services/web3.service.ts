@@ -125,7 +125,7 @@ export class Web3Service {
           this.startCheckingConnection();
         }
 
-        else if(selectedWallet === 'MetaMask') {    // MetaMask Wallet                 deco de metamask et reload la page
+        else if(selectedWallet === 'MetaMask') {    // MetaMask Wallet
           const MMSDK = new MetaMaskSDK({
             dappMetadata: {
               name: "FoxyCLan",
@@ -133,7 +133,6 @@ export class Web3Service {
             },
             infuraAPIKey: '16c76dc3448e4b96a41e908703fa0b35',
           });
-          console.log(MMSDK)
           setTimeout(() => {
             this.provider = MMSDK.getProvider();
             if (this.provider) {

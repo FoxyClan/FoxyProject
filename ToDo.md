@@ -1,0 +1,1 @@
+tester le .then avec le MMSDK avant setTimeout ?

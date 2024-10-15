@@ -12,7 +12,11 @@
             <div *ngFor="let wallet of installedWallets" (click)="connectWallet(wallet)">
                 <div class="list-wallet">
                     <img src="{{ wallet }}.png" alt="{{ wallet }}">
-                    <p>{{ addSpaceBeforeW(wallet) }}</p>
+                    <div>
+                      <p>{{ addSpaceBeforeW(wallet) }}</p>
+                      <p *ngIf="localStorageWallet(wallet)" class="recent">Récent</p>
+                    </div>
+                    
                 </div>
             </div>
             <p *ngIf="installedWallets.length < 3" class="titles">Plus</p>

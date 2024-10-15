@@ -103,6 +103,12 @@
     transform: scale(0.95);
 }
 
+.recent {
+    color: rgb(100, 0, 158);
+    font-size: 12px;
+    font-weight: bold;
+}
+
 .wallet-details {
     grid-row: 2 / 3;
     grid-column: 2 / 3;

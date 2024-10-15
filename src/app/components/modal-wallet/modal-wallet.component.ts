@@ -43,4 +43,9 @@ export class ModalWallet implements OnInit {
     return input.replace(/([a-zA-Z])W/g, '$1 W');
   }
 
+  localStorageWallet(walletName: string) {
+    const selected = localStorage.getItem('selectedWallet');
+    return selected && selected == walletName;
+  }
+
 }
