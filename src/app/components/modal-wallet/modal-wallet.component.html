@@ -10,23 +10,49 @@
             <p class="titles">Wallets Installés</p>
             <p *ngIf="installedWallets.length == 0" class="no-wallet">Aucun Portefeuil Installé</p>
             <div *ngFor="let wallet of installedWallets" (click)="connectWallet(wallet)">
-                <div class="list-wallet">
+                <div class="list-wallet" (mousedown)="onMouseDown()" (mouseup)="onMouseUp()" (mouseleave)="onMouseUp()">
                     <img src="{{ wallet }}.png" alt="{{ wallet }}">
-                    <p>{{ wallet }}</p>
+                    <p>{{ addSpaceBeforeW(wallet) }}</p>
                 </div>
             </div>
             <p *ngIf="installedWallets.length < 3" class="titles">Plus</p>
             <div *ngFor="let wallet of allWallets">
                 <div *ngIf="!installedWallets.includes(wallet)" class="list-wallet">
                     <img src="{{ wallet }}.png" alt="{{ wallet }}">
-                    <p>{{ wallet }}</p>
+                    <p>{{ addSpaceBeforeW(wallet) }}</p>
                 </div>
             </div>
-
         </div>
 
         <div class="wallet-details"> 
-
+            <div class="wallet-info-section">
+                <p class="titles">Qu'est-ce qu'un portefeuille crypto ?</p>
+                <p>
+                  Un portefeuille crypto (wallet) est une application ou une extension de navigateur qui vous permet de gérer vos
+                  cryptomonnaies et vos actifs numériques comme les NFT. Il vous permet d'envoyer, de recevoir et de stocker des
+                  tokens en toute sécurité.
+                </p>
+              
+                <p class="titles">Comment installer un portefeuille ?</p>
+                <ul>
+                  <li>
+                    <strong>1. Choisir un portefeuille :</strong> Il existe plusieurs portefeuilles disponibles, comme
+                    <a href="https://metamask.io/" target="_blank">MetaMask</a>, <a href="https://trustwallet.com/" target="_blank">Trust Wallet</a> ou
+                    <a href="https://www.coinbase.com/wallet" target="_blank">Coinbase Wallet</a>.
+                  </li>
+                  <li><strong>2. Installer l'extension ou l'application :</strong> Téléchargez l'extension pour navigateur ou l'application mobile depuis les stores officiels.</li>
+                  <li><strong>3. Créer un compte :</strong> Après l'installation, vous devrez créer un compte et sécuriser votre portefeuille avec une phrase secrète (seed phrase).</li>
+                </ul>
+              
+                <h3>Conseils de sécurité</h3>
+                <p>
+                  Ne partagez jamais votre phrase secrète avec quelqu'un. Elle vous permet de restaurer l'accès à vos actifs. Gardez-la
+                  en lieu sûr.
+                </p>
+              
+                <button class="btn-learn-more">En savoir plus sur les portefeuilles</button>
+              </div>
+              
         </div>
     </div>
 </div>

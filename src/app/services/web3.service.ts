@@ -101,7 +101,7 @@ export class Web3Service {
     }
     else if (typeof window !== 'undefined') {
       try {
-        if(selectedWallet === 'CoinbaseWallet') { // Coinbase Wallet
+        if(selectedWallet === 'CoinbaseWallet') {     // Coinbase Wallet
           const CoinbaseWallet = new Coinbase({
             appName: 'FoxyCLan',
             appLogoUrl: 'BaseCharacter.jpeg',
@@ -115,7 +115,7 @@ export class Web3Service {
           await this.provider.request({
             method: 'eth_requestAccounts'
           });
-          const accounts = await this.web3.eth.getAccounts();                      ///// conserver le format checksum
+          const accounts = await this.web3.eth.getAccounts();
           this.walletAddressSubject.next(accounts[0]);
           this.isConnectedSubject.next(true);
           this.selectedWalletSubject.next(selectedWallet);
@@ -124,7 +124,8 @@ export class Web3Service {
           localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
           this.startCheckingConnection();
         }
-        else if(selectedWallet === 'MetaMask') { // MetaMask Wallet
+
+        else if(selectedWallet === 'MetaMask') {    // MetaMask Wallet                 deco de metamask et reload la page
           const MMSDK = new MetaMaskSDK({
             dappMetadata: {
               name: "FoxyCLan",
@@ -132,6 +133,7 @@ export class Web3Service {
             },
             infuraAPIKey: '16c76dc3448e4b96a41e908703fa0b35',
           });
+          console.log(MMSDK)
           setTimeout(() => {
             this.provider = MMSDK.getProvider();
             if (this.provider) {
@@ -166,7 +168,8 @@ export class Web3Service {
               }
           }, 0);
         }
-        else if(selectedWallet === 'TrustWallet') { // TrustWallet
+
+        else if(selectedWallet === 'TrustWallet') {     // TrustWallet
           this.provider = window.trustWallet
           await this.provider.request({ method: 'eth_requestAccounts'});
           this.web3 = new Web3(this.provider)

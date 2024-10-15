@@ -39,4 +39,18 @@ export class ModalWallet implements OnInit {
     this.web3Service.connectWallet(wallet);
   }
 
+  addSpaceBeforeW(input: string): string {
+    return input.replace(/([a-zA-Z])W/g, '$1 W');
+  }
+
+  onMouseDown() {
+    const walletDiv = document.querySelector('.list-wallet');
+    walletDiv?.classList.add('active');
+  }
+
+  onMouseUp() {
+    const walletDiv = document.querySelector('.list-wallet');
+    walletDiv?.classList.remove('active');
+  }
+
 }

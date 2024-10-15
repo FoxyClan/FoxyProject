@@ -40,15 +40,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.web3Service.walletAddress$
     ]).subscribe(([isConnected, walletAddress]) => {
       this.isConnected = isConnected;
-
       if(walletAddress) {
         const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
         this.walletAddress = checksumAddress;
       }
-
       if (typeof document !== 'undefined') {
         const button = document.getElementById("walletAddressButton");
         if(button) button.textContent = (this.walletAddress.substring(0, 6) + '...' + this.walletAddress.substring(38));
+      }
+      if(isConnected) {
+        this.showWallet = false;
       }
     });
   }
