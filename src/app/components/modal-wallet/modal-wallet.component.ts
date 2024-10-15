@@ -43,14 +43,4 @@ export class ModalWallet implements OnInit {
     return input.replace(/([a-zA-Z])W/g, '$1 W');
   }
 
-  onMouseDown() {
-    const walletDiv = document.querySelector('.list-wallet');
-    walletDiv?.classList.add('active');
-  }
-
-  onMouseUp() {
-    const walletDiv = document.querySelector('.list-wallet');
-    walletDiv?.classList.remove('active');
-  }
-
 }
