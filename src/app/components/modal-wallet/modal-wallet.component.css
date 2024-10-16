@@ -37,7 +37,7 @@ a {
     position: absolute;
     display: grid;
     grid-template-rows: 10% 90%;
-    grid-template-columns: 40% 60%;
+    grid-template-columns: 30% 70%;
 }
 
 .header {
@@ -72,6 +72,7 @@ a {
     font-weight: 100;
     font-size: 14px;
     height: 30px;
+    display: block;
 }
 
 .no-wallet {
@@ -118,7 +119,12 @@ a {
     overflow-x: hidden;
 }
 
+.wallet-details .titles {
+    text-align: center !important;
+}
+
 .doc {
+    text-align: justify;
     padding-top: 10px;
     margin-bottom: 10px;
     font-weight: 100;
@@ -138,7 +144,7 @@ a {
     border: none;
     font-family: "Orbitron", sans-serif;
     font-size: 12px;
-    margin: 10px auto 5px auto;
+    margin: 15px auto 5px auto;
 }
 
 .more {
