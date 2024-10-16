@@ -29,6 +29,7 @@ export class Web3Service {
 
   private intervalId: any;
   private provider: any = null;
+  private iMetaMask: number = 0;
 
 
   constructor() {
@@ -97,6 +98,7 @@ export class Web3Service {
   async connectWallet(selectedWallet: string) {
     if(selectedWallet === '' || typeof selectedWallet !== 'string' || !this.installedWalletsSubject.value.includes(selectedWallet)) {
       console.error('Selected wallet is not installed or null');
+      this.iMetaMask = 0;
       return
     }
     else if (typeof window !== 'undefined') {
@@ -134,6 +136,14 @@ export class Web3Service {
             infuraAPIKey: '16c76dc3448e4b96a41e908703fa0b35',
           });
           setTimeout(() => {
+            if(this.iMetaMask === 0) {
+              if(MMSDK.isInitialized() === false) {
+                this.iMetaMask++;
+                this.connectWallet("MetaMask");
+                return
+              }
+            }
+            this.iMetaMask = 0;
             this.provider = MMSDK.getProvider();
             if (this.provider) {
               this.provider.request({ method: "eth_requestAccounts", params: [] })
@@ -186,6 +196,7 @@ export class Web3Service {
           console.error('Unistalled Wallet');
         }
       } catch (error) {
+        this.iMetaMask = 0;
         console.error('Error connecting to wallet', error);
       }
     } else {
