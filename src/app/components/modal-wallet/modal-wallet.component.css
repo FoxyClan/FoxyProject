@@ -119,8 +119,8 @@ a {
 }
 
 .doc {
-    padding-top: 5px;
-    margin-bottom: 5px;
+    padding-top: 10px;
+    margin-bottom: 10px;
     font-weight: 100;
     font-size: 13px;
     color: rgba(255, 255, 255, 0.804);
@@ -131,7 +131,7 @@ a {
     background-color: black;
     border-radius: 35px;
     color: white;
-    padding: 10px;
+    padding: 10px 15px 10px 15px;
     display: flex;
     justify-content: center;
     align-items: center;
