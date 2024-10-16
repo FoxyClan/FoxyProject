@@ -41,7 +41,7 @@ li {
     position: absolute;
     display: grid;
     grid-template-rows: 10% 90%;
-    grid-template-columns: 30% 70%;
+    grid-template-columns: 33% 67%;
 }
 
 .header {
@@ -90,7 +90,7 @@ li {
     flex-direction: row;
     gap: 10px;
     cursor: pointer;
-    padding: 5px 10px 5px 10px;
+    padding: 5px;
     align-items: center;
     transition: transform 0.1s ease;
 }
