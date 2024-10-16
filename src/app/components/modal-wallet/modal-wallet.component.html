@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <div class="wallet-details">
+        <div class="wallet-details" *ngIf="!showInstallAll">
           <span class="titles">Qu'est-ce qu'un portefeuille ?</span>
           <p class="doc">
             Un portefeuille crypto (wallet) est une application ou une extension de navigateur qui vous permet de gérer vos
@@ -45,8 +45,19 @@
             <li><strong>3. Créer un compte :</strong> Après l'installation, vous devrez créer un compte et sécuriser votre portefeuille avec une phrase secrète (seed phrase).</li>
           </ul>
 
-          <button class="btn-Install-Wallet">Obtenir un portefeuille</button>
+          <button class="btn-Install-Wallet" (click)="showInstallWallet()">Obtenir un portefeuille</button>
           <a href="https://learn.rainbow.me/understanding-web3?utm_source=rainbowkit&utm_campaign=learnmore" target="_blank" class="more">En savoir plus</a>
+        </div>
+
+        <div *ngIf="showInstallAll" class="wallet-details">
+          <div class="installation-wallet">
+            <div class="installation-div1">
+
+            </div>
+            <div class="installation-div2">
+
+            </div>
+          </div>
         </div>
     </div>
 </div>

@@ -15,6 +15,7 @@ export class ModalWallet implements OnInit {
   public installedWallets: string[] = [];
   public allWallets: string[] = ["MetaMask", "CoinbaseWallet", "TrustWallet"];
   private subscription: Subscription;
+  showInstallAll: boolean = false;
 
   constructor(private web3Service: Web3Service) {
     this.subscription = new Subscription();
@@ -46,6 +47,10 @@ export class ModalWallet implements OnInit {
   localStorageWallet(walletName: string) {
     const selected = localStorage.getItem('selectedWallet');
     return selected && selected == walletName;
+  }
+
+  showInstallWallet() {
+    this.showInstallAll = true;
   }
 
 }
