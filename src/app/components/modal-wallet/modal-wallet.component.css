@@ -16,6 +16,10 @@ a {
     text-decoration: none;
 }
 
+li {
+    list-style-type: none;
+}
+
 .background {
     background-color: transparent;
     width: 100%;
@@ -114,13 +118,13 @@ a {
 .wallet-details {
     grid-row: 2 / 3;
     grid-column: 2 / 3;
-    padding: 3px 10px 5px 10px;
+    padding: 3px 10px 5px 20px;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 .wallet-details .titles {
-    text-align: center !important;
+    text-align: center;
 }
 
 .doc {
