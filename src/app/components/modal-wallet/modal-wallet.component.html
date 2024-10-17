@@ -3,7 +3,7 @@
 
         <div class="header">
             <h4>Connecter un portefeuille</h4>
-            <img src="close.png" alt="" (click)="closeModal()">
+            <img src="close.png" alt="close" (click)="closeModal()">
         </div>
 
         <div class="wallet">
@@ -28,7 +28,8 @@
             </div>
         </div>
 
-        <div class="wallet-details" *ngIf="!showInstallAll">
+
+        <div class="wallet-details" *ngIf="showHome">
           <span class="titles">Qu'est-ce qu'un portefeuille ?</span>
           <p class="doc">
             Un portefeuille crypto (wallet) est une application ou une extension de navigateur qui vous permet de gérer vos
@@ -45,13 +46,34 @@
             <li><strong>3. Créer un compte :</strong> Après l'installation, vous devrez créer un compte et sécuriser votre portefeuille avec une phrase secrète (seed phrase).</li>
           </ul>
 
-          <button class="btn-Install-Wallet" (click)="showInstallWallet()">Obtenir un portefeuille</button>
+          <button class="btn-Install-Wallet" (click)="active('showInstallAll')">Obtenir un portefeuille</button>
           <a href="https://learn.rainbow.me/understanding-web3?utm_source=rainbowkit&utm_campaign=learnmore" target="_blank" class="more">En savoir plus</a>
         </div>
 
         <div *ngIf="showInstallAll" class="wallet-details">
+          <div class="installation-wallet-all">
+            <div class="portfolio-container">
+              <img src="back.png" alt="back" (click)="active('showHome')">
+              <span>Obtenir un portefeuille :</span>   
+            </div>
+            
+            <div *ngFor="let wallet of allWallets" class="installation-wallet-div">
+              <div class="list-extension">
+                  <img src="{{ wallet }}.png" alt="{{ wallet }}">
+                  <div>
+                    <p>{{ addSpaceBeforeW(wallet) }}</p>
+                    <span>{{ walletDesciption(wallet) }}</span>   
+                  </div>
+                  
+              </div>
+              <button class="btn-Install-Extention">OBTENIR</button>
+          </div>
+          </div>
+        </div>
+
+        <div *ngIf="showInstallMetamask" class="wallet-details">
           <div class="installation-wallet">
-            <div class="installation-div1">
+            <div class="installation-div1-metamask">
 
             </div>
             <div class="installation-div2">

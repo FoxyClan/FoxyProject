@@ -15,7 +15,10 @@ export class ModalWallet implements OnInit {
   public installedWallets: string[] = [];
   public allWallets: string[] = ["MetaMask", "CoinbaseWallet", "TrustWallet"];
   private subscription: Subscription;
+
+  showHome: boolean = true;
   showInstallAll: boolean = false;
+  showInstallMetamask: boolean = false;
 
   constructor(private web3Service: Web3Service) {
     this.subscription = new Subscription();
@@ -49,8 +52,35 @@ export class ModalWallet implements OnInit {
     return selected && selected == walletName;
   }
 
-  showInstallWallet() {
-    this.showInstallAll = true;
+  walletDesciption(wallet: string) {
+    if(wallet == null) return
+    switch(wallet) {
+      case "MetaMask" : return "Wallet pour navigateur le plus utilisé" 
+      case "CoinbaseWallet" : return "Wallet lié à Coinbase"
+      case "TrustWallet" : return "Wallet pour mobile et navigateur"
+      default: return
+    }
+  }
+
+  active(activeSlide: string) {
+    this.showHome = false;
+    this.showInstallAll = false;
+    this.showInstallMetamask = false;
+
+    switch (activeSlide) {
+      case 'showHome':
+          this.showHome = true;
+          break;
+      case 'showInstallAll':
+          this.showInstallAll = true;
+          break;
+      case 'showInstallMetamask':
+          this.showInstallMetamask = true;
+          break;
+      default:
+          console.warn(`Aucun cas géré pour: ${activeSlide}`);
+          break;
+    }
   }
 
 }

@@ -169,7 +169,78 @@ li {
     gap: 10px;
 }
 
-.installation-div1 {
+.installation-wallet-all {
+    width: 100%;
+    height: 100%;
+}
+
+.installation-wallet-div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+.list-extension {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 5px;
+    align-items: center;
+    transition: transform 0.1s ease;
+}
+
+.list-extension img {
+    width: 50px;
+    height: 50px;
+}
+
+.list-extension p {
+    font-size: 20px;
+}
+
+.list-extension span {
+    font-size: 10px;
+    color: #fed3538c;
+    vertical-align: top;
+    display: inline-block;
+}
+
+.btn-Install-Extention {
+    background-color: black;
+    border-radius: 35px;
+    color: white;
+    padding: 10px 20px 10px 20px;
+    border: none;
+    font-family: "Orbitron", sans-serif;
+    font-size: 12px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.portfolio-container {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.portfolio-container img {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.portfolio-container span {
+    justify-content: center;
+}
+
+
+.installation-div1-metamask {
     grid-row: 1 / 2;
     border-radius: 20px;
     background-color: red;
@@ -177,7 +248,7 @@ li {
     height: 100%;
 }
 
-.installation-div2 {
+.installation-div2-metamask {
     grid-row: 2 / 3;
     border-radius: 20px;
     background-color: blue;
