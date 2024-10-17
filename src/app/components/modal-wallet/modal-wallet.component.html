@@ -1,7 +1,6 @@
 <div class="background" (click)="closeModal()">
-  <div class="border-container">
-    <div class="container" (click)="stopEvent($event)">
-
+  <div class="border-container" (click)="stopEvent($event)">
+    <div class="container">
         <div class="header">
             <h4>Connecter un portefeuille</h4>
             <img src="close.png" alt="close" (click)="closeModal()">
@@ -17,7 +16,6 @@
                       <p>{{ addSpaceBeforeW(wallet) }}</p>
                       <p *ngIf="localStorageWallet(wallet)" class="recent">Récent</p>
                     </div>
-                    
                 </div>
             </div>
             <p *ngIf="installedWallets.length < 3" class="titles">Plus</p>
@@ -30,14 +28,15 @@
         </div>
 
 
-        <div class="wallet-details" *ngIf="showHome">
+        <!-- HOME -->
+        <div *ngIf="showHome" class="wallet-details">
           <span class="titles">Qu'est-ce qu'un portefeuille ?</span>
           <p class="doc">
             Un portefeuille crypto (wallet) est une application ou une extension de navigateur qui vous permet de gérer vos
             cryptomonnaies et vos actifs numériques comme les NFT. Il vous permet d'envoyer, de recevoir et de stocker des
             tokens en toute sécurité.
           </p>
-        
+
           <span class="titles">Comment installer un portefeuille ?</span>
           <ul class="doc">
             <li>
@@ -46,13 +45,16 @@
             <li><strong>2. Installer l'extension ou l'application :</strong> Téléchargez l'extension pour navigateur ou l'application mobile depuis les stores officiels.</li>
             <li><strong>3. Créer un compte :</strong> Après l'installation, vous devrez créer un compte et sécuriser votre portefeuille avec une phrase secrète (seed phrase).</li>
           </ul>
-
           <button class="btn-Install-Wallet" (click)="active('showInstallAll')">Obtenir un portefeuille</button>
           <a href="https://learn.rainbow.me/understanding-web3?utm_source=rainbowkit&utm_campaign=learnmore" target="_blank" class="more">En savoir plus</a>
         </div>
 
+
+
+        <!-- INSTALL ALL WALLET -->
         <div *ngIf="showInstallAll" class="wallet-details">
           <div class="installation-wallet-all">
+
             <div class="portfolio-container">
               <img src="back.png" alt="back" (click)="active('showHome')">
               <span>Obtenir un portefeuille :</span>   
@@ -65,23 +67,68 @@
                     <p>{{ addSpaceBeforeW(wallet) }}</p>
                     <span>{{ walletDesciption(wallet) }}</span>   
                   </div>
-                  
               </div>
-              <button class="btn-Install-Extention">OBTENIR</button>
+              <button class="btn-Install-Extention" (click)="active(wallet)">OBTENIR</button>
           </div>
           </div>
         </div>
 
+
+
+        <!-- INSTALL METAMASK -->
         <div *ngIf="showInstallMetamask" class="wallet-details">
+
+          <div class="portfolio-container">
+            <img src="back.png" alt="back" (click)="active('showInstallAll')">
+            <span>Obtenir MetaMask :</span>   
+          </div>
+          
           <div class="installation-wallet">
-            <div class="installation-div1-metamask">
-
+            <!-- Chrome -->
+            <div class="installation-div1-metamask installation-wallet-box">
+              <div>
+                <img src="chrome.png" alt="chrome">
+                <p>Chrome<br>
+                  <span>Extention web MetaMask</span>
+                </p>
+              </div>
+              <a class="btn-Install" href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn" target="_blank">Ajouter à Chrome</a>
             </div>
-            <div class="installation-div2">
-
+            <!-- Firefox -->
+            <div class="installation-div2-metamask installation-wallet-box">
+              <div>
+                <img src="firefox.png" alt="Firefox">
+                <p>Firefox<br>
+                  <span>Extention web Firefox</span>
+                </p>
+              </div>
+              <a class="btn-Install" href="https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/" target="_blank">Ajouter à Firefox</a>
             </div>
+            <!-- Opera -->
+            <div class="installation-div3-metamask installation-wallet-box">
+              <div>
+                <img src="opera.png" alt="Opera">
+                <p>Opera<br>
+                  <span>Extention web Opera</span>
+                </p>
+              </div>
+              <a class="btn-Install" href="https://addons.opera.com/en-gb/extensions/details/metamask-10/" target="_blank">Ajouter à Opera</a>
+            </div>
+            <!-- AppStore -->
+            <div class="installation-div4-metamask installation-wallet-box">
+              <div>
+                <img src="AppStore.png" alt="AppStore">
+                <p>AppStore<br>
+                  <span>Application mobile</span>
+                </p>
+              </div>
+              <a class="btn-Install" href="https://apps.apple.com/us/app/metamask-blockchain-wallet/id1438144202" target="_blank">Obtenir l'application</a>
+            </div>
+
           </div>
         </div>
+
+
     </div>
   </div>
 </div>

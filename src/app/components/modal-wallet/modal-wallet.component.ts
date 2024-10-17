@@ -19,6 +19,8 @@ export class ModalWallet implements OnInit {
   showHome: boolean = true;
   showInstallAll: boolean = false;
   showInstallMetamask: boolean = false;
+  showInstallTrust: boolean = false;
+  showInstallCoinbase: boolean = false;
 
   constructor(private web3Service: Web3Service) {
     this.subscription = new Subscription();
@@ -66,19 +68,28 @@ export class ModalWallet implements OnInit {
     this.showHome = false;
     this.showInstallAll = false;
     this.showInstallMetamask = false;
+    this.showInstallCoinbase = false;
+    this.showInstallTrust = false;
 
-    switch (activeSlide) {
+    switch(activeSlide) {
       case 'showHome':
           this.showHome = true;
           break;
       case 'showInstallAll':
           this.showInstallAll = true;
           break;
-      case 'showInstallMetamask':
+      case 'MetaMask':
           this.showInstallMetamask = true;
           break;
+      case 'Coinbase Wallet':
+          this.showInstallCoinbase = true;
+          break;
+      case 'Trust Wallet':
+          this.showInstallTrust = true;
+          break;
       default:
-          console.warn(`Aucun cas géré pour: ${activeSlide}`);
+          console.warn('Aucun cas géré pour: ' + activeSlide);
+          this.showHome = true;
           break;
     }
   }
