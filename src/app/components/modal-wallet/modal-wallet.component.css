@@ -29,16 +29,26 @@ li {
     display: flex;
 }
 
+.border-container {
+    height: 56%;
+    width: 46%;
+    background: linear-gradient(to right, #d742f8, #420c63);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+}
+
 .container {
     font-family: "Orbitron", sans-serif;
     font-weight: 400;
     color: white;
-    width: 45%;
-    height: 55%;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
     border-radius: 10px;
     padding: 15px;
     background: rgb(29,35,55);
-    position: absolute;
     display: grid;
     grid-template-rows: 10% 90%;
     grid-template-columns: 33% 67%;
@@ -231,7 +241,7 @@ li {
     cursor: pointer;
     position: absolute;
     left: 0;
-    top: 50%;
+    top: 60%;
     transform: translateY(-50%);
 }
 
