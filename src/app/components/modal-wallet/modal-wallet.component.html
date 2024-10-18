@@ -86,43 +86,119 @@
           <div class="installation-wallet">
             <!-- Chrome -->
             <div class="installation-div1-metamask installation-wallet-box">
-              <div>
-                <img src="chrome.png" alt="chrome">
-                <p>Chrome<br>
-                  <span>Extention web MetaMask</span>
-                </p>
+              <img src="chrome.png" alt="chrome" class="img-box">
+              <p>Chrome<br>
+                <span>Extention web</span>
+              </p>
+              <div class="btn-install-div">
+                <a class="btn-Install" href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn" target="_blank">Ajouter à Chrome</a>
               </div>
-              <a class="btn-Install" href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn" target="_blank">Ajouter à Chrome</a>
             </div>
             <!-- Firefox -->
             <div class="installation-div2-metamask installation-wallet-box">
-              <div>
-                <img src="firefox.png" alt="Firefox">
-                <p>Firefox<br>
-                  <span>Extention web Firefox</span>
-                </p>
+              <img src="firefox.png" alt="Firefox" class="img-box">
+              <p>Firefox<br>
+                <span>Extention web</span>
+              </p>
+              <div class="btn-install-div">
+                <a class="btn-Install" href="https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/" target="_blank">Ajouter à Firefox</a>
               </div>
-              <a class="btn-Install" href="https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/" target="_blank">Ajouter à Firefox</a>
             </div>
             <!-- Opera -->
             <div class="installation-div3-metamask installation-wallet-box">
-              <div>
-                <img src="opera.png" alt="Opera">
-                <p>Opera<br>
-                  <span>Extention web Opera</span>
-                </p>
+              <img src="opera.png" alt="Opera" class="img-box">
+              <p>Opera<br>
+                <span>Extention web</span>
+              </p>
+              <div class="btn-install-div">
+                <a class="btn-Install" href="https://addons.opera.com/en-gb/extensions/details/metamask-10/" target="_blank">Ajouter à Opera</a>
               </div>
-              <a class="btn-Install" href="https://addons.opera.com/en-gb/extensions/details/metamask-10/" target="_blank">Ajouter à Opera</a>
             </div>
             <!-- AppStore -->
             <div class="installation-div4-metamask installation-wallet-box">
-              <div>
-                <img src="AppStore.png" alt="AppStore">
-                <p>AppStore<br>
-                  <span>Application mobile</span>
-                </p>
+              <img src="AppStore.png" alt="AppStore" class="img-box">
+              <p>AppStore<br>
+                <span>Application mobile</span>
+              </p>
+              <div class="btn-install-div">
+                <a class="btn-Install" href="https://apps.apple.com/us/app/metamask-blockchain-wallet/id1438144202" target="_blank">Obtenir l'application</a>
               </div>
-              <a class="btn-Install" href="https://apps.apple.com/us/app/metamask-blockchain-wallet/id1438144202" target="_blank">Obtenir l'application</a>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- INSTALL COINBASE -->
+        <div *ngIf="showInstallCoinbase" class="wallet-details">
+
+          <div class="portfolio-container">
+            <img src="back.png" alt="back" (click)="active('showInstallAll')">
+            <span>Obtenir Coinbase Wallet :</span>   
+          </div>
+          
+          <div class="installation-wallet">
+            <!-- Chrome / Edge / Opera -->
+            <div class="installation-div1-coinbase installation-wallet-box-coinbase">
+              <div class="logo-div">
+                <img src="chrome.png" alt="chrome" class="logo chrome">
+                <img src="edge.png" alt="edge" class="logo edge">
+                <img src="opera.png" alt="opera" class="logo opera">
+              </div>
+              
+              <p>Navigateurs<br>
+                <span>Extention web compatible avec ces trois navigateurs</span>
+              </p>
+              <div class="btn-install-div-coinbase">
+                <a class="btn-Install" href="https://chromewebstore.google.com/detail/coinbase-wallet-extension/hnfanknocfeofbddgcijnmhnfnkdnaad?hl" target="_blank">Ajouter au navigateur</a>
+              </div>
+            </div>
+            <!-- AppStore -->
+            <div class="installation-div2-coinbase installation-wallet-box-coinbase">
+              <img src="AppStore.png" alt="AppStore" class="logo-appstore">
+              <p>AppStore<br>
+                <span>Application mobile</span>
+              </p>
+              <div class="btn-install-div-coinbase">
+                <a class="btn-Install" href="https://apps.apple.com/us/app/coinbase-wallet-nfts-crypto/id1278383455" target="_blank">Obtenir l'application</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- INSTALL TRUST WALLET -->
+        <div *ngIf="showInstallTrust" class="wallet-details">
+
+          <div class="portfolio-container">
+            <img src="back.png" alt="back" (click)="active('showInstallAll')">
+            <span>Obtenir Trust Wallet :</span>   
+          </div>
+          
+          <div class="installation-wallet">
+            <!-- Chrome -->
+            <div class="installation-div1-coinbase installation-wallet-box-coinbase">
+              <div class="logo-div">
+                <img src="chrome.png" alt="chrome" class="logo chrome">
+                <img src="edge.png" alt="edge" class="logo edge">
+                <img src="opera.png" alt="opera" class="logo opera">
+              </div>
+              
+              <p>Navigateurs<br>
+                <span>Extention web compatible avec ces trois navigateurs</span>
+              </p>
+              <div class="btn-install-div-coinbase">
+                <a class="btn-Install" href="https://chromewebstore.google.com/detail/trust-wallet/egjidjbpglichdcondbcbdnbeeppgdph?hl" target="_blank">Ajouter au navigateur</a>
+              </div>
+            </div>
+            <!-- AppStore -->
+            <div class="installation-div2-coinbase installation-wallet-box-coinbase">
+              <img src="AppStore.png" alt="AppStore" class="logo-appstore">
+              <p>AppStore<br>
+                <span>Application mobile</span>
+              </p>
+              <div class="btn-install-div-coinbase">
+                <a class="btn-Install" href="https://apps.apple.com/fr/app/trust-wallet-bitcoin-crypto/id1288339409" target="_blank">Obtenir l'application</a>
+              </div>
             </div>
 
           </div>

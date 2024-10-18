@@ -81,10 +81,10 @@ export class ModalWallet implements OnInit {
       case 'MetaMask':
           this.showInstallMetamask = true;
           break;
-      case 'Coinbase Wallet':
+      case 'CoinbaseWallet':
           this.showInstallCoinbase = true;
           break;
-      case 'Trust Wallet':
+      case 'TrustWallet':
           this.showInstallTrust = true;
           break;
       default:
