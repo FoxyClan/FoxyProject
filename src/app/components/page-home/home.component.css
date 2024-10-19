@@ -1,8 +1,9 @@
 .home {
     height: 100vh;
     width: 100%;
-    background-image: url('../../../../public/backgroung2.jpg');
+    background-image: url('../../../../public/background5.jpg');
     background-size: cover;
     justify-content: center;
     align-items: center;
 }
+
