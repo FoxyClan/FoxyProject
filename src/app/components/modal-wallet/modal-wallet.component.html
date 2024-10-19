@@ -1,4 +1,4 @@
-<div class="background" (click)="closeModal()">
+<div class="background" [class.active]="isAnimated" (click)="closeModal()">
   <div class="border-container" (click)="stopEvent($event)">
     <div class="container">
         <div class="header">

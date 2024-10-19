@@ -71,11 +71,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   showWalletModal() {
     this.showWallet = true;
+    setTimeout(() => {
+      this.modalWallet.showModal();
+    }, 0);
   }
 
   closeModal() {
     this.showAccount = false;
     this.showWallet = false;
   }
+
 
 }

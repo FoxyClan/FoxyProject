@@ -1,6 +1,6 @@
 <div class="background" [class.active]="isAnimated" (click)="closeModal()">
-    <div class="border-container" [class.active]="isAnimated">
-        <div class="panel" (click)="stopEvent($event)">
+    <div class="border-container" [class.active]="isAnimated" (click)="stopEvent($event)">
+        <div class="panel">
             <div class="block1">
                 <div>
                     <h3>{{ walletAddress.substring(0, 6) + '...' + walletAddress.substring(38) }}</h3>

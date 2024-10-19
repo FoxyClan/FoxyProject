@@ -2,6 +2,7 @@ import { Component, Output, OnInit, EventEmitter } from '@angular/core';
 import { Web3Service } from "../../services/web3.service";
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { log } from 'node:console';
 
 @Component({
   selector: 'app-modal-wallet',
@@ -16,6 +17,7 @@ export class ModalWallet implements OnInit {
   public allWallets: string[] = ["MetaMask", "CoinbaseWallet", "TrustWallet"];
   private subscription: Subscription;
 
+  isAnimated: boolean = false;
   showHome: boolean = true;
   showInstallAll: boolean = false;
   showInstallMetamask: boolean = false;
@@ -32,8 +34,14 @@ export class ModalWallet implements OnInit {
       this.installedWallets = installedWallets;
     });
   }
+
+  showModal() {
+    this.isAnimated = true;
+    console.log(this.isAnimated)
+  }
   
   closeModal() {
+    this.isAnimated = false;
     this.close.emit();
   }
 
