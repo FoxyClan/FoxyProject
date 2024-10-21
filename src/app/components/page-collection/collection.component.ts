@@ -25,13 +25,13 @@ export class CollectionComponent implements OnInit {
       });
   }
 
-  ngOnInit() {
+  ngOnInit() {/*
     this.getMessage();
     const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
     web3.eth.getAccounts().then(allAccounts => {
       this.addresses = allAccounts;
       this.adr = this.addresses[0];
-    });/*
+    });
     let contract = new web3.eth.Contract([
       {
         "inputs": [
