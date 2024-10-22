@@ -5,6 +5,10 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;}
 
+ul {
+    list-style: none;
+}
+
 ::-webkit-scrollbar {
     width: 8px;
     background: black;

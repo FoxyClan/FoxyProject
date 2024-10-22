@@ -1,3 +1,5 @@
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HomeComponent } from '../components/page-home/home.component';
@@ -8,6 +10,7 @@ import { HeaderComponent } from '../components/header/header.component';
   selector: 'app-root',
   standalone: true,
   imports: [
+    FormsModule,
     RouterOutlet,
     HomeComponent,
     HeaderComponent,

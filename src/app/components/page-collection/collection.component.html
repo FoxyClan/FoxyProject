@@ -1,4 +1,72 @@
 <section class="collection">
+    <div class="container">
+        <div class="container-block1">
+            <div class="title-block">
+                <h1>FOXY</h1>
+                <p>The 20,000 red pandas, each unique and generated from more than 80 possible traits.</p>
+            </div>
+            <div class="details-block">
+                <details>
+                    <summary class="trait">HEAD COVERING <img src="'../../../../public/arrow-down.png'" alt=""></summary>
+                    <ul class="list-trait">
+                        <li *ngFor="let option of mouthOptions">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}"> <!-- [(ngModel)]="option.selected" (change)="fonction()"-->
+                          <label for="{{ option.name }}">{{ option.name }}</label>
+                        </li>
+                    </ul>
+                </details>
 
+                <details>
+                    <summary>EYES</summary>
+                    <input type="checkbox" name="gold" id="gold">
+                    <label for="gold">Gold</label>
+
+                    <input type="checkbox" name="green" id="green">
+                    <label for="gold">Green</label>
+                </details>
+
+                <details>
+                    <summary>MOUTH</summary>
+                    <input type="checkbox" name="gold" id="gold">
+                    <label for="gold">Gold</label>
+
+                    <input type="checkbox" name="green" id="green">
+                    <label for="gold">Green</label>
+                </details>
+
+                <details>
+                    <summary>FUR</summary>
+                    <input type="checkbox" name="gold" id="gold">
+                    <label for="gold">Gold</label>
+
+                    <input type="checkbox" name="green" id="green">
+                    <label for="gold">Green</label>
+                </details>
+
+                <details>
+                    <summary>CLOTHES</summary>
+                    <input type="checkbox" name="gold" id="gold">
+                    <label for="gold">Gold</label>
+
+                    <input type="checkbox" name="green" id="green">
+                    <label for="gold">Green</label>
+                </details>
+
+                <details>
+                    <summary>BACKGROUND</summary>
+                    <input type="checkbox" name="gold" id="gold">
+                    <label for="gold">Gold</label>
+
+                    <input type="checkbox" name="green" id="green">
+                    <label for="gold">Green</label>
+                </details>
+            </div>
+        </div>
+
+
+        <div class="container-block2">
+            
+        </div>
+    </div>
 </section>
 

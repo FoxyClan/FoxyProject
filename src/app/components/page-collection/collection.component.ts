@@ -1,8 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import Web3 from 'web3';
 import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+
+interface MouthOption {
+  name: string;
+  selected: boolean;
+}
 
 @Component({
   selector: 'app-collection',
@@ -16,6 +22,32 @@ export class CollectionComponent implements OnInit {
   adr: string = "";
   msg: string = "";
 
+  myValue: string = '';
+  
+
+  mouthOptions: MouthOption[] = [
+    { name: 'Petite bouche', selected: false },
+    { name: 'Grande bouche', selected: false },
+    { name: 'Petite bouche', selected: false },
+    { name: 'Grande bouche', selected: false },
+    { name: 'Petite bouche', selected: false },
+    { name: 'Grande bouche', selected: false },
+    { name: 'Petite bouche', selected: false },
+    { name: 'Grande bouche', selected: false },
+    { name: 'Petite bouche', selected: false },
+    { name: 'Grande bouche', selected: false },
+    { name: 'Petite bouche', selected: false },
+    { name: 'Grande bouche', selected: false },
+    { name: 'Petite bouche', selected: false },
+    { name: 'Grande bouche', selected: false },
+    { name: 'Petite bouche', selected: false },
+    { name: 'Grande bouche', selected: false },
+    { name: 'Petite bouche', selected: false },
+    { name: 'Grande bouche', selected: false },
+    { name: 'Petite bouche', selected: false },
+    { name: 'Grande bouche', selected: false },
+  ];
+
   constructor(private http: HttpClient) {}
 
   getMessage(): any {
@@ -24,6 +56,7 @@ export class CollectionComponent implements OnInit {
         this.msg = 'Message reçu :' + data;
       });
   }
+  
 
   ngOnInit() {/*
     this.getMessage();
