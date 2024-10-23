@@ -23,19 +23,11 @@ export class CollectionComponent implements OnInit {
   msg: string = "";
 
   myValue: string = '';
+  traits: string[] = ['HEAD COVERING', 'EYES', 'MOUTH', 'CLOTHES', 'FUR', 'BACKGROUND'];
+  isTraitOpen: boolean[] = [];
   
 
   mouthOptions: MouthOption[] = [
-    { name: 'Petite bouche', selected: false },
-    { name: 'Grande bouche', selected: false },
-    { name: 'Petite bouche', selected: false },
-    { name: 'Grande bouche', selected: false },
-    { name: 'Petite bouche', selected: false },
-    { name: 'Grande bouche', selected: false },
-    { name: 'Petite bouche', selected: false },
-    { name: 'Grande bouche', selected: false },
-    { name: 'Petite bouche', selected: false },
-    { name: 'Grande bouche', selected: false },
     { name: 'Petite bouche', selected: false },
     { name: 'Grande bouche', selected: false },
     { name: 'Petite bouche', selected: false },
@@ -56,9 +48,15 @@ export class CollectionComponent implements OnInit {
         this.msg = 'Message reçu :' + data;
       });
   }
+
+  toggleTrait(index: number) {
+    this.isTraitOpen[index] = !this.isTraitOpen[index]; // Inverser l'état ouvert/fermé
+  }
   
 
-  ngOnInit() {/*
+  ngOnInit() {
+    this.isTraitOpen = new Array(this.traits.length).fill(false);
+    /*
     this.getMessage();
     const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
     web3.eth.getAccounts().then(allAccounts => {
