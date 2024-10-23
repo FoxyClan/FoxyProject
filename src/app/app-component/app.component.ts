@@ -1,4 +1,3 @@
-import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';

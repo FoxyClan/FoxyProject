@@ -13,7 +13,7 @@
                     </div>
                     <ul class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
                         <li *ngFor="let option of mouthOptions">
-                          <input type="checkbox" class="input-option" id="{{ option.name }}"> <!-- [(ngModel)]="option.selected" (change)="fonction()"-->
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="getSelectedOptions()"> 
                           <label for="{{ option.name }}">{{ option.name }}</label>
                         </li>
                     </ul>

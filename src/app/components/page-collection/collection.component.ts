@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { FormsModule } from '@angular/forms';
 
 
 interface MouthOption {
@@ -15,28 +16,32 @@ interface MouthOption {
 @Component({
   selector: 'app-collection',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './collection.component.html',
   styleUrls: ['./collection.component.css'],
   animations: [
     trigger('slideIn', [
       state('in', style({
         height: '*',
-        opacity: 1
+        opacity: 1,
+        marginLeft: '0px',
       })),
       state('out', style({
         height: '0px',
-        opacity: 0
+        opacity: 0,
+        marginLeft: '-15px',
       })),
       transition('in => out', [
-        animate('300ms ease-in-out')
+        animate('300ms ease')
       ]),
       transition('out => in', [
-        animate('300ms ease-in-out')
+        animate('300ms ease')
       ])
     ])
   ]
 })
+
+
 export class CollectionComponent implements OnInit {
   addresses: string[] = [];
   adr: string = "";
@@ -48,31 +53,36 @@ export class CollectionComponent implements OnInit {
   
 
   mouthOptions: MouthOption[] = [
-    { name: 'Petite bouche', selected: false },
-    { name: 'Grande bouche', selected: false },
-    { name: 'Petite bouche', selected: false },
-    { name: 'Grande bouche', selected: false },
-    { name: 'Petite bouche', selected: false },
-    { name: 'Grande bouche', selected: false },
-    { name: 'Petite bouche', selected: false },
-    { name: 'Grande bouche', selected: false },
-    { name: 'Petite bouche', selected: false },
-    { name: 'Grande bouche', selected: false },
+    { name: 'Long Fangs', selected: false },
+    { name: 'Angel', selected: false }, //change
+    { name: 'Black And Gold', selected: false},
+    { name: 'Gas Mask', selected: false },
+    { name: 'Engraved Samurai Mask', selected: false },
+    { name: 'Robot Mask', selected: false },
+    { name: 'Twig', selected: false },
+    { name: 'Hate', selected: false },
+    { name: 'Smiling', selected: false },
+    { name: 'Neutral', selected: false },
+    { name: 'Tongue', selected: false },
+    { name: 'Gold Teeth', selected: false },
+    { name: 'Amazed', selected: false },
+    { name: 'Confused', selected: false },
+    { name: 'Smoking', selected: false },
+    { name: 'Happy', selected: false },
   ];
 
   constructor(private http: HttpClient) {}
 
-  getMessage(): any {
-    this.http.get('http://localhost:8081/adn', { responseType: 'text' })
-      .subscribe(data => {
-        this.msg = 'Message reçu :' + data;
-      });
-  }
-
   toggleTrait(index: number) {
     this.isTraitOpen = this.isTraitOpen.map((_, i) => i === index ? !this.isTraitOpen[i] : false);
   }
+
+  getSelectedOptions() {
+    console.log(this.mouthOptions.filter(option => option.selected));
+  }
   
+
+
 
   ngOnInit() {
     this.isTraitOpen = new Array(this.traits.length).fill(false);
@@ -113,4 +123,13 @@ export class CollectionComponent implements OnInit {
     ], '0x84607377d7aEFA15224Eb4E8Cb52fce83bD741BF');
     let toto = contract.methods['nbrFavoris']().call().then(result => {console.log(result)});*/
   }
+
+  /*
+  getMessage(): any {
+    this.http.get('http://localhost:8081/adn', { responseType: 'text' })
+      .subscribe(data => {
+        this.msg = 'Message reçu :' + data;
+      });
+  }
+  */
 }
