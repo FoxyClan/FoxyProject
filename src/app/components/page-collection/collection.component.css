@@ -96,7 +96,7 @@
 
 
 .list-trait {
-    display: none;
+    overflow: hidden;
     padding-left: 1rem;
 }
 

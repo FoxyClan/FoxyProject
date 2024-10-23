@@ -11,7 +11,7 @@
                         <p>{{ trait }}</p>
                         <img [src]="'arrow-down.png'" [class.rotated]="isTraitOpen[i]" alt="arrow icon">
                     </div>
-                    <ul class="list-trait" *ngIf="isTraitOpen[i]">
+                    <ul class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
                         <li *ngFor="let option of mouthOptions">
                           <input type="checkbox" class="input-option" id="{{ option.name }}"> <!-- [(ngModel)]="option.selected" (change)="fonction()"-->
                           <label for="{{ option.name }}">{{ option.name }}</label>

@@ -4,6 +4,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+
 
 interface MouthOption {
   name: string;
@@ -15,7 +17,25 @@ interface MouthOption {
   standalone: true,
   imports: [CommonModule, HttpClientModule],
   templateUrl: './collection.component.html',
-  styleUrls: ['./collection.component.css']
+  styleUrls: ['./collection.component.css'],
+  animations: [
+    trigger('slideIn', [
+      state('in', style({
+        height: '*',
+        opacity: 1
+      })),
+      state('out', style({
+        height: '0px',
+        opacity: 0
+      })),
+      transition('in => out', [
+        animate('300ms ease-in-out')
+      ]),
+      transition('out => in', [
+        animate('300ms ease-in-out')
+      ])
+    ])
+  ]
 })
 export class CollectionComponent implements OnInit {
   addresses: string[] = [];
@@ -50,7 +70,7 @@ export class CollectionComponent implements OnInit {
   }
 
   toggleTrait(index: number) {
-    this.isTraitOpen[index] = !this.isTraitOpen[index]; // Inverser l'état ouvert/fermé
+    this.isTraitOpen = this.isTraitOpen.map((_, i) => i === index ? !this.isTraitOpen[i] : false);
   }
   
 
