@@ -5,6 +5,13 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;}
 
+@supports (-moz-appearance: none) {
+    .custom-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #484d64 #252835;
+    }
+}
+
 ul {
     list-style: none;
 }
