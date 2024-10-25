@@ -6,12 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
+import { TraitOptionsService } from '../../services/trait-options.service'; // Import du service
 
-
-interface MouthOption {
-  name: string;
-  selected: boolean;
-}
 
 @Component({
   selector: 'app-collection',
@@ -52,33 +48,17 @@ export class CollectionComponent implements OnInit {
   isTraitOpen: boolean[] = [];
   
 
-  mouthOptions: MouthOption[] = [
-    { name: 'Long Fangs', selected: false },
-    { name: 'Angel', selected: false }, //change
-    { name: 'Black And Gold', selected: false},
-    { name: 'Gas Mask', selected: false },
-    { name: 'Engraved Samurai Mask', selected: false },
-    { name: 'Robot Mask', selected: false },
-    { name: 'Twig', selected: false },
-    { name: 'Hate', selected: false },
-    { name: 'Smiling', selected: false },
-    { name: 'Neutral', selected: false },
-    { name: 'Tongue', selected: false },
-    { name: 'Gold Teeth', selected: false },
-    { name: 'Amazed', selected: false },
-    { name: 'Confused', selected: false },
-    { name: 'Smoking', selected: false },
-    { name: 'Happy', selected: false },
-  ];
-
-  constructor(private http: HttpClient) {}
+  
+  constructor(private http: HttpClient, protected traitOptionsService: TraitOptionsService) {
+  }
 
   toggleTrait(index: number) {
     this.isTraitOpen = this.isTraitOpen.map((_, i) => i === index ? !this.isTraitOpen[i] : false);
   }
 
   getSelectedOptions() {
-    console.log(this.mouthOptions.filter(option => option.selected));
+    console.log(this.traitOptionsService.mouthOptions.filter(option => option.selected).map(option => option.name))
+    console.log(this.traitOptionsService.headCoveringOptions.filter(option => option.selected).map(option => option.name));
   }
   
 
@@ -86,6 +66,7 @@ export class CollectionComponent implements OnInit {
 
   ngOnInit() {
     this.isTraitOpen = new Array(this.traits.length).fill(false);
+    
     /*
     this.getMessage();
     const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
