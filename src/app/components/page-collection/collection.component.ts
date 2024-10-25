@@ -46,6 +46,8 @@ export class CollectionComponent implements OnInit {
   myValue: string = '';
   traits: string[] = ['HEAD COVERING', 'EYES', 'MOUTH', 'CLOTHES', 'FUR', 'BACKGROUND'];
   isTraitOpen: boolean[] = [];
+
+  numbers = Array.from({ length: 40 }, (_, i) => i + 1);
   
 
   
