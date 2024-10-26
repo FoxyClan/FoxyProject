@@ -5,6 +5,7 @@ import { HomeComponent } from '../components/page-home/home.component';
 import { CollectionComponent } from '../components/page-collection/collection.component';
 import { HeaderComponent } from '../components/header/header.component';
 
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -13,7 +14,7 @@ import { HeaderComponent } from '../components/header/header.component';
     RouterOutlet,
     HomeComponent,
     HeaderComponent,
-    CollectionComponent
+    CollectionComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']

@@ -4,6 +4,8 @@ import { ModalAccount } from "../modal-account/modal-account.component";
 import { ModalWallet } from "../modal-wallet/modal-wallet.component";
 import { Web3Service } from "../../services/web3.service";
 import { Subscription, combineLatest } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import Web3 from 'web3';
 
 
@@ -14,7 +16,9 @@ import Web3 from 'web3';
   imports: [
     CommonModule,
     ModalAccount,
-    ModalWallet
+    ModalWallet,
+    RouterOutlet,
+    RouterLink
 ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
