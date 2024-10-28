@@ -25,21 +25,15 @@ export class HomeComponent {
   @HostListener('window:touchmove', ['$event'])
   onFakeScroll(event: WheelEvent) {
     const currentScroll = event.deltaY || 0;
+    const container = this.el.nativeElement.querySelector('.container');
+    const appDetails = this.el.nativeElement.querySelector('app-details');
 
     if (currentScroll > 0) {
-      const container = this.el.nativeElement.querySelector('.container');
-      const appDetails = this.el.nativeElement.querySelector('app-details');
-      setTimeout(() => {
-        this.renderer.addClass(container, 'fly-away');
-        this.renderer.addClass(appDetails, 'show-over');
-      }, 0);
+      this.renderer.addClass(container, 'fly-away');
+      this.renderer.addClass(appDetails, 'show-over');
     } else if (currentScroll < 0) {
-      const container = this.el.nativeElement.querySelector('.container');
-      const appDetails = this.el.nativeElement.querySelector('app-details');
-      setTimeout(() => {
-        this.renderer.removeClass(container, 'fly-away');
-        this.renderer.removeClass(appDetails, 'show-over');
-      }, 0);
+      this.renderer.removeClass(container, 'fly-away');
+      this.renderer.removeClass(appDetails, 'show-over');
     }
   }
 
