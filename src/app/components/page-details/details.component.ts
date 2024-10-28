@@ -1,13 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [],
   templateUrl: './details.component.html',
-  styleUrl: './details.component.css'
+  styleUrls: ['./details.component.css']
 })
-
 export class DetailsComponent {
+  @Output() scrollToTop = new EventEmitter();
 
+  @HostListener('window:scroll', ['$event'])
+  @HostListener('window:wheel', ['$event'])
+  @HostListener('window:touchmove', ['$event'])
+onWindowScroll() {
+  const rootElement = document.documentElement;
+  if (rootElement.scrollTop === 0) {
+    this.scrollToTop.emit();
+  }
 }
+
+  
+}
+
