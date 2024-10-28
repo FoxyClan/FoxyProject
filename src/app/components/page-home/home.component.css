@@ -4,7 +4,10 @@
     background-image: url('../../../../public/background1.jpg');
     background-size: cover;
     font-family: "Orbitron", sans-serif;
+    overflow: hidden;
 }
+
+
 
 .home::after {
     content: '';
@@ -26,6 +29,32 @@
     display: flex;
     flex-direction: column;
     padding-top: 20vh;
+    transition: transform 0.3s ease-out;
+    position: relative;
+    z-index: 1;
+}
+
+app-details {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.show-over {
+    opacity: 1;
+}
+
+.fly-away {
+    transform: translateY(-100vh);
+}
+
+.fly-back {
+    transform: translateY(0);
 }
 
 .block1 {

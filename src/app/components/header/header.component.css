@@ -1,4 +1,5 @@
 header {
+    z-index: 10000;
     background: transparent;
     color: white;
     align-items: center;
