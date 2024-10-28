@@ -137,6 +137,8 @@ li {
 }
 
 .wallet-details {
+    display: flex;
+    flex-direction: column;
     grid-row: 2 / 3;
     grid-column: 2 / 3;
     padding: 3px 10px 5px 20px;
@@ -156,6 +158,14 @@ li {
     font-size: 13px;
     color: rgba(255, 255, 255, 0.804);
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.home-button-block {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .btn-Install-Wallet {
