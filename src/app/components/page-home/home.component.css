@@ -6,9 +6,8 @@
     font-family: "Orbitron", sans-serif;
     overflow: auto;
     position: fixed;
+    z-index: 2;
 }
-
-
 
 .home::after {
     content: '';
@@ -43,19 +42,25 @@ app-details {
     height: 100vh;
     z-index: 1;
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.5s ease-in-out;
 }
 
-.show-over {
-    opacity: 1;
+.index3 {
+    z-index: 3 !important;
+}
+
+.index1 {
+    z-index: 1 !important;
 }
 
 .fly-away {
     transform: translateY(-100vh);
+    transition: transform 0.3s ease-out;
 }
 
-.fly-back {
-    transform: translateY(0);
+.show-over {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .block1 {

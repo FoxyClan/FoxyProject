@@ -6,7 +6,7 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;}
 
 @supports (-moz-appearance: none) {
-    .custom-scroll {
+    * {
         scrollbar-width: thin;
         scrollbar-color: #484d64 #252835;
     }
@@ -16,17 +16,17 @@ ul {
     list-style: none;
 }
 
-::-webkit-scrollbar {
+*::-webkit-scrollbar {
     width: 8px;
     background: black;
 }
 
-::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
     background: #252835;
     border-radius: 20px;
 }
 
-::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
     background: #484d64;
     border-radius: 20px;
 }
