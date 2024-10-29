@@ -1,15 +1,20 @@
 .details {
     width: 100%;
     height: 300vh;
-    background: linear-gradient(to bottom, #010204, #32a6bae4);
+    background: url("../../../../public/test.jpg");
+    background-size: cover;
+    background-position: center;
     font-family: "Orbitron", sans-serif;
     color: white;
     box-sizing: border-box;
+    font-weight: 100;
 }
 
+
 .block1 {
-    padding-top: 20vh;
-    height: 80vh;
+    padding-top: 30vh;
+    height: 270vh;
+    background-color: rgba(0, 0, 0, 0.465);
     width: 100%;
     display: flex;
     align-items: center;
@@ -17,12 +22,73 @@
 }
 
 .block1-1 {
-    width: 50%;
+    width: 70%;
+    height: 100%;
     transition: transform 0.3s ease-out;
     position: relative;
     transform: translateY(100vh);
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
 }
 
 .fly-away {
     transform: translateY(0);
 }
+
+.block-1-grid-1 {
+    display: grid;
+    grid-template-columns: 30% 70%;
+}
+
+.block-1-grid-2 {
+    display: grid;
+    grid-template-columns: 70% 30%;
+}
+
+.block-1-grid-3 {
+    display: grid;
+    grid-template-columns: 60% 40%;
+}
+
+.block-1-grid-4 {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.block-1-grid-4 {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.block1-right {
+    padding: 5%;
+    position: relative;
+    grid-column: 2 / 3;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+
+.block1-left {
+    padding: 5%;
+    position: relative;
+    grid-column: 1 / 2;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
