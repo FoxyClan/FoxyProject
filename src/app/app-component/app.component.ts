@@ -2,6 +2,7 @@ import { FormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HomeComponent } from '../components/page-home/home.component';
+import { MintComponent } from '../components/page-mint/mint.component';
 import { CollectionComponent } from '../components/page-collection/collection.component';
 import { HeaderComponent } from '../components/header/header.component';
 import { Router, Event, NavigationEnd } from '@angular/router';
