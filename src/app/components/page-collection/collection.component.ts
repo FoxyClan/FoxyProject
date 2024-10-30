@@ -33,6 +33,16 @@ import { TraitOptionsService } from '../../services/trait-options.service'; // I
       transition('out => in', [
         animate('300ms ease')
       ])
+    ]),
+    trigger('popIn', [
+      state('void', style({
+        transform: 'scale(0.8)',
+        opacity: 0
+      })),
+      transition('void => *', [
+        animate('200ms ease-out',
+          style({transform: 'scale(1)', opacity: 1}))
+      ])
     ])
   ]
 })
