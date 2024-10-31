@@ -127,7 +127,7 @@
 .mint-button {
     width: calc(100% - 5px);
     height: calc(100% - 5px);
-    border-radius: 15px;
+    border-radius: 13px;
     background-color: rgba(0, 0, 0, 0.817);
     color: #fff;
     cursor: pointer;

@@ -37,7 +37,6 @@ export class ModalWallet implements OnInit {
 
   showModal() {
     this.isAnimated = true;
-    console.log(this.isAnimated)
   }
   
   closeModal() {

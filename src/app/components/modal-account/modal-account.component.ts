@@ -79,4 +79,7 @@ export class ModalAccount implements OnInit, OnDestroy {
     this.selectedOption = option;
   }
 
+  getBalance() {
+    return this.web3Service.getBalance();
+  }
 }

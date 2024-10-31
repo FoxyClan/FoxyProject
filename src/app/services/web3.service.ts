@@ -161,6 +161,7 @@ export class Web3Service {
                       localStorage.setItem('connectionTime', new Date().getTime().toString());
                       localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
                       this.startCheckingConnection();
+                      console.log(this.getBalance())
                   } else {
                       console.error("No accounts found");
                   }
@@ -246,6 +247,14 @@ export class Web3Service {
     } else {
       console.error('Web3 instance not initialized');
     }  
+  }
+
+  async getBalance() {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    return this.web3.eth.getBalance(this.walletAddressSubject.value).then((res) => {
+      if (!this.web3) throw new Error("Web3 not initialized");
+      return this.web3.utils.fromWei(res, "ether");
+    });
   }
 
 }
