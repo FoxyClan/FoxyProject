@@ -1,4 +1,5 @@
 import { Component, ElementRef, HostListener, Renderer2 } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { DetailsComponent } from '../page-details/details.component';
 import { RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
@@ -12,6 +13,18 @@ import { CommonModule } from '@angular/common';
     RouterOutlet,
     RouterLink,
     CommonModule
+  ],
+  animations: [
+    trigger('popOut', [
+      state('void', style({
+        transform: 'scale(1.2)',
+        opacity: 0
+      })),
+      transition('void => *', [
+        animate('200ms ease-out',
+          style({transform: 'scale(1)', opacity: 1}))
+      ])
+    ])
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'

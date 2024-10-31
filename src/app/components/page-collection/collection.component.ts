@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import Web3 from 'web3';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
-import { TraitOptionsService } from '../../services/trait-options.service'; // Import du service
+import { TraitOptionsService } from '../../services/trait-options.service';
 
 
 @Component({

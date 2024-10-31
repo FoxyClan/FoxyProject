@@ -1,12 +1,17 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Web3Service } from "../../services/web3.service";
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-modal-account',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,
+    RouterOutlet,
+    RouterLink
+  ],
   templateUrl: './modal-account.component.html',
   styleUrl: './modal-account.component.css'
 })
@@ -17,15 +22,22 @@ export class ModalAccount implements OnInit, OnDestroy {
   @Output() close = new EventEmitter();
   isAnimated: boolean = false;
   public networkId: string = '';
-  private subscription: Subscription; 
+  public selectedWallet: string = '';
+  private subscription: Subscription;
+  selectedOption: string = 'NFT';
 
   constructor(private web3Service: Web3Service) {
     this.subscription = new Subscription();
   }
 
   ngOnInit() {
-    this.subscription = this.web3Service.networkId$.subscribe((networkId) => {
+    this.subscription = combineLatest([
+      this.web3Service.networkId$,
+      this.web3Service.selectedWallet$
+    ]).subscribe(([networkId, selectedWallet]) => {
       this.networkId = networkId;
+      this.selectedWallet = selectedWallet;
+      console.log(this.selectedWallet)
     });
   }
 
@@ -61,6 +73,10 @@ export class ModalAccount implements OnInit, OnDestroy {
   disconnectWallet() {
     this.web3Service.disconnectWallet();
     this.closeModal();
+  }
+
+  select(option: string) {
+    this.selectedOption = option;
   }
 
 }

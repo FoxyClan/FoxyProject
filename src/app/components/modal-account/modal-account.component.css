@@ -30,8 +30,7 @@
 
 .panel {
     font-family: "Orbitron", sans-serif;
-    font-weight: 400;
-    color: wheat;
+    color: rgb(254, 254, 254);
     width: 100%;
     height: 100%;
     border-radius: 10px;
@@ -44,12 +43,28 @@
     right: 0;
 }
 
+
+/*BLOCK1*/
+
+
 .block1 {
     grid-row: 1 / 2;
     display: flex;
     flex-direction: row;
     margin: 10px;
     justify-content: space-between;
+}
+
+.address-bar {
+    display: flex;
+    flex-direction: row;
+    gap: 7px;
+    align-items: center;
+}
+
+.address-bar img {
+    width: 30px;
+    height: 30px;
 }
 
 .icon-bar {
@@ -70,8 +85,8 @@
 }
 
 .ethLogo {
-    width: 55px;
-    height: 55px;
+    width: 65px;
+    height: 65px;
 }
 
 .noEthLogo {
@@ -79,6 +94,53 @@
     background-color: red;
     border-radius: 30%;
     cursor: pointer;
+}
+
+
+/* BLOCK2 */
+
+
+.block2 {
+    grid-row: 2 / 3;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 4px;
+    position: relative;
+}
+
+.block2 p {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    color: white;
+    padding-bottom: 10px;
+    cursor: pointer;
+    position: relative;
+}
+
+.selected {
+    color: rgb(32 201 151) !important;
+}
+
+.selected::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: rgb(32 201 151);
+}
+
+
+/* BLOCK3 */
+
+
+.block3 {
+    grid-row: 3 / 6;
+    display: flex;
+    flex-direction: column;
+    margin: 2px;
 }
 
 
