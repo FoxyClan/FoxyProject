@@ -44,7 +44,7 @@
 }
 
 
-/*BLOCK1*/
+/* BLOCK1 */
 
 
 .block1 {
@@ -102,13 +102,51 @@
 
 .block2 {
     grid-row: 2 / 3;
+}
+
+.block2-1 {
+    height: 50%;
+    padding: 5px 10px 5px 10px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.border-button {
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, #42ddf8, #091d20);
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+}
+
+.mint-button {
+    width: calc(100% - 5px);
+    height: calc(100% - 5px);
+    border-radius: 15px;
+    background-color: rgba(0, 0, 0, 0.817);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Orbitron", sans-serif;
+    font-weight: 500;
+    border: none;
+}
+
+.block2-2 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     margin: 4px;
     position: relative;
 }
 
-.block2 p {
+.block2-2 p {
     display: flex;
     justify-content: center;
     align-items: end;

@@ -1,6 +1,7 @@
 <div class="background" [class.active]="isAnimated" (click)="closeModal()">
     <div class="border-container" [class.active]="isAnimated" (click)="stopEvent($event)">
         <div class="panel">
+
             <div class="block1">
                 <div>
                     <div class="address-bar">
@@ -17,13 +18,24 @@
                 <img *ngIf="networkId === '1'" src="ethereum.png"  class="ethLogo" alt="Ethereum Network" title="Ethereum Network Active">
                 <img *ngIf="networkId !== '1'" src="noethereum.png"  class="ethLogo noEthLogo" alt="Ethereum Network" title="Connect to Ethereum Network" (click)="connectToEthereum()">
             </div>
+
             <div class="block2">
-                <p (click)="select('Token')" [ngClass]="{'selected': selectedOption === 'Token'}">Token</p>
-                <p (click)="select('NFT')" [ngClass]="{'selected': selectedOption === 'NFT'}">NFT</p>
-                <p (click)="select('Activity')" [ngClass]="{'selected': selectedOption === 'Activity'}">Activity</p>
+                <div class="block2-1">
+                    <div class="border-button">
+                        <button [routerLink]="['/collection']" (click)="closeModal()" class="mint-button">My Collection</button>
+                    </div>
+                    <div class="border-button">
+                        <button [routerLink]="['/mint']" (click)="closeModal()" class="mint-button">MINT</button>
+                    </div>
+                </div>
+                <div class="block2-2">
+                    <p (click)="select('Token')" [ngClass]="{'selected': selectedOption === 'Token'}">Token</p>
+                    <p (click)="select('NFT')" [ngClass]="{'selected': selectedOption === 'NFT'}">NFT</p>
+                    <p (click)="select('Activity')" [ngClass]="{'selected': selectedOption === 'Activity'}">Activity</p>
+                </div>
             </div>
+
             <div class="block3">
-                <button [routerLink]="['/mint']" (click)="closeModal()" class="search-button">MINT</button>
 
             </div>
         </div>
