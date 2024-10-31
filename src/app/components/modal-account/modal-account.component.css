@@ -142,7 +142,7 @@
 .block2-2 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    margin: 4px;
+    margin: 8px;
     position: relative;
 }
 
@@ -151,9 +151,13 @@
     justify-content: center;
     align-items: end;
     color: white;
-    padding-bottom: 10px;
+    padding: 5px 0 10px 0;
     cursor: pointer;
     position: relative;
+}
+
+.block2-2 p:hover {
+    background-color: rgba(128, 128, 128, 0.492);
 }
 
 .selected {
