@@ -36,7 +36,14 @@
             </div>
 
             <div class="block3">
-                <p>{{ getBalance() }}</p>
+                <div *ngIf="selectedOption === 'Token'" class="token">
+                    <div class="balance-block">
+                        <h3>Balance : </h3>
+                        <p>{{ convertBalance(balance) }}</p>
+                        <p>{{ convertBalance(wethBalance) }}</p>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>

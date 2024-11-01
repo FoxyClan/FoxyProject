@@ -31,6 +31,30 @@ export class Web3Service {
   private provider: any = null;
   private iMetaMask: number = 0;
 
+  private wethContractAddress: string = '0xC02aaA39b223FE8D0A0e6F8B83fe1d6B9e1B24C5';
+  private wethContractABI = [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_owner",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "name": "balance",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ];
+  
+
 
   constructor() {
     this.checkConnection();
@@ -161,7 +185,6 @@ export class Web3Service {
                       localStorage.setItem('connectionTime', new Date().getTime().toString());
                       localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
                       this.startCheckingConnection();
-                      console.log(this.getBalance())
                   } else {
                       console.error("No accounts found");
                   }
@@ -249,12 +272,31 @@ export class Web3Service {
     }  
   }
 
-  async getBalance() {
+  async getBalance(): Promise<string> {
     if (!this.web3) throw new Error("Web3 not initialized");
-    return this.web3.eth.getBalance(this.walletAddressSubject.value).then((res) => {
-      if (!this.web3) throw new Error("Web3 not initialized");
-      return this.web3.utils.fromWei(res, "ether");
-    });
+    if (!(await this.web3.eth.net.isListening())) throw new Error("Web3 connection is not active.");
+    try {
+        const balanceWei = await this.web3.eth.getBalance(this.walletAddressSubject.value);
+        const balanceEther = this.web3.utils.fromWei(balanceWei, "ether").toString();
+        return balanceEther;
+    } catch (error) {
+        console.error("Error fetching ETH balance:", error);
+        throw error;
+    }
   }
+
+  async getWethBalance(): Promise<string> {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    const contract = new this.web3.eth.Contract(this.wethContractABI, this.wethContractAddress);
+    try {
+      const balanceWei: string = await contract.methods['balanceOf'](this.walletAddressSubject.value).call();
+      const balanceWeth = this.web3.utils.fromWei(balanceWei, 'ether').toString();
+      return balanceWeth;
+    } catch (error) {
+      console.error('Error fetching WETH balance:', error);
+      throw error;
+    }
+  }
+
 
 }

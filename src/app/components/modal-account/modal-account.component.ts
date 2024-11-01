@@ -24,7 +24,9 @@ export class ModalAccount implements OnInit, OnDestroy {
   public networkId: string = '';
   public selectedWallet: string = '';
   private subscription: Subscription;
-  selectedOption: string = 'NFT';
+  selectedOption: string = 'Token';
+  balance: string | null = null;
+  wethBalance: string | null = null;
 
   constructor(private web3Service: Web3Service) {
     this.subscription = new Subscription();
@@ -37,8 +39,8 @@ export class ModalAccount implements OnInit, OnDestroy {
     ]).subscribe(([networkId, selectedWallet]) => {
       this.networkId = networkId;
       this.selectedWallet = selectedWallet;
-      console.log(this.selectedWallet)
     });
+    this.loadBalance();
   }
 
   ngOnDestroy() {
@@ -79,7 +81,25 @@ export class ModalAccount implements OnInit, OnDestroy {
     this.selectedOption = option;
   }
 
-  getBalance() {
-    return this.web3Service.getBalance();
+  
+  loadBalance() {
+    this.web3Service.getBalance().then((balance) => {
+      this.balance = balance;
+    }).catch((error) => {
+      console.error("Error fetching ETH balance:", error);
+    });
+
+    this.web3Service.getWethBalance().then((balance) => {
+      this.wethBalance = balance;
+      console.log(balance)
+    }).catch((error) => {
+      console.error("Error fetching WETH balance:", error);
+    });
+  }
+
+  convertBalance(numberStr: string | null) {
+    if(!numberStr) return "Loading ...";
+    const formattedNumber = parseFloat(numberStr).toFixed(3);
+    return formattedNumber + " ETH";
   }
 }
