@@ -96,10 +96,10 @@ export class ModalAccount implements OnInit, OnDestroy {
     });
   }
 
-  convertBalance(numberStr: string | null) {
+  convertBalance(numberStr: string | null, symbole: string) {
     if(!numberStr) return "Loading ...";
     console.log(this.wethBalance)
     const formattedNumber = parseFloat(numberStr).toFixed(3);
-    return formattedNumber + " ETH";
+    return formattedNumber + " " + symbole;
   }
 }
