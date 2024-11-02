@@ -86,13 +86,12 @@
 }
 
 .ethLogo {
-    width: 65px;
-    height: 65px;
+    width: 60px;
+    height: 60px;
 }
 
 .noEthLogo {
     border: 3px solid red;
-    background-color: red;
     border-radius: 30%;
     cursor: pointer;
 }

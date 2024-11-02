@@ -31,7 +31,7 @@ export class Web3Service {
   private provider: any = null;
   private iMetaMask: number = 0;
 
-  private wethContractAddress: string = '0xC02aaA39b223FE8D0A0e6F8B83fe1d6B9e1B24C5';
+  private wethContractAddress: string = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
   private wethContractABI = [
     {
       "constant": true,
