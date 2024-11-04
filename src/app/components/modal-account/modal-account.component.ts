@@ -107,7 +107,13 @@ export class ModalAccount implements OnInit, OnDestroy {
         balances.push({ symbol: "USDT", balance: balance });
       }).catch((error) => {
         console.error("Error fetching USDT balance:", error);
-    })
+      }),
+
+      this.web3Service.getUsdcBalance().then((balance) => {
+        balances.push({ symbol: "USDC", balance: balance });
+      }).catch((error) => {
+        console.error("Error fetching USDT balance:", error);
+      })
     ]).then(() => {
         return this.sortBalances(balances);
     });

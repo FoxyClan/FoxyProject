@@ -33,6 +33,7 @@ export class Web3Service {
 
   private wethContractAddress: string = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
   private usdtContractAddress: string = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+  private usdcContractAddress: string = '0xA0b86991c6218b36c1d19D4a2e9eb0cE3606EB48';
 
   private ContractABI = [
     {
@@ -56,8 +57,6 @@ export class Web3Service {
     }
   ];
   
-
-
   constructor() {
     this.checkConnection();
   }
@@ -305,13 +304,27 @@ export class Web3Service {
     const contract = new this.web3.eth.Contract(this.ContractABI, this.usdtContractAddress);
     try {
       const balanceWei: string = await contract.methods['balanceOf'](this.walletAddressSubject.value).call();
-      const balanceUsdt = (parseInt(balanceWei) / Math.pow(10, 6)).toString(); // USDT uses 6 decimal places, so divide accordingly
+      const balanceUsdt = (parseInt(balanceWei) / Math.pow(10, 6)).toString(); // USDT uses 6 decimal places
       return balanceUsdt;
     } catch (error) {
       console.error('Error fetching USDT balance:', error);
       throw error;
     }
+  }
+
+  async getUsdcBalance(): Promise<string> {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    const contract = new this.web3.eth.Contract(this.ContractABI, this.usdcContractAddress);
+    try {
+      const balanceWei: string = await contract.methods['balanceOf'](this.walletAddressSubject.value).call();
+      const balanceUsdc = (parseInt(balanceWei) / Math.pow(10, 6)).toString(); // USDC uses 6 decimal places
+      return balanceUsdc;
+    } catch (error) {
+      console.error('Error fetching USDC balance:', error);
+      throw error;
+    }
 }
+
 
 
 
