@@ -39,8 +39,8 @@
                 <div *ngIf="selectedOption === 'Token'" class="token">
                     <div class="balance-block">
                         <h3>Balance : </h3>
-                        <p>{{ convertBalance(balance, "ETH") }}</p>
-                        <p>{{ convertBalance(wethBalance, "WETH") }}</p>
+                        <p>{{ convertBalance(balances[0]) }}</p>
+                        <p>{{ convertBalance(balances[1]) }}</p>
                     </div>
                 </div>
                 
