@@ -121,7 +121,7 @@ export class ModalAccount implements OnInit, OnDestroy {
 
 
   convertBalance(balances: { symbol: string, balance: string }) {
-    if(!balances) return "Loading ...";
+    if(!balances) return ["Loading ..."];
     const numberStr = balances.balance;
     const symbole = balances.symbol;
     if(parseFloat(numberStr) > 0 && parseFloat(numberStr) < 0.001) return ["< 0.001 ", symbole];
