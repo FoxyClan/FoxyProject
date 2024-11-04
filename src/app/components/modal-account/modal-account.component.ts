@@ -124,10 +124,10 @@ export class ModalAccount implements OnInit, OnDestroy {
     if(!balances) return "Loading ...";
     const numberStr = balances.balance;
     const symbole = balances.symbol;
-    if(parseFloat(numberStr) > 0 && parseFloat(numberStr) < 0.001) return "< 0.001 " + symbole;
+    if(parseFloat(numberStr) > 0 && parseFloat(numberStr) < 0.001) return ["< 0.001 ", symbole];
     let formattedNumber = (Math.floor(parseFloat(numberStr) * 1000) / 1000).toString();
     if(formattedNumber === "0.000") formattedNumber = "0";
-    return formattedNumber + " " + symbole;
+    return [formattedNumber, symbole];
   }
 
 

@@ -197,4 +197,11 @@
     border-radius: 5px;
 }
 
+.token-block {
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
 
