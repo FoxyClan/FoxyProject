@@ -182,7 +182,7 @@
     grid-row: 3 / 6;
     display: flex;
     flex-direction: column;
-    margin: 15px 5px 5px 5px;
+    margin-top: 15px;
     background-color: rgba(76, 76, 76, 0.256);
     border-radius: 5px;
     box-sizing: border-box;
@@ -226,6 +226,32 @@
     align-items: center;
     width: 100%;
     display: flex;
+}
+
+.token-list:hover {
+    background-color: rgba(83, 83, 83, 0.764);
+}
+
+
+.token-list img {
+    aspect-ratio: 1 / 1;
+    width: 1.8rem;
+    height: auto;
+    align-items: center;
+    display: flex;
+}
+
+.counter {
+    font-size: 0.75rem;
+    font-weight: 100px;
+    color: rgb(203, 203, 203);
+}
+
+.token-text {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-grow: 1;
 }
 
 
