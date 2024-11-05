@@ -30,7 +30,7 @@ public class Mint {
             // Sauvegarder le résultat de la superposition dans un nouveau fichier
             ImageIO.write(combined, "PNG", new File("jar\\src\\main\\resources\\NFT\\" + name + ".png"));
             System.out.println("Images superposées et enregistrées dans result.png");
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } 
     }
