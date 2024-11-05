@@ -9,9 +9,10 @@ import java.io.IOException;
 public class Mint {
     public void NFT() {
         try {
+            String name = "a1";
             // Charger les images a1 et b1 depuis des fichiers
-            BufferedImage a1 = ImageIO.read(new File("C:\\Users\\Matca\\Documents\\FoxyProject\\jar\\src\\main\\resources\\NFT\\c01.png"));
-            BufferedImage b1 = ImageIO.read(new File("C:\\Users\\Matca\\Documents\\FoxyProject\\jar\\src\\main\\resources\\NFT\\hc01.png"));
+            BufferedImage a1 = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\c01.png"));
+            BufferedImage b1 = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\hc01.png"));
 
             // Créer une nouvelle image avec les mêmes dimensions que a1
             BufferedImage combined = new BufferedImage(a1.getWidth(), a1.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -27,7 +28,7 @@ public class Mint {
             g.dispose();
 
             // Sauvegarder le résultat de la superposition dans un nouveau fichier
-            ImageIO.write(combined, "PNG", new File("C:\\Users\\Matca\\Documents\\FoxyProject\\jar\\src\\main\\resources\\NFT\\result.png"));
+            ImageIO.write(combined, "PNG", new File("jar\\src\\main\\resources\\NFT\\" + name + ".png"));
             System.out.println("Images superposées et enregistrées dans result.png");
         } catch (Exception e) {
             e.printStackTrace();
