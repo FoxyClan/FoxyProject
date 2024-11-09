@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -10,58 +10,73 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
  * @dev Extends ERC721 Non-Fungible Token Standard basic implementation
  */
 contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
-    string public constant FC_PROVENANCE = "";
+    string public FC_PROVENANCE;
 
-    bool public saleIsActive = false;
+    bool public publicSaleIsActive = false;
 
-    string private baseURI;
+    bool public privateSaleIsActive = false;
 
-    bool public isAllowListActive = false;
-    // Max supply of Minted Foxy
-    uint256 public constant MAX_SUPPLY = 10000;
+    string private _BaseURI;
 
-    uint256 public constant maxPublicFoxyMint = 10;
+    bool public allowListisActive = false;
 
-    uint256 public constant FC_PRICE = 12500000000000000; //0.0125 ETH
+    uint256 public constant MAX_SUPPLY = 20000;
 
-    uint256 public revealTimeStamp;
+    uint256 public constant maxPublicFoxyMint = 20;
 
-    mapping(address => uint8) private _allowList;
+    uint256 public constant publicFoxyPrice = 12500000000000000; //0.0125 ETH
 
-    constructor(uint256 saleStart) ERC721("FoxyClan", "FOXY") Ownable(msg.sender) {
-        revealTimeStamp = saleStart + (86400 * 7);
-    }
+    uint256 public constant privateFoxyPrice = 7500000000000000; //0.0075 ETH
+
+    mapping(address => uint8) private _AllowList; //fonction clean allowlist
+
+    uint256[] public burnedTokenIds;
+
+    constructor() ERC721("FoxyClan", "FOXY") Ownable(msg.sender) {}
 
     /**
-     * @dev Sets the sale state (active or inactive).
-     * @param newState The new sale state.
+     * @dev Sets the provenance hash for the collection.
+     * @param provenance The provenance hash.
      */
-    function setSaleState(bool newState) external onlyOwner {
-        saleIsActive = newState;
+    function setProvenance(string memory provenance) external onlyOwner {
+        FC_PROVENANCE = provenance;
+    }
+
+    /*
+    * @dev Pause public sale if active, make active if paused
+    */
+    function flipPublicSaleState() external onlyOwner {
+        publicSaleIsActive = !publicSaleIsActive;
+    }
+
+    /*
+    * @dev Pause private sale if active, make active if paused
+    */
+    function flipPrivateSaleState() external onlyOwner {
+        privateSaleIsActive = !privateSaleIsActive;
     }
 
     /**
      * @dev Sets the base URI for token URIs.
-     * @param _baseURI The base URI.
+     * @param uri The base URI.
      */
-    function setBaseURI(string memory _baseURI) external onlyOwner() {
-        baseURI = _baseURI;
+    function setBaseURI(string memory uri) external onlyOwner() {
+        _BaseURI = uri;
     }
 
     /**
-     * @dev Sets the reveal timestamp for the collection.
-     * @param _revealTimeStamp The reveal timestamp.
+     * @dev Get the base URI for token URIs.
      */
-    function setRevealTimestamp(uint256 _revealTimeStamp) external onlyOwner {
-        revealTimeStamp = _revealTimeStamp;
+    function _baseURI() internal view virtual override returns (string memory) {
+        return _BaseURI;
     }
+
 
     /**
      * @dev Sets the allow list status.
-     * @param _isAllowListActive The new allow list status.
      */
-    function setIsAllowListActive(bool _isAllowListActive) external onlyOwner {
-        isAllowListActive = _isAllowListActive;
+    function flipAllowListState() external onlyOwner {
+        allowListisActive = !allowListisActive;
     }
 
     /**
@@ -71,7 +86,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
      */
     function setAllowList(address[] calldata addresses, uint8 numAllowedToMint) external onlyOwner {
         for (uint256 i = 0; i < addresses.length; i++) {
-            _allowList[addresses[i]] = numAllowedToMint;
+            _AllowList[addresses[i]] = numAllowedToMint;
         }
     }
 
@@ -81,7 +96,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
      * @return The number of tokens available to mint for a specific address.
      */
     function numAvailableToMint(address addr) external view returns (uint8) {
-        return _allowList[addr];
+        return _AllowList[addr];
     }
 
     /**
@@ -96,14 +111,33 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
     */
     function mintAllowList(uint8 numberOfTokens) external payable {
         uint256 supply = totalSupply();
-        require(isAllowListActive, "Allow list is not active");
-        require(numberOfTokens <= _allowList[msg.sender], "Exceeded max available to purchase");
+        uint256 costToMint;
+        if (privateSaleIsActive) {
+            costToMint = privateFoxyPrice * numberOfTokens;
+        } else {
+            costToMint = publicFoxyPrice * numberOfTokens;
+        }
+        require(allowListisActive, "Allow list is not active");
+        require(numberOfTokens <= _AllowList[msg.sender], "Exceeded max available to purchase");
         require(supply + numberOfTokens <= MAX_SUPPLY, "Purchase would exceed max tokens");
-        require(FC_PRICE * numberOfTokens <= msg.value, "Ether value sent is not correct");
+        require(costToMint <= msg.value, "Ether value sent is not correct");
 
-        _allowList[msg.sender] -= numberOfTokens;
         for (uint256 i = 0; i < numberOfTokens; i++) {
-            _safeMint(msg.sender, supply + i);
+            uint256 tokenId;
+            if (burnedTokenIds.length > 0) {
+                tokenId = burnedTokenIds[0];
+                burnedTokenIds.pop();
+            } else {
+                tokenId = totalSupply();
+            }
+            _safeMint(msg.sender, tokenId);
+            _AllowList[msg.sender] --;
+        }
+
+        if (msg.value > costToMint) {
+            uint256 excess = msg.value - costToMint;
+            (bool success, ) = msg.sender.call{value: excess}("");
+            require(success, "Refund failed");
         }
     }
 
@@ -117,43 +151,39 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
      * - The total supply must not exceed the max supply.
      * - The sender must send enough ether to cover the cost of minting.
      */
-    function mint(uint numberOfTokens) external payable {
+    function mint(uint numberOfTokens) public payable {
         uint256 supply = totalSupply();
-        require(saleIsActive, "Sale must be active to mint Foxy");
-        require(numberOfTokens <= maxPublicFoxyMint, "Can only mint 5 tokens at a time");
+        uint256 costToMint = publicFoxyPrice * numberOfTokens;
+        require(publicSaleIsActive, "Sale must be active to mint Foxy");
+        require(numberOfTokens <= maxPublicFoxyMint, "Can only mint 10 tokens at a time");
         require(supply + numberOfTokens <= MAX_SUPPLY, "Purchase would exceed max tokens");
-        require(FC_PRICE * numberOfTokens <= msg.value, "Ether value sent is not correct");
+        require(costToMint <= msg.value, "Ether value sent is not correct");
 
         for (uint256 i = 0; i < numberOfTokens; i++) {
-            _safeMint(msg.sender, supply + i);
+            uint256 tokenId;
+
+            if (burnedTokenIds.length > 0) {
+                tokenId = burnedTokenIds[burnedTokenIds.length - 1];
+                burnedTokenIds.pop();
+            } else {
+                tokenId = totalSupply();
+            }
+            _safeMint(msg.sender, tokenId);
+        }
+        if (msg.value > costToMint) {
+            uint256 excess = msg.value - costToMint;
+            (bool success, ) = msg.sender.call{value: excess}("");
+            require(success, "Refund failed");
         }
     }
 
-    /**
-    * @dev Merges two tokens into one.
-    * 
-    * This function allows you to combine two existing ERC721 tokens into a new token. The two original tokens are burned and a new token is minted.
-    * 
-    * **Prerequisites:**
-    * - The caller must be the owner of both tokens.
-    * - The total supply of tokens must not exceed the maximum supply defined by `MAX_SUPPLY`.
-    * 
-    * **Steps:**
-    * 1. Checks the total supply against the maximum.
-    * 2. Burns the two input tokens.
-    * 3. Mints a new token and assigns it to the caller.
-    * 
-    * @param tokenId1 The ID of the first token to merge.
-    * @param tokenId2 The ID of the second token to merge.
-    */
-    function fusion(uint tokenId1, uint tokenId2) external {
-        uint256 supply = totalSupply();
-        require(supply + 1 <= MAX_SUPPLY, "Purchase would exceed max tokens");
-        require(ownerOf(tokenId1) == msg.sender, "Caller must own token 1");
-        require(ownerOf(tokenId2) == msg.sender, "Caller must own token 2");
+    function merge(uint tokenId1, uint tokenId2) external {
+        require(ownerOf(tokenId1) == msg.sender, "You must own the token");
+        require(ownerOf(tokenId2) == msg.sender, "You must own the token");
         _burn(tokenId1);
         _burn(tokenId2);
-        _safeMint(msg.sender, supply);
+        burnedTokenIds.push(tokenId2);
+        _safeMint(msg.sender, tokenId1);
     }
 
     /**
@@ -199,4 +229,5 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         uint balance = address(this).balance;
         payable(msg.sender).transfer(balance);
     }
+
 }

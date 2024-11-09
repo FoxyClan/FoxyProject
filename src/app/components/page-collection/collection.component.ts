@@ -78,9 +78,9 @@ export class CollectionComponent implements OnInit {
   ngOnInit() {
     this.isTraitOpen = new Array(this.traits.length).fill(false);
     
-    /*
-    this.getMessage();
+    /*this.getMessage();
     const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
+    
     web3.eth.getAccounts().then(allAccounts => {
       this.addresses = allAccounts;
       this.adr = this.addresses[0];

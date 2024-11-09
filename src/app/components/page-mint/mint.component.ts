@@ -29,4 +29,24 @@ export class MintComponent implements OnInit {
   getConnected() {
     return this.isConnected;
   }
+
+  
+  async mintNFT() {
+    try {
+      const result = await this.web3Service.mint();
+      console.log("Minting successful:", result);
+    } catch (error) {
+      console.error("Minting error:", error);
+    }
+  }
+
+  async flipSale() {
+    try {
+      const result = await this.web3Service.flipPublicSaleState();
+      console.log("Fliping successful:", result);
+    } catch (error) {
+      console.error("Fliping error:", error);
+    }
+  }
+    
 }

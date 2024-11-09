@@ -27,3 +27,4 @@ contract.methods.nbrFavoris().call().then(result => {console.log(result.toString
 SET
 contract.methods.setNdrFavoris(19).send({from: '0xe17A736236282F643E9668b97295d06505d57729'});
 
+
