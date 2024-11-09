@@ -1019,23 +1019,6 @@ export class Web3Service {
       return
     }
     else if (typeof window !== 'undefined') {
-      //test with ganache to delete after
-      /*
-      try {
-        this.web3 = new Web3('http://127.0.0.1:8545');
-        const accounts = await this.web3.eth.getAccounts();
-        this.walletAddressSubject.next(accounts[0]);
-        this.isConnectedSubject.next(true);
-        this.selectedWalletSubject.next(selectedWallet);
-        this.getNetworkId();
-        localStorage.setItem('connectionTime', new Date().getTime().toString());
-        localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
-        this.startCheckingConnection();
-      } catch (error) {
-        this.iMetaMask = 0;
-        console.error('Error connecting to wallet', error);
-      }
-      */
       try {
         if(selectedWallet === 'CoinbaseWallet') {     // Coinbase Wallet
           const CoinbaseWallet = new Coinbase({
@@ -1147,6 +1130,7 @@ export class Web3Service {
     clearInterval(this.intervalId);
     this.intervalId = null;
     this.provider = null;
+    const connectionTime = localStorage.removeItem('connectionTime');
   }
 
 
@@ -1250,7 +1234,7 @@ export class Web3Service {
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     try {
       const result = await contract.methods['mint'](numberOfTokens).send({
-        from: fromAddress,
+        from: 'fromAddress',
         value: this.web3.utils.toWei('0.0125', 'ether'),
       });
       return result;
