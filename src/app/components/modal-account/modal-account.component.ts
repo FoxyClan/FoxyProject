@@ -4,6 +4,7 @@ import { Subscription, combineLatest } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
+import { ExchangeRateService } from '../../services/exchange-rate.service';
 
 @Component({
   selector: 'app-modal-account',
@@ -26,9 +27,9 @@ export class ModalAccount implements OnInit, OnDestroy {
   private subscription: Subscription;
   selectedOption: string = 'Token';
 
-  balances: { symbol: string, balance: string }[] = [];
+  balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
 
-  constructor(private web3Service: Web3Service) {
+  constructor(private web3Service: Web3Service, private exchangeRateService: ExchangeRateService) {
     this.subscription = new Subscription();
   }
 
@@ -88,61 +89,57 @@ export class ModalAccount implements OnInit, OnDestroy {
   }
 
   
-  async loadBalance(): Promise<{ symbol: string, balance: string }[]> {
-    let balances: { symbol: string, balance: string }[] = [];
-    return Promise.all([
-      this.web3Service.getBalance().then((balance) => {
-          balances.push({ symbol: "ETH", balance: balance });
-      }).catch((error) => {
-          console.error("Error fetching ETH balance:", error);
-      }),
-      
-      this.web3Service.getWethBalance().then((balance) => {
-          balances.push({ symbol: "WETH", balance: balance });
-      }).catch((error) => {
-          console.error("Error fetching WETH balance:", error);
-      }),
-
-      this.web3Service.getUsdtBalance().then((balance) => {
-        balances.push({ symbol: "USDT", balance: balance });
-      }).catch((error) => {
-        console.error("Error fetching USDT balance:", error);
-      }),
-
-      this.web3Service.getUsdcBalance().then((balance) => {
-        balances.push({ symbol: "USDC", balance: balance });
-      }).catch((error) => {
-        console.error("Error fetching USDT balance:", error);
-      })
-    ]).then(() => {
-        return this.sortBalances(balances);
-    });
+  async loadBalance(): Promise<{ symbol: string, balance: string, balanceConverted: number }[]> {
+    const balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
+  
+    try {
+      const symbols: Array<'ETH' | 'WETH' | 'USDT' | 'USDC'> = ['ETH', 'WETH', 'USDT', 'USDC'];
+      for (const symbol of symbols) {
+        const balance = await this.web3Service.getBalance(symbol);
+        const balanceConverted = await this.exchangeRateService.convertToUsd(Number(balance), symbol);
+        balances.push({ symbol, balance, balanceConverted });
+      }
+      return this.sortBalances(balances);
+    } catch (error) {
+      //console.error("Error loading balances:", error);
+      return this.sortBalances(balances);
+      throw error;
+    }
   }
+  
 
 
-  convertBalance(balances: { symbol: string, balance: string }) {
+  convertBalance(balances: { symbol: string, balance: string, balanceConverted: number }) {
     if(!balances) return ["Loading ..."];
-    const numberStr = balances.balance;
-    const symbole = balances.symbol;
-    if(parseFloat(numberStr) > 0 && parseFloat(numberStr) < 0.001) return ["< 0.001 ", symbole];
-    let formattedNumber = (Math.floor(parseFloat(numberStr) * 1000) / 1000).toString();
+    const balanceStr = balances.balance;
+    const balanceConverted = balances.balanceConverted;
+
+    let formattedNumber = (Math.floor(parseFloat(balanceStr) * 1000) / 1000).toString();
+    if(parseFloat(balanceStr) > 0 && parseFloat(balanceStr) < 0.001) formattedNumber = "< 0.001 ";
     if(formattedNumber === "0.000") formattedNumber = "0";
-    return [formattedNumber, symbole];
+
+    let formattedBalanceConvertedStr = (Math.floor(balanceConverted * 100) / 100).toString();
+    if(balanceConverted > 0 && balanceConverted < 0.01) formattedBalanceConvertedStr = "< 0.01";
+    if(formattedBalanceConvertedStr === "0.000") formattedBalanceConvertedStr = "0";
+
+    return [formattedNumber, balances.symbol, formattedBalanceConvertedStr + " $"];
   }
 
 
-  sortBalances(balances: { symbol: string, balance: string }[]) {
+  sortBalances(balances: { symbol: string, balance: string, balanceConverted: number }[]) {
     const sortedBalances = balances
       .map(item => ({
         ...item,
-        balance: parseFloat(item.balance)
+        balanceConverted: item.balanceConverted
       }))
-      .sort((a, b) => b.balance - a.balance)
+      .sort((a, b) => b.balanceConverted - a.balanceConverted)
       .map(item => ({
         ...item,
         balance: item.balance.toString()
       }));
-      return sortedBalances;
+  
+    return sortedBalances;
   }
+  
 
 }

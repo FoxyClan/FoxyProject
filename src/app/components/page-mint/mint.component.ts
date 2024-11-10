@@ -52,9 +52,10 @@ export class MintComponent implements OnInit {
   async balanceOf() {
     try {
       const result = await this.web3Service.balanceOf();
-      console.log("Fliping successful:", result);
+      const balance = Number(result);
+      console.log("Balance:", balance);
     } catch (error) {
-      console.error("Fliping error:", error);
+      console.error("Balance error:", error);
     }
   }
     

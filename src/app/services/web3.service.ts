@@ -57,7 +57,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0x3b82747D3E81857423B99ec28b934aD7e983b6aB';
+  private FoxyClanContractAddress = '0x82f9eB9664A3964E3559630DD883a2216d623B5a';
 
   private FoxyClanABI = [
     {
@@ -1167,55 +1167,49 @@ export class Web3Service {
     }  
   }
 
-  async getBalance(): Promise<string> {
+  async getBalance(symbol: 'ETH' | 'WETH' | 'USDT' | 'USDC'): Promise<string> {
     if (!this.web3) throw new Error("Web3 not initialized");
-    if (!(await this.web3.eth.net.isListening())) throw new Error("Web3 connection is not active.");
-    try {
+    if (symbol === 'ETH') {
+      if (!(await this.web3.eth.net.isListening())) throw new Error("Web3 connection is not active.");
+      try {
         const balanceWei = await this.web3.eth.getBalance(this.walletAddressSubject.value);
-        const balanceEther = this.web3.utils.fromWei(balanceWei, "ether").toString();
-        return balanceEther;
-    } catch (error) {
+        return this.web3.utils.fromWei(balanceWei, "ether").toString();
+      } catch (error) {
         console.error("Error fetching ETH balance:", error);
         throw error;
-    }
-  }
-
-  async getWethBalance(): Promise<string> {
-    if (!this.web3) throw new Error("Web3 not initialized");
-    const contract = new this.web3.eth.Contract(this.ContractABI, this.wethContractAddress);
-    try {
-      const balanceWei: string = await contract.methods['balanceOf'](this.walletAddressSubject.value).call();
-      const balanceWeth = this.web3.utils.fromWei(balanceWei, 'ether').toString();
-      return balanceWeth;
-    } catch (error) {
-      console.error('Error fetching WETH balance:', error);
-      throw error;
-    }
-  }
-
-  async getUsdtBalance(): Promise<string> {
-    if (!this.web3) throw new Error("Web3 not initialized");
-    const contract = new this.web3.eth.Contract(this.ContractABI, this.usdtContractAddress);
-    try {
-      const balanceWei: string = await contract.methods['balanceOf'](this.walletAddressSubject.value).call();
-      const balanceUsdt = (parseInt(balanceWei) / Math.pow(10, 6)).toString(); // USDT uses 6 decimal places
-      return balanceUsdt;
-    } catch (error) {
-      console.error('Error fetching USDT balance:', error);
-      throw error;
-    }
-  }
-
-  async getUsdcBalance(): Promise<string> {
-    if (!this.web3) throw new Error("Web3 not initialized");
-    const contract = new this.web3.eth.Contract(this.ContractABI, this.usdcContractAddress);
-    try {
-      const balanceWei: string = await contract.methods['balanceOf'](this.walletAddressSubject.value).call();
-      const balanceUsdc = (parseInt(balanceWei) / Math.pow(10, 6)).toString(); // USDC uses 6 decimal places
-      return balanceUsdc;
-    } catch (error) {
-      console.error('Error fetching USDC balance:', error);
-      throw error;
+      }
+    } else {
+      let contractAddress: string;
+      let decimals: number;
+  
+      switch (symbol) {
+        case 'WETH':
+          contractAddress = this.wethContractAddress;
+          decimals = 18;
+          break;
+        case 'USDT':
+          contractAddress = this.usdtContractAddress;
+          decimals = 6;
+          break;
+        case 'USDC':
+          contractAddress = this.usdcContractAddress;
+          decimals = 6;
+          break;
+        default:
+          throw new Error("Invalid symbol");
+      }
+  
+      try {
+        const contract = new this.web3.eth.Contract(this.ContractABI, contractAddress);
+        const balanceWei: string = await contract.methods['balanceOf'](this.walletAddressSubject.value).call();
+        let balance;
+        if(symbol == 'USDT' || symbol == 'USDC') balance = (parseInt(balanceWei) / Math.pow(10, 6)).toString();
+        else balance = this.web3.utils.fromWei(balanceWei, 'ether').toString();
+        return balance;
+      } catch (error) {
+        //console.error(`Error fetching ${symbol} balance:`, error);
+        throw error;
+      }
     }
   }
 

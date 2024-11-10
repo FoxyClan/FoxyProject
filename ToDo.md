@@ -16,3 +16,7 @@ AUTH
 
 
 - probleme demande de changement de reseau toutes les 5 min si on est pas sur eth
+
+
+GANACHE
+- supprimer commentaire web3service getBalance / modal account loadBalance -> catch consol error
