@@ -40,6 +40,15 @@ export class MintComponent implements OnInit {
     }
   }
 
+  async merge() {
+    try {
+      const result = await this.web3Service.merge(0, 1);
+      console.log("Merge successful:", result);
+    } catch (error) {
+      console.error("Merge error:", error);
+    }
+  }
+
   async flipSale() {
     try {
       const result = await this.web3Service.flipPublicSaleState();

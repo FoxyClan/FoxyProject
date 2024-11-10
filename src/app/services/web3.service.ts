@@ -1180,20 +1180,16 @@ export class Web3Service {
       }
     } else {
       let contractAddress: string;
-      let decimals: number;
   
       switch (symbol) {
         case 'WETH':
           contractAddress = this.wethContractAddress;
-          decimals = 18;
           break;
         case 'USDT':
           contractAddress = this.usdtContractAddress;
-          decimals = 6;
           break;
         case 'USDC':
           contractAddress = this.usdcContractAddress;
-          decimals = 6;
           break;
         default:
           throw new Error("Invalid symbol");
@@ -1207,7 +1203,7 @@ export class Web3Service {
         else balance = this.web3.utils.fromWei(balanceWei, 'ether').toString();
         return balance;
       } catch (error) {
-        //console.error(`Error fetching ${symbol} balance:`, error);
+        //console.error('Error fetching ${symbol} balance:', error);
         throw error;
       }
     }
@@ -1218,17 +1214,21 @@ export class Web3Service {
     return this._mint(1, this.walletAddressSubject.value);
   }
 
+  public async merge(tokenId1: number, tokenId2: number) {
+    return this._merge(tokenId1, tokenId2, this.walletAddressSubject.value);
+  }
+
   public async flipPublicSaleState() {
     return this._flipPublicSaleState(this.walletAddressSubject.value);
   }
 
   
-  private async _mint(numberOfTokens: number,fromAddress: string): Promise<any> {
+  private async _mint(numberOfTokens: number, fromAddress: string): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     try {
       const result = await contract.methods['mint'](numberOfTokens).send({
-        from: 'fromAddress',
+        from: fromAddress,
         value: this.web3.utils.toWei('0.0125', 'ether'),
       });
       return result;
@@ -1252,6 +1252,20 @@ export class Web3Service {
     }
   }
 
+  private async _merge(tokenId1: number, tokenId2: number, fromAddress: string): Promise<any> {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+    try {
+      const result = await contract.methods['merge'](tokenId1, tokenId2).send({
+        from: fromAddress
+      });
+      return result;
+    } catch (error) {
+      console.error("Merge failed:", error);
+      throw error;
+    }
+  }
+
   public async balanceOf() {
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
@@ -1267,6 +1281,8 @@ export class Web3Service {
     });
     return result;
   }
+
+
 
 
 

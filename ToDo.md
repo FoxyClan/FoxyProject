@@ -11,11 +11,6 @@ SMART CONTRACT
 - pas plus de 20 nft par wallet
 
 
-AUTH
-- supprimer auth.guard et dans routes si inutilisé
-
-
-- probleme demande de changement de reseau toutes les 5 min si on est pas sur eth
 
 
 GANACHE
