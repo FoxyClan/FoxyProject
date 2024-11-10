@@ -1266,10 +1266,10 @@ export class Web3Service {
     }
   }
 
-  public async balanceOf() {
+  public async balanceOf(owner: String) {
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
-    const balance = await contract.methods['balanceOf'](this.walletAddressSubject.value).call();
+    const balance = await contract.methods['balanceOf'](owner).call();
     return balance;
   }
 
@@ -1281,6 +1281,23 @@ export class Web3Service {
     });
     return result;
   }
+
+  public async tokenOfOwnerByIndex(fromAddress: string, owner: String) {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+    const numberOfTokens = await this.balanceOf(owner);
+    const balance = Number(numberOfTokens);
+    let result = [];
+    for(let i = 0; i < balance; i++) {
+      const tokenId = await contract.methods['tokenOfOwnerByIndex'](owner, i).call({
+        from: fromAddress
+      });
+      result.push(Number(tokenId));
+    }
+    return result;
+  }
+
+
 
 
 

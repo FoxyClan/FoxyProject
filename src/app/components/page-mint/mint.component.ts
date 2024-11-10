@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NotConnectedModal } from '../modal-not-connected/not-connected.component';
-import { Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Web3Service } from "../../services/web3.service";
+import Web3 from 'web3';
 
 @Component({
   selector: 'app-mint',
@@ -15,14 +16,22 @@ import { Web3Service } from "../../services/web3.service";
 export class MintComponent implements OnInit {
   private subscription: Subscription;
   private isConnected: boolean = false;
+  walletAddress: any;
 
   constructor(private web3Service: Web3Service) {
     this.subscription = new Subscription();
   }
 
   ngOnInit() {
-    this.subscription = this.web3Service.isConnected$.subscribe((isConnected) => {
+    this.subscription = combineLatest([
+      this.web3Service.isConnected$,
+      this.web3Service.walletAddress$
+    ]).subscribe(([isConnected, walletAddress]) => {
       this.isConnected = isConnected;
+      if(walletAddress) {
+        const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
+        this.walletAddress = checksumAddress;
+      }
     });
   }
 
@@ -60,9 +69,18 @@ export class MintComponent implements OnInit {
 
   async balanceOf() {
     try {
-      const result = await this.web3Service.balanceOf();
+      const result = await this.web3Service.balanceOf(this.walletAddress);
       const balance = Number(result);
       console.log("Balance:", balance);
+    } catch (error) {
+      console.error("Balance error:", error);
+    }
+  }
+
+  async tokenOfOwnerByIndex() {
+    try {
+      const result = await this.web3Service.tokenOfOwnerByIndex(this.walletAddress, this.walletAddress);
+      console.log(result);
     } catch (error) {
       console.error("Balance error:", error);
     }
