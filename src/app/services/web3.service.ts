@@ -1282,16 +1282,14 @@ export class Web3Service {
     return result;
   }
 
-  public async tokenOfOwnerByIndex(fromAddress: string, owner: String) {
+  public async tokenOfOwnerByIndex(owner: String) {
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     const numberOfTokens = await this.balanceOf(owner);
     const balance = Number(numberOfTokens);
     let result = [];
     for(let i = 0; i < balance; i++) {
-      const tokenId = await contract.methods['tokenOfOwnerByIndex'](owner, i).call({
-        from: fromAddress
-      });
+      const tokenId = await contract.methods['tokenOfOwnerByIndex'](owner, i).call();
       result.push(Number(tokenId));
     }
     return result;

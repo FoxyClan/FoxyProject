@@ -79,7 +79,7 @@ export class MintComponent implements OnInit {
 
   async tokenOfOwnerByIndex() {
     try {
-      const result = await this.web3Service.tokenOfOwnerByIndex(this.walletAddress, this.walletAddress);
+      const result = await this.web3Service.tokenOfOwnerByIndex(this.walletAddress);
       console.log(result);
     } catch (error) {
       console.error("Balance error:", error);
