@@ -1257,16 +1257,24 @@ export class Web3Service {
       throw error;
     }
   }
-/*
-  public async test() {
+
+  public async balanceOf() {
     if (!this.web3) throw new Error("Web3 not initialized");
-    const contract = new this.web3.eth.Contract(this.FoxyCLanABI, this.FoxyClanContractAdress);
-    console.log(this.FoxyClanContractAdress)
+    const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     const balance = await contract.methods['balanceOf'](this.walletAddressSubject.value).call();
     return balance;
   }
 
-*/
+  public async setBaseURI(fromAddress: string,uri: String) {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+    const result = await contract.methods['setBaseURI'](uri).send({
+      from: fromAddress
+    });
+    return result;
+  }
+
+
 
 
 }
