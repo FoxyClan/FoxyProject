@@ -57,7 +57,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0x82f9eB9664A3964E3559630DD883a2216d623B5a';
+  private FoxyClanContractAddress = '0x6AF40dC1A64280A26Dc3F20744AD5BCC3AE95E4c';
 
   private FoxyClanABI = [
     {
@@ -1127,6 +1127,7 @@ export class Web3Service {
     this.walletAddressSubject.next('');
     this.networkIdSubject.next('');
     this.isConnectedSubject.next(false);
+    if (this.intervalId) clearInterval(this.intervalId);
     clearInterval(this.intervalId);
     this.intervalId = null;
     this.provider = null;

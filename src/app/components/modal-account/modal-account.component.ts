@@ -28,6 +28,7 @@ export class ModalAccount implements OnInit, OnDestroy {
   selectedOption: string = 'Token';
 
   balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
+  tokens:Number[] = [];
 
   constructor(private web3Service: Web3Service, private exchangeRateService: ExchangeRateService) {
     this.subscription = new Subscription();
@@ -46,6 +47,7 @@ export class ModalAccount implements OnInit, OnDestroy {
       }).catch((error) => {
         console.error("Error loading balances:", error);
       });
+      this.tokenOfOwnerByIndex();
     });
   }
 
@@ -139,6 +141,15 @@ export class ModalAccount implements OnInit, OnDestroy {
       }));
   
     return sortedBalances;
+  }
+
+  async tokenOfOwnerByIndex() {
+    try {
+      const result = await this.web3Service.tokenOfOwnerByIndex(this.walletAddress);
+      this.tokens = result;
+    } catch (error) {
+      console.error("Balance error:", error);
+    }
   }
   
 

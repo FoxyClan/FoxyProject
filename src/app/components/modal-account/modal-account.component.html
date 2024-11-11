@@ -109,6 +109,20 @@
                             
                     </div>
                 </div>
+
+                <div *ngIf="selectedOption === 'NFT'" class="token">
+                    <div class="token-block">
+                        <div *ngFor="let tokenId of tokens" class="token-list">
+                            <div>
+                                <img src="https://classical-turquoise-emu.myfilebase.com/ipfs/QmUMS2rwtYpf3b2GM5ciUF2XUMzJ5VH7SwR1524px8htxE" alt="ID : {{ tokenId }}">
+                            </div>
+                            <div class="token-text">
+                                <div>   
+                                    <p>{{ tokenId }}</p>
+                                </div>
+                            </div>
+                        </div>
+                </div>
                 
             </div>
         </div>
