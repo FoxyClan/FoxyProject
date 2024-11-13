@@ -10,7 +10,6 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [
     DetailsComponent,
-    RouterOutlet,
     RouterLink,
     CommonModule
   ],

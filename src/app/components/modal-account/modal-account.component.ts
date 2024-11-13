@@ -9,8 +9,8 @@ import { ExchangeRateService } from '../../services/exchange-rate.service';
 @Component({
   selector: 'app-modal-account',
   standalone: true,
-  imports: [CommonModule,
-    RouterOutlet,
+  imports: [
+    CommonModule,
     RouterLink
   ],
   templateUrl: './modal-account.component.html',

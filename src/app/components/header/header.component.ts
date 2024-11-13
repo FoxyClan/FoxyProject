@@ -17,7 +17,6 @@ import Web3 from 'web3';
     CommonModule,
     ModalAccount,
     ModalWallet,
-    RouterOutlet,
     RouterLink
 ],
   templateUrl: './header.component.html',
