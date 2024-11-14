@@ -2,7 +2,6 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
 import { Web3Service } from "../../services/web3.service";
 import { Subscription, combineLatest } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { ExchangeRateService } from '../../services/exchange-rate.service';
 

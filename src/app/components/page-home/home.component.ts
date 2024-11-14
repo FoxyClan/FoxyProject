@@ -1,7 +1,6 @@
 import { Component, ElementRef, HostListener, Renderer2 } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { DetailsComponent } from '../page-details/details.component';
-import { RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 

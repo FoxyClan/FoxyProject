@@ -5,6 +5,7 @@ body{
   margin: 0px;
   overflow: hidden;
 }
+
 .error {
     position: absolute;
     width: 100%;
@@ -21,7 +22,7 @@ body{
   text-decoration: none;
   top: 5%;
   left: 5%;
-  font-size: 32px;
+  font-size: 1.5rem;
   text-transform: uppercase;    
   display: block;
   color: #000000;
@@ -29,6 +30,12 @@ body{
   font-family: Audiowide;
   text-shadow: 0px 0px 4px #12000a;
   animation: fadeInText 3s ease-in 3.5s forwards, flicker4 5s linear 7.5s infinite, hueRotate 6s ease-in-out 3s infinite;
+}
+
+.home h3 span {
+  position: relative;
+  top: -0.13rem;
+  margin-right: 8px;
 }
 
 div{

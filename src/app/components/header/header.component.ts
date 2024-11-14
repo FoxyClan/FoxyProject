@@ -54,7 +54,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       if(isConnected) {
         this.showWallet = false;
       }
-      console.log(this.isConnected, this.walletAddress)
     });
   }
 

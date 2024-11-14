@@ -254,4 +254,16 @@
     flex-grow: 1;
 }
 
+.no-padding {
+    padding: 0 !important;
+}
+
+.NFTimg {
+    width: 4rem !important;
+}
+
+.NFTtext {
+    font-size: 0.8rem;
+}
+
 
