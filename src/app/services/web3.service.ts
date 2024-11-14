@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import Web3 from 'web3';
+import Web3, { EventLog } from 'web3';
 import Coinbase from '@coinbase/wallet-sdk';
 import { MetaMaskSDK } from "@metamask/sdk"
 import { BehaviorSubject } from 'rxjs';
+import { log } from 'console';
 
 declare let window: any;
 
@@ -1294,6 +1295,85 @@ export class Web3Service {
       result.push(Number(tokenId));
     }
     return result;
+  }
+
+  async getContractTransactions() {
+    try {
+      if (!this.web3) throw new Error("Web3 not initialized");
+
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const events = await contract.getPastEvents("allEvents", {
+        fromBlock: 0,
+        toBlock: 'latest'
+      });
+
+      const filteredEvents = events.filter((event): event is EventLog => typeof event !== 'string');
+
+      const transactions = await Promise.all(filteredEvents.map(async (event) => {
+        if (!event.transactionHash) return null;
+
+        const transaction = {
+          functionName: '',
+          from: event.returnValues?.['from'] || null,
+          to: event.returnValues?.['to'] || null,
+          tokenId: event.returnValues?.['tokenId'] || null,
+          parameters: [] as { name: string; value: any }[]
+        };
+
+        const tx = await this.web3!.eth.getTransaction(event.transactionHash);
+        if (tx && tx.input && tx.input.length > 10) {
+          const functionSignature = tx.input.slice(0, 10);
+          transaction.functionName = this.getFunctionName(functionSignature);
+
+          try {
+            let paramTypes: string[] = [];
+            switch (functionSignature) {
+              case '0xa0712d68': // transfer(address,uint256)
+                paramTypes = ['uint256'];
+                break;
+              case '0x42842e0e': // safeTransferFrom(address,address,uint256)
+                paramTypes = ['address', 'address', 'uint256'];
+                break;
+              case '0x23b872dd': // transferFrom(address,address,uint256)
+                paramTypes = ['address', 'address', 'uint256'];
+                break;
+              case '0x095ea7b3': // approve(address,uint256)
+                paramTypes = ['address', 'uint256'];
+                break;
+              case '0x42843c37': // merge (exemple fictif, adapter selon votre cas)
+                paramTypes = ['address', 'uint256'];
+                break;
+              default:
+                paramTypes = [];
+            }
+
+            if (paramTypes.length > 0) {
+              const decodedParameters = this.web3!.eth.abi.decodeParameters(paramTypes, tx.input.slice(10));
+              transaction.parameters = Object.keys(decodedParameters)
+                .filter(key => isNaN(Number(key)))
+                .map(key => ({ name: key, value: decodedParameters[key] }));
+            }
+          } catch (decodeError) {
+            console.error('Error decoding parameters:', decodeError);
+          }
+        }
+        return transaction;
+      }));
+
+      return transactions.filter((tx) => tx !== null);
+    } catch (error) {
+      console.error('Error fetching contract events:', error);
+      return [];
+    }
+  }
+
+  private getFunctionName(signature: string): string {
+    const functionSignatures: { [key: string]: string } = {
+      '0xddff5b1c': 'Mint',
+      '0xd1c2babb': 'Merge',
+      '0xa0712d68': 'Mint',
+    };
+    return functionSignatures[signature] || 'Transfer';
   }
 
 

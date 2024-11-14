@@ -123,6 +123,20 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+
+                <div *ngIf="selectedOption === 'Activity'" class="token">
+                    <div class="token-block">
+                        <div *ngFor="let transaction of transferEvents.reverse()" class="token-list no-padding">
+                            <div class="token-list">
+                                <div>   
+                                    <p class="NFTtext">{{ transaction.functionName }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
             </div>

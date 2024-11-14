@@ -27,7 +27,8 @@ export class ModalAccount implements OnInit, OnDestroy {
   selectedOption: string = 'Token';
 
   balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
-  tokens:Number[] = [];
+  tokens: Number[] = [];
+  transferEvents: any[] = [];
 
   constructor(private web3Service: Web3Service, private exchangeRateService: ExchangeRateService) {
     this.subscription = new Subscription();
@@ -47,6 +48,7 @@ export class ModalAccount implements OnInit, OnDestroy {
         console.error("Error loading balances:", error);
       });
       this.tokenOfOwnerByIndex();
+      this.loadTransferEvents();
     });
   }
 
@@ -109,7 +111,6 @@ export class ModalAccount implements OnInit, OnDestroy {
   }
   
 
-
   convertBalance(balances: { symbol: string, balance: string, balanceConverted: number }) {
     if(!balances) return ["Loading ..."];
     const balanceStr = balances.balance;
@@ -142,6 +143,7 @@ export class ModalAccount implements OnInit, OnDestroy {
     return sortedBalances;
   }
 
+
   async tokenOfOwnerByIndex() {
     try {
       const result = await this.web3Service.tokenOfOwnerByIndex(this.walletAddress);
@@ -149,6 +151,15 @@ export class ModalAccount implements OnInit, OnDestroy {
     } catch (error) {
       console.error("Balance error:", error);
     }
+  }
+
+  loadTransferEvents(): void {
+    this.web3Service.getContractTransactions().then(events => {
+      this.transferEvents = events;
+    }).catch(error => {
+      console.error('Error loading Transfer events:', error);
+    });
+    console.log(this.transferEvents)
   }
   
 
