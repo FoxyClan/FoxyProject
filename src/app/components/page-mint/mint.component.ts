@@ -3,12 +3,16 @@ import { NotConnectedModal } from '../modal-not-connected/not-connected.componen
 import { combineLatest, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Web3Service } from "../../services/web3.service";
+import { ModalMint } from "../modal-mint/modal-mint.component";
 import Web3 from 'web3';
 
 @Component({
   selector: 'app-mint',
   standalone: true,
-  imports: [NotConnectedModal,CommonModule],
+  imports: [
+    NotConnectedModal,
+    CommonModule,
+    ModalMint],
   templateUrl: './mint.component.html',
   styleUrl: './mint.component.css'
 })
@@ -17,6 +21,8 @@ export class MintComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   private isConnected: boolean = false;
   walletAddress: any;
+
+  showMint: boolean = false;
 
   constructor(private web3Service: Web3Service) {
     this.subscription = new Subscription();
@@ -37,7 +43,15 @@ export class MintComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
- }
+  }
+
+  showMintModal() {
+    this.showMint = true;
+  }
+
+  closeMintModal() {
+    this.showMint = false;
+  }
 
   getConnected() {
     return this.isConnected;

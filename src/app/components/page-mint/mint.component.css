@@ -111,6 +111,7 @@ h2 {
     justify-content: center;
     transition: all 0.3s ease;
     box-sizing: border-box;
+    cursor: pointer;
 }
 
 .btn::after {
@@ -152,8 +153,7 @@ h2 {
 }
 
 .green-btn:hover::after {
-    background: #00FFA3;
-    inset: 3px;
+    background: #00925d;
 }
 
 .black-btn:hover span {
@@ -167,7 +167,16 @@ h2 {
 }
 
 .green-btn:hover {
-    background: white;
+    background: rgba(255, 255, 255, 0.825);
+}
+
+app-modal-mint {
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9;
 }
 
 
