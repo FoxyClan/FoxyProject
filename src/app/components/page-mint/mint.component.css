@@ -89,53 +89,86 @@ h2 {
     }
 }
 
+.btn-container {
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+}
+
+
 .btn {
+    width: 180px;
+    height: 60px;
     position: relative;
     text-decoration: none;
-    padding: 15px 30px;
     background: repeating-conic-gradient(from var(--a), var(--clr1) 0%, var(--clr1) 5%, transparent 5%, transparent 35%, var(--clr1) 50%);
     animation: animate 2.5s linear infinite;
     color: white;
     font-size: 1rem;
     font-weight: bold;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s ease;
+    box-sizing: border-box;
 }
-
 
 .btn::after {
     content: '';
     position: absolute;
     inset: 2px;
+    will-change: background;
+    transition: background 0.5s ease;
+}
+
+.black-btn::after {
     background: black;
+}
+
+.green-btn::after {
+    background: #00FFA3;
 }
 
 .btn span {
     font-family: "Orbitron", sans-serif;
-    font-weight: 600;
+    font-weight: 800;
     position: relative;
     font-size: 1rem;
     z-index: 2;
     text-transform: uppercase;
+}
+
+.black-btn span {
     color: white;
 }
 
-.btn:hover::after {
+.green-btn span {
+    color: black;
+}
+
+.black-btn:hover::after {
     background: rgb(211, 211, 211);
     inset: 3px;
 }
 
-.btn:hover span {
+.green-btn:hover::after {
+    background: #00FFA3;
+    inset: 3px;
+}
+
+.black-btn:hover span {
     font-weight: 1000;
     color: black;
 }
 
-.btn:hover {
+.black-btn:hover {
     background: repeating-conic-gradient(from var(--a), black 0%, black 5%, transparent 5%, transparent 35%, black 50%);
     animation: animate 2.5s linear infinite;
 }
 
-
+.green-btn:hover {
+    background: white;
+}
 
 
 
