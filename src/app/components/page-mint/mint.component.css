@@ -11,13 +11,16 @@
     justify-content: center;
 }
 
+video {
+    width: 100vw;
+}
+
 .filter {
     position: absolute;
     top: 0;
     left: 0;
     height: 100vh;
     width: 100%;
-    z-index: 100;
     background-color: rgba(0, 0, 0, 0.5);
 }
 
@@ -27,5 +30,123 @@
     left: 0;
     height: 100vh;
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.panel {
+    margin-top: 10vh;
+    height: 70%;
+    width: 70%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+}
+
+.panel-1 {
+    height: 100%;
+    width: 50%;
+    border: 5px solid black;
+    box-sizing: border-box;
+    padding: 1rem;
+}
+
+h1 {
+    font-family: "Orbitron", sans-serif;
+    font-weight: 1000;
+    font-size: 3rem;
+    word-spacing: 10px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    margin-bottom: 2rem;
+}
+
+h2 {
+    font-family: "Orbitron", sans-serif;
+    font-weight: 1000;
+    font-size: 1rem;
+    word-spacing: 10px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    margin-bottom: 32px;
+}
+
+@property --a {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+}
+
+
+@keyframes animate {
+    0% {
+        --a: 0deg;
+    }
+    100% {
+        --a: 360deg;
+    }
+}
+
+.btn {
+    position: relative;
+    text-decoration: none;
+    padding: 15px 30px;
+    background: repeating-conic-gradient(from var(--a), var(--clr1) 0%, var(--clr1) 5%, transparent 5%, transparent 35%, var(--clr1) 50%);
+    animation: animate 2.5s linear infinite;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+
+.btn::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: black;
+}
+
+.btn span {
+    font-family: "Orbitron", sans-serif;
+    font-weight: 600;
+    position: relative;
+    font-size: 1rem;
+    z-index: 2;
+    text-transform: uppercase;
+    color: white;
+}
+
+.btn:hover::after {
+    background: rgb(211, 211, 211);
+    inset: 3px;
+}
+
+.btn:hover span {
+    font-weight: 1000;
+    color: black;
+}
+
+.btn:hover {
+    background: repeating-conic-gradient(from var(--a), black 0%, black 5%, transparent 5%, transparent 35%, black 50%);
+    animation: animate 2.5s linear infinite;
+}
+
+
+
+
+
+
+
+
+
+.panel-2 {
+    height: 100%;
+    width: 50%;
+    border: 5px solid white;
+    box-sizing: border-box;
 }
 
