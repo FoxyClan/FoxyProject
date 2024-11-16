@@ -16,8 +16,9 @@
 	display: flex;
 	flex-direction: column;
 	gap: 10%;
-	padding: 5%;
+	padding: 5% 5% 0 5%;
 	box-sizing: border-box;
+	justify-content: space-between;
 }
 
 .block:before, .block:after {
@@ -60,17 +61,20 @@
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-	gap: 50px;
+	width: 100%;
+	height: 60px;
+	column-gap: 10%;
 }
 
 .counter {
 	border: 2px solid #444;
 	color: white;
 	font-size: 1rem;
-	width: 180px;
-	height: calc(58px - 1.2px);
+    width: 40%;
+    height: 100%;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
+	box-sizing: border-box;
 }
   
 .counter1 {
@@ -122,8 +126,8 @@
 
 
 .btn-mint {
-    width: 180px;
-    height: 60px;
+    width: 40%;
+    height: 100%;
     text-decoration: none;
     background: #00FFA3;
     display: flex;
@@ -175,11 +179,15 @@
     user-select: none;
 }
 
-.message {
+.message-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	height: 60px;
 	width: 100%;
-	position: absolute;
-	bottom: 10px;
-	left: 0;
+}
+
+.message {
 	font-size: 0.9rem;
 	text-align: center;
 }
