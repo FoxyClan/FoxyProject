@@ -1212,8 +1212,8 @@ export class Web3Service {
   }
 
   
-  public async mint() {
-    return this._mint(1, this.walletAddressSubject.value);
+  public async mint(numberOfTokens: number) {
+    return this._mint(numberOfTokens, this.walletAddressSubject.value);
   }
 
   public async merge(tokenId1: number, tokenId2: number) {
@@ -1228,10 +1228,11 @@ export class Web3Service {
   private async _mint(numberOfTokens: number, fromAddress: string): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+    const totalPrice = (numberOfTokens * 0.0125).toString();
     try {
       const result = await contract.methods['mint'](numberOfTokens).send({
         from: fromAddress,
-        value: this.web3.utils.toWei('0.0125', 'ether'),
+        value: this.web3.utils.toWei(totalPrice, 'ether'),
       });
       return result;
     } catch (error) {
@@ -1325,7 +1326,7 @@ export class Web3Service {
           const functionSignature = tx.input.slice(0, 10);
           transaction.functionName = this.getFunctionName(functionSignature);
 
-          try {
+          try {  // @ToDo
             let paramTypes: string[] = [];
             switch (functionSignature) {
               case '0xa0712d68': // transfer(address,uint256)
@@ -1359,7 +1360,6 @@ export class Web3Service {
         }
         return transaction;
       }));
-
       return transactions.filter((tx) => tx !== null);
     } catch (error) {
       console.error('Error fetching contract events:', error);

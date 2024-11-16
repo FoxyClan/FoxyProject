@@ -1,3 +1,13 @@
 <section class="modalMint" (click)="closeModal()">
-    <div class="block" (click)="stopEvent($event)"></div>
+    <div class="block" (click)="stopEvent($event)">
+        <div class="btn-container">
+            <div class="counter">
+                <span class="counter1" (click)="decrease()">-</span>
+                <input class="counter2" type="number" [(ngModel)]="counterValue" (change)="onInputChange()"/>
+                <span class="counter3" (click)="increase()">+</span>
+            </div>
+            <button (click)="mintNFT(counterValue)" class="btn-mint"><span>Mint</span></button>
+        </div>
+        
+    </div>
 </section>
