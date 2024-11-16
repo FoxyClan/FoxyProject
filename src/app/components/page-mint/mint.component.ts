@@ -12,7 +12,8 @@ import Web3 from 'web3';
   imports: [
     NotConnectedModal,
     CommonModule,
-    ModalMint],
+    ModalMint
+  ],
   templateUrl: './mint.component.html',
   styleUrl: './mint.component.css'
 })
@@ -89,6 +90,7 @@ export class MintComponent implements OnInit, OnDestroy {
        console.error("Balance error:", error);
     }
  }
+ 
  
 
     

@@ -12,6 +12,12 @@
 	width: 800px;
 	height: 450px;
 	background: linear-gradient(0deg, #000, #272727);
+	color: white;
+	display: flex;
+	flex-direction: column;
+	gap: 10%;
+	padding: 5%;
+	box-sizing: border-box;
 }
 
 .block:before, .block:after {
@@ -44,9 +50,16 @@
 	filter: blur(50px);
 }
 
+.line1 {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
 .btn-container {
 	display: flex;
 	flex-direction: row;
+	justify-content: center;
 	gap: 50px;
 }
 

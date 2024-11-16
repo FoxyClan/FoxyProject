@@ -1224,12 +1224,24 @@ export class Web3Service {
     return this._flipPublicSaleState(this.walletAddressSubject.value);
   }
 
-  
+  public async Supply() {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    try {
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const supply = await contract.methods['totalSupply']().call();
+      return supply;
+    } catch (error) {
+      console.error("Minting failed:", error);
+      throw error;
+    }
+  }
+
+  // @ToDo foxy price
   private async _mint(numberOfTokens: number, fromAddress: string): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");
-    const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
-    const totalPrice = (numberOfTokens * 0.0125).toString();
     try {
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const totalPrice = (numberOfTokens * 0.0125).toString();
       const result = await contract.methods['mint'](numberOfTokens).send({
         from: fromAddress,
         value: this.web3.utils.toWei(totalPrice, 'ether'),
