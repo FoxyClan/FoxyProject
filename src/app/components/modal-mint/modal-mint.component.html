@@ -2,7 +2,11 @@
     <div class="block" (click)="stopEvent($event)">
 
         <div class="line1">
-            <p>Remaining : {{ actualSupply }} / 20000</p>
+            <p>Total Minted : {{ actualSupply }} / 20000</p>
+        </div>
+
+        <div class="line1">
+            <p>Current Sale Minted : {{ actualSupply }} / 20000</p>
         </div>
 
         <div class="btn-container">
@@ -11,7 +15,20 @@
                 <input class="counter2" type="number" [(ngModel)]="counterValue" (change)="onInputChange()"/>
                 <span class="counter3" (click)="increase()">+</span>
             </div>
-            <button (click)="mintNFT(counterValue)" class="btn-mint"><span>Mint</span></button>
+
+            <button *ngIf="!isLoading" (click)="mintNFT(counterValue)" class="btn-mint">
+                <span>Mint</span>
+              </button>
+              <div *ngIf="isLoading" class="loading-spinner btn-mint">
+                <span>Loading...</span>
+              </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="message error-message">
+            {{ errorMessage }}
+        </div>
+        <div *ngIf="successMessage" class="message success-message">
+            {{ successMessage }}
         </div>
         
     </div>

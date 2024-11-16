@@ -1,11 +1,15 @@
 import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Web3Service } from "../../services/web3.service";
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-modal-mint',
   standalone: true,
-  imports: [FormsModule],
+  imports: [
+    FormsModule,
+    CommonModule
+  ],
   templateUrl: './modal-mint.component.html',
   styleUrl: './modal-mint.component.css'
 })
@@ -14,6 +18,9 @@ export class ModalMint implements OnInit, OnDestroy {
   counterValue: number = 1;
   actualSupply: any = "Load...";
   private intervalId: any;
+  isLoading: boolean = false;
+  errorMessage: string = "";
+  successMessage: string = "";
 
   constructor(private web3Service: Web3Service) {
   }
@@ -32,7 +39,7 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   closeModal() {
-    this.close.emit();
+    if(!this.isLoading) this.close.emit();
   }
   
   stopEvent(event: Event) {
@@ -40,7 +47,9 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   increase() {
-    this.counterValue++;
+    if (this.counterValue < 20) {
+      this.counterValue++;
+    }
   }
 
   decrease() {
@@ -53,15 +62,26 @@ export class ModalMint implements OnInit, OnDestroy {
     if (this.counterValue < 1) {
       this.counterValue = 1;
     }
+    if (this.counterValue > 20) {
+      this.counterValue = 20;
+    }
   }
 
   async mintNFT(numberOfTokens: number) {
+    this.isLoading = true;
+    this.errorMessage = "";
+    this.successMessage = "";
     try {
       const result = await this.web3Service.mint(numberOfTokens);
       console.log("Minting successful:", result);
+      this.successMessage = `Minting successful! You minted ${numberOfTokens} NFT` + (numberOfTokens > 1 ? 's.' : '.');
     } catch (error) {
       console.error("Minting error:", error);
+      this.errorMessage = "Transaction failed. Please try again.";
+    } finally {
+      this.isLoading = false;
     }
+    
   }
 
   async Supply() {
