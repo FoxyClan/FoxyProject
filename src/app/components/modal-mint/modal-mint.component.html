@@ -1,7 +1,7 @@
 <section class="modalMint" (click)="closeModal()">
-    <div class="block" (click)="stopEvent($event)">
+    <div class="block" (click)="stopEvent($event)" [class.success]="discover">
 
-        <div class="tab-line">
+        <div *ngIf="!discover">
             <div class="line">
                 <p>Total Minted : </p>
                 <p>{{ actualSupply }} / 20000</p>
@@ -23,8 +23,27 @@
             </div>
         </div>
 
+        <!-- AFTER MINT -->
+        <div *ngIf="discover" class="after-mint">
+            <div>
+                <video *ngIf="isVideoPlaying" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
+                    <source src="reveal1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="card-container">
+                <div *ngIf="discover" class="card">
+                    <img [class.blurred]="!isUnblurred" class="nft-adn" src="https://classical-turquoise-emu.myfilebase.com/ipfs/QmUMS2rwtYpf3b2GM5ciUF2XUMzJ5VH7SwR1524px8htxE" alt="NFT Image">
+                </div>
+            </div>
+
+            <button *ngIf="!isVideoPlaying" (click)="playVideo()" class="btn-mint btn-play">Discover my NFT</button>
+        </div>
+        
+
         <div class="btn-message">
-            <div class="btn-container">
+            <div  *ngIf="!discover"class="btn-container">
                 <div class="counter">
                     <span class="counter1" (click)="decrease()">-</span>
                     <input class="counter2" type="number" [(ngModel)]="counterValue" (change)="onInputChange()"/>
@@ -48,5 +67,7 @@
                 </div>
             </div>
         </div>
+
+        
     </div>
 </section>

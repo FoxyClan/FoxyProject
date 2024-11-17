@@ -21,6 +21,9 @@ export class ModalMint implements OnInit, OnDestroy {
   isLoading: boolean = false;
   errorMessage: string = "";
   successMessage: string = "";
+  discover: boolean = true;
+  isVideoPlaying: boolean = false;
+  isUnblurred: boolean = false;
 
   constructor(private web3Service: Web3Service) {
   }
@@ -71,17 +74,18 @@ export class ModalMint implements OnInit, OnDestroy {
     this.isLoading = true;
     this.errorMessage = "";
     this.successMessage = "";
+    this.discover = false;
     try {
       const result = await this.web3Service.mint(numberOfTokens);
       console.log("Minting successful:", result);
       this.successMessage = `Minting successful! You minted ${numberOfTokens} NFT` + (numberOfTokens > 1 ? 's.' : '.');
+      this.discover = true;
     } catch (error) {
       console.error("Minting error:", error);
       this.errorMessage = "Transaction failed. Please try again.";
     } finally {
       this.isLoading = false;
     }
-    
   }
 
   async Supply() {
@@ -92,4 +96,18 @@ export class ModalMint implements OnInit, OnDestroy {
       console.error("Supply error:", error);
     }
   }
+
+  playVideo() {
+    this.isVideoPlaying = true;
+    this.isUnblurred = true;
+
+    setTimeout(() => {
+      this.stopVideo();
+    }, 5000);
+  }
+
+  stopVideo() {
+    this.isVideoPlaying = false;
+  }
+
 }
