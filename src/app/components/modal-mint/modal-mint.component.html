@@ -1,15 +1,29 @@
 <section class="modalMint" (click)="closeModal()">
     <div class="block" (click)="stopEvent($event)">
 
-        <div class="line1">
-            <p>Total Minted : {{ actualSupply }} / 20000</p>
+        <div class="tab-line">
+            <div class="line">
+                <p>Total Minted : </p>
+                <p>{{ actualSupply }} / 20000</p>
+            </div>
+
+            <div class="line">
+                <p>Current Sale Minted : </p>
+                <p>{{ actualSupply }} / 20000</p>
+            </div>
+
+            <div class="line">
+                <p>Price : </p>
+                <p>0.0125 ETH</p>
+            </div>
+
+            <div class="line">
+                <p>Basket Price : </p>
+                <p>{{ counterValue * 0.0125 | number: '1.4-4'}} ETH</p>
+            </div>
         </div>
 
-        <div class="line1">
-            <p>Current Sale Minted : {{ actualSupply }} / 20000</p>
-        </div>
-
-        <div>
+        <div class="btn-message">
             <div class="btn-container">
                 <div class="counter">
                     <span class="counter1" (click)="decrease()">-</span>
