@@ -31,15 +31,27 @@
                     Your browser does not support the video tag.
                 </video>
             </div>
-
-            <div class="card-container">
-                <div *ngIf="discover" class="card">
-                    <img [class.blurred]="!isUnblurred" class="nft-adn" src="https://classical-turquoise-emu.myfilebase.com/ipfs/QmUMS2rwtYpf3b2GM5ciUF2XUMzJ5VH7SwR1524px8htxE" alt="NFT Image">
+            <div class="card-container">    
+                <div class="box">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <div class="card">
+                        <img [class.blurred]="!isUnblurred" class="nft-adn" src="https://classical-turquoise-emu.myfilebase.com/ipfs/QmUMS2rwtYpf3b2GM5ciUF2XUMzJ5VH7SwR1524px8htxE" alt="NFT Image">
+                    </div>
+                    <div class="card back">
+                        <img class="nft-adn" src="FoxyLogo.jpeg" alt="Foxy Logo">
+                    </div>
                 </div>
             </div>
-
-            <button *ngIf="!isVideoPlaying" (click)="playVideo()" class="btn-mint btn-play">Discover my NFT</button>
+            
+            <div class="card-container"> 
+                <button *ngIf="!isVideoPlaying" (click)="playVideo()" class="btn-mint btn-play">Discover my NFT</button>
+            </div>
         </div>
+
+        
         
 
         <div class="btn-message">
