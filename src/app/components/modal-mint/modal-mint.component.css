@@ -369,7 +369,7 @@
 
 .card-face {
     position: absolute;
-    background-color: #444;
+    background-color: #090c1d;
 }
 
 .card-face.left,
@@ -445,6 +445,7 @@
 	background: #0093ff;
 	animation: animate 4s linear infinite;
 }
+
 @keyframes animate{
 	0%{
 		transform: scaleX(0);
@@ -468,7 +469,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: filter 3s ease-out;
+    transition: filter 5s ease-out;
 }
 
 .blurred {
