@@ -24,6 +24,8 @@ export class ModalMint implements OnInit, OnDestroy {
   discover: boolean = true;
   isVideoPlaying: boolean = false;
   isUnblurred: boolean = false;
+  isSpinning: boolean = false;
+  rotationSpeed: string = "5s";
 
   constructor(private web3Service: Web3Service) {
   }
@@ -97,13 +99,30 @@ export class ModalMint implements OnInit, OnDestroy {
     }
   }
 
+  startSpinEffect() {
+    const box = document.querySelector(".box") as HTMLElement;
+  
+    // Ajoute la classe pour démarrer l'animation
+    if (box) {
+      box.classList.add("spinning");
+  
+      // Supprime l'animation après 4 secondes pour la fixer à la position finale
+      setTimeout(() => {
+        box.classList.remove("spinning");
+        box.style.animation = "none"; // Désactive l'animation
+        box.style.transform = "rotateY(1080deg)"; // Assure l'arrêt sur la bonne face
+      }, 6000);
+    }
+  }
+  
+
   playVideo() {
     this.isVideoPlaying = true;
     this.isUnblurred = true;
 
     setTimeout(() => {
       this.stopVideo();
-    }, 5000);
+    }, 7000);
   }
 
   stopVideo() {

@@ -58,7 +58,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0x6AF40dC1A64280A26Dc3F20744AD5BCC3AE95E4c';
+  private FoxyClanContractAddress = '0xd14baebc59974705fc8ed99de62f731756efb57c';
 
   private FoxyClanABI = [
     {
@@ -1024,7 +1024,7 @@ export class Web3Service {
         if(selectedWallet === 'CoinbaseWallet') {     // Coinbase Wallet
           const CoinbaseWallet = new Coinbase({
             appName: 'FoxyCLan',
-            appLogoUrl: 'BaseCharacter.jpeg',
+            appLogoUrl: 'FoxyLogo.jpeg',
             appChainIds: [1],
           });
           this.provider = CoinbaseWallet.makeWeb3Provider({

@@ -55,7 +55,7 @@
             </div>
             
             <div class="card-container"> 
-                <button *ngIf="!isVideoPlaying" (click)="playVideo()" class="btn-mint btn-play">Discover my NFT</button>
+                <button *ngIf="!isVideoPlaying" (click)="playVideo(); startSpinEffect()" class="btn-mint btn-play">Discover my NFT</button>
             </div>
         </div>
 
