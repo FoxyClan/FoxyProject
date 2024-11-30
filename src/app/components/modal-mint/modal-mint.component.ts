@@ -101,29 +101,88 @@ export class ModalMint implements OnInit, OnDestroy {
 
   startSpinEffect() {
     const box = document.querySelector(".box") as HTMLElement;
+
+    if (!box) {
+      console.error("Element '.box' not found!");
+      return;
+    }
+
+    const handleAnimationEnd = () => {
+      box.removeEventListener("animationiteration", handleAnimationEnd);
   
-    if (box) {
-      // Écoute l'événement "animationiteration" pour détecter la fin d'un cycle d'animation
-      const handleAnimationEnd = () => {
-        // Supprime l'écouteur pour éviter plusieurs déclenchements
-        box.removeEventListener("animationiteration", handleAnimationEnd);
+      // Récupérer la rotation actuelle
+      const currentRotation = Math.round(this.getCurrentRotation(box));
+      console.log(`Rotation actuelle : ${currentRotation} degrés`);
   
-        // Passe à la deuxième animation
+      if (currentRotation === 180) {
+        console.log("Lancement de rotateFix...");
+  
+        // Ajouter l'animation rotateFix
+        box.classList.add("rotateFix");
+  
+        // Attendre la fin de rotateFix avant de lancer crescendoDecrescendo
+        box.addEventListener(
+          "animationend",
+          function rotateFixEnd() {
+            box.classList.remove("rotateFix");
+            box.removeEventListener("animationend", rotateFixEnd);
+  
+            console.log("rotateFix terminé, lancement de crescendoDecrescendo...");
+            box.classList.add("spinning");
+            startCrescendoDecrescendo();
+          }
+        );
+      } else {
+        console.log("Lancement direct de crescendoDecrescendo...");
         box.classList.add("spinning");
-        this.playVideo();
+        startCrescendoDecrescendo();
+      }
+    };
   
-        // Supprime la deuxième animation après qu'elle se termine
-        setTimeout(() => {
-          box.classList.remove("spinning");
-          box.style.animation = "none"; // Fixe la boîte à sa position finale
-          box.style.transform = "rotateY(1080deg)"; // Position finale après 3 tours
-        }, 7000); // Durée de `crescendoDecrescendo`
-      };
+    const startCrescendoDecrescendo = () => {
+      this.playVideo();
   
-      // Attendre que le cycle actuel de "defaultRotation" se termine
-      box.addEventListener("animationiteration", handleAnimationEnd);
+      // Supprimer crescendoDecrescendo après sa durée
+      setTimeout(() => {
+        box.classList.remove("spinning");
+        box.style.animation = "none"; // Fixe l'élément à sa position finale
+        box.style.transform = "rotateY(1080deg)"; // Position finale
+      }, 7000); // Durée de crescendoDecrescendo
+    };
+  
+    // Ajouter un écouteur pour attendre la fin d'un cycle d'animation
+    box.addEventListener("animationiteration", handleAnimationEnd);
+  }
+
+  getCurrentRotation(element: HTMLElement): number {
+    const computedStyle = window.getComputedStyle(element);
+    const transform = computedStyle.transform;
+  
+    if (transform === "none" || !transform) {
+      return 0; // Pas de transformation appliquée
+    }
+  
+    // Vérifier si c'est une matrice 3D ou 2D
+    const matrixValues = transform.match(/matrix\((.+)\)/) || transform.match(/matrix3d\((.+)\)/);
+  
+    if (!matrixValues || !matrixValues[1]) {
+      return 0;
+    }
+  
+    // Extraire les valeurs de la matrice
+    const values = matrixValues[1].split(", ").map(parseFloat);
+  
+    if (transform.startsWith("matrix3d")) {
+      // Pour une matrice 3D, la rotation Y est liée à la composante [0][0] et [2][0]
+      const angleY = Math.atan2(values[2], values[0]);
+      return (angleY * 180) / Math.PI; // Convertir en degrés
+    } else {
+      // Pour une matrice 2D, la rotation est liée à [0][1] et [0][0]
+      const angle = Math.atan2(values[1], values[0]);
+      return (angle * 180) / Math.PI; // Convertir en degrés
     }
   }
+  
   
   
 

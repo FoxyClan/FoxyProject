@@ -278,16 +278,30 @@
 	to {
 	  transform: rotateY(360deg);
 	}
+}
+
+@keyframes rotateFix {
+	from {
+	  transform: rotateY(-180deg);
+	}
+	to {
+	  transform: rotateY(0deg);
+	}
+}
+
+.box.rotateFix {
+	animation: rotateFix 2s linear forwards;
   }
+
   
-  .box {
+.box {
 	position: relative;
 	height: 100%;
 	width: auto;
 	aspect-ratio: 1 / 1;
 	transform-style: preserve-3d;
 	animation: defaultRotation 4s linear infinite; /* Rotation normale continue */
-  }
+}
   
   /* Animation crescendo/decrescendo */
   @keyframes crescendoDecrescendo {
