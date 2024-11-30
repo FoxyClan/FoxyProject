@@ -102,18 +102,29 @@ export class ModalMint implements OnInit, OnDestroy {
   startSpinEffect() {
     const box = document.querySelector(".box") as HTMLElement;
   
-    // Ajoute la classe pour démarrer l'animation
     if (box) {
-      box.classList.add("spinning");
+      // Écoute l'événement "animationiteration" pour détecter la fin d'un cycle d'animation
+      const handleAnimationEnd = () => {
+        // Supprime l'écouteur pour éviter plusieurs déclenchements
+        box.removeEventListener("animationiteration", handleAnimationEnd);
   
-      // Supprime l'animation après 4 secondes pour la fixer à la position finale
-      setTimeout(() => {
-        box.classList.remove("spinning");
-        box.style.animation = "none"; // Désactive l'animation
-        box.style.transform = "rotateY(1080deg)"; // Assure l'arrêt sur la bonne face
-      }, 6000);
+        // Passe à la deuxième animation
+        box.classList.add("spinning");
+        this.playVideo();
+  
+        // Supprime la deuxième animation après qu'elle se termine
+        setTimeout(() => {
+          box.classList.remove("spinning");
+          box.style.animation = "none"; // Fixe la boîte à sa position finale
+          box.style.transform = "rotateY(1080deg)"; // Position finale après 3 tours
+        }, 7000); // Durée de `crescendoDecrescendo`
+      };
+  
+      // Attendre que le cycle actuel de "defaultRotation" se termine
+      box.addEventListener("animationiteration", handleAnimationEnd);
     }
   }
+  
   
 
   playVideo() {

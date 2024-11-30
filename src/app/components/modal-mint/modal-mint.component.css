@@ -295,17 +295,26 @@
 	  transform: rotateY(0deg);
 	  animation-timing-function: ease-in;
 	}
-	25% {
+	20% {
 	  transform: rotateY(720deg); /* Accélération (2 tours complets en 2s) */
 	  animation-timing-function: ease-out;
 	}
-	100% {
+	80% {
 	  transform: rotateY(1440deg); /* Ralentissement (1 tour complet en 2s) */
+	}
+	95% {
+		transform: scale(100%);
+	}
+	98% {
+		transform: scale(105%);
+	}
+	100% {
+		transform: scale(100%);
 	}
   }
   
   .box.spinning {
-	animation: crescendoDecrescendo 6s forwards;
+	animation: crescendoDecrescendo 7s forwards;
   }
   
   
