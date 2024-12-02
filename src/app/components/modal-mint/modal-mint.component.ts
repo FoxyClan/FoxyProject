@@ -23,6 +23,7 @@ export class ModalMint implements OnInit, OnDestroy {
   successMessage: string = "";
   discover: boolean = true;
   isVideoPlaying: boolean = false;
+  isLegendaryVideoPlaying: boolean = false;
   isUnblurred: boolean = false;
   isSpinning: boolean = false;
   rotationSpeed: string = "5s";
@@ -191,12 +192,25 @@ export class ModalMint implements OnInit, OnDestroy {
     this.isUnblurred = true;
 
     setTimeout(() => {
+      this.isLegendaryVideoPlaying = true;
+    }, 2000);
+
+
+    setTimeout(() => {
       this.stopVideo();
     }, 7000);
+
+    setTimeout(() => {
+      this.stopRarityVideo();
+    }, 9000);
   }
 
   stopVideo() {
     this.isVideoPlaying = false;
+  }
+
+  stopRarityVideo() {
+    this.isLegendaryVideoPlaying = false;
   }
 
 }

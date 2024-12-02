@@ -31,6 +31,12 @@
                     Your browser does not support the video tag.
                 </video>
             </div>
+            <div>
+                <video *ngIf="isLegendaryVideoPlaying" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
+                    <source src="normalEffect.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
             <div class="card-container">    
                 <div class="box">
                     <span></span>
