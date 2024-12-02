@@ -1,4 +1,5 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
-    "comments.collapseOnResolve": true
+    "comments.collapseOnResolve": true,
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
