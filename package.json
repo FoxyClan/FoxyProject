@@ -24,6 +24,7 @@
     "@angular/ssr": "^18.2.4",
     "@coinbase/wallet-sdk": "^4.1.0",
     "@metamask/sdk": "^0.29.2",
+    "axios": "^1.7.8",
     "express": "^4.18.2",
     "foxy-project": "file:",
     "rxjs": "~7.8.0",

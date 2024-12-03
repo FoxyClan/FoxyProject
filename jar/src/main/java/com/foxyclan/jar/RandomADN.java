@@ -2,6 +2,7 @@ package com.foxyclan.jar;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,8 +30,8 @@ public class RandomADN {
     
     @GetMapping("/adn")
     @CrossOrigin(origins = "http://localhost:4200")
-    public String generateDNA() {                   // @Todo prendre les token id en paramettre 
-        String Head = generateTraitDNA(16);
+    public void generateDNA(@RequestParam int tokenId) throws IOException {        // @Todo gerer les meme adn, mettre les rareté, modifier les 
+        String Head = generateTraitDNA(16);                               // noms dans le json, faire les traits impossible a combiner 
         String Mouth = generateTraitDNA(16);
         String Eyes = generateTraitDNA(16);
         String Clothes = generateTraitDNA(16);
@@ -45,21 +46,16 @@ public class RandomADN {
         adn.put("Fur", Fur);
         adn.put("Background", Background);
 
-        String nftADN;
         try {
-            nftADN = createNFT(adn);
-            
-            // Téléverser l'image générée à Filebase
-            uploadToFilebase(nftADN + ".png", "NFT\\" + nftADN + ".png");
+            createNFT(adn, tokenId);
+            uploadToFilebase(tokenId + ".png");
 
-            // Générer et téléverser le fichier JSON des métadonnées
-            String metadataFileName = createMetadataFile(adn, nftADN);
-            uploadToFilebase(metadataFileName, "NFT\\" + metadataFileName);
-
+            createMetadataFile(adn, tokenId);
+            uploadToFilebase(tokenId + ".json");
         } catch(IOException e) {
-            nftADN = "";
+            e.printStackTrace();
+            throw e;
         }
-        return nftADN;
     }
 
     private String generateTraitDNA(int interval) {
@@ -68,15 +64,8 @@ public class RandomADN {
         return String.format("%02d", number); // Formate le nombre en deux chiffres
     }
 
-    private String createNFT(Map<String, String> adn) throws IOException {
+    private void createNFT(Map<String, String> adn, int tokenId) throws IOException {
         try {
-            String name = adn.get("Head")
-                        + adn.get("Mouth")
-                        + adn.get("Eyes")
-                        + adn.get("Clothes")
-                        + adn.get("Fur")
-                        + adn.get("Background");
-
             BufferedImage background = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Background\\" + adn.get("Background") + ".png"));
             BufferedImage fur = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Fur\\" + adn.get("Fur") + ".png"));
             BufferedImage clothes = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Clothes\\" + adn.get("Clothes") + ".png"));
@@ -99,10 +88,8 @@ public class RandomADN {
             g.dispose();
 
             // Sauvegarder le résultat de la superposition dans un nouveau fichier
-            ImageIO.write(combined, "PNG", new File("jar\\src\\main\\resources\\NFT\\" + name + ".png"));
-            System.out.println("Images superposées et enregistrées dans " + name + ".png");
-
-            return name;
+            ImageIO.write(combined, "PNG", new File("jar\\src\\main\\resources\\tmp\\" + tokenId + ".png"));
+            System.out.println("Images superposées et enregistrées dans : " + tokenId + ".png");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -112,7 +99,7 @@ public class RandomADN {
 
 
 
-    private void uploadToFilebase(String fileName, String localFilePath) throws IOException {
+    private void uploadToFilebase(String fileName) throws IOException {
         String accessKey = "14BF7594BA96ADCC021B";
         String secretKey = "1mSomlS0ABFMBWA0kRb59iNzUxGDkjAW5pbXecHR";
         String endpointUrl = "https://s3.filebase.com";
@@ -125,7 +112,7 @@ public class RandomADN {
                         AwsBasicCredentials.create(accessKey, secretKey)))
                 .build();
 
-        uploadFile(s3Client, bucketName, fileName, Path.of("jar\\src\\main\\resources\\" + localFilePath));
+        uploadFile(s3Client, bucketName, fileName, Path.of("jar\\src\\main\\resources\\tmp\\" + fileName));
     }
 
 
@@ -147,12 +134,18 @@ public class RandomADN {
 
 
 
-    private String createMetadataFile(Map<String, String> adn, String nftADN) throws IOException {
+    private void createMetadataFile(Map<String, String> adn, int tokenId) throws IOException {
         Map<String, Object> metadata = new HashMap<>();
         
-        String imageUrl = "https://foxyclan.s3.filebase.com/" + nftADN + ".png"; // @ToDo mettre le token id plus tard
+        String imageUrl = "https://foxyclan.s3.filebase.com/" + tokenId + ".png"; // @ToDo mettre le token id plus tard
         String description = "Foxy Clan is a unique collection of adorable and distinctive red pandas, celebrating their playful charm on the blockchain.";
-        String name = "Foxy Clan #";
+        String name = "Foxy Clan #" + tokenId;
+        String nftADN = adn.get("Head")
+                        + adn.get("Mouth")
+                        + adn.get("Eyes")
+                        + adn.get("Clothes")
+                        + adn.get("Fur")
+                        + adn.get("Background");
 
         metadata.put("image", imageUrl);
         metadata.put("description", description);
@@ -167,14 +160,12 @@ public class RandomADN {
             Map.of("value", adn.get("Mouth"), "trait_type", "Mouth")
         });
 
-        String metadataFileName = nftADN + ".json";
-        File metadataFile = new File("jar\\src\\main\\resources\\NFT\\" + metadataFileName);
+        File metadataFile = new File("jar\\src\\main\\resources\\tmp\\" + tokenId + ".json");
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.writeValue(metadataFile, metadata);
 
-        System.out.println("Fichier JSON des métadonnées créé : " + metadataFileName);
-        return metadataFileName;
+        System.out.println("Fichier JSON des métadonnées créé : " + tokenId + ".json");
     }
 
 

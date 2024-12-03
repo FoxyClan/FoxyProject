@@ -3,9 +3,21 @@ import Web3, { EventLog } from 'web3';
 import Coinbase from '@coinbase/wallet-sdk';
 import { MetaMaskSDK } from "@metamask/sdk"
 import { BehaviorSubject } from 'rxjs';
-import { log } from 'console';
+import axios from 'axios';
 
 declare let window: any;
+
+interface TransferEvent {
+  returnValues: {
+    tokenId: string;
+  };
+}
+
+interface MintResult {
+  events?: {
+    Transfer?: TransferEvent[];
+  };
+}
 
 @Injectable({
   providedIn: 'root'
@@ -947,7 +959,7 @@ export class Web3Service {
     }
   ];
   
-  private FoxyPrice = Web3.utils.toWei('0.0125', 'ether');
+  private FoxyPrice = 0.0125;
 
   
   constructor() {
@@ -1236,17 +1248,37 @@ export class Web3Service {
     }
   }
 
-  // @ToDo foxy price
   private async _mint(numberOfTokens: number, fromAddress: string): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");
+  
     try {
       const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
-      const totalPrice = (numberOfTokens * 0.0125).toString();
-      const result = await contract.methods['mint'](numberOfTokens).send({
+      const totalPrice = (numberOfTokens * this.FoxyPrice).toString();
+
+      // Appeler la méthode `mint` du contrat
+      const result: MintResult = await contract.methods['mint'](numberOfTokens).send({
         from: fromAddress,
         value: this.web3.utils.toWei(totalPrice, 'ether'),
       });
-      return result;
+      
+      if (!result.events || !result.events.Transfer) throw new Error("No Transfer events found in the transaction result.");
+
+      // Extraire les tokenIds des événements de transfert
+      const tokenIds = result.events.Transfer.map(event => event.returnValues.tokenId);
+      console.log('Minted Token IDs:', tokenIds);
+
+      // Appeler le backend pour générer les ADN
+      for (let i = 0; i < tokenIds.length; i++) {
+        const tokenId = tokenIds[i]; // Récupérer le tokenId
+        axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`) // Passer tokenId en tant que paramètre
+          .then(() => {
+            console.log(`DNA generated for Token ID: ${tokenId}`);
+          })
+          .catch((error) => {
+            console.error(`Error generating DNA for Token ID: ${tokenId}`, error);
+          });
+      }
+      return tokenIds;
     } catch (error) {
       console.error("Minting failed:", error);
       throw error;

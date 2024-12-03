@@ -10,7 +10,12 @@ public class JarApplication {
 	public static void main(String[] args) {
 		//SpringApplication.run(JarApplication.class, args);
 		RandomADN rand = new RandomADN();
-		rand.generateDNA();
+		try {
+			rand.generateDNA(1);
+			rand.generateDNA(2);
+		} catch(Exception e) {
+
+		}
 	}
 
 }
