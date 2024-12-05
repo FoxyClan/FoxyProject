@@ -251,6 +251,7 @@ export class ModalMint implements OnInit, OnDestroy {
 
     setTimeout(() => {
       this.stopVideo();
+      this.isAnimationPlaying = false;
     }, 7000);
 
     setTimeout(() => {
@@ -259,7 +260,7 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   stopVideo() {
-    this.isAnimationPlaying = false;
+    this.showButton = true;
   }
 
   stopRarityVideo() {

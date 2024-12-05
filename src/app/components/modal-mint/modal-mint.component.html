@@ -73,7 +73,7 @@
 
                     <div class="card-face front">
                         <img [class.blurred]="!isUnblurred" class="nft-adn" 
-                            [src]="'data:image/png;base64,' + mintedNfts[0].image" 
+                            [src]="'data:image/png;base64,' + mintedNfts[tokenIndex].image" 
                             alt="NFT Image">
                     </div>
                     <div class="card-face back">
@@ -87,7 +87,7 @@
             </div>
             
             <div class="card-container"> 
-                <button *ngIf="showButton" (click)="DiscoverEffect()" class="btn-mint btn-play">Discover my NFT</button>
+                <button *ngIf="showButton" (click)="DiscoverEffect()" class="btn-play">Discover my NFT ( {{ tokenIndex + 1 }} / {{ mintedNfts.length }} )</button>
             </div>
         </div>
 
