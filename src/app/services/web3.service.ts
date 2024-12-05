@@ -4,6 +4,7 @@ import Coinbase from '@coinbase/wallet-sdk';
 import { MetaMaskSDK } from "@metamask/sdk"
 import { BehaviorSubject } from 'rxjs';
 import axios from 'axios';
+import { consumerBeforeComputation } from '@angular/core/primitives/signals';
 
 declare let window: any;
 
@@ -15,8 +16,16 @@ interface TransferEvent {
 
 interface MintResult {
   events?: {
-    Transfer?: TransferEvent[];
+    Transfer?: TransferEvent | TransferEvent[]; // Peut être un seul objet ou un tableau
   };
+}
+
+interface TransferLog {
+  event: string; // Nom de l'événement, e.g., "Transfer"
+  returnValues: {
+    tokenId: string; // Ou `bigint` si c'est votre choix
+  };
+  [key: string]: any; // Pour d'autres propriétés éventuelles
 }
 
 @Injectable({
@@ -70,7 +79,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0xd14baebc59974705fc8ed99de62f731756efb57c';
+  private FoxyClanContractAddress = '0x671A2d543f9E3f35ddb5f8e82A4B2d6A25BF54D5';
 
   private FoxyClanABI = [
     {
@@ -1252,38 +1261,49 @@ export class Web3Service {
     if (!this.web3) throw new Error("Web3 not initialized");
   
     try {
+      const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(fromAddress);
       const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
       const totalPrice = (numberOfTokens * this.FoxyPrice).toString();
-
-      // Appeler la méthode `mint` du contrat
-      const result: MintResult = await contract.methods['mint'](numberOfTokens).send({
+  
+      const result = await contract.methods['mint'](numberOfTokens).send({
         from: fromAddress,
         value: this.web3.utils.toWei(totalPrice, 'ether'),
       });
-      
-      if (!result.events || !result.events.Transfer) throw new Error("No Transfer events found in the transaction result.");
 
-      // Extraire les tokenIds des événements de transfert
-      const tokenIds = result.events.Transfer.map(event => event.returnValues.tokenId);
-      console.log('Minted Token IDs:', tokenIds);
+       // Attendre que les nouveaux jetons soient disponibles
+       let tokenIdsAfter: number[] = [];
+       do {
+           tokenIdsAfter = await this.tokenOfOwnerByIndex(fromAddress);
+       } while (tokenIdsAfter.length === tokenIdsBefore.length);
 
-      // Appeler le backend pour générer les ADN
-      for (let i = 0; i < tokenIds.length; i++) {
-        const tokenId = tokenIds[i]; // Récupérer le tokenId
-        axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`) // Passer tokenId en tant que paramètre
-          .then(() => {
-            console.log(`DNA generated for Token ID: ${tokenId}`);
-          })
-          .catch((error) => {
-            console.error(`Error generating DNA for Token ID: ${tokenId}`, error);
-          });
-      }
-      return tokenIds;
+       // Identifier les nouveaux jetons mintés
+       const newTokenIds: number[] = tokenIdsAfter.filter(
+           (id) => !tokenIdsBefore.includes(id)
+       );
+
+       const nftData = await Promise.all(
+        newTokenIds.map(async (tokenId) => {
+            try {
+                const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`);
+                return {
+                    tokenId,
+                    image: response.data.image, // Image en base64
+                    metadata: response.data.metadata, // Métadonnées
+                };
+            } catch (error) {
+                console.error(`Erreur lors de la récupération de l'ADN pour le Token ID ${tokenId}:`, error);
+                return null; // Retourner `null` en cas d'erreur
+            }
+        })
+      )
+      console.log(nftData.filter((data) => data !== null))
+      return nftData.filter((data) => data !== null);
     } catch (error) {
       console.error("Minting failed:", error);
       throw error;
     }
   }
+    
 
   private async _flipPublicSaleState(fromAddress: string): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");

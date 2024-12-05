@@ -1,7 +1,9 @@
 import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Web3Service } from "../../services/web3.service";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import axios from 'axios';
 
 @Component({
   selector: 'app-modal-mint',
@@ -11,8 +13,22 @@ import { CommonModule } from '@angular/common';
     CommonModule
   ],
   templateUrl: './modal-mint.component.html',
-  styleUrl: './modal-mint.component.css'
+  styleUrl: './modal-mint.component.css',
+  animations: [
+    trigger('fadeInOut', [
+      state('void', style({
+        opacity: 0
+      })),
+      transition('void => *', [
+        animate('500ms ease-in-out')
+      ]),
+      transition('* => void', [
+        animate('500ms ease-in-out')
+      ])
+    ])
+  ]
 })
+
 export class ModalMint implements OnInit, OnDestroy {
   @Output() close = new EventEmitter();
   counterValue: number = 1;
@@ -21,12 +37,29 @@ export class ModalMint implements OnInit, OnDestroy {
   isLoading: boolean = false;
   errorMessage: string = "";
   successMessage: string = "";
-  discover: boolean = true;
-  isVideoPlaying: boolean = false;
+  success: boolean = false; // Montre le 
+  discover: boolean = false; // Deux secondes apres success
+  isAnimationPlaying: boolean = false; // Video d'animation qui defile
+  showButton: boolean = true; // Pour montrer le bouton de discover
   isLegendaryVideoPlaying: boolean = false;
-  isUnblurred: boolean = false;
+  isUnblurred: boolean = false; // Blur du nft
   isSpinning: boolean = false;
   rotationSpeed: string = "5s";
+
+  mintedNfts: {   // Déclaration du tableau qui contient les images et les métadonnées
+    tokenId: number;
+    image: string;           // L'image en base64
+    metadata: {             // Métadonnées associées au NFT
+      name: string;
+      description: string;
+      image: string;
+      attributes: {          // Liste des attributs du NFT
+        trait_type: string;
+        value: string;
+      }[];
+    };
+  }[] = [];  // Initialisation comme un tableau vide
+  tokenIndex: number = 0;
 
   constructor(private web3Service: Web3Service) {
   }
@@ -80,9 +113,35 @@ export class ModalMint implements OnInit, OnDestroy {
     this.discover = false;
     try {
       const result = await this.web3Service.mint(numberOfTokens);
-      console.log("Minting successful:", result);
-      this.successMessage = `Minting successful! You minted ${numberOfTokens} NFT` + (numberOfTokens > 1 ? 's.' : '.');
-      this.discover = true;
+      console.log('API Response:', result);
+      const nftDataPromises = result.map(async (nft: { tokenId: number; image: string; metadata: any }) => {
+        try {
+          // Utilisez les valeurs de l'objet nft (tokenId, image, metadata)
+          const response = {
+            tokenId: nft.tokenId,
+            image: nft.image, // L'image en base64
+            metadata: nft.metadata // Métadonnées
+          };
+          return response;
+        } catch (error) {
+          console.error(`Erreur lors de la récupération des données pour le Token ID ${nft.tokenId}:`, error);
+          return null;
+        }
+      });
+
+      // Attendre que toutes les promesses soient résolues
+      const nftData = await Promise.all(nftDataPromises);
+
+      // Filtrer les résultats valides (pas de null)
+      this.mintedNfts = nftData.filter(data => data !== null);
+
+      console.log(this.mintedNfts);  // Affiche les images et métadonnées des NFTs
+
+      this.successMessage = `Minting successful ! You minted ${numberOfTokens} NFT` + (numberOfTokens > 1 ? 's.' : '.');
+      this.success = true;
+      setTimeout(() => {
+        this.discover = true; // attend que le block.success grandisse pour apparaitre
+      }, 2000); 
     } catch (error) {
       console.error("Minting error:", error);
       this.errorMessage = "Transaction failed. Please try again.";
@@ -100,11 +159,11 @@ export class ModalMint implements OnInit, OnDestroy {
     }
   }
 
-  startSpinEffect() {
+  DiscoverEffect() {
+    this.showButton = false;
     const box = document.querySelector(".box") as HTMLElement;
 
     if (!box) {
-      console.error("Element '.box' not found!");
       return;
     }
 
@@ -113,14 +172,10 @@ export class ModalMint implements OnInit, OnDestroy {
   
       // Récupérer la rotation actuelle
       const currentRotation = Math.round(this.getCurrentRotation(box));
-      console.log(`Rotation actuelle : ${currentRotation} degrés`);
   
       if (currentRotation === 180) {
-        console.log("Lancement de rotateFix...");
-  
         // Ajouter l'animation rotateFix
         box.classList.add("rotateFix");
-  
         // Attendre la fin de rotateFix avant de lancer crescendoDecrescendo
         box.addEventListener(
           "animationend",
@@ -128,13 +183,11 @@ export class ModalMint implements OnInit, OnDestroy {
             box.classList.remove("rotateFix");
             box.removeEventListener("animationend", rotateFixEnd);
   
-            console.log("rotateFix terminé, lancement de crescendoDecrescendo...");
             box.classList.add("spinning");
             startCrescendoDecrescendo();
           }
         );
       } else {
-        console.log("Lancement direct de crescendoDecrescendo...");
         box.classList.add("spinning");
         startCrescendoDecrescendo();
       }
@@ -188,7 +241,7 @@ export class ModalMint implements OnInit, OnDestroy {
   
 
   playVideo() {
-    this.isVideoPlaying = true;
+    this.isAnimationPlaying = true;
     this.isUnblurred = true;
 
     setTimeout(() => {
@@ -206,7 +259,7 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   stopVideo() {
-    this.isVideoPlaying = false;
+    this.isAnimationPlaying = false;
   }
 
   stopRarityVideo() {

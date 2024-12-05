@@ -1,7 +1,7 @@
 <section class="modalMint" (click)="closeModal()">
-    <div class="block" (click)="stopEvent($event)" [class.success]="discover">
+    <div class="block" (click)="stopEvent($event)" [class.success]="success">
 
-        <div *ngIf="!discover">
+        <div *ngIf="!success">
             <div class="line">
                 <p>Total Minted : </p>
                 <p>{{ actualSupply }} / 20000</p>
@@ -22,54 +22,9 @@
                 <p>{{ counterValue * 0.0125 | number: '1.4-4'}} ETH</p>
             </div>
         </div>
-
-        <!-- AFTER MINT -->
-        <div *ngIf="discover" class="after-mint">
-            <div>
-                <video *ngIf="isVideoPlaying" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
-                    <source src="reveal1.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-            <div>
-                <video *ngIf="isLegendaryVideoPlaying" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
-                    <source src="1Effect.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-            <div class="card-container">    
-                <div class="box">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-
-                    <div class="card-face front">
-                        <img [class.blurred]="!isUnblurred" class="nft-adn" 
-                            src="https://classical-turquoise-emu.myfilebase.com/ipfs/QmUMS2rwtYpf3b2GM5ciUF2XUMzJ5VH7SwR1524px8htxE" 
-                            alt="NFT Image">
-                    </div>
-                    <div class="card-face back">
-                        <img class="nft-adn" src="FoxyLogo.jpeg" alt="Foxy Logo">
-                    </div>
-                    <div class="card-face left"></div>
-                    <div class="card-face right"></div>
-                    <div class="card-face top"></div>
-                    <div class="card-face bottom"></div>
-
-                </div>
-            </div>
-            
-            <div class="card-container"> 
-                <button *ngIf="!isVideoPlaying" (click)="startSpinEffect()" class="btn-mint btn-play">Discover my NFT</button>
-            </div>
-        </div>
-
         
-        
-
-        <div class="btn-message">
-            <div  *ngIf="!discover"class="btn-container">
+        <div *ngIf="!success" class="btn-message">
+            <div class="btn-container">
                 <div class="counter">
                     <span class="counter1" (click)="decrease()">-</span>
                     <input class="counter2" type="number" [(ngModel)]="counterValue" (change)="onInputChange()"/>
@@ -84,7 +39,7 @@
                 </div>
             </div>
 
-            <div class="message-container">
+            <div *ngIf="!discover" class="message-container">
                 <div *ngIf="errorMessage" class="message error-message">
                     {{ errorMessage }}
                 </div>
@@ -93,6 +48,49 @@
                 </div>
             </div>
         </div>
+
+                                                    <!------------ AFTER MINT ------------>
+
+        <div *ngIf="discover" class="after-mint" [@fadeInOut]>
+            <div>
+                <video *ngIf="isAnimationPlaying" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
+                    <source src="reveal1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div>
+                <video *ngIf="isLegendaryVideoPlaying" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
+                    <source src="legendaryEffect.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="card-container">    
+                <div class="box">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                    <div class="card-face front">
+                        <img [class.blurred]="!isUnblurred" class="nft-adn" 
+                            [src]="'data:image/png;base64,' + mintedNfts[0].image" 
+                            alt="NFT Image">
+                    </div>
+                    <div class="card-face back">
+                        <img class="nft-adn" src="FoxyLogo.jpeg" alt="Foxy Logo">
+                    </div>
+                    <div class="card-face left"></div>
+                    <div class="card-face right"></div>
+                    <div class="card-face top"></div>
+                    <div class="card-face bottom"></div>
+                </div>
+            </div>
+            
+            <div class="card-container"> 
+                <button *ngIf="showButton" (click)="DiscoverEffect()" class="btn-mint btn-play">Discover my NFT</button>
+            </div>
+        </div>
+
 
         
     </div>

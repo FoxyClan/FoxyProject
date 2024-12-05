@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -30,7 +31,7 @@ public class RandomADN {
     
     @GetMapping("/adn")
     @CrossOrigin(origins = "http://localhost:4200")
-    public void generateDNA(@RequestParam int tokenId) throws IOException {        // @Todo gerer les meme adn, mettre les rareté, modifier les 
+    public Map<String, Object> generateDNA(@RequestParam int tokenId) throws IOException {        // @Todo gerer les meme adn, mettre les rareté, modifier les 
         String Head = generateTraitDNA(16);                               // noms dans le json, faire les traits impossible a combiner 
         String Mouth = generateTraitDNA(16);
         String Eyes = generateTraitDNA(16);
@@ -46,16 +47,28 @@ public class RandomADN {
         adn.put("Fur", Fur);
         adn.put("Background", Background);
 
+        Map<String, Object> response = new HashMap<>();
         try {
             createNFT(adn, tokenId);
             uploadToFilebase(tokenId + ".png");
 
             createMetadataFile(adn, tokenId);
             uploadToFilebase(tokenId + ".json");
+
+            Path imagePath = Paths.get("jar/src/main/resources/tmp/" + tokenId + ".png");
+            String imageBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath));
+    
+            // Créer les métadonnées
+            Map<String, Object> metadata = createMetadataFile(adn, tokenId);
+    
+            response.put("image", imageBase64);
+            response.put("metadata", metadata);
+
         } catch(IOException e) {
             e.printStackTrace();
             throw e;
         }
+        return response;
     }
 
     private String generateTraitDNA(int interval) {
@@ -134,7 +147,7 @@ public class RandomADN {
 
 
 
-    private void createMetadataFile(Map<String, String> adn, int tokenId) throws IOException {
+    private Map<String, Object> createMetadataFile(Map<String, String> adn, int tokenId) throws IOException {
         Map<String, Object> metadata = new HashMap<>();
         
         String imageUrl = "https://foxyclan.s3.filebase.com/" + tokenId + ".png"; // @ToDo mettre le token id plus tard
@@ -152,12 +165,12 @@ public class RandomADN {
         metadata.put("name", name);
         metadata.put("DNA", nftADN);
         metadata.put("attributes", new Object[]{
-            Map.of("value", adn.get("Background"), "trait_type", "Background"),
-            Map.of("value", adn.get("Fur"), "trait_type", "Fur"),
-            Map.of("value", adn.get("Eyes"), "trait_type", "Eyes"),
-            Map.of("value", adn.get("Clothes"), "trait_type", "Clothes"),
-            Map.of("value", adn.get("Head"), "trait_type", "Head Covering"),
-            Map.of("value", adn.get("Mouth"), "trait_type", "Mouth")
+            Map.of("trait_type", "Head Covering", "value", adn.get("Head")),
+            Map.of("trait_type", "Mouth", "value", adn.get("Mouth")),
+            Map.of("trait_type", "Eyes", "value", adn.get("Eyes")),
+            Map.of("trait_type", "Clothes", "value", adn.get("Clothes")),
+            Map.of("trait_type", "Fur", "value", adn.get("Fur")),
+            Map.of("trait_type", "Background", "value", adn.get("Background"))
         });
 
         File metadataFile = new File("jar\\src\\main\\resources\\tmp\\" + tokenId + ".json");
@@ -166,6 +179,8 @@ public class RandomADN {
         objectMapper.writeValue(metadataFile, metadata);
 
         System.out.println("Fichier JSON des métadonnées créé : " + tokenId + ".json");
+
+        return metadata;
     }
 
 
