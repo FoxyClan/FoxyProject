@@ -92,11 +92,14 @@
                 </div>
                 
                 <div class="attributs">
-                    <div *ngFor="let attribute of mintedNfts[tokenIndex]?.metadata?.attributes; let i = index" class="metadata-block">
-                        <div class="attribute-title"><span>{{ attribute.trait_type }}</span></div>
-                        <div class="attribute-value"><p>{{ attribute.value }}</p></div>
+                    <div *ngIf="showMetadata" class="attributes-if">
+                        <div *ngFor="let attribute of mintedNfts[tokenIndex]?.metadata?.attributes; let i = index" class="metadata-block" [ngClass]="{'gold-border': attribute.value === '1' || attribute.value === '2' || attribute.value === '3'}"> <!-- bordures marchent pas -->
+                            <span>{{ attribute.trait_type }}</span>
+                            <p>{{ attribute.value }}</p>
+                        </div>    
                     </div>
                 </div>
+
             </div>
         </div>
 

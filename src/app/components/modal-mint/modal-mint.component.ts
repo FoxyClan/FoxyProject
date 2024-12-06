@@ -45,6 +45,7 @@ export class ModalMint implements OnInit, OnDestroy {
   isUnblurred: boolean = false; // Blur du nft
   isSpinning: boolean = false;
   rotationSpeed: string = "5s";
+  showMetadata: boolean = false;
 
   mintedNfts: {   // Déclaration du tableau qui contient les images et les métadonnées
     tokenId: number;
@@ -252,6 +253,7 @@ export class ModalMint implements OnInit, OnDestroy {
     setTimeout(() => {
       this.stopVideo();
       this.isAnimationPlaying = false;
+      this.showMetadata = true;
     }, 7000);
 
     setTimeout(() => {
@@ -266,5 +268,9 @@ export class ModalMint implements OnInit, OnDestroy {
   stopRarityVideo() {
     this.isLegendaryVideoPlaying = false;
   }
+
+  getBorderClass(value: string): { [key: string]: boolean } {
+    return { 'gold-border': value === '1' || value === '2' || value === '3' };
+}
 
 }
