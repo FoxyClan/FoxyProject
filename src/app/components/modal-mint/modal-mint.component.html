@@ -51,7 +51,10 @@
 
                                                     <!------------ AFTER MINT ------------>
 
-        <div *ngIf="discover" class="after-mint" [@fadeInOut]>
+        <div *ngIf="discover" class="after-mint" [@fadeInOut]  (mousedown)="onMouseDown($event)"
+        (mouseup)="onMouseUp()"
+        (mouseleave)="onMouseUp()" 
+        (mousemove)="onMouseMoveDrag($event)">
             <div>
                 <video *ngIf="isAnimationPlaying" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
                     <source src="reveal1.mp4" type="video/mp4">
@@ -64,7 +67,7 @@
                     Your browser does not support the video tag.
                 </video>
             </div>
-            <div class="card-container">    
+            <div class="card-container" [ngClass]="{'interactive': isInteractive}">    
                 <div class="box">
                     <span></span>
                     <span></span>

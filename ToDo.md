@@ -7,7 +7,7 @@ MODAL-WALLET
 
 
 SMART CONTRACT
-- private sal function price < public
+- private sale function price < public
 - pas plus de 20 nft par wallet
 
 
@@ -15,3 +15,6 @@ SMART CONTRACT
 
 GANACHE
 - supprimer commentaire web3service getBalance / modal account loadBalance -> catch consol error
+
+MINT
+- 3d apres decouvert bugs fix avec mouseDown problem

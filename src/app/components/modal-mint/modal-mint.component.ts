@@ -62,6 +62,71 @@ export class ModalMint implements OnInit, OnDestroy {
   }[] = [];  // Initialisation comme un tableau vide
   tokenIndex: number = 0;
 
+  isInteractive = false; // Contrôle si l'interaction est activée
+  isDragging = false; // Vérifie si l'utilisateur est en train de "draguer"
+  lastMouseX = 0; // Dernière position X de la souris
+  lastMouseY = 0; // Dernière position Y de la souris
+  rotationX = 0; // Angle de rotation actuel sur l'axe X
+  rotationY = 0; // Angle de rotation actuel sur l'axe Y
+
+
+  async onMouseDown(event: MouseEvent) {
+    if (!this.isInteractive) return;
+  
+    // Active le mode de "dragging"
+    this.isDragging = true;
+    const box = document.querySelector('.box') as HTMLElement;
+    if (box) box.classList.add('dragging');
+    this.lastMouseX = event.clientX;
+    this.lastMouseY = event.clientY;
+  
+    // Ajoute les écouteurs globaux pour suivre la souris
+    window.addEventListener('mousemove', this.onMouseMoveDrag);
+    window.addEventListener('mouseup', this.onMouseUp);
+  
+    // Modifie le style du curseur pour indiquer le "dragging"
+    document.body.style.cursor = 'grabbing';
+  }
+  
+  onMouseUp = (): void => {
+    if (!this.isDragging) return;
+  
+    // Désactive le mode de "dragging"
+    this.isDragging = false;
+    const box = document.querySelector('.box') as HTMLElement;
+    if (box) box.classList.remove('dragging');
+  
+    // Retire les écouteurs globaux
+    window.removeEventListener('mousemove', this.onMouseMoveDrag);
+    window.removeEventListener('mouseup', this.onMouseUp);
+  
+    // Réinitialise le style du curseur
+    document.body.style.cursor = 'default';
+  };
+  
+  onMouseMoveDrag = (event: MouseEvent): void => {
+    if (!this.isInteractive || !this.isDragging) return;
+  
+    // Calculer les variations de la position de la souris
+    const deltaX = event.clientX - this.lastMouseX;
+    const deltaY = event.clientY - this.lastMouseY;
+  
+    // Met à jour les angles de rotation
+    this.rotationY += deltaX * 0.5;
+    this.rotationX -= deltaY * 0.5;
+  
+    // Applique les transformations au NFT
+    const box = document.querySelector('.box') as HTMLElement;
+    if (box) {
+      box.style.transform = `rotateX(${this.rotationX}deg) rotateY(${this.rotationY}deg)`;
+    }
+  
+    // Enregistre les nouvelles positions de la souris
+    this.lastMouseX = event.clientX;
+    this.lastMouseY = event.clientY;
+  };
+  
+
   constructor(private web3Service: Web3Service) {
   }
 
@@ -161,6 +226,7 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   DiscoverEffect() {
+    this.isInteractive = false;
     this.showButton = false;
     const box = document.querySelector(".box") as HTMLElement;
 
@@ -202,6 +268,7 @@ export class ModalMint implements OnInit, OnDestroy {
         box.classList.remove("spinning");
         box.style.animation = "none"; // Fixe l'élément à sa position finale
         box.style.transform = "rotateY(1080deg)"; // Position finale
+        this.isInteractive = true;
       }, 7000); // Durée de crescendoDecrescendo
     };
   

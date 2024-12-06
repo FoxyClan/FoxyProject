@@ -292,7 +292,7 @@
 
 .box.rotateFix {
 	animation: rotateFix 1s linear forwards;
-  }
+}
 
   
 .box {
@@ -303,9 +303,25 @@
 	transform-style: preserve-3d;
 	animation: defaultRotation 4s linear infinite; /* Rotation normale continue */
 }
+
+.card-container.interactive .box {
+    cursor: grab; /* Indique que la boîte peut être attrapée */
+}
+
+.card-container.interactive .box:active {
+    cursor: grabbing; /* Indique que la boîte est actuellement déplacée */
+}
+
+body {
+	cursor: default;
+}
+
+.box.dragging {
+	cursor: grabbing;
+}
   
-  /* Animation crescendo/decrescendo */
-  @keyframes crescendoDecrescendo {
+/* Animation crescendo/decrescendo */
+@keyframes crescendoDecrescendo {
 	0% {
 	  transform: rotateY(0deg);
 	  animation-timing-function: ease-in;
@@ -326,21 +342,21 @@
 	100% {
 		transform: scale(100%);
 	}
-  }
+}
   
-  .box.spinning {
+.box.spinning {
 	animation: crescendoDecrescendo 7s forwards;
-  }
+}
   
   
-  @keyframes rotateY {
+@keyframes rotateY {
 	0% {
 	  transform: rotateY(0deg);
 	}
 	100% {
 	  transform: rotateY(360deg);
 	}
-  }
+}
   
 
 
