@@ -86,8 +86,17 @@
                 </div>
             </div>
             
-            <div class="card-container"> 
-                <button *ngIf="showButton" (click)="DiscoverEffect()" class="btn-play">Discover my NFT ( {{ tokenIndex + 1 }} / {{ mintedNfts.length }} )</button>
+            <div class="metadata-container"> 
+                <div class="next-block">
+                    <button *ngIf="showButton" (click)="DiscoverEffect()" class="btn-play">Discover my NFT<span *ngIf="mintedNfts.length > 1"> ( {{ tokenIndex + 1 }} / {{ mintedNfts.length }} )</span></button>
+                </div>
+                
+                <div class="attributs">
+                    <div *ngFor="let attribute of mintedNfts[tokenIndex]?.metadata?.attributes; let i = index" class="metadata-block">
+                        <div class="attribute-title"><span>{{ attribute.trait_type }}</span></div>
+                        <div class="attribute-value"><p>{{ attribute.value }}</p></div>
+                    </div>
+                </div>
             </div>
         </div>
 
