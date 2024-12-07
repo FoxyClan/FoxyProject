@@ -1,9 +1,14 @@
-MODAL-WALLET
-- mettre le wallet recent en haut
+ALL
 - mettre tout en em ou rem
 
 
-- background opacity fixed sur modal wallet aussi
+MODAL-WALLET
+- mettre le wallet recent en haut
+
+MODAL-ACCOUNT
+- fetching adn CORS problem
+
+
 
 
 SMART CONTRACT

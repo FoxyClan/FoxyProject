@@ -4,6 +4,7 @@ import { Web3Service } from "../../services/web3.service";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import axios from 'axios';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-modal-mint',
@@ -47,6 +48,9 @@ export class ModalMint implements OnInit, OnDestroy {
   rotationSpeed: string = "5s";
   showMetadata: boolean = false;
 
+  private subscription: Subscription;
+  creatingNftLoading: boolean = false;
+
   mintedNfts: {   // Déclaration du tableau qui contient les images et les métadonnées
     tokenId: number;
     image: string;           // L'image en base64
@@ -68,6 +72,30 @@ export class ModalMint implements OnInit, OnDestroy {
   lastMouseY = 0; // Dernière position Y de la souris
   rotationX = 0; // Angle de rotation actuel sur l'axe X
   rotationY = 0; // Angle de rotation actuel sur l'axe Y
+
+  constructor(private web3Service: Web3Service) {
+    this.subscription = new Subscription();
+  }
+
+  ngOnInit() {
+    this.intervalId = setInterval(() => {
+      this.Supply();
+    }, 5000);
+    this.Supply();
+    this.subscription = this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
+      this.creatingNftLoading = creatingNftLoading;
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
+
+  closeModal() {
+    if(!this.isLoading) this.close.emit();
+  }
 
 
   async onMouseDown(event: MouseEvent) {
@@ -126,27 +154,6 @@ export class ModalMint implements OnInit, OnDestroy {
     this.lastMouseY = event.clientY;
   };
   
-
-  constructor(private web3Service: Web3Service) {
-  }
-
-  ngOnInit() {
-    this.intervalId = setInterval(() => {
-      this.Supply();
-    }, 5000);
-    this.Supply();
-  }
-
-  ngOnDestroy(): void {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
-  }
-
-  closeModal() {
-    if(!this.isLoading) this.close.emit();
-  }
-  
   stopEvent(event: Event) {
     event.stopPropagation();
   }
@@ -175,11 +182,10 @@ export class ModalMint implements OnInit, OnDestroy {
   async mintNFT(numberOfTokens: number) {
     this.isLoading = true;
     this.errorMessage = "";
-    this.successMessage = "";
+    this.successMessage = `Minting successful ! You minted ${numberOfTokens} NFT` + (numberOfTokens > 1 ? 's.' : '.');
     this.discover = false;
     try {
       const result = await this.web3Service.mint(numberOfTokens);
-      console.log('API Response:', result);
       const nftDataPromises = result.map(async (nft: { tokenId: number; image: string; metadata: any }) => {
         try {
           // Utilisez les valeurs de l'objet nft (tokenId, image, metadata)
@@ -201,9 +207,6 @@ export class ModalMint implements OnInit, OnDestroy {
       // Filtrer les résultats valides (pas de null)
       this.mintedNfts = nftData.filter(data => data !== null);
 
-      console.log(this.mintedNfts);  // Affiche les images et métadonnées des NFTs
-
-      this.successMessage = `Minting successful ! You minted ${numberOfTokens} NFT` + (numberOfTokens > 1 ? 's.' : '.');
       this.success = true;
       setTimeout(() => {
         this.discover = true; // attend que le block.success grandisse pour apparaitre

@@ -4,7 +4,6 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../components/header/header.component';
 import { Router, Event, NavigationEnd } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
-
 @Component({
   selector: 'app-root',
   standalone: true,

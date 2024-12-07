@@ -4,29 +4,8 @@ import Coinbase from '@coinbase/wallet-sdk';
 import { MetaMaskSDK } from "@metamask/sdk"
 import { BehaviorSubject } from 'rxjs';
 import axios from 'axios';
-import { consumerBeforeComputation } from '@angular/core/primitives/signals';
 
 declare let window: any;
-
-interface TransferEvent {
-  returnValues: {
-    tokenId: string;
-  };
-}
-
-interface MintResult {
-  events?: {
-    Transfer?: TransferEvent | TransferEvent[]; // Peut être un seul objet ou un tableau
-  };
-}
-
-interface TransferLog {
-  event: string; // Nom de l'événement, e.g., "Transfer"
-  returnValues: {
-    tokenId: string; // Ou `bigint` si c'est votre choix
-  };
-  [key: string]: any; // Pour d'autres propriétés éventuelles
-}
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +27,9 @@ export class Web3Service {
 
   private selectedWalletSubject = new BehaviorSubject<string>('');
   selectedWallet$ = this.selectedWalletSubject.asObservable();
+
+  private creatingNftLoadingSubject = new BehaviorSubject<boolean>(false);
+  creatingNftLoading$ = this.creatingNftLoadingSubject.asObservable();
 
   private intervalId: any;
   private provider: any = null;
@@ -79,7 +61,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0x671A2d543f9E3f35ddb5f8e82A4B2d6A25BF54D5';
+  private FoxyClanContractAddress = '0x3e0896718927a961Fc4ee75EEB9b64E11504DA11';
 
   private FoxyClanABI = [
     {
@@ -1269,37 +1251,47 @@ export class Web3Service {
         from: fromAddress,
         value: this.web3.utils.toWei(totalPrice, 'ether'),
       });
+      this.creatingNftLoadingSubject.next(true);
+      return this._createNFT(tokenIdsBefore, fromAddress);
+    } catch (error) {
+      this.creatingNftLoadingSubject.next(false);
+      console.error("Minting failed:", error);
+      throw error;
+    }
+  }
 
-       // Attendre que les nouveaux jetons soient disponibles
-       let tokenIdsAfter: number[] = [];
-       do {
-           tokenIdsAfter = await this.tokenOfOwnerByIndex(fromAddress);
-       } while (tokenIdsAfter.length === tokenIdsBefore.length);
+  private async _createNFT(tokenIdsBefore: number[], fromAddress: string) {
+    // Attendre que les nouveaux jetons soient disponibles
+    let tokenIdsAfter: number[] = [];
+    try {
+      do {
+          tokenIdsAfter = await this.tokenOfOwnerByIndex(fromAddress);
+      } while (tokenIdsAfter.length === tokenIdsBefore.length);
 
-       // Identifier les nouveaux jetons mintés
-       const newTokenIds: number[] = tokenIdsAfter.filter(
-           (id) => !tokenIdsBefore.includes(id)
-       );
+      // Identifier les nouveaux jetons mintés
+      const newTokenIds: number[] = tokenIdsAfter.filter(
+          (id) => !tokenIdsBefore.includes(id)
+      );
 
-       const nftData = await Promise.all(
+      const nftData = await Promise.all(
         newTokenIds.map(async (tokenId) => {
-            try {
-                const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`);
-                return {
-                    tokenId,
-                    image: response.data.image, // Image en base64
-                    metadata: response.data.metadata, // Métadonnées
-                };
-            } catch (error) {
-                console.error(`Erreur lors de la récupération de l'ADN pour le Token ID ${tokenId}:`, error);
-                return null; // Retourner `null` en cas d'erreur
-            }
+          try {
+            const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`);
+            return {
+                tokenId,
+                image: response.data.image, // Image en base64
+                metadata: response.data.metadata, // Métadonnées
+            };
+          } catch (error) {
+            console.error(`Erreur lors de la récupération de l'ADN pour le Token ID ${tokenId}:`, error);
+            return null;
+          }
         })
       )
-      console.log(nftData.filter((data) => data !== null))
+      this.creatingNftLoadingSubject.next(false);
       return nftData.filter((data) => data !== null);
     } catch (error) {
-      console.error("Minting failed:", error);
+      console.error("Error while creating NFT:", error);
       throw error;
     }
   }

@@ -1,16 +1,18 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Web3Service } from "../../services/web3.service";
-import { Subscription, combineLatest } from 'rxjs';
+import { Subscription, catchError, combineLatest, firstValueFrom } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ExchangeRateService } from '../../services/exchange-rate.service';
+import { HttpClient } from '@angular/common/http';
+import { log } from 'console';
 
 @Component({
   selector: 'app-modal-account',
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './modal-account.component.html',
   styleUrl: './modal-account.component.css'
@@ -27,10 +29,11 @@ export class ModalAccount implements OnInit, OnDestroy {
   selectedOption: string = 'Token';
 
   balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
-  tokens: Number[] = [];
+  tokens: number[] = [];
+  adnData: { [key: number]: string } = {}; // Stockage des ADN
   transferEvents: any[] = [];
 
-  constructor(private web3Service: Web3Service, private exchangeRateService: ExchangeRateService) {
+  constructor(private web3Service: Web3Service, private exchangeRateService: ExchangeRateService, private http: HttpClient) {
     this.subscription = new Subscription();
   }
 
@@ -38,7 +41,7 @@ export class ModalAccount implements OnInit, OnDestroy {
     this.subscription = combineLatest([
       this.web3Service.networkId$,
       this.web3Service.selectedWallet$
-    ]).subscribe(([networkId, selectedWallet]) => {
+    ]).subscribe(([networkId, selectedWallet, ]) => {
       this.networkId = networkId;
       this.selectedWallet = selectedWallet;
       
@@ -49,6 +52,7 @@ export class ModalAccount implements OnInit, OnDestroy {
       });
       this.tokenOfOwnerByIndex();
       this.loadTransferEvents();
+      //this.fetchAllAdn();
     });
   }
 
@@ -159,8 +163,36 @@ export class ModalAccount implements OnInit, OnDestroy {
     }).catch(error => {
       console.error('Error loading Transfer events:', error);
     });
-    console.log(this.transferEvents)
   }
+
+  async fetchAdn(tokenId: number): Promise<string> {
+    console.log('yo')
+    const url = `https://foxyclan.s3.filebase.com/${tokenId}.json`;
+    console.log("1")
+    try {
+      const data: any = await firstValueFrom(this.http.get<any>(url)); // Récupère les données
+      console.log("2")
+      return data.DNA; // Accès direct au champ "DNA"
+    } catch (error) {
+      console.error(`Failed to fetch data for token ${tokenId}`, error);
+      return 'Error'; // Retourne une valeur par défaut en cas d'erreur
+    }
+  }
+  
+
+  async fetchAllAdn(): Promise<void> {
+    console.log("hey")
+    for (const tokenId of this.tokens) {
+      try {
+        const dna = await this.fetchAdn(tokenId);
+        dna ? this.adnData[tokenId] = dna : this.adnData[tokenId] = "0";
+      } catch (error) {
+        console.error(`Error fetching DNA for token ${tokenId}:`, error);
+        this.adnData[tokenId] = 'Error';
+      }
+    }
+  }
+  
   
 
 }

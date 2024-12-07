@@ -1,7 +1,7 @@
 <section class="modalMint" (click)="closeModal()">
     <div class="block" (click)="stopEvent($event)" [class.success]="success">
 
-        <div *ngIf="!success">
+        <div *ngIf="!success && !creatingNftLoading">
             <div class="line">
                 <p>Total Minted : </p>
                 <p>{{ actualSupply }} / 20000</p>
@@ -22,9 +22,13 @@
                 <p>{{ counterValue * 0.0125 | number: '1.4-4'}} ETH</p>
             </div>
         </div>
+
+        <div *ngIf="creatingNftLoading" class="loading">
+            <p>testtt</p>
+        </div>
         
         <div *ngIf="!success" class="btn-message">
-            <div class="btn-container">
+            <div *ngIf="!creatingNftLoading" class="btn-container">
                 <div class="counter">
                     <span class="counter1" (click)="decrease()">-</span>
                     <input class="counter2" type="number" [(ngModel)]="counterValue" (change)="onInputChange()"/>
@@ -43,13 +47,14 @@
                 <div *ngIf="errorMessage" class="message error-message">
                     {{ errorMessage }}
                 </div>
-                <div *ngIf="successMessage" class="message success-message">
+                <div *ngIf="successMessage && creatingNftLoading" class="message success-message">
                     {{ successMessage }}
                 </div>
             </div>
         </div>
 
-                                                    <!------------ AFTER MINT ------------>
+                            <!------------ AFTER MINT ------------>
+
 
         <div *ngIf="discover" class="after-mint" [@fadeInOut]  (mousedown)="onMouseDown($event)"
         (mouseup)="onMouseUp()"
