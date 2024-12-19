@@ -28,10 +28,15 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @RestController
 public class RandomADN {
+    private final ProgressService progressService;
+
+    public RandomADN(ProgressService progressService) {
+        this.progressService = progressService;
+    }
     
     @GetMapping("/adn")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Object> generateDNA(@RequestParam int tokenId) throws IOException {        // @Todo gerer les meme adn, mettre les rareté, modifier les 
+    public Map<String, Object> generateDNA(@RequestParam int tokenId, @RequestParam String sessionId) throws IOException {        // @Todo gerer les meme adn, mettre les rareté, modifier les 
         String Head = generateTraitDNA(16);                               // noms dans le json, faire les traits impossible a combiner 
         String Mouth = generateTraitDNA(16);
         String Eyes = generateTraitDNA(16);
@@ -49,11 +54,18 @@ public class RandomADN {
 
         Map<String, Object> response = new HashMap<>();
         try {
+            progressService.sendProgress(sessionId, 10); // Étape 1 : ADN généré
+
             createNFT(adn, tokenId);
+            progressService.sendProgress(sessionId, 40); // Étape 2 : NFT créé
+
             uploadToFilebase(tokenId + ".png");
+            progressService.sendProgress(sessionId, 70); // Étape 3 : Image téléchargée
 
             createMetadataFile(adn, tokenId);
             uploadToFilebase(tokenId + ".json");
+            progressService.sendProgress(sessionId, 100); // Étape 4 : Métadonnées téléchargées
+
 
             Path imagePath = Paths.get("jar/src/main/resources/tmp/" + tokenId + ".png");
             String imageBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath));

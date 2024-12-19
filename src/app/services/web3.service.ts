@@ -3,6 +3,7 @@ import Web3, { EventLog } from 'web3';
 import Coinbase from '@coinbase/wallet-sdk';
 import { MetaMaskSDK } from "@metamask/sdk"
 import { BehaviorSubject } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
 declare let window: any;
@@ -1239,6 +1240,10 @@ export class Web3Service {
     }
   }
 
+  private generateSessionId(): string {
+    return uuidv4(); // Génère un identifiant unique
+  }
+
   private async _mint(numberOfTokens: number, fromAddress: string): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");
   
@@ -1262,6 +1267,7 @@ export class Web3Service {
 
   private async _createNFT(tokenIdsBefore: number[], fromAddress: string) {
     // Attendre que les nouveaux jetons soient disponibles
+    const sessionId = this.generateSessionId(); // Génère un sessionId unique
     let tokenIdsAfter: number[] = [];
     try {
       do {
@@ -1276,7 +1282,7 @@ export class Web3Service {
       const nftData = await Promise.all(
         newTokenIds.map(async (tokenId) => {
           try {
-            const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`);
+            const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}&sessionId=${sessionId}`);
             return {
                 tokenId,
                 image: response.data.image, // Image en base64

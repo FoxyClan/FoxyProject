@@ -1,9 +1,11 @@
 import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Web3Service } from "../../services/web3.service";
+import { ProgressService } from "../../services/progress.service";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -47,6 +49,7 @@ export class ModalMint implements OnInit, OnDestroy {
   isSpinning: boolean = false;
   rotationSpeed: string = "5s";
   showMetadata: boolean = false;
+  progress: number = 0;
 
   private subscription: Subscription;
   creatingNftLoading: boolean = false;
@@ -73,7 +76,7 @@ export class ModalMint implements OnInit, OnDestroy {
   rotationX = 0; // Angle de rotation actuel sur l'axe X
   rotationY = 0; // Angle de rotation actuel sur l'axe Y
 
-  constructor(private web3Service: Web3Service) {
+  constructor(private web3Service: Web3Service, private progressService: ProgressService) {
     this.subscription = new Subscription();
   }
 
@@ -81,16 +84,29 @@ export class ModalMint implements OnInit, OnDestroy {
     this.intervalId = setInterval(() => {
       this.Supply();
     }, 5000);
+  
     this.Supply();
     this.subscription = this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
       this.creatingNftLoading = creatingNftLoading;
     });
+  
+    const sessionId = this.generateSessionId();
+    this.progressService.subscribeToProgress(sessionId, (progress: number) => {
+      console.log("hey")
+      this.progress = progress;
+      console.log(`Progress updated: ${this.progress}`);
+    });
+  }
+
+  private generateSessionId(): string {
+    return uuidv4(); // Génère un identifiant unique
   }
 
   ngOnDestroy(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+    this.subscription.unsubscribe();
   }
 
   closeModal() {

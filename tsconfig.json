@@ -4,6 +4,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "types": ["node"],
+    "resolveJsonModule": true,
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,

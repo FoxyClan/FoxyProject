@@ -1,0 +1,233 @@
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity ^0.8.21;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+
+/**
+ * @title FoxyClan contract
+ * @dev Extends ERC721 Non-Fungible Token Standard basic implementation
+ */
+contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
+    string public FC_PROVENANCE;
+
+    bool public publicSaleIsActive = false;
+
+    bool public privateSaleIsActive = false;
+
+    string private _BaseURI;
+
+    bool public allowListisActive = false;
+
+    uint256 public constant MAX_SUPPLY = 20000;
+
+    uint256 public constant maxPublicFoxyMint = 20;
+
+    uint256 public constant publicFoxyPrice = 12500000000000000; //0.0125 ETH
+
+    uint256 public constant privateFoxyPrice = 7500000000000000; //0.0075 ETH
+
+    mapping(address => uint8) private _AllowList; //fonction clean allowlist
+
+    uint256[] public burnedTokenIds;
+
+    constructor() ERC721("FoxyClan", "FOXY") Ownable(msg.sender) {}
+
+    /**
+     * @dev Sets the provenance hash for the collection.
+     * @param provenance The provenance hash.
+     */
+    function setProvenance(string memory provenance) external onlyOwner {
+        FC_PROVENANCE = provenance;
+    }
+
+    /*
+    * @dev Pause public sale if active, make active if paused
+    */
+    function flipPublicSaleState() external onlyOwner {
+        publicSaleIsActive = !publicSaleIsActive;
+    }
+
+    /*
+    * @dev Pause private sale if active, make active if paused
+    */
+    function flipPrivateSaleState() external onlyOwner {
+        privateSaleIsActive = !privateSaleIsActive;
+    }
+
+    /**
+     * @dev Sets the base URI for token URIs.
+     * @param uri The base URI.
+     */
+    function setBaseURI(string memory uri) external onlyOwner() {
+        _BaseURI = uri;
+    }
+
+    /**
+     * @dev Get the base URI for token URIs.
+     */
+    function _baseURI() internal view virtual override returns (string memory) {
+        return _BaseURI;
+    }
+
+
+    /**
+     * @dev Sets the allow list status.
+     */
+    function flipAllowListState() external onlyOwner {
+        allowListisActive = !allowListisActive;
+    }
+
+    /**
+     * @dev Sets the allow list for addresses and their corresponding mint limits.
+     * @param addresses An array of addresses that will be allowed to mint FoxyClan nfts.
+     * @param numAllowedToMint The number of tokens allowed to be minted for each address.
+     */
+    function setAllowList(address[] calldata addresses, uint8 numAllowedToMint) external onlyOwner {
+        for (uint256 i = 0; i < addresses.length; i++) {
+            _AllowList[addresses[i]] = numAllowedToMint;
+        }
+    }
+
+    /*
+     * @dev Returns the number of tokens available to mint for a specific address.
+     * @param addr The address to check.
+     * @return The number of tokens available to mint for a specific address.
+     */
+    function numAvailableToMint(address addr) external view returns (uint8) {
+        return _AllowList[addr];
+    }
+
+    /**
+     * @dev Mints tokens for addresses on the allow list.
+     * @param numberOfTokens The number of tokens to mint.
+    * 
+    * Requirements:
+    * - The allow list must be active.
+    * - The sender must be on the allow list and have sufficient tokens available.
+    * - The total supply must not exceed the max supply.
+    * - The sender must send enough ether to cover the cost of minting.
+    */
+    function mintAllowList(uint8 numberOfTokens) external payable {
+        uint256 supply = totalSupply();
+        uint256 costToMint;
+        if (privateSaleIsActive) {
+            costToMint = privateFoxyPrice * numberOfTokens;
+        } else {
+            costToMint = publicFoxyPrice * numberOfTokens;
+        }
+        require(allowListisActive, "Allow list is not active");
+        require(numberOfTokens <= _AllowList[msg.sender], "Exceeded max available to purchase");
+        require(supply + numberOfTokens <= MAX_SUPPLY, "Purchase would exceed max tokens");
+        require(costToMint <= msg.value, "Ether value sent is not correct");
+
+        for (uint256 i = 0; i < numberOfTokens; i++) {
+            uint256 tokenId;
+            if (burnedTokenIds.length > 0) {
+                tokenId = burnedTokenIds[0];
+                burnedTokenIds.pop();
+            } else {
+                tokenId = totalSupply();
+            }
+            _safeMint(msg.sender, tokenId);
+            _AllowList[msg.sender] --;
+        }
+
+        if (msg.value > costToMint) {
+            uint256 excess = msg.value - costToMint;
+            (bool success, ) = msg.sender.call{value: excess}("");
+            require(success, "Refund failed");
+        }
+    }
+
+    /**
+     * @dev Mints tokens for the public sale.
+     * @param numberOfTokens The number of tokens to mint.
+     * 
+     * Requirements:
+     * - The sale must be active.
+     * - The number of tokens to be minted must not exceed the maximum number of public minting.
+     * - The total supply must not exceed the max supply.
+     * - The sender must send enough ether to cover the cost of minting.
+     */
+    function mint(uint numberOfTokens) public payable {
+        uint256 supply = totalSupply();
+        uint256 costToMint = publicFoxyPrice * numberOfTokens;
+        require(publicSaleIsActive, "Sale must be active to mint Foxy");
+        require(numberOfTokens <= maxPublicFoxyMint, "Can only mint 10 tokens at a time");
+        require(supply + numberOfTokens <= MAX_SUPPLY, "Purchase would exceed max tokens");
+        require(costToMint <= msg.value, "Ether value sent is not correct");
+
+        for (uint256 i = 0; i < numberOfTokens; i++) {
+            uint256 tokenId;
+
+            if (burnedTokenIds.length > 0) {
+                tokenId = burnedTokenIds[burnedTokenIds.length - 1];
+                burnedTokenIds.pop();
+            } else {
+                tokenId = totalSupply();
+            }
+            _safeMint(msg.sender, tokenId);
+        }
+        if (msg.value > costToMint) {
+            uint256 excess = msg.value - costToMint;
+            (bool success, ) = msg.sender.call{value: excess}("");
+            require(success, "Refund failed");
+        }
+    }
+
+    function merge(uint tokenId1, uint tokenId2) external {
+        require(ownerOf(tokenId1) == msg.sender, "You must own the token");
+        require(ownerOf(tokenId2) == msg.sender, "You must own the token");
+        _burn(tokenId1);
+        _burn(tokenId2);
+        burnedTokenIds.push(tokenId2);
+        _safeMint(msg.sender, tokenId1);
+    }
+
+    /**
+     * @dev Checks if the contract implements a specific interface. 
+     * This function is inherited from ERC721 and ERC721Enumerable and is essential for 
+     * allowing other contracts and interfaces to interact correctly with this contract.
+     */
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC721Enumerable) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
+    /**
+     * @dev Overridden from ERC721Enumerable.
+     */
+    function _update(address to, uint256 tokenId, address auth) internal virtual override(ERC721, ERC721Enumerable) returns (address) {
+        return super._update(to, tokenId, auth);
+    }
+
+    /**
+     * @dev Overridden from ERC721Enumerable.
+     */
+    function _increaseBalance(address account, uint128 amount) internal virtual override(ERC721, ERC721Enumerable) {
+        return super._increaseBalance(account, amount);
+    }
+
+    /**
+     * @dev Reserves a specified number of tokens for the contract owner.
+     * This function allow the creator to keep a certain number of tokens 
+     * for future uses, such as giveaways, collaborations or special events.
+     */
+    function reserveFoxy(uint256 n) public onlyOwner {
+      uint supply = totalSupply();
+      uint i;
+      for (i = 0; i < n; i++) {
+          _safeMint(msg.sender, supply + i);
+      }
+    }
+    
+    /**
+     * @dev Allows the contract owner to withdraw accumulated funds from the contract.
+     */
+    function withdraw() public onlyOwner {
+        uint balance = address(this).balance;
+        payable(msg.sender).transfer(balance);
+    }
+
+}
