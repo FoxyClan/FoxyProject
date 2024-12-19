@@ -290,6 +290,7 @@
 	box-sizing: border-box;
 	z-index: 4;
     perspective: 1000px;
+	user-select: none;
 }
 
 @keyframes defaultRotation {
@@ -321,24 +322,12 @@
 	width: auto;
 	aspect-ratio: 1 / 1;
 	transform-style: preserve-3d;
-	animation: defaultRotation 4s linear infinite; /* Rotation normale continue */
+	animation: defaultRotation 4s linear infinite;
+	transition: transform 0.1s ease-out;
+	will-change: transform;
 }
 
-.card-container.interactive .box {
-    cursor: grab; /* Indique que la boîte peut être attrapée */
-}
 
-.card-container.interactive .box:active {
-    cursor: grabbing; /* Indique que la boîte est actuellement déplacée */
-}
-
-body {
-	cursor: default;
-}
-
-.box.dragging {
-	cursor: grabbing;
-}
   
 /* Animation crescendo/decrescendo */
 @keyframes crescendoDecrescendo {
@@ -417,6 +406,7 @@ body {
     height: 100%;
     backface-visibility: hidden;
 	overflow: hidden;
+	user-select: none;
 }
 
 .card-face.front {
@@ -430,6 +420,7 @@ body {
 .card-face {
     position: absolute;
     background-color: #090c1d;
+	user-select: none;
 }
 
 .card-face.left,
@@ -472,6 +463,7 @@ body {
 	height: 110%;
 	display: block;
 	box-sizing: border-box;
+	user-select: none;
 }
 .box span:nth-child(1){
 	transform: rotate(0deg);
