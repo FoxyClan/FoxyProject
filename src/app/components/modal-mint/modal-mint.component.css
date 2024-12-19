@@ -170,6 +170,12 @@
 	align-items: center;
 	justify-content: center;
 	flex-grow: 1;
+	flex-direction: column;
+}
+
+.loading img {
+	width: 100px;
+	height: 100px;
 }
   
 .progress-bar-container {

@@ -23,11 +23,17 @@
             </div>
         </div>
 
+                            <!------------ LOAD MINT ------------>
+
         <div *ngIf="creatingNftLoading" class="loading">
+            <!--
             <div class="progress-bar-container">
                 <div class="progress-bar" [style.width]="progress + '%'"></div>
               </div>
               <p>{{ progress }}% completed</p>
+              -->
+              <img src="load.gif" alt="Loading"/>
+              <p>Panda roux en création...</p>
         </div>
         
         <div *ngIf="!success" class="btn-message">
