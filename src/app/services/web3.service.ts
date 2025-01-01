@@ -62,7 +62,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0x4482917bf0aa5ba1518ffb085915193e788048cb';
+  private FoxyClanContractAddress = '0xa624556aeF581A79Fd36fd6545CdB1F23829F23A';
 
   private FoxyClanABI = [
     {
@@ -1240,10 +1240,6 @@ export class Web3Service {
     }
   }
 
-  private generateSessionId(): string {
-    return uuidv4(); // Génère un identifiant unique
-  }
-
   private async _mint(numberOfTokens: number, fromAddress: string): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");
   
@@ -1267,7 +1263,6 @@ export class Web3Service {
 
   private async _createNFT(tokenIdsBefore: number[], fromAddress: string) {
     // Attendre que les nouveaux jetons soient disponibles
-    const sessionId = this.generateSessionId(); // Génère un sessionId unique
     let tokenIdsAfter: number[] = [];
     try {
       do {
@@ -1282,7 +1277,7 @@ export class Web3Service {
       const nftData = await Promise.all(
         newTokenIds.map(async (tokenId) => {
           try {
-            const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}&sessionId=${sessionId}`);
+            const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`);
             return {
                 tokenId,
                 image: response.data.image, // Image en base64

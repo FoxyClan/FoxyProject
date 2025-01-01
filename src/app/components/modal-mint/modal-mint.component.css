@@ -537,7 +537,7 @@
 }
 
 .blurred {
-    filter: blur(5px);
+    filter: blur(15px);
 }
 
 .next-block {

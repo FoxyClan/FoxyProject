@@ -33,7 +33,7 @@
               <p>{{ progress }}% completed</p>
               -->
               <img src="load.gif" alt="Loading"/>
-              <p>Panda roux en création...</p>
+              <p>Red panda in creation...</p>
         </div>
         
         <div *ngIf="!success" class="btn-message">
@@ -79,30 +79,34 @@
                 </video>
             </div>
             <div class="card-container">    
-                <div class="box" (mousemove)="onMouseMove($event)" (mouseleave)="onMouseLeave()">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-
-                    <div class="card-face front">
-                        <img [class.blurred]="!isUnblurred" class="nft-adn" 
-                            [src]="'data:image/png;base64,' + mintedNfts[tokenIndex].image" 
-                            alt="NFT Image">
-                    </div>
-                    <div class="card-face back">
-                        <img class="nft-adn" src="FoxyLogo.jpeg" alt="Foxy Logo">
-                    </div>
-                    <div class="card-face left"></div>
-                    <div class="card-face right"></div>
-                    <div class="card-face top"></div>
-                    <div class="card-face bottom"></div>
+                <div class="box" 
+                     (mousemove)="onMouseMove($event)"
+                     (mouseleave)="onMouseLeave()">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+              
+                  <div class="card-face front">
+                    <img [class.blurred]="!isUnblurred" class="nft-adn" 
+                         [src]="'data:image/png;base64,' + mintedNfts[tokenIndex].image" 
+                         alt="NFT Image">
+                  </div>
+                  <div class="card-face back">
+                    <img class="nft-adn" src="FoxyLogo.jpeg" alt="Foxy Logo">
+                  </div>
+                  <div class="card-face left"></div>
+                  <div class="card-face right"></div>
+                  <div class="card-face top"></div>
+                  <div class="card-face bottom"></div>
                 </div>
-            </div>
+              </div>
+              
             
             <div class="metadata-container"> 
                 <div class="next-block">
-                    <button *ngIf="showButton" (click)="DiscoverEffect()" class="btn-play">Discover my NFT<span *ngIf="mintedNfts.length > 1"> ( {{ tokenIndex + 1 }} / {{ mintedNfts.length }} )</span></button>
+                    <button *ngIf="showAddWalletButton" (click)="addNFT()" class="btn-play">Add to my wallet</button>
+                    <button *ngIf="showButton" (click)="discoverNFT()" class="btn-play">Discover my NFT<span *ngIf="mintedNfts.length > 1"> ( {{ tokenIndex + 1 }} / {{ mintedNfts.length }} )</span></button>
                 </div>
                 
                 <div class="attributs">

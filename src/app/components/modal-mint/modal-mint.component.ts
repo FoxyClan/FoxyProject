@@ -1,11 +1,8 @@
 import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Web3Service } from "../../services/web3.service";
-import { ProgressService } from "../../services/progress.service";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -40,16 +37,18 @@ export class ModalMint implements OnInit, OnDestroy {
   isLoading: boolean = false;
   errorMessage: string = "";
   successMessage: string = "";
-  success: boolean = false; // Montre le 
+  success: boolean = false;
   discover: boolean = false; // Deux secondes apres success
   isAnimationPlaying: boolean = false; // Video d'animation qui defile
   showButton: boolean = true; // Pour montrer le bouton de discover
+  showAddWalletButton: boolean = false; // Pour montrer le bouton add wallet
   isLegendaryVideoPlaying: boolean = false;
   isUnblurred: boolean = false; // Blur du nft
   isSpinning: boolean = false;
   rotationSpeed: string = "5s";
   showMetadata: boolean = false;
-  progress: number = 0;
+  lastLeaveTime: number | null = null; // Stocke le moment où la souris quitte la boîte
+  blockAnimation: boolean = false; // Bloque l'animation temporairement
 
   private subscription: Subscription;
   creatingNftLoading: boolean = false;
@@ -73,7 +72,7 @@ export class ModalMint implements OnInit, OnDestroy {
   private animationFrame: number | null = null;
   private lastCallTime = 0;
 
-  constructor(private web3Service: Web3Service, private progressService: ProgressService) {
+  constructor(private web3Service: Web3Service) {
     this.subscription = new Subscription();
   }
 
@@ -86,18 +85,8 @@ export class ModalMint implements OnInit, OnDestroy {
     this.subscription = this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
       this.creatingNftLoading = creatingNftLoading;
     });
-  
-    const sessionId = this.generateSessionId();
-    this.progressService.subscribeToProgress(sessionId, (progress: number) => {
-      console.log("hey")
-      this.progress = progress;
-      console.log(`Progress updated: ${this.progress}`);
-    });
   }
 
-  private generateSessionId(): string {
-    return uuidv4(); // Génère un identifiant unique
-  }
 
   ngOnDestroy(): void {
     if (this.intervalId) {
@@ -112,7 +101,12 @@ export class ModalMint implements OnInit, OnDestroy {
   
 
   onMouseMove(event: MouseEvent): void {
+    if(!this.isInteractive) return
     const now = performance.now();
+
+    // Si l'animation est bloquée, ne pas relancer immédiatement
+    if (this.blockAnimation) return;
+
     if (now - this.lastCallTime < 32) return; // Limite à ~30 FPS
     this.lastCallTime = now;
 
@@ -140,9 +134,10 @@ export class ModalMint implements OnInit, OnDestroy {
       box.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
   }
-  
 
   onMouseLeave(): void {
+    if(!this.isInteractive) return
+
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame);
       this.animationFrame = null;
@@ -150,8 +145,19 @@ export class ModalMint implements OnInit, OnDestroy {
 
     const box = document.querySelector('.box') as HTMLElement;
     if (box) {
-      box.style.transform = ''; // Réinitialiser la transformation
+      box.style.transform = `rotateX(0deg) rotateY(0deg)`; // Réinitialiser la transformation
     }
+
+    // Bloque l'animation pour 0.5 seconde
+    this.blockAnimation = true;
+    this.lastLeaveTime = performance.now();
+
+    setTimeout(() => {
+      const now = performance.now();
+      if (this.lastLeaveTime && now - this.lastLeaveTime >= 500) {
+        this.blockAnimation = false; // Débloque l'animation après 0.5 seconde
+      }
+    }, 500); // Délai de 0.5 seconde
   }
 
   
@@ -230,7 +236,8 @@ export class ModalMint implements OnInit, OnDestroy {
     }
   }
 
-  DiscoverEffect() {
+
+  discoverNFT() {
     this.isInteractive = false;
     this.showButton = false;
     const box = document.querySelector(".box") as HTMLElement;
@@ -266,7 +273,7 @@ export class ModalMint implements OnInit, OnDestroy {
     };
   
     const startCrescendoDecrescendo = () => {
-      this.playVideo();
+      this.playAnimation();
   
       // Supprimer crescendoDecrescendo après sa durée
       setTimeout(() => {
@@ -276,10 +283,33 @@ export class ModalMint implements OnInit, OnDestroy {
         this.isInteractive = true;
       }, 7000); // Durée de crescendoDecrescendo
     };
-  
+
     // Ajouter un écouteur pour attendre la fin d'un cycle d'animation
     box.addEventListener("animationiteration", handleAnimationEnd);
   }
+
+  addNFT() {
+    this.isInteractive = false; // Désactiver l'interactivité temporairement
+    const box = document.querySelector(".box") as HTMLElement;
+  
+    if (!box) {
+      console.error("Element .box introuvable.");
+      return;
+    }
+  
+    // Réinitialiser les styles et animations
+    box.classList.remove("rotateFix", "spinning");
+    box.style.transform = "rotateY(360deg)";
+
+    // Réappliquer l'animation par défaut
+    box.style.animation = "";
+  
+    this.isUnblurred = false;
+    this.showMetadata = false;
+    this.tokenIndex++;
+  }
+    
+  
 
   getCurrentRotation(element: HTMLElement): number {
     const computedStyle = window.getComputedStyle(element);
@@ -310,10 +340,8 @@ export class ModalMint implements OnInit, OnDestroy {
     }
   }
   
-  
-  
 
-  playVideo() {
+  playAnimation() {
     this.isAnimationPlaying = true;
     this.isUnblurred = true;
 
@@ -335,6 +363,7 @@ export class ModalMint implements OnInit, OnDestroy {
 
   stopVideo() {
     this.showButton = true;
+    if(!this.showAddWalletButton) this.showAddWalletButton = true;
   }
 
   stopRarityVideo() {
@@ -343,6 +372,6 @@ export class ModalMint implements OnInit, OnDestroy {
 
   getBorderClass(value: string): { [key: string]: boolean } {
     return { 'gold-border': value === '1' || value === '2' || value === '3' };
-}
+  }
 
 }
