@@ -292,10 +292,24 @@ export class ModalMint implements OnInit, OnDestroy {
     this.isInteractive = false; // Désactiver l'interactivité temporairement
     const box = document.querySelector(".box") as HTMLElement;
   
-    if (!box) {
-      console.error("Element .box introuvable.");
+    const image = document.querySelector(".nft-adn") as HTMLElement; // Cibler l'image
+
+    if (!box || !image) {
+      console.error("Element .box ou .nft-adn introuvable.");
       return;
     }
+
+    // Désactiver la transition temporairement
+    image.style.transition = "none";
+
+    // Réinitialiser le style de flou instantanément
+    image.classList.add("blurred");
+
+    // Forcer un reflow pour appliquer les styles immédiatement
+    image.offsetHeight;
+
+    // Réactiver la transition si nécessaire
+    image.style.transition = ""; // Restaurer la transition CSS
   
     // Réinitialiser les styles et animations
     box.classList.remove("rotateFix", "spinning");
