@@ -98,6 +98,10 @@ export class ModalMint implements OnInit, OnDestroy {
 
   closeModal() {
     if(this.isLoading) return
+    if(!this.success) {
+      this.close.emit();
+      return;
+    }
     this.closeAnimation = true;
     setTimeout(() => {
       this.close.emit();

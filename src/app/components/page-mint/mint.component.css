@@ -195,3 +195,116 @@ app-modal-mint {
     box-sizing: border-box;
 }
 
+.card-container {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	z-index: 4;
+    perspective: 1000px;
+	user-select: none;
+}
+
+@keyframes defaultRotation {
+	from {
+	  transform: rotateY(0deg);
+	}
+	to {
+	  transform: rotateY(360deg);
+	}
+}
+
+  
+.box {
+	position: relative;
+	width: 80%;
+    height: auto;
+	aspect-ratio: 1 / 1;
+	transform-style: preserve-3d;
+	animation: defaultRotation 4s linear infinite;
+	transition: transform 0.1s ease-out;
+	will-change: transform;
+}
+
+.card.back {
+    transform: rotateY(180deg);
+}
+
+.card {
+	box-sizing: border-box;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.card-face.front,
+.card-face.back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+	overflow: hidden;
+	user-select: none;
+}
+
+.card-face.front {
+    transform: translateZ(10px);
+}
+
+.card-face.back {
+    transform: rotateY(180deg) translateZ(10px);
+}
+
+.card-face {
+    position: absolute;
+    background-color: #090c1d;
+	user-select: none;
+}
+
+.card-face.left,
+.card-face.right {
+    width: 20px;
+    height: 100%;
+}
+
+.card-face.left {
+    transform: rotateY(-90deg) translateZ(10px);
+	left: 0;
+}
+
+.card-face.right {
+    transform: rotateY(90deg) translateZ(10px);
+	right: 0;
+}
+
+.card-face.top,
+.card-face.bottom {
+    width: 100%;
+    height: 20px;
+}
+
+.card-face.top {
+    transform: rotateX(90deg) translateZ(10px);
+	top:0;
+}
+
+.card-face.bottom {
+    transform: rotateX(-90deg) translateZ(10px);
+	bottom: 0;
+}
+
+.nft-adn {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: filter 5s ease-out;
+}
+
+

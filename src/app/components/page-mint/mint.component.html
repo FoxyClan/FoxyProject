@@ -1,8 +1,8 @@
 <app-not-connected *ngIf="!getConnected()"></app-not-connected>
 
 <section *ngIf="getConnected()" class="mint">
-    <video autoplay loop muted playsinline>
-        <source src="mintBackground2.mp4" type="video/mp4" /> <!--
+    <video autoplay loop muted playsinline><!--
+        <source src="mintBackground2.mp4" type="video/mp4" /> 
         <source src="mintBackground.webm" type="video/webm" />
         <source src="mintBackground.ogv" type="video/ogg" />-->
     </video>
@@ -19,7 +19,20 @@
                 </div>
             </div>
             <div class="panel-2">
-
+                <div class="card-container">    
+                    <div class="box">
+                        <div class="card-face front">
+                            <img class="nft-adn" alt="NFT Image">
+                        </div>
+                        <div class="card-face back">
+                            <img class="nft-adn" src="FoxyLogo.jpeg" alt="Foxy Logo">
+                        </div>
+                        <div class="card-face left"></div>
+                        <div class="card-face right"></div>
+                        <div class="card-face top"></div>
+                        <div class="card-face bottom"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

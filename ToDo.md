@@ -12,8 +12,10 @@ MODAL-ACCOUNT
 
 
 SMART CONTRACT
-- private sale function price < public
 - pas plus de 20 nft par wallet
+- levels
+- s points
+- public sale limiter le nombre ??
 
 
 
