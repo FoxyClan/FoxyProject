@@ -49,6 +49,7 @@ export class ModalMint implements OnInit, OnDestroy {
   showMetadata: boolean = false;
   lastLeaveTime: number | null = null; // Stocke le moment où la souris quitte la boîte
   blockAnimation: boolean = false; // Bloque l'animation temporairement
+  closeAnimation: boolean = false;
 
   private subscription: Subscription;
   creatingNftLoading: boolean = false;
@@ -96,7 +97,11 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   closeModal() {
-    if(!this.isLoading) this.close.emit();
+    if(this.isLoading) return
+    this.closeAnimation = true;
+    setTimeout(() => {
+      this.close.emit();
+    }, 1000);
   }
   
 
@@ -251,7 +256,7 @@ export class ModalMint implements OnInit, OnDestroy {
   
       // Récupérer la rotation actuelle
       const currentRotation = Math.round(this.getCurrentRotation(box));
-  
+      
       if (currentRotation === 180) {
         // Ajouter l'animation rotateFix
         box.classList.add("rotateFix");
@@ -289,6 +294,10 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   addNFT() {
+    if(this.mintedNfts.length === this.tokenIndex + 1) {
+      this.closeModal();
+      return;
+    }
     this.isInteractive = false; // Désactiver l'interactivité temporairement
     const box = document.querySelector(".box") as HTMLElement;
   
@@ -313,7 +322,7 @@ export class ModalMint implements OnInit, OnDestroy {
   
     // Réinitialiser les styles et animations
     box.classList.remove("rotateFix", "spinning");
-    box.style.transform = "rotateY(360deg)";
+    box.style.transform = "";
 
     // Réappliquer l'animation par défaut
     box.style.animation = "";
@@ -321,6 +330,7 @@ export class ModalMint implements OnInit, OnDestroy {
     this.isUnblurred = false;
     this.showMetadata = false;
     this.tokenIndex++;
+    this.showAddWalletButton = false;
   }
     
   

@@ -1,5 +1,5 @@
 <section class="modalMint" (click)="closeModal()">
-    <div class="block" (click)="stopEvent($event)" [class.success]="success">
+    <div class="block" (click)="stopEvent($event)" [class.success]="success" [class.closeAnimation]="closeAnimation">
 
         <div *ngIf="!success && !creatingNftLoading">
             <div class="line">
@@ -100,13 +100,13 @@
                   <div class="card-face top"></div>
                   <div class="card-face bottom"></div>
                 </div>
-              </div>
+            </div>
               
             
             <div class="metadata-container"> 
                 <div class="next-block">
-                    <button *ngIf="showAddWalletButton" (click)="addNFT()" class="btn-play">Add to my wallet</button>
-                    <button *ngIf="showButton" (click)="discoverNFT()" class="btn-play">Discover my NFT<span *ngIf="mintedNfts.length > 1"> ( {{ tokenIndex + 1 }} / {{ mintedNfts.length }} )</span></button>
+                    <button *ngIf="showAddWalletButton && showButton" (click)="addNFT()" class="btn-play">Add to my wallet</button>
+                    <button *ngIf="!showAddWalletButton && showButton" (click)="discoverNFT()" class="btn-play">Discover my NFT<span *ngIf="mintedNfts.length > 1"> ( {{ tokenIndex + 1 }} / {{ mintedNfts.length }} )</span></button>
                 </div>
                 
                 <div class="attributs">

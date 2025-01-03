@@ -22,4 +22,4 @@ GANACHE
 - supprimer commentaire web3service getBalance / modal account loadBalance -> catch consol error
 
 MINT
-- 3d apres decouvert bugs fix avec mouseDown problem
+- probleme quand on mint plusieurs nft et que l'animation du deuxieme se lance sans attendre la fin de defaultrotation (donc current rotation jamais egale a 180)
