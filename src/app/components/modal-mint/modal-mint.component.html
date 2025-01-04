@@ -72,27 +72,25 @@
                     Your browser does not support the video tag.
                 </video>
             </div>
-            <div class="card-container">    
-                <div class="box" 
-                     (mousemove)="onMouseMove($event)"
-                     (mouseleave)="onMouseLeave()">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
+            <div class="card-container">   
+                <div class="box" (mousemove)="onMouseMove($event)"(mouseleave)="onMouseLeave()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
               
                     <div class="card-face front">
                         <img [class.blurred]="!isUnblurred" class="nft-adn" 
                             [src]="'data:image/png;base64,' + mintedNfts[tokenIndex].image" 
                             alt="NFT Image">
                     </div>
-                  <div class="card-face back">
-                    <img class="nft-adn" src="FoxyLogo.jpeg" alt="Foxy Logo">
-                  </div>
-                  <div class="card-face left"></div>
-                  <div class="card-face right"></div>
-                  <div class="card-face top"></div>
-                  <div class="card-face bottom"></div>
+                    <div class="card-face back">
+                        <img class="nft-adn" src="FoxyLogo.jpeg" alt="Foxy Logo">
+                    </div>
+                    <div class="card-face left"></div>
+                    <div class="card-face right"></div>
+                    <div class="card-face top"></div>
+                    <div class="card-face bottom"></div>
                 </div>
             </div>
               

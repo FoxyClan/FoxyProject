@@ -223,9 +223,10 @@ app-modal-mint {
     height: auto;
 	aspect-ratio: 1 / 1;
 	transform-style: preserve-3d;
+}
+
+.rotation {
 	animation: defaultRotation 4s linear infinite;
-	transition: transform 0.1s ease-out;
-	will-change: transform;
 }
 
 .card.back {

@@ -1,9 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { NotConnectedModal } from '../modal-not-connected/not-connected.component';
 import { combineLatest, Subscription } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';  
 import { CommonModule } from '@angular/common';
 import { Web3Service } from "../../services/web3.service";
 import { ModalMint } from "../modal-mint/modal-mint.component";
+import { ChangeDetectorRef } from '@angular/core';
 import Web3 from 'web3';
 
 @Component({
@@ -18,32 +21,104 @@ import Web3 from 'web3';
   styleUrl: './mint.component.css'
 })
 
-export class MintComponent implements OnInit, OnDestroy {
+export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
+  @ViewChild('box') box!: ElementRef;
+
   private subscription: Subscription;
   private isConnected: boolean = false;
+  private isInitialized = false;
+  private interval: any;
   walletAddress: any;
-
   showMint: boolean = false;
+  images = ['1.png', '2.png', '3.png', '4.png', '5.png'];
+  currentIndex: number = 0;
+  currentFront: number = 0;
+  currentBack: number = 1;
 
-  constructor(private web3Service: Web3Service) {
-    this.subscription = new Subscription();
+  currentImages = {
+    front: this.images[this.currentFront],
+    back: this.images[this.currentBack],
+  };
+
+  constructor(
+    private web3Service: Web3Service,
+    private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {this.subscription = new Subscription()}
+
+  ngAfterViewChecked() {
+    if (!this.isInitialized) {
+      const box = this.box.nativeElement as HTMLElement;
+      if (box) {
+        this.startHandleRotation();
+        this.isInitialized = true;
+      }
+    }
   }
-
+  
   ngOnInit() {
+    this.startHandleRotation();
     this.subscription = combineLatest([
       this.web3Service.isConnected$,
       this.web3Service.walletAddress$
     ]).subscribe(([isConnected, walletAddress]) => {
       this.isConnected = isConnected;
-      if(walletAddress) {
+      if (walletAddress) {
         const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
         this.walletAddress = checksumAddress;
       }
     });
   }
 
+  
+  async startHandleRotation() {
+    const box = this.box.nativeElement as HTMLElement;
+    box.classList.add("rotation");
+    if (isPlatformBrowser(this.platformId)) {
+      this.interval = setInterval(() => {
+        this.handleRotation();
+      }, 2000);
+    }
+  }
+
+
+  async handleRotation() {
+    try {
+      if(this.currentIndex === 0) {
+        this.currentFront = 2;
+        this.currentBack = 1;
+        this.currentIndex ++;
+        console.log(this.currentIndex, this.currentFront, this.currentBack);
+        this.cdr.detectChanges();
+        return
+      }
+      if (this.currentIndex % 2 === 0) {
+        this.currentFront = (this.currentFront + 2) % this.images.length;
+      } else {
+        this.currentBack = (this.currentBack + 2) % this.images.length;
+      }
+      this.currentIndex = (this.currentIndex + 1) % this.images.length;
+  
+      console.log(this.currentIndex, this.currentFront, this.currentBack);
+  
+      if (this.currentFront < this.images.length && this.currentBack < this.images.length) {
+        this.currentImages.front = this.images[this.currentFront];
+        this.currentImages.back = this.images[this.currentBack];
+      } else {
+        console.error("Invalid indices detected:", this.currentFront, this.currentBack);
+      }
+      this.cdr.detectChanges();
+    } catch (error) {
+      console.error("Error during rotation:", error);
+    }
+  }
+  
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
   }
 
   showMintModal() {

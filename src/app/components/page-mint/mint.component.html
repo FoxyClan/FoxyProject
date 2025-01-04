@@ -20,12 +20,12 @@
             </div>
             <div class="panel-2">
                 <div class="card-container">    
-                    <div class="box2">
+                    <div class="box2" #box>
                         <div class="card-face front">
-                            <img class="nft-adn" alt="NFT Image">
+                            <img class="nft-adn" [src]="currentImages.front" alt="NFT Image">
                         </div>
                         <div class="card-face back">
-                            <img class="nft-adn" src="FoxyLogo.jpeg" alt="Foxy Logo">
+                            <img class="nft-adn" [src]="currentImages.back" alt="Foxy Logo">
                         </div>
                         <div class="card-face left"></div>
                         <div class="card-face right"></div>
