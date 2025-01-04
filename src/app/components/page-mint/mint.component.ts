@@ -30,7 +30,7 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   private interval: any;
   walletAddress: any;
   showMint: boolean = false;
-  images = ['1.png', '2.png', '3.png', '4.png', '5.png'];
+  images = ['1.png', '2.png', '3.png', '4.png', '5.png', '6.png']; // obligatoirement un nombre pair d'image
   currentIndex: number = 0;
   currentFront: number = 0;
   currentBack: number = 1;
@@ -47,7 +47,7 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   ) {this.subscription = new Subscription()}
 
   ngAfterViewChecked() {
-    if (!this.isInitialized) {
+    if (!this.isInitialized && this.box && this.box.nativeElement) {
       const box = this.box.nativeElement as HTMLElement;
       if (box) {
         this.startHandleRotation();
@@ -57,7 +57,6 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
   
   ngOnInit() {
-    this.startHandleRotation();
     this.subscription = combineLatest([
       this.web3Service.isConnected$,
       this.web3Service.walletAddress$
@@ -84,14 +83,6 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   async handleRotation() {
     try {
-      if(this.currentIndex === 0) {
-        this.currentFront = 2;
-        this.currentBack = 1;
-        this.currentIndex ++;
-        console.log(this.currentIndex, this.currentFront, this.currentBack);
-        this.cdr.detectChanges();
-        return
-      }
       if (this.currentIndex % 2 === 0) {
         this.currentFront = (this.currentFront + 2) % this.images.length;
       } else {
