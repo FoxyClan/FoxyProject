@@ -253,18 +253,30 @@ app-modal-mint {
 .card-face.front,
 .card-face.back {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    top: 2.5%;
+    left: 2.5%;
+    width: 95%;
+    height: 95%;
     backface-visibility: hidden;
 	overflow: hidden;
 	user-select: none;
 }
 
-.card-face.front {
+.card-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+	overflow: hidden;
+	user-select: none;
+    background-color: #090c1d;
+}
+
+.front {
     transform: translateZ(10px);
 }
 
-.card-face.back {
+.back {
     transform: rotateY(180deg) translateZ(10px);
 }
 
