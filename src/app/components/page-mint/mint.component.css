@@ -56,7 +56,10 @@ video {
     width: 50%;
     border: 5px solid black;
     box-sizing: border-box;
-    padding: 1rem;
+    padding: 1rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 h1 {
@@ -69,6 +72,10 @@ h1 {
     margin-bottom: 2rem;
 }
 
+.colored {
+    color: #42ddf8;
+}
+
 h2 {
     font-family: "Orbitron", sans-serif;
     font-weight: 1000;
@@ -76,7 +83,6 @@ h2 {
     word-spacing: 10px;
     text-transform: uppercase;
     color: #FFFFFF;
-    margin-bottom: 32px;
 }
 
 @property --a {
@@ -191,7 +197,6 @@ app-modal-mint {
 .panel-2 {
     height: 100%;
     width: 50%;
-    border: 5px solid white;
     box-sizing: border-box;
 }
 
