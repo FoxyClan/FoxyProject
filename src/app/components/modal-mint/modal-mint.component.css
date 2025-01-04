@@ -303,20 +303,23 @@
 }
 
 @keyframes defaultRotation {
-	from {
-	  transform: rotateY(0deg);
-	}
-	to {
-	  transform: rotateY(360deg);
-	}
+    0% {
+        transform: rotateY(0deg) translateY(0);
+    }
+    50% {
+        transform: rotateY(180deg) translateY(-20px);
+    }
+    100% {
+        transform: rotateY(360deg) translateY(0);
+    }
 }
 
 @keyframes rotateFix {
 	from {
-	  transform: rotateY(-180deg);
+	  transform: rotateY(-180deg) translateY(-20px);
 	}
 	to {
-	  transform: rotateY(0deg);
+	  transform: rotateY(0deg) translateY(0px);
 	}
 }
 

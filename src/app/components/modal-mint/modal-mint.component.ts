@@ -169,8 +169,6 @@ export class ModalMint implements OnInit, OnDestroy {
     }, 500); // Délai de 0.5 seconde
   }
 
-  
-  
   stopEvent(event: Event) {
     event.stopPropagation();
   }
@@ -250,14 +248,10 @@ export class ModalMint implements OnInit, OnDestroy {
     this.isInteractive = false;
     this.showButton = false;
     const box = document.querySelector(".box") as HTMLElement;
-
-    if (!box) {
-      return;
-    }
+    if (!box) return;
 
     const handleAnimationEnd = () => {
       box.removeEventListener("animationiteration", handleAnimationEnd);
-  
       // Récupérer la rotation actuelle
       const currentRotation = Math.round(this.getCurrentRotation(box));
       

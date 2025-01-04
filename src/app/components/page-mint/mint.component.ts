@@ -90,8 +90,6 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
       }
       this.currentIndex = (this.currentIndex + 1) % this.images.length;
   
-      console.log(this.currentIndex, this.currentFront, this.currentBack);
-  
       if (this.currentFront < this.images.length && this.currentBack < this.images.length) {
         this.currentImages.front = this.images[this.currentFront];
         this.currentImages.back = this.images[this.currentBack];
