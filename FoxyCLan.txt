@@ -10,7 +10,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
  * @dev Extends ERC721 Non-Fungible Token Standard basic implementation
  */
 contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
-    string public FC_PROVENANCE;
 
     bool public publicSaleIsActive = false;
 
@@ -28,30 +27,76 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
 
     uint256 public constant privateFoxyPrice = 7500000000000000; //0.0075 ETH
 
-    mapping(address => uint8) private _AllowList; //fonction clean allowlist
+    uint256 public saleMintLimit = 0;
+
+    uint256 public currentSaleMinted = 0;
+
+    mapping(address => uint8) private _AllowList;
 
     uint256[] public burnedTokenIds;
 
+    mapping(uint256 => uint256) private _pointsTimestamp;
+
+    mapping(uint256 => uint256) private _foxyPoints;
+
+    mapping (uint256 => uint256) public _level;
+
     constructor() ERC721("FoxyClan", "FOXY") Ownable(msg.sender) {}
 
-    /**
-     * @dev Sets the provenance hash for the collection.
-     * @param provenance The provenance hash.
-     */
-    function setProvenance(string memory provenance) external onlyOwner {
-        FC_PROVENANCE = provenance;
+    function airdrop(address[] calldata addresses) external onlyOwner {
+        for (uint256 i = 0; i < addresses.length; i++) {
+            uint tokenId = totalSupply();
+            _safeMint(addresses[i], tokenId);
+        }
     }
 
-    /*
-    * @dev Pause public sale if active, make active if paused
-    */
-    function flipPublicSaleState() external onlyOwner {
-        publicSaleIsActive = !publicSaleIsActive;
+    function transferFrom(address from, address to, uint256 tokenId) public virtual override(ERC721, IERC721) {
+        super.transferFrom(from, to, tokenId);
+        if (from != address(0) && to != address(0)) {
+            uint256 currentTime = block.timestamp;
+            uint256 timePoints = (currentTime - _pointsTimestamp[tokenId]) / 1 days;
+            uint256 totalPoints = _foxyPoints[tokenId] + timePoints;
+            if (_level[tokenId] == 1) {
+                _foxyPoints[tokenId] = 0;
+                _pointsTimestamp[tokenId] = currentTime;
+            } else if (_level[tokenId] == 2) {
+                uint256 remainingPoints = (totalPoints + 1) / 2;
+                _foxyPoints[tokenId] = remainingPoints;
+                _pointsTimestamp[tokenId] = currentTime;
+            } else if (_level[tokenId] == 3) {
+                _foxyPoints[tokenId] = totalPoints;
+                _pointsTimestamp[tokenId] = currentTime;
+            }
+        }
     }
 
-    /*
-    * @dev Pause private sale if active, make active if paused
-    */
+    function getTokenPoints(uint256 tokenId) public view returns (uint256) {
+        _requireOwned(tokenId);
+        uint256 accumulatedPoints = (block.timestamp - _pointsTimestamp[tokenId]) / 1 days;
+        return _foxyPoints[tokenId] + accumulatedPoints;
+    }
+
+    function getUserPoints(address owner) public view returns (uint256) {
+        uint256 balance = balanceOf(owner);
+        uint256 totalPoints = 0;
+
+        for (uint256 i = 0; i < balance; i++) {
+            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
+            totalPoints += getTokenPoints(tokenId);
+        }
+        return totalPoints;
+    }
+
+    function flipPublicSaleState(uint256 maxMintAmount, bool state) external onlyOwner {
+        publicSaleIsActive = state;
+        if (publicSaleIsActive) {
+            saleMintLimit = maxMintAmount;
+            currentSaleMinted = 0;
+        } else {
+            saleMintLimit = 0;
+        }
+    }
+
     function flipPrivateSaleState() external onlyOwner {
         privateSaleIsActive = !privateSaleIsActive;
     }
@@ -151,13 +196,17 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
      * - The total supply must not exceed the max supply.
      * - The sender must send enough ether to cover the cost of minting.
      */
-    function mint(uint numberOfTokens) public payable {
+    function mint(uint256 numberOfTokens) public payable {
         uint256 supply = totalSupply();
         uint256 costToMint = publicFoxyPrice * numberOfTokens;
+        
         require(publicSaleIsActive, "Sale must be active to mint Foxy");
-        require(numberOfTokens <= maxPublicFoxyMint, "Can only mint 10 tokens at a time");
+        require(numberOfTokens <= maxPublicFoxyMint, "Can only mint a limited number of tokens at a time");
         require(supply + numberOfTokens <= MAX_SUPPLY, "Purchase would exceed max tokens");
         require(costToMint <= msg.value, "Ether value sent is not correct");
+        if (saleMintLimit > 0) {
+            require(currentSaleMinted + numberOfTokens <= saleMintLimit, "Minting limit for this sale reached");
+        }
 
         for (uint256 i = 0; i < numberOfTokens; i++) {
             uint256 tokenId;
@@ -170,6 +219,9 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
             }
             _safeMint(msg.sender, tokenId);
         }
+
+        currentSaleMinted += numberOfTokens;
+
         if (msg.value > costToMint) {
             uint256 excess = msg.value - costToMint;
             (bool success, ) = msg.sender.call{value: excess}("");
@@ -177,13 +229,35 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         }
     }
 
-    function merge(uint tokenId1, uint tokenId2) external {
-        require(ownerOf(tokenId1) == msg.sender, "You must own the token");
-        require(ownerOf(tokenId2) == msg.sender, "You must own the token");
+
+    function merge(uint256 tokenId1, uint256 tokenId2) external {
+        require(ownerOf(tokenId1) == msg.sender, "You must own tokenId1");
+        require(ownerOf(tokenId2) == msg.sender, "You must own tokenId2");
+        require(tokenId1 != tokenId2, "Cannot merge the same token");
+
+        uint256 tokenPoints1 = getTokenPoints(tokenId1);
+        uint256 tokenPoints2 = getTokenPoints(tokenId2);
+
+        uint256 newLevel = _level[tokenId1] > _level[tokenId2] 
+            ? _level[tokenId1] 
+            : _level[tokenId2];
+        newLevel = newLevel == 3 ? newLevel : newLevel + 1;
+
         _burn(tokenId1);
         _burn(tokenId2);
         burnedTokenIds.push(tokenId2);
+
         _safeMint(msg.sender, tokenId1);
+        _level[tokenId1] = newLevel;
+        _foxyPoints[tokenId1] = tokenPoints1 + tokenPoints2;
+    }
+
+
+    function _safeMint(address to, uint256 tokenId, bytes memory data) internal virtual override {
+        super._safeMint(to, tokenId, data);
+        _level[tokenId] = 1;
+        _foxyPoints[tokenId] = 50;
+        _pointsTimestamp[tokenId] = block.timestamp;
     }
 
     /**
@@ -215,11 +289,17 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
      * for future uses, such as giveaways, collaborations or special events.
      */
     function reserveFoxy(uint256 n) public onlyOwner {
-      uint supply = totalSupply();
-      uint i;
-      for (i = 0; i < n; i++) {
-          _safeMint(msg.sender, supply + i);
-      }
+      for (uint256 i = 0; i < n; i++) {
+            uint256 tokenId;
+
+            if (burnedTokenIds.length > 0) {
+                tokenId = burnedTokenIds[burnedTokenIds.length - 1];
+                burnedTokenIds.pop();
+            } else {
+                tokenId = totalSupply();
+            }
+            _safeMint(msg.sender, tokenId);
+        }
     }
     
     /**

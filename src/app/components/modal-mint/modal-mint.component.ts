@@ -33,7 +33,8 @@ export class ModalMint implements OnInit, OnDestroy {
   @Output() close = new EventEmitter();
   counterValue: number = 1;
   actualSupply: any = "Load...";
-  private intervalId: any;
+  currentSaleMinted: any = "Load...";
+  saleMintLimit: any = "Load...";
   isLoading: boolean = false;
   errorMessage: string = "";
   successMessage: string = "";
@@ -78,11 +79,9 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.intervalId = setInterval(() => {
-      this.Supply();
-    }, 5000);
-  
-    this.Supply();
+    this._supply();
+    this._saleMintLimit();
+    this._currentSaleMint();
     this.subscription = this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
       this.creatingNftLoading = creatingNftLoading;
     });
@@ -90,9 +89,6 @@ export class ModalMint implements OnInit, OnDestroy {
 
 
   ngOnDestroy(): void {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
     this.subscription.unsubscribe();
   }
 
@@ -194,6 +190,7 @@ export class ModalMint implements OnInit, OnDestroy {
     }
   }
 
+
   async mintNFT(numberOfTokens: number) {
     this.isLoading = true;
     this.errorMessage = "";
@@ -234,7 +231,7 @@ export class ModalMint implements OnInit, OnDestroy {
     }
   }
 
-  async Supply() {
+  async _supply() {
     try {
       const result = await this.web3Service.Supply();
       this.actualSupply = Number(result)
@@ -242,6 +239,28 @@ export class ModalMint implements OnInit, OnDestroy {
       console.error("Supply error:", error);
     }
   }
+
+  async _currentSaleMint() {
+    try {
+       const result = await this.web3Service.currentSaleMinted();
+       this.currentSaleMinted = Number(result);
+    } catch (error) {
+       console.error("currentSaleMinted error:", error);
+    }
+  }
+
+  
+  async _saleMintLimit() {
+    try {
+       const result = await this.web3Service.saleMintLimit();
+       this.saleMintLimit = Number(result);
+    } catch (error) {
+       console.error("saleMintLimit error:", error);
+    }
+  }
+
+
+  /* AFTER MINT */
 
 
   discoverNFT() {

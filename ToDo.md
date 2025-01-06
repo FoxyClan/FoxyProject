@@ -11,15 +11,6 @@ MODAL-ACCOUNT
 
 
 
-SMART CONTRACT
-- pas plus de 20 nft par wallet
-- levels
-- s points
-- public sale limiter le nombre ??
-
-
-
-
 GANACHE
 - supprimer commentaire web3service getBalance / modal account loadBalance -> catch consol error
 

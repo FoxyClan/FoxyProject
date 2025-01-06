@@ -40,7 +40,7 @@ export class Web3Service {
   private usdtContractAddress: string = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
   private usdcContractAddress: string = '0xA0b86991c6218b36c1d19D4a2e9eb0cE3606EB48';
 
-  private ContractABI = [
+  private StableCoinContractABI = [
     {
       "constant": true,
       "inputs": [
@@ -62,7 +62,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0xa624556aeF581A79Fd36fd6545CdB1F23829F23A';
+  private FoxyClanContractAddress = '0xaFBD72b89272B4074d9aad431EE64aE06E46beDA';
 
   private FoxyClanABI = [
     {
@@ -312,12 +312,12 @@ export class Web3Service {
     },
     {
       "inputs": [],
-      "name": "FC_PROVENANCE",
+      "name": "MAX_SUPPLY",
       "outputs": [
         {
-          "internalType": "string",
+          "internalType": "uint256",
           "name": "",
-          "type": "string"
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -325,8 +325,14 @@ export class Web3Service {
       "constant": true
     },
     {
-      "inputs": [],
-      "name": "MAX_SUPPLY",
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "_level",
       "outputs": [
         {
           "internalType": "uint256",
@@ -399,6 +405,20 @@ export class Web3Service {
         }
       ],
       "name": "burnedTokenIds",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [],
+      "name": "currentSaleMinted",
       "outputs": [
         {
           "internalType": "uint256",
@@ -632,6 +652,20 @@ export class Web3Service {
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "saleMintLimit",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
       "inputs": [
         {
           "internalType": "address",
@@ -746,6 +780,32 @@ export class Web3Service {
       "inputs": [
         {
           "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "addresses",
+          "type": "address[]"
+        }
+      ],
+      "name": "airdrop",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
           "name": "from",
           "type": "address"
         },
@@ -768,31 +828,56 @@ export class Web3Service {
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
         }
       ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "name": "getTokenPoints",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
         {
-          "internalType": "string",
-          "name": "provenance",
-          "type": "string"
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
         }
       ],
-      "name": "setProvenance",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "name": "getUserPoints",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
     },
     {
-      "inputs": [],
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "maxMintAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "state",
+          "type": "bool"
+        }
+      ],
       "name": "flipPublicSaleState",
       "outputs": [],
       "stateMutability": "nonpayable",
@@ -1202,7 +1287,7 @@ export class Web3Service {
       }
   
       try {
-        const contract = new this.web3.eth.Contract(this.ContractABI, contractAddress);
+        const contract = new this.web3.eth.Contract(this.StableCoinContractABI, contractAddress);
         const balanceWei: string = await contract.methods['balanceOf'](this.walletAddressSubject.value).call();
         let balance;
         if(symbol == 'USDT' || symbol == 'USDC') balance = (parseInt(balanceWei) / Math.pow(10, 6)).toString();
@@ -1224,8 +1309,8 @@ export class Web3Service {
     return this._merge(tokenId1, tokenId2, this.walletAddressSubject.value);
   }
 
-  public async flipPublicSaleState() {
-    return this._flipPublicSaleState(this.walletAddressSubject.value);
+  public async flipPublicSaleState(maxMintAmount: number, state: boolean) {
+    return this._flipPublicSaleState(this.walletAddressSubject.value, maxMintAmount, state);
   }
 
   public async Supply() {
@@ -1298,11 +1383,11 @@ export class Web3Service {
   }
     
 
-  private async _flipPublicSaleState(fromAddress: string): Promise<any> {
+  private async _flipPublicSaleState(fromAddress: string, maxMintAmount: number, state: boolean): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     try {
-      const result = await contract.methods['flipPublicSaleState']().send({
+      const result = await contract.methods['flipPublicSaleState'](maxMintAmount, state).send({
         from: fromAddress
       });
       return result;
@@ -1331,6 +1416,20 @@ export class Web3Service {
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     const balance = await contract.methods['balanceOf'](owner).call();
     return balance;
+  }
+
+  public async currentSaleMinted() {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+    const saleMintLimit = await contract.methods['currentSaleMinted']().call();
+    return saleMintLimit;
+  }
+
+  public async saleMintLimit() {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+    const saleMintLimit = await contract.methods['saleMintLimit']().call();
+    return saleMintLimit;
   }
 
   public async setBaseURI(fromAddress: string,uri: String) {
@@ -1441,3 +1540,4 @@ export class Web3Service {
 
 
 }
+

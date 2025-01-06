@@ -135,7 +135,7 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   async flipSale() {
     try {
-      const result = await this.web3Service.flipPublicSaleState();
+      const result = await this.web3Service.flipPublicSaleState(100, true);
       console.log("Fliping successful:", result);
     } catch (error) {
       console.error("Fliping error:", error);
@@ -153,7 +153,8 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
     } catch (error) {
        console.error("Balance error:", error);
     }
- }
+  }
+
  
  
 
