@@ -235,7 +235,7 @@ app-modal-mint {
 }
 
 .rotation {
-	animation: defaultRotation 4s linear infinite;
+	animation: defaultRotation 4s ease-in-out infinite;
 }
 
 
