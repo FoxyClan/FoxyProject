@@ -1432,7 +1432,11 @@ export class Web3Service {
     return saleMintLimit;
   }
 
-  public async setBaseURI(fromAddress: string,uri: String) {
+  public async setBaseURI(uri: string) {
+    this._setBaseURI(this.walletAddressSubject.value, uri);
+  }
+
+  private async _setBaseURI(fromAddress: string, uri: String) {
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     const result = await contract.methods['setBaseURI'](uri).send({

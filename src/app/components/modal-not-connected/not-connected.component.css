@@ -1,9 +1,94 @@
-.notConnected {
-    height: 100vh;
+app-modal-wallet {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    background-color: brown;
+    height: 100vh;
+}
+
+.not-connected {
+    min-height: 100vh;
+    width: 100%;
+    background: linear-gradient(135deg, #252835 0%, #1a1c24 100%);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.content {
+    text-align: center;
+    padding: 2rem;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 2rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, #fff, #484d64);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+p {
+    font-size: 1.2rem;
+    color: #484d64;
+    margin-bottom: 2rem;
+}
+
+.connect-button {
+    background: transparent;
+    border: 2px solid #484d64;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 30px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.connect-button:hover {
+    background: #484d64;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(72, 77, 100, 0.3);
+}
+
+.material-icons {
+    font-size: 1.2rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+    100% {
+        transform: translateY(0);
+    }
 }

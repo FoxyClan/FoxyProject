@@ -198,6 +198,7 @@ export class ModalMint implements OnInit, OnDestroy {
     this.discover = false;
     try {
       const result = await this.web3Service.mint(numberOfTokens);
+      console.info('Minting successful: ' + result);
       const nftDataPromises = result.map(async (nft: { tokenId: number; image: string; metadata: any }) => {
         try {
           // Utilisez les valeurs de l'objet nft (tokenId, image, metadata)

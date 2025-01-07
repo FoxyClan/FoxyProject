@@ -1,3 +1,13 @@
-<section class="notConnected">
-    <h1>You need to connect your wallet to go to this section</h1>
+<section class="not-connected">
+    <div class="content">
+        <img src="FoxyLogoNoBackground.png" alt="Foxy Clan Logo" class="logo">
+        <h1>Wallet Connection Required</h1>
+        <p>Please connect your wallet to access this section</p>
+        <button class="connect-button" (click)="connectWallet()">
+            Connect Wallet
+            <span class="material-icons">account_balance_wallet</span>
+        </button>
+    </div>
 </section>
+
+<app-modal-wallet *ngIf="showWallet" (close)="closeModal()" #ModalWallet></app-modal-wallet>

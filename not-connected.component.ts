@@ -1,22 +1,16 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ModalWallet } from '../modal-wallet/modal-wallet.component';
 
 @Component({
   selector: 'app-not-connected',
   standalone: true,
-  imports: [CommonModule, ModalWallet],
+  imports: [CommonModule],
   templateUrl: './not-connected.component.html',
   styleUrl: './not-connected.component.css'
 })
-export class NotConnectedModal {
-  showWallet: boolean = false;
-
+export class NotConnectedComponent {
   connectWallet() {
-    this.showWallet = true;
-  }
-
-  closeModal() {
-    this.showWallet = false;
+    // Implement wallet connection logic or emit an event to parent
+    console.log('Connecting wallet...');
   }
 }

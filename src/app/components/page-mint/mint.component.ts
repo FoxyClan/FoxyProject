@@ -122,7 +122,14 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
     return this.isConnected;
   }
 
-  
+  async setBaseUri() {
+    try {
+      const result = await this.web3Service.setBaseURI("https://foxyclan.s3.filebase.com/");
+      console.log("setBaseUri successful:", result);
+    } catch (error) {
+      console.error("setBaseUri error:", error);
+    }
+  }
 
   async merge() {
     try {
