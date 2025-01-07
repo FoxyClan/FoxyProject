@@ -50,7 +50,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         }
     }
 
-    function transferFrom(address from, address to, uint256 tokenId) public virtual override(ERC721, IERC721) {
+    function transferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) {
         super.transferFrom(from, to, tokenId);
         if (from != address(0) && to != address(0)) {
             uint256 currentTime = block.timestamp;
@@ -87,6 +87,21 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         return totalPoints;
     }
 
+    /**
+     * @dev Adds Foxy Points to a list of specified tokens.
+     * @param tokenIds An array of token IDs to which points will be added.
+     * @param pointsToAdd The number of Foxy Points to add to each token.
+     */
+    function addFoxyPointsToTokens(uint256[] calldata tokenIds, uint256 pointsToAdd) external onlyOwner {
+        require(tokenIds.length > 0, "Token list cannot be empty");
+        
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            uint256 tokenId = tokenIds[i];
+            _requireOwned(tokenId);
+            _foxyPoints[tokenId] += pointsToAdd;
+        }
+    }
+
     function flipPublicSaleState(uint256 maxMintAmount, bool state) external onlyOwner {
         publicSaleIsActive = state;
         if (publicSaleIsActive) {
@@ -112,7 +127,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
     /**
      * @dev Get the base URI for token URIs.
      */
-    function _baseURI() internal view virtual override returns (string memory) {
+    function _baseURI() internal view override returns (string memory) {
         return _BaseURI;
     }
 
@@ -249,11 +264,17 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
 
         _safeMint(msg.sender, tokenId1);
         _level[tokenId1] = newLevel;
-        _foxyPoints[tokenId1] = tokenPoints1 + tokenPoints2;
+        _level[tokenId2] = 0;
+
+        uint256 mergePoints = _level[tokenId1] == 2 
+            ? 100 
+            : 250;
+
+        _foxyPoints[tokenId1] = tokenPoints1 + tokenPoints2 + mergePoints;
     }
 
 
-    function _safeMint(address to, uint256 tokenId, bytes memory data) internal virtual override {
+    function _safeMint(address to, uint256 tokenId, bytes memory data) internal override {
         super._safeMint(to, tokenId, data);
         _level[tokenId] = 1;
         _foxyPoints[tokenId] = 50;
@@ -265,21 +286,21 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
      * This function is inherited from ERC721 and ERC721Enumerable and is essential for 
      * allowing other contracts and interfaces to interact correctly with this contract.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC721Enumerable) returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 
     /**
      * @dev Overridden from ERC721Enumerable.
      */
-    function _update(address to, uint256 tokenId, address auth) internal virtual override(ERC721, ERC721Enumerable) returns (address) {
+    function _update(address to, uint256 tokenId, address auth) internal override(ERC721, ERC721Enumerable) returns (address) {
         return super._update(to, tokenId, auth);
     }
 
     /**
      * @dev Overridden from ERC721Enumerable.
      */
-    function _increaseBalance(address account, uint128 amount) internal virtual override(ERC721, ERC721Enumerable) {
+    function _increaseBalance(address account, uint128 amount) internal override(ERC721, ERC721Enumerable) {
         return super._increaseBalance(account, amount);
     }
 

@@ -8,6 +8,9 @@ MODAL-WALLET
 MODAL-ACCOUNT
 - fetching adn CORS problem
 
+SMART CONTRACT
+- mettre a jour les commentaires
+
 
 
 
