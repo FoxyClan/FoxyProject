@@ -1,0 +1,29 @@
+<div class="roadmap">
+  <div class="roadmap-header">
+    <h1>FoxyClan Roadmap</h1>
+    <p class="subtitle">Our journey to build the ultimate NFT community</p>
+  </div>
+
+  <div class="timeline" [@fadeInUp]="milestones.length">
+    <div class="timeline-line"></div>
+    
+    <div *ngFor="let milestone of milestones" 
+         class="milestone" 
+         [class.completed]="milestone.completed">
+      
+      <div class="milestone-icon">
+        <span>{{milestone.icon}}</span>
+      </div>
+
+      <div class="milestone-content">
+        <div class="phase-badge">{{milestone.phase}}</div>
+        <h2>{{milestone.title}}</h2>
+        <p>{{milestone.description}}</p>
+        <div class="date">
+          <span>{{milestone.date}}</span>
+          <span *ngIf="milestone.completed" class="completed-badge">Completed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

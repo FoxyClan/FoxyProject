@@ -1,0 +1,123 @@
+.roadmap {
+  width: 100%;
+  padding: 8rem 2rem;
+  background: linear-gradient( 135deg, #252835 0%, #1a1c24 100%);
+  font-family: "Orbitron", sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.roadmap-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.timeline {
+  position: relative;
+  margin: 0 auto;
+  padding: 2rem 0;
+  width: 80%;
+  max-width: 1000px;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 3rem;
+  top: 0;
+  bottom: 0;
+  width: 0.25rem;
+  background: linear-gradient(to bottom, #FF6B6B, #4ECDC4);
+  border-radius: 1rem;
+  z-index: 1;
+}
+
+.milestone {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.milestone:hover {
+  transform: translateY(-0.5rem);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+}
+
+.milestone-icon {
+  font-size: 2rem;
+  min-width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+  border-radius: 50%;
+  color: white;
+}
+
+.milestone.completed {
+  border-left: 0.25rem solid #4ECDC4;
+}
+
+.phase-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+  color: white;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.completed-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background-color: #4ECDC4;
+  color: white;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  margin-left: 1rem;
+}
+
+.date {
+  margin-top: 1rem;
+  color: #666;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .timeline {
+    width: 95%;
+  }
+  
+  .milestone {
+    flex-direction: column;
+  }
+  
+  .timeline-line {
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+}
