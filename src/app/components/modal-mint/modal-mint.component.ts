@@ -318,7 +318,6 @@ export class ModalMint implements OnInit, OnDestroy {
     }
     this.isInteractive = false; // Désactiver l'interactivité temporairement
     const box = document.querySelector(".box") as HTMLElement;
-  
     const image = document.querySelector(".nft-adn") as HTMLElement; // Cibler l'image
 
     if (!box || !image) {
@@ -335,8 +334,6 @@ export class ModalMint implements OnInit, OnDestroy {
     // Forcer un reflow pour appliquer les styles immédiatement
     image.offsetHeight;
 
-    // Réactiver la transition si nécessaire
-    image.style.transition = ""; // Restaurer la transition CSS
   
     // Réinitialiser les styles et animations
     box.classList.remove("rotateFix", "spinning");

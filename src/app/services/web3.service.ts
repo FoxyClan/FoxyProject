@@ -62,7 +62,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0xaFBD72b89272B4074d9aad431EE64aE06E46beDA';
+  private FoxyClanContractAddress = '0x7ca6184239967edd9aAc382B796fcA3c772080bb';
 
   private FoxyClanABI = [
     {
@@ -864,6 +864,24 @@ export class Web3Service {
       "stateMutability": "view",
       "type": "function",
       "constant": true
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "tokenIds",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pointsToAdd",
+          "type": "uint256"
+        }
+      ],
+      "name": "addFoxyPointsToTokens",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
       "inputs": [
