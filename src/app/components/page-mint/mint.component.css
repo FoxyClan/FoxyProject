@@ -3,23 +3,22 @@
     width: 100%;
     height: 100vh;
     overflow: hidden;
-    background-image: url('../../../../public/background1.jpg');
-    background-size: cover;
+    background: linear-gradient(135deg, #4a1d96, #000000, #1e3a8a);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+  
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
 
 .filter {
     position: absolute;
@@ -54,12 +53,11 @@ video {
 .panel-1 {
     height: 100%;
     width: 50%;
-    border: 5px solid black;
     box-sizing: border-box;
-    padding: 1rem 1rem 3rem 1rem;
+    padding: 5rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 2rem;
 }
 
 h1 {
@@ -69,11 +67,77 @@ h1 {
     word-spacing: 10px;
     text-transform: uppercase;
     color: #FFFFFF;
-    margin-bottom: 2rem;
 }
 
 .colored {
     color: #42ddf8;
+}
+
+.panel-1-block {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-around;
+    padding: 0 2rem 0 0;
+}
+
+.sale-status {
+    font-family: "Orbitron", sans-serif;
+    font-weight: 400;
+    font-size: 1.2rem;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease-in-out;
+}
+
+.sale-status-text {
+    display: inline-block;
+    padding-right: 10px;
+    position: relative;
+}
+
+.sale-status .sale-status-text {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+}
+
+.active-sale .sale-status-text {
+    color: #42ddf8; /* Subtle blue */
+}
+
+.inactive-sale .sale-status-text {
+    color: #f1f1f1; /* Light grey */
+}
+
+.sale-status::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #42ddf8;
+    transition: width 0.3s ease-in-out;
+}
+
+.active-sale::after {
+    width: 100%;
+}
+
+.inactive-sale::after {
+    width: 50%;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 h2 {
@@ -104,7 +168,18 @@ h2 {
 .btn-container {
     display: flex;
     flex-direction: row;
-    gap: 3rem;
+    align-items: center;
+    gap: 2rem;
+
+}
+
+.panel-1-ul {
+    font-family: "Orbitron", sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 2rem;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 
@@ -135,8 +210,8 @@ h2 {
     background: black;
 }
 
-.green-btn::after {
-    background: #00FFA3;
+.blue-btn::after {
+    background: #42bbf6;;
 }
 
 .btn span {
@@ -146,6 +221,7 @@ h2 {
     font-size: 1rem;
     z-index: 2;
     text-transform: uppercase;
+    color: black;
 }
 
 .black-btn span {
@@ -274,7 +350,7 @@ app-modal-mint {
     backface-visibility: hidden;
 	overflow: hidden;
 	user-select: none;
-    background-color: #090c1d;
+    background-color: #09161d;
 }
 
 .front {

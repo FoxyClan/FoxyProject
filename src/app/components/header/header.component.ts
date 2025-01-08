@@ -18,7 +18,7 @@ import Web3 from 'web3';
     ModalAccount,
     ModalWallet,
     RouterLink
-  ],
+],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })

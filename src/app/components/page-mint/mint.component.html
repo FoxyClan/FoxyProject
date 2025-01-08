@@ -1,26 +1,27 @@
 <app-not-connected *ngIf="!getConnected()"></app-not-connected>
 
 <section *ngIf="getConnected()" class="mint">
-    <video autoplay loop muted playsinline><!--
-        <source src="mintBackground2.mp4" type="video/mp4" /> 
-        <source src="mintBackground.webm" type="video/webm" />
-        <source src="mintBackground.ogv" type="video/ogg" />-->
-    </video>
     <div class="filter"></div>
 
     <div class="container">
         <div class="panel">
             <div class="panel-1">
-                <h1>Join the <span class="colored">foxy clan</span> family</h1>
-                <h2>Public Sale Is Active</h2>
-                <div class="btn-container">
-                    <a (click)="showMintModal()" class="btn green-btn" style="--clr1:rgba(168, 239, 255, 1);--clr2:rgba(168, 239, 255, 0.1)"><span>Mint now</span></a>
-                    <a (click)="flipSale()" class="btn black-btn" style="--clr1:rgba(168, 239, 255, 1);--clr2:rgba(168, 239, 255, 0.1)"><span>Allow List</span></a>
+                <h1><span class="colored">foxy clan</span><br>NFT Collection</h1>
+                <div class="panel-1-block">
+                    <div class="sale-status" [ngClass]="{'active-sale': isPublicSaleActive, 'inactive-sale': !isPublicSaleActive}">
+                        <span class="sale-status-text">{{ isPublicSaleActive ? 'Public Sale is Active' : 'Public Sale Starts Soon' }}</span>
+                    </div>
+                    <div class="btn-container">
+                        <a (click)="showMintModal()" class="btn blue-btn" style="--clr1:rgba(168, 239, 255, 1);--clr2:rgba(168, 239, 255, 0.1)"><span>Mint now</span></a>
+                        <a (click)="flipSale()" class="btn black-btn" style="--clr1:rgba(168, 239, 255, 1);--clr2:rgba(168, 239, 255, 0.1)"><span>Allow List</span></a>
+                    </div>
+                    <ul class="panel-1-ul">
+                        <li>Max 2 NFTs per wallet . Price 0.09 ETH + gas</li>
+                        <li>MINT IS LIVE <span>UNTIL 25 APR 04:00H</span></li>
+                        <li>Presale : SOLDOUT</li>
+                    </ul>
                 </div>
-                    <div>
-                    <h2>Public Sale Is Active</h2>
-                    <h2>Public Sale Is Active</h2>
-                </div>
+                
             </div>
             <div class="panel-2">
                 <div class="card-container">    

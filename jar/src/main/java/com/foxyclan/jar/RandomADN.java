@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +54,7 @@ public class RandomADN {
             createNFT(adn, tokenId);
             uploadToFilebase(tokenId + ".png");
 
-            Path imagePath = Paths.get("jar/src/main/resources/tmp/" + tokenId + ".png");
+            Path imagePath = Path.of("jar/src/main/resources/tmp/" + tokenId + ".png");
             String imageBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath));
     
             // Créer les métadonnées
@@ -74,7 +73,7 @@ public class RandomADN {
     private String generateTraitDNA(int interval) {
         Random random = new Random();
         int number = random.nextInt(interval); // Génère un nombre entre 0 et 15
-        return String.format("%02d", number); // Formate le nombre en deux chiffres
+        return "%02d".formatted(number); // Formate le nombre en deux chiffres
     }
 
     private void createNFT(Map<String, String> adn, int tokenId) throws IOException {
