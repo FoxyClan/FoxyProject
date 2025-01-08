@@ -1,10 +1,8 @@
-.roadmap {
-  width: 100%;
+.roadmap-container {
+  min-height: 100vh;
   padding: 8rem 2rem;
-  background: linear-gradient( 135deg, #252835 0%, #1a1c24 100%);
-  font-family: "Orbitron", sans-serif;
-  position: relative;
-  overflow: hidden;
+  background: linear-gradient(135deg, #1a1c25 0%, #252835 100%);
+  color: #fff;
 }
 
 .roadmap-header {
@@ -12,112 +10,165 @@
   margin-bottom: 4rem;
 }
 
-h1 {
+.roadmap-header h1 {
   font-size: 3rem;
   margin-bottom: 1rem;
-  background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  background-clip: text;
   -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -ms-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.subtitle {
+.roadmap-header p {
   font-size: 1.2rem;
-  color: #666;
+  color: #8b8fa3;
 }
 
 .timeline {
   position: relative;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 0;
-  width: 80%;
-  max-width: 1000px;
 }
 
-.timeline-line {
+.line {
   position: absolute;
-  left: 3rem;
-  top: 0;
-  bottom: 0;
-  width: 0.25rem;
-  background: linear-gradient(to bottom, #FF6B6B, #4ECDC4);
-  border-radius: 1rem;
-  z-index: 1;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, #ff6b6b, #ff8e53);
+  border-radius: 2px;
 }
 
-.milestone {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 3rem;
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 1rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+.roadmap-item {
   position: relative;
-  z-index: 2;
+  margin: 4rem 0;
+  width: 50%;
+  padding: 0 3rem;
 }
 
-.milestone:hover {
-  transform: translateY(-0.5rem);
-  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+.roadmap-item.even {
+  left: 40%;
 }
 
-.milestone-icon {
-  font-size: 2rem;
-  min-width: 4rem;
-  height: 4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-  border-radius: 50%;
-  color: white;
+.roadmap-content {
+  position: relative;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.milestone.completed {
-  border-left: 0.25rem solid #4ECDC4;
+.roadmap-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .phase-badge {
-  display: inline-block;
+  position: absolute;
+  top: -15px;
+  left: 2rem;
   padding: 0.5rem 1rem;
-  background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-  color: white;
-  border-radius: 2rem;
+  background: #2a2d3a;
+  border-radius: 20px;
+  font-family: 'Orbitron', sans-serif;
   font-size: 0.9rem;
-  margin-bottom: 1rem;
+  color: #ff8e53;
+  border: 1px solid #ff6b6b;
 }
 
-.completed-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background-color: #4ECDC4;
+.phase-badge.completed {
+  background: #ff6b6b;
   color: white;
-  border-radius: 1rem;
-  font-size: 0.8rem;
-  margin-left: 1rem;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.header h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
 }
 
 .date {
-  margin-top: 1rem;
-  color: #666;
+  color: #8b8fa3;
   font-size: 0.9rem;
-  display: flex;
-  align-items: center;
+}
+
+.milestone-list {
+  list-style: none;
+}
+
+.milestone {
+  margin: 1rem 0;
+  padding-left: 2rem;
+  position: relative;
+  color: #8b8fa3;
+  transition: color 0.3s ease;
+}
+
+.milestone.completed {
+  color: #fff;
+}
+
+.check-icon {
+  position: absolute;
+  left: 0;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.milestone.completed .check-icon {
+  opacity: 1;
+  color: #ff6b6b;
+}
+
+.timeline-point {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #2a2d3a;
+  border-radius: 50%;
+  top: 50%;
+  border: 3px solid #ff6b6b;
+}
+
+.timeline-point.completed {
+  background: #ff6b6b;
+}
+
+.even .timeline-point {
+  left: -10px;
+}
+
+.roadmap-item:not(.even) .timeline-point {
+  right: -10px;
 }
 
 @media (max-width: 768px) {
-  .timeline {
-    width: 95%;
+  .timeline .line {
+    left: 30px;
   }
-  
-  .milestone {
-    flex-direction: column;
+
+  .roadmap-item {
+    width: 100%;
+    padding-left: 60px;
+    padding-right: 0;
   }
-  
-  .timeline-line {
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1;
+
+  .roadmap-item.even {
+    left: 0;
+  }
+
+  .timeline-point {
+    left: 20px !important;
   }
 }

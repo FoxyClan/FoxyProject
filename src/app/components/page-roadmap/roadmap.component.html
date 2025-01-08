@@ -1,28 +1,41 @@
-<div class="roadmap">
-  <div class="roadmap-header">
+<div class="roadmap-container">
+  <div class="roadmap-header" [@fadeIn]>
     <h1>FoxyClan Roadmap</h1>
-    <p class="subtitle">Our journey to build the ultimate NFT community</p>
+    <p>Our journey to build the ultimate NFT experience</p>
   </div>
 
-  <div class="timeline" [@fadeInUp]="milestones.length">
-    <div class="timeline-line"></div>
+  <div class="timeline">
+    <div class="line"></div>
     
-    <div *ngFor="let milestone of milestones" 
-         class="milestone" 
-         [class.completed]="milestone.completed">
+    <div *ngFor="let item of roadmapItems; let i = even" 
+         class="roadmap-item" 
+         [class.even]="+i % 2 === 0"
+         [@fadeIn]>
       
-      <div class="milestone-icon">
-        <span>{{milestone.icon}}</span>
-      </div>
-
-      <div class="milestone-content">
-        <div class="phase-badge">{{milestone.phase}}</div>
-        <h2>{{milestone.title}}</h2>
-        <p>{{milestone.description}}</p>
-        <div class="date">
-          <span>{{milestone.date}}</span>
-          <span *ngIf="milestone.completed" class="completed-badge">Completed</span>
+      <div class="roadmap-content">
+        <div class="phase-badge" [class.completed]="item.completed">
+          {{item.phase}}
         </div>
+        
+        <div class="content-box">
+          <div class="header">
+            <h2>{{item.title}}</h2>
+            <span class="date">{{item.date}}</span>
+          </div>
+          
+          <ul class="milestone-list">
+            <li *ngFor="let milestone of item.items" 
+                class="milestone"
+                [class.completed]="item.completed">
+              <span class="check-icon">✓</span>
+              {{milestone}}
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="timeline-point" [class.completed]="item.completed">
+        <div class="point-inner"></div>
       </div>
     </div>
   </div>

@@ -1,61 +1,71 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { trigger, transition, style, animate, stagger, query } from '@angular/animations';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-roadmap',
-  templateUrl: './roadmap.component.html',
   standalone: true,
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
+  templateUrl: './roadmap.component.html',
   styleUrls: ['./roadmap.component.css'],
   animations: [
-    trigger('fadeInUp', [
-      transition('* => *', [
-        query(':enter', [
-          style({ opacity: 0, transform: 'translateY(30px)' }),
-          stagger(100, [
-            animate('0.5s ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-          ])
-        ], { optional: true })
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        animate('0.6s ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
       ])
     ])
   ]
 })
 export class RoadmapComponent implements OnInit {
-  milestones = [
+  roadmapItems = [
     {
-      phase: 'Phase 1: Genesis',
-      title: 'Launch & Community Building',
-      description: 'Initial release of 20K unique FoxyClan NFTs with 80+ different traits and 1M+ possibilities.',
+      phase: 'Phase 1',
+      title: 'Genesis Launch',
       date: 'Q1 2024',
       completed: true,
-      icon: '🚀'
+      items: [
+        'Initial FoxyClan NFT Collection Launch',
+        'Community Building',
+        'Social Media Presence',
+        'Website Launch'
+      ]
     },
     {
-      phase: 'Phase 2: Growth',
-      title: 'Marketplace Integration',
-      description: 'Launch of the FoxyClan marketplace with exclusive trading features for clan members.',
+      phase: 'Phase 2',
+      title: 'Expansion',
       date: 'Q2 2024',
       completed: false,
-      icon: '🌟'
+      items: [
+        'Marketplace Integration',
+        'Staking Platform',
+        'Community Events',
+        'Partnerships Announcement'
+      ]
     },
     {
-      phase: 'Phase 3: Expansion',
-      title: 'Community Rewards',
-      description: 'Introduction of staking mechanisms and community rewards for FoxyClan holders.',
+      phase: 'Phase 3',
+      title: 'Utility',
       date: 'Q3 2024',
       completed: false,
-      icon: '🎁'
+      items: [
+        'Token Launch',
+        'DAO Implementation',
+        'Exclusive Merchandise',
+        'Gaming Integration'
+      ]
     },
     {
-      phase: 'Phase 4: Evolution',
-      title: 'Metaverse Integration',
-      description: 'FoxyClan enters the metaverse with exclusive virtual experiences for holders.',
+      phase: 'Phase 4',
+      title: 'Metaverse',
       date: 'Q4 2024',
       completed: false,
-      icon: '🌐'
+      items: [
+        'Virtual World Development',
+        'Cross-Chain Integration',
+        'Real-World Events',
+        'Advanced Features Release'
+      ]
     }
   ];
 
@@ -63,7 +73,7 @@ export class RoadmapComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  isInViewport(element: any): boolean {
+  isInViewport(element: HTMLElement): boolean {
     const rect = element.getBoundingClientRect();
     return (
       rect.top >= 0 &&
