@@ -28,7 +28,7 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   private isConnected: boolean = false;
   private isInitialized = false;
   private interval: any;
-  isPublicSaleActive: boolean = true;
+  isPublicSaleActive: boolean = false;
   walletAddress: any;
   showMint: boolean = false;
   images = ['1.png', '2.png', '3.png', '4.png', '5.png', '6.png']; // obligatoirement un nombre pair d'image
@@ -68,6 +68,7 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.walletAddress = checksumAddress;
       }
     });
+    this.publicSaleIsActive();
   }
 
   
@@ -144,6 +145,7 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   async flipSale() {
     try {
       const result = await this.web3Service.flipPublicSaleState(100, true);
+      this.publicSaleIsActive();
       console.log("Fliping successful:", result);
     } catch (error) {
       console.error("Fliping error:", error);
@@ -160,6 +162,16 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
        console.log("Balance:", Number(result));
     } catch (error) {
        console.error("Balance error:", error);
+    }
+  }
+
+  async publicSaleIsActive() {
+    try {
+       const result = await this.web3Service.publicSaleIsActive();
+       this.isPublicSaleActive = Boolean(result);
+       console.log("publicSaleIsActive:", Boolean(result));
+    } catch (error) {
+       console.error("publicSaleIsActive fail to fetch:", error);
     }
   }
 

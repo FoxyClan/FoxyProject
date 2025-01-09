@@ -128,7 +128,7 @@ h1 {
 }
 
 .inactive-sale::after {
-    width: 50%;
+    width: 80%;
 }
 
 @keyframes fadeIn {

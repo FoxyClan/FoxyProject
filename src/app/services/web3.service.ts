@@ -62,7 +62,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0x7ca6184239967edd9aAc382B796fcA3c772080bb';
+  private FoxyClanContractAddress = '0xc8fc1f29c7581f63d057238b3a8e0d504de85c2f';
 
   private FoxyClanABI = [
     {
@@ -1339,6 +1339,18 @@ export class Web3Service {
       return supply;
     } catch (error) {
       console.error("Minting failed:", error);
+      throw error;
+    }
+  }
+
+  public async publicSaleIsActive() {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    try {
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const state = await contract.methods['publicSaleIsActive']().call();
+      return state;
+    } catch (error) {
+      console.error("publicSaleIsActive fail to fetch:", error);
       throw error;
     }
   }
