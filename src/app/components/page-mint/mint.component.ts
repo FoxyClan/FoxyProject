@@ -27,7 +27,6 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   private subscription: Subscription;
   private isConnected: boolean = false;
   private isInitialized = false;
-  private interval: any;
   isPublicSaleActive: boolean = false;
   walletAddress: any;
   showMint: boolean = false;
@@ -75,11 +74,45 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   
   async startHandleRotation() {
     const box = this.box.nativeElement as HTMLElement;
-    box.classList.add("rotation");
     if (isPlatformBrowser(this.platformId)) {
-      this.interval = setInterval(() => {
-        this.handleRotation();
-      }, 2000);
+      requestAnimationFrame(() => this.checkRotationAndStart());
+    }
+  }
+
+  checkRotationAndStart() {
+    const box = this.box.nativeElement as HTMLElement;
+    const currentRotation = this.getCurrentRotation(box);
+  
+    console.log(currentRotation)
+    if ((currentRotation > 88  &&  currentRotation < 92) 
+      || (currentRotation < -88  &&  currentRotation > -92)) {
+      this.handleRotation();
+    }
+    // Keep checking rotation in the next animation frame
+    requestAnimationFrame(() => this.checkRotationAndStart());
+  }
+
+  getCurrentRotation(element: HTMLElement): number {
+    const computedStyle = window.getComputedStyle(element);
+    const transform = computedStyle.transform;
+    if (transform === "none" || !transform) {
+      return 0; // Pas de transformation appliquée
+    }
+    // Vérifier si c'est une matrice 3D ou 2D
+    const matrixValues = transform.match(/matrix\((.+)\)/) || transform.match(/matrix3d\((.+)\)/);
+    if (!matrixValues || !matrixValues[1]) {
+      return 0;
+    }
+    // Extraire les valeurs de la matrice
+    const values = matrixValues[1].split(", ").map(parseFloat);
+    if (transform.startsWith("matrix3d")) {
+      // Pour une matrice 3D, la rotation Y est liée à la composante [0][0] et [2][0]
+      const angleY = Math.atan2(values[2], values[0]);
+      return (angleY * 180) / Math.PI; // Convertir en degrés
+    } else {
+      // Pour une matrice 2D, la rotation est liée à [0][1] et [0][0]
+      const angle = Math.atan2(values[1], values[0]);
+      return (angle * 180) / Math.PI; // Convertir en degrés
     }
   }
 
@@ -108,9 +141,6 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
   }
 
   showMintModal() {
