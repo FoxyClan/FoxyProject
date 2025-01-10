@@ -67,9 +67,9 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
       if (walletAddress) {
         const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
         this.walletAddress = checksumAddress;
+        this.publicSaleIsActive();
       }
     });
-    this.publicSaleIsActive();
   }
 
   
@@ -170,7 +170,6 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
     try {
        const result = await this.web3Service.publicSaleIsActive();
        this.isPublicSaleActive = Boolean(result);
-       console.log("publicSaleIsActive:", Boolean(result));
     } catch (error) {
        console.error("publicSaleIsActive fail to fetch:", error);
     }

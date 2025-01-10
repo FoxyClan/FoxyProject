@@ -1181,7 +1181,7 @@ export class Web3Service {
                       this.walletAddressSubject.next(accounts[0]);
                       this.isConnectedSubject.next(true);
                       this.selectedWalletSubject.next(selectedWallet);
-                      this.connectToEthereum();
+                      //this.connectToEthereum();
                       this.getNetworkId();
                       localStorage.setItem('connectionTime', new Date().getTime().toString());
                       localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
@@ -1456,7 +1456,6 @@ export class Web3Service {
   }
 
   public async saleMintLimit() {
-    console.log(this.web3)
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     const saleMintLimit = await contract.methods['saleMintLimit']().call();
