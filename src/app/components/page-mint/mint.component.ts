@@ -46,6 +46,7 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
     private cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {this.subscription = new Subscription()}
+  
 
   ngAfterViewChecked() {
     if (!this.isInitialized && this.box && this.box.nativeElement) {

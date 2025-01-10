@@ -1,9 +1,0 @@
-{
-  "routes": [
-    "/",
-    "/collection",
-    "/ErrorPage",
-    "/home",
-    "/mint"
-  ]
-}

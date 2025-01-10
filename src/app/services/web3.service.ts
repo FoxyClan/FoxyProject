@@ -1059,6 +1059,7 @@ export class Web3Service {
   
   constructor() {
     this.checkConnection();
+    this.web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35'));
   }
 
   handleProviderAnnouncement(event: any): void {
@@ -1136,7 +1137,7 @@ export class Web3Service {
           });
           this.provider = CoinbaseWallet.makeWeb3Provider({
             options: 'all',
-            keysUrl: 'https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35'
+            //keysUrl: 'https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35'
           });
           this.web3 = new Web3(this.provider);
           await this.provider.request({
@@ -1158,7 +1159,6 @@ export class Web3Service {
               name: "FoxyCLan",
               url: window.location.href,
             },
-            infuraAPIKey: '16c76dc3448e4b96a41e908703fa0b35',
           });
           setTimeout(() => {
             if(this.iMetaMask === 0) {
@@ -1456,6 +1456,7 @@ export class Web3Service {
   }
 
   public async saleMintLimit() {
+    console.log(this.web3)
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     const saleMintLimit = await contract.methods['saleMintLimit']().call();
