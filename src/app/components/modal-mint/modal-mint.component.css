@@ -9,11 +9,10 @@
 
 .block {
     position: relative;
-	aspect-ratio: 4 / 3;
 	min-width: 400px;
-	max-width: 700px;
+	min-height: 430px;
 	width: 40%;
-	height: auto;
+	height: 60%;
 	background: linear-gradient(0deg, #000, #272727);
 	color: white;
 	display: flex;
@@ -124,12 +123,22 @@
     border-bottom: none;
 }
 
+.block-btn {
+	display: flex;
+	flex-direction: column;
+    position: relative;
+    bottom: 0;
+	flex-grow: 1;
+	justify-content: center;
+}
+
 .btn-container {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	width: 100%;
-	height: 60px;
+	height: 30%;
+	min-height: 50px;
 	column-gap: 10%;
 }
 
@@ -200,10 +209,20 @@
 	height: 100px;
 }
 
-.btn-message {
-    position: relative;
-    bottom: 0;
-    margin-top: auto;
+.errorAfterMint {
+	display: flex;
+	align-items: center;
+	justify-content: start;
+	flex-grow: 1;
+	flex-direction: column;
+	gap: 10%;
+    font-family: "Orbitron", sans-serif;
+}
+
+.errorAfterMint img {
+	aspect-ratio: 1 /1;
+	width: 40%;
+	height: auto;
 }
 
 .btn-mint {
@@ -264,7 +283,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-	height: 60px;
+	height: 30%;
 	width: 100%;
 }
 

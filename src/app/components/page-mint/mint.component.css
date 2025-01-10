@@ -211,8 +211,11 @@ h2 {
 }
 
 .blue-btn::after {
-    background: #42bbf6;;
+    background-color: #42bbf6;
+    background-size: cover;
+    background-position: center;
 }
+
 
 .btn span {
     font-family: "Orbitron", sans-serif;
@@ -228,7 +231,7 @@ h2 {
     color: white;
 }
 
-.green-btn span {
+.blue-btn span {
     color: black;
 }
 
@@ -237,8 +240,15 @@ h2 {
     inset: 3px;
 }
 
-.green-btn:hover::after {
-    background: #00925d;
+.blue-btn:hover::after {
+    background-image: url('../../../../public/eyes-btn.png');
+    opacity: 1;
+    filter: brightness(0.7);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.blue-btn:hover span {
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .black-btn:hover span {
@@ -251,9 +261,6 @@ h2 {
     animation: animate 2.5s linear infinite;
 }
 
-.green-btn:hover {
-    background: rgba(255, 255, 255, 0.825);
-}
 
 app-modal-mint {
     height: 100vh;

@@ -1,5 +1,6 @@
 package com.foxyclan.jar;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,11 +64,11 @@ public class RandomADN {
             response.put("image", imageBase64);
             response.put("metadata", metadata);
 
+            return response;
         } catch(IOException e) {
             e.printStackTrace();
             throw e;
         }
-        return response;
     }
 
     private String generateTraitDNA(int interval) {
@@ -105,7 +106,7 @@ public class RandomADN {
 
         } catch (IOException e) {
             e.printStackTrace();
-            throw e;
+            throw new IOException("Erreur lors de la création du NFT : tokenID = " + tokenId, e);
         } 
     }
 
@@ -117,19 +118,24 @@ public class RandomADN {
         String endpointUrl = "https://s3.filebase.com";
         String bucketName = "foxyclan";
 
-        S3Client s3Client = S3Client.builder()
+        try {
+            S3Client s3Client = S3Client.builder()
                 .region(Region.US_EAST_1)
                 .endpointOverride(java.net.URI.create(endpointUrl))
-                .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create(accessKey, secretKey)))
+                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
                 .build();
 
-        uploadFile(s3Client, bucketName, fileName, Path.of("jar\\src\\main\\resources\\tmp\\" + fileName));
+            uploadFile(s3Client, bucketName, fileName, Path.of("jar\\src\\main\\resources\\tmp\\" + fileName));
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new IOException("Erreur lors du téléversement du fichier : " + fileName, e);
+        }
     }
+        
 
 
 
-    private void uploadFile(S3Client s3Client, String bucketName, String key, Path filePath) {
+    private void uploadFile(S3Client s3Client, String bucketName, String key, Path filePath) throws Exception {
         try {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
@@ -140,45 +146,59 @@ public class RandomADN {
             System.out.println("Fichier téléversé : " + key);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Échec du téléversement pour : " + key);
+            throw new Exception("Erreur lors du téléversement du fichier : " + key, e);
         }
     }
 
 
 
     private Map<String, Object> createMetadataFile(Map<String, String> adn, int tokenId) throws IOException {
-        Map<String, Object> metadata = new HashMap<>();
-        
-        String imageUrl = "https://foxyclan.s3.filebase.com/" + tokenId + ".png"; // @ToDo mettre le token id plus tard
-        String description = "Foxy Clan is a unique collection of adorable and distinctive red pandas, celebrating their playful charm on the blockchain.";
-        String name = "Foxy Clan #" + tokenId;
-        String nftADN = adn.get("Head")
-                        + adn.get("Mouth")
-                        + adn.get("Eyes")
-                        + adn.get("Clothes")
-                        + adn.get("Fur")
-                        + adn.get("Background");
-
-        metadata.put("image", imageUrl);
-        metadata.put("description", description);
-        metadata.put("name", name);
-        metadata.put("DNA", nftADN);
-        metadata.put("attributes", new Object[]{
-            Map.of("trait_type", "Head Covering", "value", adn.get("Head")),
-            Map.of("trait_type", "Mouth", "value", adn.get("Mouth")),
-            Map.of("trait_type", "Eyes", "value", adn.get("Eyes")),
-            Map.of("trait_type", "Clothes", "value", adn.get("Clothes")),
-            Map.of("trait_type", "Fur", "value", adn.get("Fur")),
-            Map.of("trait_type", "Background", "value", adn.get("Background"))
-        });
-
-        File metadataFile = new File("jar\\src\\main\\resources\\tmp\\" + tokenId + ".json");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(metadataFile, metadata);
-
-        System.out.println("Fichier JSON des métadonnées créé : " + tokenId + ".json");
-
-        return metadata;
+        try {
+            Map<String, Object> metadata = new HashMap<>();
+            
+            String imageUrl = "https://foxyclan.s3.filebase.com/" + tokenId + ".png"; // @ToDo mettre le token id plus tard
+            String description = "Foxy Clan is a unique collection of adorable and distinctive red pandas, celebrating their playful charm on the blockchain.";
+            String name = "Foxy Clan #" + tokenId;
+            String nftADN = adn.get("Head")
+                            + adn.get("Mouth")
+                            + adn.get("Eyes")
+                            + adn.get("Clothes")
+                            + adn.get("Fur")
+                            + adn.get("Background");
+    
+            metadata.put("image", imageUrl);
+            metadata.put("description", description);
+            metadata.put("name", name);
+            metadata.put("DNA", nftADN);
+            metadata.put("attributes", new Object[]{
+                Map.of("trait_type", "Head Covering", "value", adn.get("Head")),
+                Map.of("trait_type", "Mouth", "value", adn.get("Mouth")),
+                Map.of("trait_type", "Eyes", "value", adn.get("Eyes")),
+                Map.of("trait_type", "Clothes", "value", adn.get("Clothes")),
+                Map.of("trait_type", "Fur", "value", adn.get("Fur")),
+                Map.of("trait_type", "Background", "value", adn.get("Background"))
+            });
+    
+            File metadataFile = new File("jar\\src\\main\\resources\\tmp\\" + tokenId + ".json");
+    
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.writeValue(metadataFile, metadata);
+    
+            System.out.println("Fichier JSON des métadonnées créé : " + tokenId + ".json");
+    
+            return metadata;
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la création du fichier JSON pour le token " + tokenId);
+            e.printStackTrace();
+            if (e instanceof JsonProcessingException) {
+                throw new IOException("Erreur lors du traitement JSON pour le token " + tokenId, e);
+            }
+            throw e;
+        } catch (Exception e) {
+            System.err.println("Une erreur inattendue s'est produite lors de la création des métadonnées pour le token " + tokenId);
+            e.printStackTrace();
+            throw new IOException("Erreur inconnue lors de la création des métadonnées pour le token " + tokenId, e);
+        }
     }
+    
 }

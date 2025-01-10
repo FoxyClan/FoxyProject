@@ -1,7 +1,7 @@
 <section class="modalMint" (click)="closeModal()">
     <div class="block" (click)="stopEvent($event)" [class.success]="success" [class.closeAnimation]="closeAnimation">
 
-        <div *ngIf="!success && !creatingNftLoading">
+        <div *ngIf="!success && !creatingNftLoading && !errorAfterMint">
             <div class="line">
                 <p>Total Minted : </p>
                 <p>{{ actualSupply }} / 20000</p>
@@ -29,8 +29,15 @@
               <img src="load.gif" alt="Loading"/>
               <p>Red panda in creation...</p>
         </div>
-        
-        <div *ngIf="!success" class="btn-message">
+                            <!------------ ERROR CRATING NFT ------------>
+
+        <div *ngIf="errorAfterMint" class="errorAfterMint">
+            <img src="ErrorAfterMint.png" alt="Error"/>
+            <p>An error occurred during the creation of the NFT, but don't worry, your NFT is still in your wallet, just the red panda is not yet part of the family</p>
+      </div>
+                            <!------------ MINT ------------>
+
+        <div *ngIf="!success && !errorAfterMint" class="block-btn">
             <div *ngIf="!creatingNftLoading" class="btn-container">
                 <div class="counter">
                     <span class="counter1" (click)="decrease()">-</span>
@@ -46,7 +53,7 @@
                 </div>
             </div>
 
-            <div *ngIf="!discover" class="message-container">
+            <div *ngIf="!discover && !errorAfterMint" class="message-container">
                 <div *ngIf="errorMessage" class="message error-message">
                     {{ errorMessage }}
                 </div>

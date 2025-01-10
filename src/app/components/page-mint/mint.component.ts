@@ -82,8 +82,7 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   checkRotationAndStart() {
     const box = this.box.nativeElement as HTMLElement;
     const currentRotation = this.getCurrentRotation(box);
-  
-    console.log(currentRotation)
+   
     if ((currentRotation > 88  &&  currentRotation < 92) 
       || (currentRotation < -88  &&  currentRotation > -92)) {
       this.handleRotation();

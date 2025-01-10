@@ -40,6 +40,8 @@ export class ModalMint implements OnInit, OnDestroy {
   successMessage: string = "";
   success: boolean = false;
   discover: boolean = false; // Deux secondes apres success
+  errorAfterMint: boolean = false;
+
   isAnimationPlaying: boolean = false; // Video d'animation qui defile
   showButton: boolean = true; // Pour montrer le bouton de discover
   showAddWalletButton: boolean = false; // Pour montrer le bouton add wallet
@@ -213,6 +215,13 @@ export class ModalMint implements OnInit, OnDestroy {
           return null;
         }
       });
+      console.log(nftDataPromises)
+
+      if(null === nftDataPromises || nftDataPromises.length === 0) {
+        this.errorAfterMint = true;
+        this.isLoading = false;
+        return
+      }
 
       // Attendre que toutes les promesses soient résolues
       const nftData = await Promise.all(nftDataPromises);

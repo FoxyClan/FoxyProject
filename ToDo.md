@@ -20,5 +20,3 @@ GANACHE
 MODAL MINT
 - lors du discover du deuxieme nft minté blur garde sa transition
 
-MINT PAGE
-- bug de la box qui tourne au bout de quelque secondes (timing 2s mauvaise idee)
