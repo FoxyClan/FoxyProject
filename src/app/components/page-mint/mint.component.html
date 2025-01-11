@@ -13,7 +13,7 @@
                     </div>
                     <div class="btn-container">
                         <a (click)="showMintModal()" class="btn blue-btn" style="--clr1:rgba(168, 239, 255, 1);--clr2:rgba(168, 239, 255, 0.1)"><span>Mint now</span></a>
-                        <a (click)="setBaseUri()" class="btn black-btn" style="--clr1:rgba(168, 239, 255, 1);--clr2:rgba(168, 239, 255, 0.1)"><span>Allow List</span></a>
+                        <a (click)="flipSale()" class="btn black-btn" style="--clr1:rgba(168, 239, 255, 1);--clr2:rgba(168, 239, 255, 0.1)"><span>Allow List</span></a>
                     </div>
                     <ul class="panel-1-ul">
                         <li>Max 2 NFTs per wallet . Price 0.09 ETH + gas</li>
@@ -24,7 +24,8 @@
                 
             </div>
             <div class="panel-2">
-                <div class="card-container">    
+                <div class="card-container"> 
+                    <div class="light-socle"></div>   
                     <div class="box2 rotation" #box>
                         <div class="card-background"></div>
                         <div class="card-face front">
