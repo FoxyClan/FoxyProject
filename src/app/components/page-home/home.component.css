@@ -172,12 +172,12 @@ app-details {
 }
 
 .stat-item h2 {
-    font-size: 36px;
+    font-size: 2.25rem;
     margin: 0;
 }
 
 .stat-item p {
-    font-size: 14px;
+    font-size: 0.875rem;
     margin: 5px 0 0 0;
 }
 

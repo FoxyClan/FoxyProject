@@ -80,7 +80,7 @@ li {
 }
 
 .header h4 {
-    font-size: 15px;
+    font-size: 0.9375rem;
 }
 
 .wallet {
@@ -95,7 +95,7 @@ li {
 .titles {
     padding-top: 5px;
     font-weight: 100;
-    font-size: 14px;
+    font-size: 0.875rem;
     height: 30px;
     display: block;
 }
@@ -103,7 +103,7 @@ li {
 .no-wallet {
     color: #00d9ff;
     margin-bottom: 10px;
-    font-size: 14px;
+    font-size: 0.875rem;
 }
 
 .list-wallet {
@@ -132,7 +132,7 @@ li {
 
 .recent {
     color: #00d9ff;
-    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: bold;
 }
 
@@ -155,7 +155,7 @@ li {
     padding-top: 10px;
     margin-bottom: 15px;
     font-weight: 100;
-    font-size: 13px;
+    font-size: 0.8125rem;
     color: rgba(255, 255, 255, 0.804);
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
@@ -178,7 +178,7 @@ li {
     align-items: center;
     border: none;
     font-family: "Orbitron", sans-serif;
-    font-size: 12px;
+    font-size: 0.75rem;
     margin: 15px auto 5px auto;
     cursor: pointer;
 }
@@ -195,7 +195,7 @@ li {
     display: flex;
     justify-content: center;
     color: white;
-    font-size: 10px;
+    font-size: 0.625rem;
     font-weight: 100;
 }
 
@@ -235,11 +235,11 @@ li {
 }
 
 .list-extension p {
-    font-size: 20px;
+    font-size: 1.25rem;
 }
 
 .list-extension span {
-    font-size: 10px;
+    font-size: 0.625rem;
     color: #00d9ff;
     vertical-align: top;
     display: inline-block;
@@ -252,7 +252,7 @@ li {
     padding: 10px 20px 10px 20px;
     border: none;
     font-family: "Orbitron", sans-serif;
-    font-size: 12px;
+    font-size: 0.75rem;
     margin-right: 20px;
     cursor: pointer;
 }
@@ -336,14 +336,14 @@ li {
 }
 
 .installation-wallet p {
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: bold;
     grid-column: 2 / 3;
     grid-row: 1 / 2;
 }
 
 .installation-wallet p span {
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 600;
     display: flex;
     align-items: start;
@@ -368,7 +368,7 @@ li {
     padding: 10px 15px 10px 15px;
     border: none;
     font-family: "Orbitron", sans-serif;
-    font-size: 12px;
+    font-size: 0.75rem;
     cursor: pointer;
     transition: transform 0.1s ease;
 }

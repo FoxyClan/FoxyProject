@@ -492,3 +492,29 @@ app-modal-mint {
 }
 
 
+
+
+@media (max-width: 1870px) {
+    h1 {
+      font-size: calc(3rem - 1rem); /* Réduit la taille du h1 de 1rem */
+    }
+  
+    .panel-1 {
+      padding: calc(5rem - 1rem); /* Réduit le padding de .panel-1 de 1rem */
+    }
+}
+
+@media (max-aspect-ratio: 1/1) {
+    .panel {
+        flex-direction: column;
+    }
+
+    .panel-1,
+    .panel-2 {
+        width: 100%;
+        height: 100vh;
+    }
+}
+
+
+  

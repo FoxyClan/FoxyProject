@@ -19,7 +19,7 @@ header {
     border-radius: 20px;
     padding: 10px 40px 10px 45px;
     color: #afafaf;
-    font-size: 16px;
+    font-size: 1rem;
     outline: none;
     width: 100%;
     box-sizing: border-box;
@@ -35,7 +35,7 @@ header {
     top: 50%;
     transform: translateY(-50%);
     color: #888888;
-    font-size: 18px;
+    font-size: 1.125rem;
     pointer-events: none;
 }
 

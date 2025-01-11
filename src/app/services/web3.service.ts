@@ -1393,6 +1393,11 @@ export class Web3Service {
       throw error;
     }
   }
+
+  public async clearTmpDirectory() {
+    const response = await axios.delete(`http://localhost:8080/clear-tmp`);
+    return response;
+  }
     
 
   private async _flipPublicSaleState(fromAddress: string, maxMintAmount: number, state: boolean): Promise<any> {

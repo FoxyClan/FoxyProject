@@ -18,6 +18,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -200,5 +201,33 @@ public class RandomADN {
             throw new IOException("Erreur inconnue lors de la création des métadonnées pour le token " + tokenId, e);
         }
     }
+
+    @DeleteMapping("/clear-tmp")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public void clearOldTmpFiles() {
+        try {
+            File tmpDir = new File("jar\\src\\main\\resources\\tmp");
+            long currentTime = System.currentTimeMillis();
+
+            if (tmpDir.exists() && tmpDir.isDirectory()) {
+                for (File file : tmpDir.listFiles()) {
+                    if (currentTime - file.lastModified() > 30 * 60 * 1000) { // 30 minutes
+                        if (!file.delete()) {
+                            System.err.println("Impossible de supprimer le fichier : " + file.getName());
+                        }
+                    }
+                }
+            } else {
+                System.err.println("Le répertoire tmp n'existe pas ou n'est pas valide.");
+            }
+        } catch (SecurityException se) {
+            System.err.println("Erreur de sécurité lors de la suppression des fichiers : " + se.getMessage());
+            se.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Erreur inconnue lors de la suppression des fichiers : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     
 }
