@@ -418,8 +418,10 @@ export class ModalMint implements OnInit, OnDestroy {
     this.isLegendaryVideoPlaying = false;
   }
 
-  getBorderClass(value: string): { [key: string]: boolean } {
-    return { 'gold-border': value === '1' || value === '2' || value === '3' };
+  isGoldBorder(value: string): boolean {
+    const numericValue = parseInt(value, 10); // Convertit en nombre
+    return numericValue <= 3; // Vérifie si le nombre est ≤ 3
   }
+  
 
 }
