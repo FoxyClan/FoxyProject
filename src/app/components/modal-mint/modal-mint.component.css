@@ -54,7 +54,8 @@
 	display: none;
 }
 
-.background-video {
+.background-video,
+.opacity-video {
     position: absolute;
     top: 0;
     left: 0;
@@ -62,7 +63,29 @@
     height: 100%;
     object-fit: cover;
     z-index: 3;
+}
+
+.background-video {
     animation: fadeInOut 7s ease-in-out;
+}
+
+.opacity-video {
+	animation: normalFadeInOut 7s ease-in-out;
+}
+
+@keyframes normalFadeInOut {
+    0% {
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.5;
+    }
+    80% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 @keyframes fadeInOut {
@@ -600,7 +623,7 @@
 
 .btn-play {
     text-decoration: none;
-    background: #00FFA3;
+    background: #00a9c7;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -618,7 +641,7 @@
 }
 
 .btn-play:hover {
-    background: #00925d;
+    background: #008fa9;
 }
 
 .attributs {

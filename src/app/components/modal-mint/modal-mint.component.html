@@ -70,13 +70,17 @@
             <div>
                 <video *ngIf="isAnimationPlaying" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
                     <source src="reveal1.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
                 </video>
             </div>
             <div>
-                <video *ngIf="isLegendaryVideoPlaying" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
+                <video *ngIf="effect === 'legendary'" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
                     <source src="legendaryEffect.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
+                </video>
+                <video *ngIf="effect === 'rare'" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
+                    <source src="rareEffect.mp4" type="video/mp4">
+                </video>
+                <video *ngIf="effect === 'normal'" class="background-video opacity-video" autoplay muted playsinline (ended)="stopVideo()">
+                    <source src="normalEffect.mp4" type="video/mp4">
                 </video>
             </div>
             <div class="card-container">

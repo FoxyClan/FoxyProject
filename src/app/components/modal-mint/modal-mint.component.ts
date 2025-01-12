@@ -45,7 +45,9 @@ export class ModalMint implements OnInit, OnDestroy {
   isAnimationPlaying: boolean = false; // Video d'animation qui defile
   showButton: boolean = true; // Pour montrer le bouton de discover
   showAddWalletButton: boolean = false; // Pour montrer le bouton add wallet
-  isLegendaryVideoPlaying: boolean = false;
+
+  effect: String = '';
+
   isUnblurred: boolean = false; // Blur du nft
   isSpinning: boolean = false;
   rotationSpeed: string = "5s";
@@ -164,7 +166,7 @@ export class ModalMint implements OnInit, OnDestroy {
       if (this.lastLeaveTime && now - this.lastLeaveTime >= 500) {
         this.blockAnimation = false; // Débloque l'animation après 0.5 seconde
       }
-    }, 500); // Délai de 0.5 seconde
+    }, 300); // Délai de 0.5 seconde
   }
 
   stopEvent(event: Event) {
@@ -381,7 +383,7 @@ export class ModalMint implements OnInit, OnDestroy {
     this.isUnblurred = true;
 
     setTimeout(() => {
-      this.isLegendaryVideoPlaying = true;
+      this.effect = 'normal';
     }, 2000);
 
 
@@ -402,7 +404,7 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   stopRarityVideo() {
-    this.isLegendaryVideoPlaying = false;
+    this.effect = '';
   }
 
   isGoldBorder(value: string): boolean {
