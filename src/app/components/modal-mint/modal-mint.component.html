@@ -113,7 +113,8 @@
                 
                 <div class="attributs">
                     <div *ngIf="showMetadata" class="attributes-if">
-                        <div *ngFor="let attribute of mintedNfts[tokenIndex]?.metadata?.attributes; let i = index" class="metadata-block" [ngClass]="{ 'gold-border': isGoldBorder(attribute.value) }">
+                        <div *ngFor="let attribute of mintedNfts[tokenIndex]?.metadata?.attributes; let i = index" class="metadata-block" 
+                        [ngClass]="{ 'gold-border': isGoldBorder(attribute.value), 'rare-border': isRareBorder(attribute.value) }">
                             <span>{{ attribute.trait_type }}</span>
                             <p>{{ attribute.value }}</p>
                             <video *ngIf="isGoldBorder(attribute.value)" autoplay muted loop>

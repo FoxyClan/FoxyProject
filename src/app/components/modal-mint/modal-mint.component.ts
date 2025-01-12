@@ -419,9 +419,13 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   isGoldBorder(value: string): boolean {
-    const numericValue = parseInt(value, 10); // Convertit en nombre
-    return numericValue <= 3; // Vérifie si le nombre est ≤ 3
+    const numericValue = parseInt(value, 10);
+    return numericValue < 3;
   }
-  
+
+  isRareBorder(value: string): boolean {
+    const numericValue = parseInt(value, 10);
+    return numericValue >= 3 && numericValue <= 6;
+  }
 
 }

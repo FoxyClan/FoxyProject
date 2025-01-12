@@ -646,7 +646,7 @@
     justify-content: center;
 	background-color: rgba(0, 0, 0, 0.635);
     align-items: center;
-    border: 3px solid #42ddf8;
+    border: 3px solid rgb(78, 78, 78);
     border-radius: 20px;
     width: 100%;
     height: 100%;
@@ -655,8 +655,13 @@
 
 .gold-border {
     position: relative;
-    border: 3px solid gold;
-    overflow: hidden; /* Empêche les paillettes de dépasser */
+    border: 3px solid rgb(255, 238, 0);
+    overflow: hidden; 
+}
+
+.rare-border {
+    border: 3px solid rgb(255, 123, 0);
+    overflow: hidden;
 }
 
 .gold-border video {
@@ -665,9 +670,9 @@
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Pour que la vidéo remplisse la div sans déformation */
-    z-index: -1; /* Place la vidéo derrière le contenu */
-    pointer-events: none; /* Empêche toute interaction avec la vidéo */
+    object-fit: cover;
+    z-index: -1; 
+    pointer-events: none; 
 }
   
 .metadata-block span {
