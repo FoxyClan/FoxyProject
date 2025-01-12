@@ -23,6 +23,7 @@ GANACHE
 MODAL MINT
 - lors du discover du deuxieme nft minté blur garde sa transition
 - probleme rotation instant quand discover de temps en temps
+- border rarity en fonction des chiffres a passer en fonction des traits
 
 
 MINT PAGE

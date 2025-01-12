@@ -110,6 +110,11 @@ a {
     background: rgba(0, 0, 0, 0.669);
 }
 
+.active-link {
+    color: #42ddf8;
+}
+
+
 app-modal-account {
     overflow: hidden;
     position: absolute;

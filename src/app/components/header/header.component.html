@@ -6,12 +6,24 @@
         <span class="search-icon"><img src="search.png"></span>
     </div>
     <ul>
-        <li><a [routerLink]="['/home']">Home</a></li>
-        <li><a [routerLink]="['/collection']">Collection</a></li>
-        <li><a [routerLink]="['/mint']">Mint</a></li>
-        <li><a [routerLink]="['/roadmap']">Roadmap</a></li>
-        <li><a href="#">Team</a></li>
-        <li><a href="#">Contact</a></li>
+        <li>
+            <a [routerLink]="['/home']" [ngClass]="{ 'active-link': isActive('/home') }">Home</a>
+        </li>
+        <li>
+            <a [routerLink]="['/collection']" [ngClass]="{ 'active-link': isActive('/collection') }">Collection</a>
+        </li>
+        <li>
+            <a [routerLink]="['/mint']" [ngClass]="{ 'active-link': isActive('/mint') }">Mint</a>
+        </li>
+        <li>
+            <a [routerLink]="['/roadmap']" [ngClass]="{ 'active-link': isActive('/roadmap') }">Roadmap</a>
+        </li>
+        <li>
+            <a href="#" [ngClass]="{ 'active-link': isActive('/team') }">Team</a>
+        </li>
+        <li>
+            <a href="#" [ngClass]="{ 'active-link': isActive('/contact') }">Contact</a>
+        </li>
     </ul>
     <div class="button-container">
         <button class="border-button">

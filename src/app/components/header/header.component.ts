@@ -4,7 +4,7 @@ import { ModalAccount } from "../modal-account/modal-account.component";
 import { ModalWallet } from "../modal-wallet/modal-wallet.component";
 import { Web3Service } from "../../services/web3.service";
 import { Subscription, combineLatest } from 'rxjs';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import Web3 from 'web3';
 
@@ -33,7 +33,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @ViewChild('ModalAccount') modalAccount! : ModalAccount;
   @ViewChild('ModalWallet') modalWallet! : ModalWallet;
 
-  constructor(private web3Service: Web3Service) {
+  constructor(private web3Service: Web3Service, private router: Router) {
     this.subscription = new Subscription();
   }
 
@@ -82,6 +82,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   closeModal() {
     this.showAccount = false;
     this.showWallet = false;
+  }
+
+  isActive(route: string): boolean {
+    return this.router.url === route || (route === '/home' && (this.router.url === '' || this.router.url === '/'));
   }
 
 
