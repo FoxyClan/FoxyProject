@@ -1,5 +1,5 @@
 <div class="roadmap-container">
-  <div class="roadmap-header" [@fadeIn]>
+  <div class="roadmap-header">
     <h1>FoxyClan Roadmap</h1>
     <p>Our journey to build the ultimate NFT experience</p>
   </div>
@@ -9,8 +9,7 @@
     
     <div *ngFor="let item of roadmapItems; let i = even" 
          class="roadmap-item" 
-         [class.even]="+i % 2 === 0"
-         [@fadeIn]>
+         [class.even]="+i % 2 === 0">
       
       <div class="roadmap-content">
         <div class="phase-badge" [class.completed]="item.completed">
