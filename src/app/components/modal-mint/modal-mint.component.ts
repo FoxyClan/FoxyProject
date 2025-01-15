@@ -383,7 +383,7 @@ export class ModalMint implements OnInit, OnDestroy {
     this.isUnblurred = true;
 
     setTimeout(() => {
-      this.effect = 'normal';
+      this.effect = 'legendary';
     }, 2000);
 
 
@@ -412,9 +412,13 @@ export class ModalMint implements OnInit, OnDestroy {
     return numericValue < 3;
   }
 
-  isRareBorder(value: string): boolean {
+  isEpicBorder(value: string): boolean {
     const numericValue = parseInt(value, 10);
-    return numericValue >= 3 && numericValue <= 6;
+    return numericValue >= 3 && numericValue <= 5;
   }
 
+  isRareBorder(value: string): boolean {
+    const numericValue = parseInt(value, 10);
+    return numericValue >= 6 && numericValue <= 8;
+  }
 }

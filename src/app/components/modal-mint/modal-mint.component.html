@@ -73,14 +73,8 @@
                 </video>
             </div>
             <div>
-                <video *ngIf="effect === 'legendary'" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
-                    <source src="legendaryEffect.mp4" type="video/mp4">
-                </video>
-                <video *ngIf="effect === 'rare'" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
-                    <source src="rareEffect.mp4" type="video/mp4">
-                </video>
-                <video *ngIf="effect === 'normal'" class="background-video opacity-video" autoplay muted playsinline (ended)="stopVideo()">
-                    <source src="normalEffect.mp4" type="video/mp4">
+                <video *ngIf="effect !== ''" class="{{ effect }}" autoplay muted playsinline (ended)="stopVideo()">
+                    <source src="{{ effect }}Effect.mp4" type="video/mp4">
                 </video>
             </div>
             <div class="card-container">
@@ -118,7 +112,7 @@
                 <div class="attributs">
                     <div *ngIf="showMetadata" class="attributes-if">
                         <div *ngFor="let attribute of mintedNfts[tokenIndex]?.metadata?.attributes; let i = index" class="metadata-block" 
-                        [ngClass]="{ 'gold-border': isGoldBorder(attribute.value), 'rare-border': isRareBorder(attribute.value) }">
+                        [ngClass]="{ 'gold-border': isGoldBorder(attribute.value), 'epic-border': isEpicBorder(attribute.value), 'rare-border': isRareBorder(attribute.value) }">
                             <span>{{ attribute.trait_type }}</span>
                             <p>{{ attribute.value }}</p>
                             <video *ngIf="isGoldBorder(attribute.value)" autoplay muted loop>
