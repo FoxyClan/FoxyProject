@@ -52,7 +52,7 @@ export class TraitOptionsService {
 
   mouthOptions: MouthOption[] = [
     { name: 'Long Fangs', selected: false },
-    { name: 'Angel', selected: false }, //change
+    { name: 'Biting Lip', selected: false }, //change
     { name: 'Black And Gold', selected: false },
     { name: 'Gas Mask', selected: false },
     { name: 'Engraved Samurai Mask', selected: false },
@@ -89,8 +89,8 @@ export class TraitOptionsService {
   ];
 
   furOptions: FurOption[] = [
-    { name: '', selected: false }, //0
-    { name: '', selected: false }, //1
+    { name: 'Magma', selected: false }, //0
+    { name: 'Angel', selected: false }, //1
     { name: '', selected: false }, //2
     { name: '', selected: false }, //3
     { name: '', selected: false }, //4
@@ -98,13 +98,6 @@ export class TraitOptionsService {
     { name: '', selected: false }, //6
     { name: '', selected: false }, //7
     { name: '', selected: false }, //8
-    { name: '', selected: false }, //9
-    { name: '', selected: false }, //10
-    { name: '', selected: false }, //11
-    { name: '', selected: false }, //12
-    { name: '', selected: false }, //13
-    { name: '', selected: false }, //14
-    { name: '', selected: false }, //15
   ];
 
   BackgroundOptions: BackgroundOption[] = [
@@ -121,9 +114,6 @@ export class TraitOptionsService {
     { name: '', selected: false }, //10
     { name: '', selected: false }, //11
     { name: '', selected: false }, //12
-    { name: '', selected: false }, //13
-    { name: '', selected: false }, //14
-    { name: '', selected: false }, //15
   ];
 
 
