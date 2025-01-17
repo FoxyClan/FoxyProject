@@ -159,9 +159,9 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         return _AllowList[addr];
     }
 
-    /**
-     * @dev Mints tokens for addresses on the allow list.
-     * @param numberOfTokens The number of tokens to mint.
+    /*
+    * @dev Mints tokens for addresses on the allow list.
+    * @param numberOfTokens The number of tokens to mint.
     * 
     * Requirements:
     * - The allow list must be active.

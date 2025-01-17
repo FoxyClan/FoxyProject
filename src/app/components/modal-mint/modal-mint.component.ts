@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, OnDestroy, Input } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Web3Service } from "../../services/web3.service";
 import { FormsModule } from '@angular/forms';
@@ -31,10 +31,16 @@ import { Subscription } from 'rxjs';
 
 export class ModalMint implements OnInit, OnDestroy {
   @Output() close = new EventEmitter();
-  counterValue: number = 1;
+  @Input() isAllowList: boolean = false;
+  
   actualSupply: any = "Load...";
   currentSaleMinted: any = "Load...";
   saleMintLimit: any = "Load...";
+  numAvailableToMint: any = "Load...";
+  isPrivateSaleActive: any = "Load...";
+  mintPrice: number = 0.0125;
+  
+  counterValue: number = 1;
   isLoading: boolean = false;
   errorMessage: string = "";
   successMessage: string = "";
@@ -86,6 +92,8 @@ export class ModalMint implements OnInit, OnDestroy {
     this._supply();
     this._saleMintLimit();
     this._currentSaleMint();
+    this._numAvailableToMint();
+    if(this.isAllowList) this._privateSaleIsActive();
     this.subscription = this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
       this.creatingNftLoading = creatingNftLoading;
     });
@@ -201,7 +209,7 @@ export class ModalMint implements OnInit, OnDestroy {
     this.successMessage = `Minting successful ! You minted ${numberOfTokens} NFT` + (numberOfTokens > 1 ? 's.' : '.');
     this.discover = false;
     try {
-      const result = await this.web3Service.mint(numberOfTokens);
+      const result = this.isAllowList ? await this.web3Service.mintAllowList(numberOfTokens) : await this.web3Service.mint(numberOfTokens);
       console.info('Minting successful : ' + numberOfTokens + ' token(s) minted');
       const nftDataPromises = result.map(async (nft: { tokenId: number; image: string; metadata: any }) => {
         try {
@@ -234,15 +242,16 @@ export class ModalMint implements OnInit, OnDestroy {
       setTimeout(() => {
         this.discover = true; // attend que le block.success grandisse pour apparaitre
       }, 2000); 
-    } catch (error) {
+    } catch (error: any) {
       console.error("Minting error:", error);
-      this.errorMessage = "Transaction failed. Please try again.";
+      this.errorMessage = error.message;
     } finally {
       this.isLoading = false;
     }
   }
+  
 
-  async _supply() {
+  private async _supply() {
     try {
       const result = await this.web3Service.Supply();
       this.actualSupply = Number(result)
@@ -251,7 +260,7 @@ export class ModalMint implements OnInit, OnDestroy {
     }
   }
 
-  async _currentSaleMint() {
+  private async _currentSaleMint() {
     try {
        const result = await this.web3Service.currentSaleMinted();
        this.currentSaleMinted = Number(result);
@@ -261,12 +270,32 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   
-  async _saleMintLimit() {
+  private async _saleMintLimit() {
     try {
        const result = await this.web3Service.saleMintLimit();
        this.saleMintLimit = Number(result);
     } catch (error) {
        console.error("saleMintLimit error:", error);
+    }
+  }
+
+  private async _numAvailableToMint() {
+    try {
+       const result = await this.web3Service.numAvailableToMint();
+       this.numAvailableToMint = Number(result);
+    } catch (error) {
+       console.error("numAvailableToMint error:", error);
+    }
+  }
+
+  async _privateSaleIsActive() {
+    try {
+       const result = await this.web3Service.privateSaleIsActive();
+       this.isPrivateSaleActive = Boolean(result);
+       console.log(this.isPrivateSaleActive)
+       if(this.isPrivateSaleActive) this.mintPrice = 0.0075;
+    } catch (error) {
+       console.error("privateSaleIsActive fail to fetch:", error);
     }
   }
 

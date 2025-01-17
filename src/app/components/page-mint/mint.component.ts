@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewChecked, Input } from '@angular/core';
 import { NotConnectedModal } from '../modal-not-connected/not-connected.component';
 import { combineLatest, Subscription } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
@@ -23,6 +23,7 @@ import Web3 from 'web3';
 
 export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('box') box!: ElementRef;
+  mintModalData: boolean = false;
 
   private subscription: Subscription;
   private isConnected: boolean = false;
@@ -142,8 +143,9 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.subscription.unsubscribe();
   }
 
-  showMintModal() {
-    this.showMint = true;
+  showMintModal(isAllowList: boolean) {
+    this.mintModalData = isAllowList; // Définit la valeur de mintModalData
+    this.showMint = true; // Affiche la modal
   }
 
   closeMintModal() {

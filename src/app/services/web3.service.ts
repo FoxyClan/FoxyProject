@@ -1037,6 +1037,7 @@ export class Web3Service {
   ];
   
   private FoxyPrice = 0.0125;
+  private PrivateSaleFoxyPrice = 0.0075;
 
   
   constructor() {
@@ -1301,8 +1302,22 @@ export class Web3Service {
   }
 
   
+
+  public async clearTmpDirectory() {
+    const response = await axios.delete(`http://localhost:8080/clear-tmp`);
+    return response;
+  }
+
+
+  // FUNCTION SMART CONTRACT
+
+  
   public async mint(numberOfTokens: number) {
     return this._mint(numberOfTokens, this.walletAddressSubject.value);
+  }
+
+  public async mintAllowList(numberOfTokens: number) {
+    return this._mintAllowList(numberOfTokens, this.walletAddressSubject.value);
   }
 
   public async merge(tokenId1: number, tokenId2: number) {
@@ -1337,9 +1352,20 @@ export class Web3Service {
     }
   }
 
+  public async privateSaleIsActive() {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    try {
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const state = await contract.methods['privateSaleIsActive']().call();
+      return state;
+    } catch (error) {
+      console.error("privateSaleIsActive fail to fetch:", error);
+      throw error;
+    }
+  }
+
   private async _mint(numberOfTokens: number, fromAddress: string): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");
-  
     try {
       const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(fromAddress);
       const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
@@ -1353,8 +1379,30 @@ export class Web3Service {
       return this._createNFT(tokenIdsBefore, fromAddress);
     } catch (error) {
       this.creatingNftLoadingSubject.next(false);
-      console.error("Minting failed:", error);
-      throw error;
+      console.error(error);
+      throw new Error("Transaction failed. Please try again.");
+    }
+  }
+
+  private async _mintAllowList(numberOfTokens: number, fromAddress: string): Promise<any> {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    if(numberOfTokens > Number(await this.numAvailableToMint())) throw new Error("Exceeded max available to purchase"); 
+    try {
+      const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(fromAddress);
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const privaleSaleIsActive = await this.privateSaleIsActive();
+      const totalPrice = (numberOfTokens * (privaleSaleIsActive ? this.PrivateSaleFoxyPrice : this.FoxyPrice)).toString();
+  
+      const result = await contract.methods['mintAllowList'](numberOfTokens).send({
+        from: fromAddress,
+        value: this.web3.utils.toWei(totalPrice, 'ether'),
+      });
+      this.creatingNftLoadingSubject.next(true);
+      return this._createNFT(tokenIdsBefore, fromAddress);
+    } catch (error) {
+      this.creatingNftLoadingSubject.next(false);
+      console.error(error);
+      throw new Error("Transaction failed. Please try again.");
     }
   }
 
@@ -1365,12 +1413,10 @@ export class Web3Service {
       do {
           tokenIdsAfter = await this.tokenOfOwnerByIndex(fromAddress);
       } while (tokenIdsAfter.length === tokenIdsBefore.length);
-
       // Identifier les nouveaux jetons mintés
       const newTokenIds: number[] = tokenIdsAfter.filter(
           (id) => !tokenIdsBefore.includes(id)
       );
-
       const nftData = await Promise.all(
         newTokenIds.map(async (tokenId) => {
           try {
@@ -1392,11 +1438,6 @@ export class Web3Service {
       console.error("Error while creating NFT:", error);
       throw error;
     }
-  }
-
-  public async clearTmpDirectory() {
-    const response = await axios.delete(`http://localhost:8080/clear-tmp`);
-    return response;
   }
     
 
@@ -1446,6 +1487,13 @@ export class Web3Service {
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     const saleMintLimit = await contract.methods['saleMintLimit']().call();
+    return saleMintLimit;
+  }
+
+  public async numAvailableToMint() {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+    const saleMintLimit = await contract.methods['numAvailableToMint'](this.walletAddressSubject.value).call();
     return saleMintLimit;
   }
 

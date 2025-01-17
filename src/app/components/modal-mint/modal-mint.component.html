@@ -7,9 +7,14 @@
                 <p>{{ actualSupply }} / 20000</p>
             </div>
 
-            <div class="line">
+            <div *ngIf="!isAllowList" class="line">
                 <p>Current Sale Minted : </p>
                 <p>{{ currentSaleMinted }} / {{ saleMintLimit }}</p>
+            </div>
+
+            <div *ngIf="isAllowList" class="line">
+                <p>Tokens remaining to mint : </p>
+                <p>{{ numAvailableToMint }}</p>
             </div>
 
             <div class="line">
