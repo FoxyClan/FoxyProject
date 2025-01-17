@@ -28,3 +28,7 @@ MODAL MINT
 
 MINT PAGE
 - probleme swap box image decalage de temps en temps
+
+
+JAR 
+- generateTraitDNA en private

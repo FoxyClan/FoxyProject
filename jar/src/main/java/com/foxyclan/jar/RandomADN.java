@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -32,13 +31,13 @@ public class RandomADN {
     
     @GetMapping("/adn")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Object> generateDNA(@RequestParam int tokenId) throws IOException {        // @Todo gerer les meme adn, mettre les rareté, modifier les 
-        String Head = generateTraitDNA(16);                               // noms dans le json, faire les traits impossible a combiner 
-        String Mouth = generateTraitDNA(16);
-        String Eyes = generateTraitDNA(16);
-        String Clothes = generateTraitDNA(16);
-        String Fur = generateTraitDNA(9);
-        String Background = generateTraitDNA(13);
+    public Map<String, Object> generateDNA(@RequestParam int tokenId) throws IOException {        // @Todo gerer les meme adn, modifier les 
+        String Head = generateTraitDNA("");                                                 // noms dans le json, faire les traits impossible a combiner 
+        String Mouth = generateTraitDNA("");
+        String Eyes = generateTraitDNA("");
+        String Clothes = generateTraitDNA("");
+        String Fur = generateTraitDNA("fur");
+        String Background = generateTraitDNA("background");
 
         Map<String, String> adn = new HashMap<>();
         adn.put("Head", Head);
@@ -59,7 +58,6 @@ public class RandomADN {
             Path imagePath = Path.of("jar/src/main/resources/tmp/" + tokenId + ".png");
             String imageBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath));
     
-            // Créer les métadonnées
             Map<String, Object> metadata = createMetadataFile(adn, tokenId);
     
             response.put("image", imageBase64);
@@ -72,10 +70,35 @@ public class RandomADN {
         }
     }
 
-    private String generateTraitDNA(int interval) {
-        Random random = new Random();
-        int number = random.nextInt(interval); // Génère un nombre entre 0 et 15
-        return "%02d".formatted(number); // Formate le nombre en deux chiffres
+    public String generateTraitDNA(String type) {
+        String[] numbers;
+        double[] probabilities;
+        if (type.equals("fur")) {
+            numbers = new String[]{"00", "01", "02", "03", "04", "05", "06", "07", "08", "09"};
+            probabilities = new double[]{1,2,3,5,7,9,13,16,19,25};
+        } 
+        else if (type.equals("background")) {
+            numbers = new String[]{"00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
+            probabilities = new double[]{1,2,3,4,5,6,7,8,9,11,13,15,16};
+        } 
+        else {
+            numbers = new String[]{"00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"};
+            probabilities = new double[]{1, 2, 3, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.75, 9.5, 10.25, 11.5};
+        }
+        double totalWeight = 0;
+        for (double probability : probabilities) {
+            totalWeight += probability;
+        }
+        double random = Math.random() * totalWeight;
+        double cumulativeWeight = 0;
+        for (int i = 0; i < probabilities.length; i++) {
+            cumulativeWeight += probabilities[i];
+            if (random <= cumulativeWeight) {
+                return numbers[i];
+            }
+        }
+        // Par défaut, retourner le dernier nombre (ne devrait pas se produire normalement)
+        return numbers[numbers.length - 1];
     }
 
     private void createNFT(Map<String, String> adn, int tokenId) throws IOException {
