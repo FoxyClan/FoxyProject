@@ -21,11 +21,16 @@ import { FormsModule } from '@angular/forms';
 
 export class ModalAccount implements OnInit, OnDestroy {
   owner: String = "";
-  numberOfTokens: number = 0;
+  flipNumberOfTokens: number = 0;
   state: string = '';
   addresses: string[] = [];
-  addressesString: string = '';
+  allowAddressesString: string = '';
+  airdropAddressesString: string = '';
+  allowNumberOfTokens: number = 0;
   reserve: number = 0;
+  levelTokenId: number = 0;
+  tokenPoints: number = 0;
+
 
   @Input() walletAddress!: string;
   @Output() close = new EventEmitter();
@@ -201,9 +206,9 @@ export class ModalAccount implements OnInit, OnDestroy {
 
   /* PALETTE */
 
-  async flipSale(numberOfTokens: number, state: boolean) {
+  async flipSale(flipNumberOfTokens: number, state: boolean) {
     try {
-      const result = await this.web3Service.flipPublicSaleState(numberOfTokens, state);
+      const result = await this.web3Service.flipPublicSaleState(flipNumberOfTokens, state);
       console.log("Fliping successful");
     } catch (error) {
       console.error("Fliping error:", error);
@@ -246,7 +251,7 @@ export class ModalAccount implements OnInit, OnDestroy {
 
   async airdrop() {
     try {
-      this.addresses = JSON.parse(this.addressesString);
+      this.addresses = JSON.parse(this.airdropAddressesString);
       const result = await this.web3Service.airdrop(this.addresses);
       console.log("airdrop success:", result)
     } catch (error) {
@@ -254,10 +259,10 @@ export class ModalAccount implements OnInit, OnDestroy {
     }
   }
 
-  async setAllowList(numberOfTokens: number) {
+  async setAllowList(allowNumberOfTokens: number) {
     try {
-      this.addresses = JSON.parse(this.addressesString);
-      const result = await this.web3Service.setAllowList(this.addresses, numberOfTokens);
+      this.addresses = JSON.parse(this.allowAddressesString);
+      const result = await this.web3Service.setAllowList(this.addresses, allowNumberOfTokens);
       console.log("setAllowList success:", result)
     } catch (error) {
        console.error("setAllowList fail:", error);
@@ -282,7 +287,32 @@ export class ModalAccount implements OnInit, OnDestroy {
     }
   }
 
-  
+  async level(levelTokenId: number) {
+    try {
+       const result = await this.web3Service.level(levelTokenId);
+       console.log("level:", Number(result))
+    } catch (error) {
+       console.error("level fail to fetch:", error);
+    }
+  }
+
+  async getTokenPoints(tokenPoints: number) {
+    try {
+       const result = await this.web3Service.getTokenPoints(tokenPoints);
+       console.log("FoxyPoints:", Number(result))
+    } catch (error) {
+       console.error("TokenPoints fail to fetch:", error);
+    }
+  }
+
+  async getUserPoints() {
+    try {
+       const result = await this.web3Service.getUserPoints();
+       console.log("UserPoints:", Number(result))
+    } catch (error) {
+       console.error("UserPoints fail to fetch:", error);
+    }
+  }
   
 
 }

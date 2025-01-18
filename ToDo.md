@@ -13,6 +13,9 @@ MODAL-ACCOUNT
 
 SMART CONTRACT
 - mettre a jour les commentaires
+- voir si rareté FoxyPoint par jour
+- mettrez a jour l'abi _level
+- change _level for level in web3.service
 
 
 
@@ -24,6 +27,7 @@ MODAL MINT
 - lors du discover du deuxieme nft minté blur garde sa transition
 - probleme rotation instant quand discover de temps en temps
 - border rarity en fonction des chiffres a passer en fonction des traits
+- probleme token interactive 
 
 
 MINT PAGE

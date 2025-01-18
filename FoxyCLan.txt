@@ -39,7 +39,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
 
     mapping(uint256 => uint256) private _foxyPoints;
 
-    mapping (uint256 => uint256) public _level;
+    mapping (uint256 => uint256) public level;
 
     constructor() ERC721("FoxyClan", "FOXY") Ownable(msg.sender) {}
 
@@ -56,14 +56,14 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
             uint256 currentTime = block.timestamp;
             uint256 timePoints = (currentTime - _pointsTimestamp[tokenId]) / 1 days;
             uint256 totalPoints = _foxyPoints[tokenId] + timePoints;
-            if (_level[tokenId] == 1) {
+            if (level[tokenId] == 1) {
                 _foxyPoints[tokenId] = 0;
                 _pointsTimestamp[tokenId] = currentTime;
-            } else if (_level[tokenId] == 2) {
+            } else if (level[tokenId] == 2) {
                 uint256 remainingPoints = (totalPoints + 1) / 2;
                 _foxyPoints[tokenId] = remainingPoints;
                 _pointsTimestamp[tokenId] = currentTime;
-            } else if (_level[tokenId] == 3) {
+            } else if (level[tokenId] == 3) {
                 _foxyPoints[tokenId] = totalPoints;
                 _pointsTimestamp[tokenId] = currentTime;
             }
@@ -159,9 +159,9 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         return _AllowList[addr];
     }
 
-    /*
-    * @dev Mints tokens for addresses on the allow list.
-    * @param numberOfTokens The number of tokens to mint.
+    /**
+     * @dev Mints tokens for addresses on the allow list.
+     * @param numberOfTokens The number of tokens to mint.
     * 
     * Requirements:
     * - The allow list must be active.
@@ -253,9 +253,9 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         uint256 tokenPoints1 = getTokenPoints(tokenId1);
         uint256 tokenPoints2 = getTokenPoints(tokenId2);
 
-        uint256 newLevel = _level[tokenId1] > _level[tokenId2] 
-            ? _level[tokenId1] 
-            : _level[tokenId2];
+        uint256 newLevel = level[tokenId1] > level[tokenId2] 
+            ? level[tokenId1] 
+            : level[tokenId2];
         newLevel = newLevel == 3 ? newLevel : newLevel + 1;
 
         _burn(tokenId1);
@@ -263,10 +263,10 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         burnedTokenIds.push(tokenId2);
 
         _safeMint(msg.sender, tokenId1);
-        _level[tokenId1] = newLevel;
-        _level[tokenId2] = 0;
+        level[tokenId1] = newLevel;
+        level[tokenId2] = 0;
 
-        uint256 mergePoints = _level[tokenId1] == 2 
+        uint256 mergePoints = level[tokenId1] == 2 
             ? 100 
             : 250;
 
@@ -276,7 +276,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
 
     function _safeMint(address to, uint256 tokenId, bytes memory data) internal override {
         super._safeMint(to, tokenId, data);
-        _level[tokenId] = 1;
+        level[tokenId] = 1;
         _foxyPoints[tokenId] = 50;
         _pointsTimestamp[tokenId] = block.timestamp;
     }

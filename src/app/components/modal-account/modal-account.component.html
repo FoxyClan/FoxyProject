@@ -3,21 +3,18 @@
     <div *ngIf="owner === walletAddress" class="filter"></div>
       <div class="palette" (click)="stopEvent($event)">
         <div class="button-item">
-            <button (click)="flipSale(numberOfTokens, state === 'true')">Flip Sale</button>
-            <input [(ngModel)]="numberOfTokens" type="number" placeholder="uint numberOfTokens">
+            <button (click)="flipSale(flipNumberOfTokens, state === 'true')">Flip Sale</button>
+            <input [(ngModel)]="flipNumberOfTokens" type="number" placeholder="uint numberOfTokens">
             <input [(ngModel)]="state" type="bool" placeholder="bool state">
         </div>
         <div class="button-item">
-            <button (click)="setAllowList(numberOfTokens)">setAllowList</button>
-            <input [(ngModel)]="addressesString" type="text" placeholder='address[] addresses'>
-            <input [(ngModel)]="numberOfTokens" type="number" placeholder="uint numberOfTokens">
+            <button (click)="setAllowList(allowNumberOfTokens)">setAllowList</button>
+            <input [(ngModel)]="allowAddressesString" type="text" placeholder='address[] addresses'>
+            <input [(ngModel)]="allowNumberOfTokens" type="number" placeholder="uint numberOfTokens">
         </div>
         <div class="button-item">
             <button (click)="airdrop()">airdrop</button>
-            <input [(ngModel)]="addressesString" type="text" placeholder='address[] addresses (ex : ["adr1", "adr2"])'>
-        </div>
-        <div class="button-item">
-          <button (click)="publicSaleIsActive()">publicSaleIsActive</button>
+            <input [(ngModel)]="airdropAddressesString" type="text" placeholder='address[] addresses (ex : ["adr1", "adr2"])'>
         </div>
         <div class="button-item">
             <button (click)="setBaseUri()">setBaseUri</button>
@@ -27,7 +24,21 @@
             <input [(ngModel)]="reserve" type="number" placeholder="uint numberOfTokens">
         </div>
         <div class="button-item">
-          <button (click)="balanceOf()">balanceOf</button>
+            <button (click)="level(levelTokenId)">level</button>
+            <input [(ngModel)]="levelTokenId" type="number" placeholder="uint tokenId">
+        </div>
+        <div class="button-item">
+            <button (click)="getTokenPoints(tokenPoints)">getTokenPoints</button>
+            <input [(ngModel)]="tokenPoints" type="number" placeholder="uint tokenId">
+        </div>
+        <div class="button-item">
+            <button (click)="getUserPoints()">getUserPoints</button>
+        </div>
+        <div class="button-item">
+            <button class="call" (click)="publicSaleIsActive()">publicSaleIsActive</button>
+          </div>
+        <div class="button-item">
+          <button class="call" (click)="balanceOf()">balanceOf</button>
         </div>
     </div>
 

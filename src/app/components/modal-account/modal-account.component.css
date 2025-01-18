@@ -26,6 +26,10 @@
     color: white;
 }
 
+.call {
+    background-color: #383838 !important;
+}
+
 .button-item button {
     width: 130px;
     padding: 10px;

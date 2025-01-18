@@ -62,7 +62,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0x0e466358e8959b6042c9d5d7913a9eac1c25e22e';
+  private FoxyClanContractAddress = '0x4a3e42abf733da99c95fc45e3cca1c84e5a5b1a5';
 
   private FoxyClanABI = [
     {
@@ -1394,6 +1394,42 @@ export class Web3Service {
       return state;
     } catch (error) {
       console.error("privateSaleIsActive fail to fetch:", error);
+      throw error;
+    }
+  }
+
+  public async level(tokenId: number) {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    try {
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const result = await contract.methods['_level'](tokenId).call(); //  change _level for level
+      return result;
+    } catch (error) {
+      console.error("level fail to fetch:", error);
+      throw error;
+    }
+  }
+
+  public async getUserPoints() {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    try {
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const result = await contract.methods['getUserPoints'](this.walletAddressSubject.value).call();
+      return result;
+    } catch (error) {
+      console.error("getUserPoints fail to fetch:", error);
+      throw error;
+    }
+  }
+
+  public async getTokenPoints(tokenId: number) {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    try {
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const result = await contract.methods['getTokenPoints'](tokenId).call();
+      return result;
+    } catch (error) {
+      console.error("getTokenPoints fail to fetch:", error);
       throw error;
     }
   }
