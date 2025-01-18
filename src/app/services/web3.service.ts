@@ -1324,15 +1324,6 @@ export class Web3Service {
     }
   }
 
-  public transformToAddressArray(addresses: string[]): string[] {
-    // Vérifier que chaque chaîne est une adresse Ethereum valide
-    const validAddresses = addresses.filter(address => Web3.utils.isAddress(address));
-    if (validAddresses.length !== addresses.length) {
-        console.warn("Certaines adresses sont invalides et ont été ignorées.");
-    }
-    return validAddresses;
-}
-
   public async airdrop(addresses: String[]) {
     if (!this.web3) throw new Error("Web3 not initialized");
     console.log(addresses)
@@ -1516,6 +1507,20 @@ export class Web3Service {
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     try {
       const result = await contract.methods['flipPublicSaleState'](maxMintAmount, state).send({
+        from: this.walletAddressSubject.value
+      });
+      return result;
+    } catch (error) {
+      console.error("Fliping Sale failed:", error);
+      throw error;
+    }
+  }
+
+  public async flipPrivateSaleState(): Promise<any> {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+    try {
+      const result = await contract.methods['flipPrivateSaleState']().send({
         from: this.walletAddressSubject.value
       });
       return result;

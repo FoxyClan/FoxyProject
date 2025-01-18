@@ -8,6 +8,9 @@
             <input [(ngModel)]="state" type="bool" placeholder="bool state">
         </div>
         <div class="button-item">
+            <button (click)="flipPrivateSaleState()">flipPrivateSaleState</button>
+        </div>
+        <div class="button-item">
             <button (click)="setAllowList(allowNumberOfTokens)">setAllowList</button>
             <input [(ngModel)]="allowAddressesString" type="text" placeholder='address[] addresses'>
             <input [(ngModel)]="allowNumberOfTokens" type="number" placeholder="uint numberOfTokens">

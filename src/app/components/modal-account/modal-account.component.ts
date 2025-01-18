@@ -20,6 +20,9 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class ModalAccount implements OnInit, OnDestroy {
+  @Input() walletAddress!: string;
+  @Output() close = new EventEmitter();
+
   owner: String = "";
   flipNumberOfTokens: number = 0;
   state: string = '';
@@ -31,9 +34,6 @@ export class ModalAccount implements OnInit, OnDestroy {
   levelTokenId: number = 0;
   tokenPoints: number = 0;
 
-
-  @Input() walletAddress!: string;
-  @Output() close = new EventEmitter();
   isAnimated: boolean = false;
   public networkId: string = '';
   public selectedWallet: string = '';
@@ -215,6 +215,15 @@ export class ModalAccount implements OnInit, OnDestroy {
     }
   }
 
+  async flipPrivateSaleState() {
+    try {
+      const result = await this.web3Service.flipPrivateSaleState();
+      console.log("Fliping successful");
+    } catch (error) {
+      console.error("Fliping error:", error);
+    }
+  }
+
   async balanceOf() {
     if (!this.walletAddress) {
        console.error("Wallet address not available");
@@ -234,6 +243,15 @@ export class ModalAccount implements OnInit, OnDestroy {
        console.log("publicSaleIsActive:", Boolean(result))
     } catch (error) {
        console.error("publicSaleIsActive fail to fetch:", error);
+    }
+  }
+
+  async privateSaleIsActive() {
+    try {
+       const result = await this.web3Service.privateSaleIsActive();
+       console.log("privateSaleIsActive:", Boolean(result))
+    } catch (error) {
+       console.error("privateSaleIsActive fail to fetch:", error);
     }
   }
 
