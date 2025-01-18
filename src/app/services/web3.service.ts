@@ -1311,22 +1311,6 @@ export class Web3Service {
 
   // FUNCTION SMART CONTRACT
 
-  
-  public async mint(numberOfTokens: number) {
-    return this._mint(numberOfTokens, this.walletAddressSubject.value);
-  }
-
-  public async mintAllowList(numberOfTokens: number) {
-    return this._mintAllowList(numberOfTokens, this.walletAddressSubject.value);
-  }
-
-  public async merge(tokenId1: number, tokenId2: number) {
-    return this._merge(tokenId1, tokenId2, this.walletAddressSubject.value);
-  }
-
-  public async flipPublicSaleState(maxMintAmount: number, state: boolean) {
-    return this._flipPublicSaleState(this.walletAddressSubject.value, maxMintAmount, state);
-  }
 
   public async Supply() {
     if (!this.web3) throw new Error("Web3 not initialized");
@@ -1336,6 +1320,56 @@ export class Web3Service {
       return supply;
     } catch (error) {
       console.error("Minting failed:", error);
+      throw error;
+    }
+  }
+
+  public transformToAddressArray(addresses: string[]): string[] {
+    // Vérifier que chaque chaîne est une adresse Ethereum valide
+    const validAddresses = addresses.filter(address => Web3.utils.isAddress(address));
+    if (validAddresses.length !== addresses.length) {
+        console.warn("Certaines adresses sont invalides et ont été ignorées.");
+    }
+    return validAddresses;
+}
+
+  public async airdrop(addresses: String[]) {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    console.log(addresses)
+    try {
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const result = await contract.methods['airdrop'](addresses).send({
+        from: this.walletAddressSubject.value
+      });
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async setAllowList(addresses: String[], numberOfTokens: number) {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    console.log(addresses)
+    try {
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const result = await contract.methods['setAllowList'](addresses, numberOfTokens).send({
+        from: this.walletAddressSubject.value
+      });
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async reserveFoxy(numberOfTokens: number) {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    try {
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const result = await contract.methods['reserveFoxy'](numberOfTokens).send({
+        from: this.walletAddressSubject.value
+      });
+      return result;
+    } catch (error) {
       throw error;
     }
   }
@@ -1364,19 +1398,19 @@ export class Web3Service {
     }
   }
 
-  private async _mint(numberOfTokens: number, fromAddress: string): Promise<any> {
+  public async mint(numberOfTokens: number): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");
     try {
-      const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(fromAddress);
+      const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(this.walletAddressSubject.value);
       const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
       const totalPrice = (numberOfTokens * this.FoxyPrice).toString();
   
       const result = await contract.methods['mint'](numberOfTokens).send({
-        from: fromAddress,
+        from: this.walletAddressSubject.value,
         value: this.web3.utils.toWei(totalPrice, 'ether'),
       });
       this.creatingNftLoadingSubject.next(true);
-      return this._createNFT(tokenIdsBefore, fromAddress);
+      return this._createNFT(tokenIdsBefore, this.walletAddressSubject.value);
     } catch (error) {
       this.creatingNftLoadingSubject.next(false);
       console.error(error);
@@ -1384,21 +1418,21 @@ export class Web3Service {
     }
   }
 
-  private async _mintAllowList(numberOfTokens: number, fromAddress: string): Promise<any> {
+  public async mintAllowList(numberOfTokens: number): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");
     if(numberOfTokens > Number(await this.numAvailableToMint())) throw new Error("Exceeded max available to purchase"); 
     try {
-      const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(fromAddress);
+      const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(this.walletAddressSubject.value);
       const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
       const privaleSaleIsActive = await this.privateSaleIsActive();
       const totalPrice = (numberOfTokens * (privaleSaleIsActive ? this.PrivateSaleFoxyPrice : this.FoxyPrice)).toString();
   
       const result = await contract.methods['mintAllowList'](numberOfTokens).send({
-        from: fromAddress,
+        from: this.walletAddressSubject.value,
         value: this.web3.utils.toWei(totalPrice, 'ether'),
       });
       this.creatingNftLoadingSubject.next(true);
-      return this._createNFT(tokenIdsBefore, fromAddress);
+      return this._createNFT(tokenIdsBefore, this.walletAddressSubject.value);
     } catch (error) {
       this.creatingNftLoadingSubject.next(false);
       console.error(error);
@@ -1441,12 +1475,12 @@ export class Web3Service {
   }
     
 
-  private async _flipPublicSaleState(fromAddress: string, maxMintAmount: number, state: boolean): Promise<any> {
+  public async flipPublicSaleState(maxMintAmount: number, state: boolean): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     try {
       const result = await contract.methods['flipPublicSaleState'](maxMintAmount, state).send({
-        from: fromAddress
+        from: this.walletAddressSubject.value
       });
       return result;
     } catch (error) {
@@ -1455,18 +1489,25 @@ export class Web3Service {
     }
   }
 
-  private async _merge(tokenId1: number, tokenId2: number, fromAddress: string): Promise<any> {
+  public async merge(tokenId1: number, tokenId2: number): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     try {
       const result = await contract.methods['merge'](tokenId1, tokenId2).send({
-        from: fromAddress
+        from: this.walletAddressSubject.value
       });
       return result;
     } catch (error) {
       console.error("Merge failed:", error);
       throw error;
     }
+  }
+
+  public async owner() {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+    const owner = await contract.methods['owner']().call();
+    return owner;
   }
 
   public async balanceOf(owner: String) {
@@ -1479,8 +1520,8 @@ export class Web3Service {
   public async currentSaleMinted() {
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
-    const saleMintLimit = await contract.methods['currentSaleMinted']().call();
-    return saleMintLimit;
+    const currentSaleMinted = await contract.methods['currentSaleMinted']().call();
+    return currentSaleMinted;
   }
 
   public async saleMintLimit() {
@@ -1493,19 +1534,16 @@ export class Web3Service {
   public async numAvailableToMint() {
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
-    const saleMintLimit = await contract.methods['numAvailableToMint'](this.walletAddressSubject.value).call();
-    return saleMintLimit;
+    const numAvailableToMint = await contract.methods['numAvailableToMint'](this.walletAddressSubject.value).call();
+    return numAvailableToMint;
   }
 
-  public async setBaseURI(uri: string) {
-    this._setBaseURI(this.walletAddressSubject.value, uri);
-  }
 
-  private async _setBaseURI(fromAddress: string, uri: String) {
+  public async setBaseURI(uri: String) {
     if (!this.web3) throw new Error("Web3 not initialized");
     const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
     const result = await contract.methods['setBaseURI'](uri).send({
-      from: fromAddress
+      from: this.walletAddressSubject.value
     });
     return result;
   }

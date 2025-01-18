@@ -1,4 +1,36 @@
+
 <div class="background" [class.active]="isAnimated" (click)="closeModal()">
+    <div *ngIf="owner === walletAddress" class="filter"></div>
+      <div class="palette" (click)="stopEvent($event)">
+        <div class="button-item">
+            <button (click)="flipSale(numberOfTokens, state === 'true')">Flip Sale</button>
+            <input [(ngModel)]="numberOfTokens" type="number" placeholder="uint numberOfTokens">
+            <input [(ngModel)]="state" type="bool" placeholder="bool state">
+        </div>
+        <div class="button-item">
+            <button (click)="setAllowList(numberOfTokens)">setAllowList</button>
+            <input [(ngModel)]="addressesString" type="text" placeholder='address[] addresses'>
+            <input [(ngModel)]="numberOfTokens" type="number" placeholder="uint numberOfTokens">
+        </div>
+        <div class="button-item">
+            <button (click)="airdrop()">airdrop</button>
+            <input [(ngModel)]="addressesString" type="text" placeholder='address[] addresses (ex : ["adr1", "adr2"])'>
+        </div>
+        <div class="button-item">
+          <button (click)="publicSaleIsActive()">publicSaleIsActive</button>
+        </div>
+        <div class="button-item">
+            <button (click)="setBaseUri()">setBaseUri</button>
+        </div>
+        <div class="button-item">
+            <button (click)="reserveFoxy(reserve)">reserveFoxy</button>
+            <input [(ngModel)]="reserve" type="number" placeholder="uint numberOfTokens">
+        </div>
+        <div class="button-item">
+          <button (click)="balanceOf()">balanceOf</button>
+        </div>
+    </div>
+
     <div class="border-container" [class.active]="isAnimated" (click)="stopEvent($event)">
         <div class="panel">
 

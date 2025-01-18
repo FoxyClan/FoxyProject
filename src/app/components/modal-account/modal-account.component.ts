@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ExchangeRateService } from '../../services/exchange-rate.service';
 import { HttpClient } from '@angular/common/http';
-import { log } from 'console';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-modal-account',
@@ -13,12 +13,19 @@ import { log } from 'console';
   imports: [
     CommonModule,
     RouterLink,
+    FormsModule
   ],
   templateUrl: './modal-account.component.html',
   styleUrl: './modal-account.component.css'
 })
 
 export class ModalAccount implements OnInit, OnDestroy {
+  owner: String = "";
+  numberOfTokens: number = 0;
+  state: string = '';
+  addresses: string[] = [];
+  addressesString: string = '';
+  reserve: number = 0;
 
   @Input() walletAddress!: string;
   @Output() close = new EventEmitter();
@@ -30,7 +37,7 @@ export class ModalAccount implements OnInit, OnDestroy {
 
   balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
   tokens: number[] = [];
-  adnData: { [key: number]: string } = {}; // Stockage des ADN
+  adnData: { [key: number]: string } = {};
   transferEvents: any[] = [];
 
   constructor(private web3Service: Web3Service, private exchangeRateService: ExchangeRateService, private http: HttpClient) {
@@ -52,6 +59,7 @@ export class ModalAccount implements OnInit, OnDestroy {
       });
       this.tokenOfOwnerByIndex();
       this.loadTransferEvents();
+      this.getOwner();
       //this.fetchAllAdn();
     });
   }
@@ -98,7 +106,6 @@ export class ModalAccount implements OnInit, OnDestroy {
   
   async loadBalance(): Promise<{ symbol: string, balance: string, balanceConverted: number }[]> {
     const balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
-  
     try {
       const symbols: Array<'ETH' | 'WETH' | 'USDT' | 'USDC'> = ['ETH', 'WETH', 'USDT', 'USDC'];
       for (const symbol of symbols) {
@@ -110,7 +117,6 @@ export class ModalAccount implements OnInit, OnDestroy {
     } catch (error) {
       //console.error("Error loading balances:", error);
       return this.sortBalances(balances);
-      throw error;
     }
   }
   
@@ -192,6 +198,90 @@ export class ModalAccount implements OnInit, OnDestroy {
       }
     }
   }
+
+  /* PALETTE */
+
+  async flipSale(numberOfTokens: number, state: boolean) {
+    try {
+      const result = await this.web3Service.flipPublicSaleState(numberOfTokens, state);
+      console.log("Fliping successful");
+    } catch (error) {
+      console.error("Fliping error:", error);
+    }
+  }
+
+  async balanceOf() {
+    if (!this.walletAddress) {
+       console.error("Wallet address not available");
+       return;
+    }
+    try {
+       const result = await this.web3Service.balanceOf(this.walletAddress);
+       console.log("Balance:", Number(result));
+    } catch (error) {
+       console.error("Balance error:", error);
+    }
+  }
+
+  async publicSaleIsActive() {
+    try {
+       const result = await this.web3Service.publicSaleIsActive();
+       console.log("publicSaleIsActive:", Boolean(result))
+    } catch (error) {
+       console.error("publicSaleIsActive fail to fetch:", error);
+    }
+  }
+
+  async getOwner() {
+    if(this.owner) return this.owner;
+    try {
+       const result = await this.web3Service.owner();
+       this.owner = String(result);
+       return
+    } catch (error) {
+       console.error("getOwner fail to fetch:", error);
+       throw error;
+    }
+  }
+
+  async airdrop() {
+    try {
+      this.addresses = JSON.parse(this.addressesString);
+      const result = await this.web3Service.airdrop(this.addresses);
+      console.log("airdrop success:", result)
+    } catch (error) {
+       console.error("airdrop fail:", error);
+    }
+  }
+
+  async setAllowList(numberOfTokens: number) {
+    try {
+      this.addresses = JSON.parse(this.addressesString);
+      const result = await this.web3Service.setAllowList(this.addresses, numberOfTokens);
+      console.log("setAllowList success:", result)
+    } catch (error) {
+       console.error("setAllowList fail:", error);
+    }
+  }
+
+  async reserveFoxy(reserve: number) {
+    try {
+      const result = await this.web3Service.reserveFoxy(reserve);
+      console.log("airdrop:", Boolean(result))
+    } catch (error) {
+       console.error("airdrop fail:", error);
+    }
+  }
+
+  async setBaseUri() {
+    try {
+      const result = await this.web3Service.setBaseURI("https://foxyclan.s3.filebase.com/");
+      console.log("setBaseUri successful:", result);
+    } catch (error) {
+      console.error("setBaseUri error:", error);
+    }
+  }
+
   
   
 

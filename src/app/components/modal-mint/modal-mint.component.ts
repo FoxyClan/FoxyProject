@@ -292,7 +292,6 @@ export class ModalMint implements OnInit, OnDestroy {
     try {
        const result = await this.web3Service.privateSaleIsActive();
        this.isPrivateSaleActive = Boolean(result);
-       console.log(this.isPrivateSaleActive)
        if(this.isPrivateSaleActive) this.mintPrice = 0.0075;
     } catch (error) {
        console.error("privateSaleIsActive fail to fetch:", error);

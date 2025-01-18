@@ -165,15 +165,6 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
-  async merge() {
-    try {
-      const result = await this.web3Service.merge(0, 1);
-      console.log("Merge successful:", result);
-    } catch (error) {
-      console.error("Merge error:", error);
-    }
-  }
-
   async flipSale() {
     try {
       const result = await this.web3Service.flipPublicSaleState(100, true);
@@ -181,19 +172,6 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
       console.log("Fliping successful:", result);
     } catch (error) {
       console.error("Fliping error:", error);
-    }
-  }
-
-  async balanceOf() {
-    if (!this.walletAddress) {
-       console.error("Wallet address not available");
-       return;
-    }
-    try {
-       const result = await this.web3Service.balanceOf(this.walletAddress);
-       console.log("Balance:", Number(result));
-    } catch (error) {
-       console.error("Balance error:", error);
     }
   }
 
