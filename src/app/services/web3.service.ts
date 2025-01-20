@@ -62,7 +62,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0x4a3e42abf733da99c95fc45e3cca1c84e5a5b1a5';
+  private FoxyClanContractAddress = '0xd9e0536a275c400878502adc9c761a924361bece';
 
   private FoxyClanABI = [
     {
@@ -325,26 +325,6 @@ export class Web3Service {
       "constant": true
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "_level",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
       "inputs": [],
       "name": "allowListisActive",
       "outputs": [
@@ -469,6 +449,26 @@ export class Web3Service {
           "internalType": "bool",
           "name": "",
           "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "level",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -864,6 +864,24 @@ export class Web3Service {
       "stateMutability": "view",
       "type": "function",
       "constant": true
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "tokenIds",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pointsToAdd",
+          "type": "uint256"
+        }
+      ],
+      "name": "addFoxyPointsToTokens",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
       "inputs": [
@@ -1393,7 +1411,7 @@ export class Web3Service {
     if (!this.web3) throw new Error("Web3 not initialized");
     try {
       const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
-      const result = await contract.methods['_level'](tokenId).call(); //  change _level for level
+      const result = await contract.methods['level'](tokenId).call();
       return result;
     } catch (error) {
       console.error("level fail to fetch:", error);

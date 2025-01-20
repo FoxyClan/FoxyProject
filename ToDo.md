@@ -14,8 +14,6 @@ MODAL-ACCOUNT
 SMART CONTRACT
 - mettre a jour les commentaires
 - voir si rareté FoxyPoint par jour
-- mettrez a jour l'abi _level
-- change _level for level in web3.service
 
 
 

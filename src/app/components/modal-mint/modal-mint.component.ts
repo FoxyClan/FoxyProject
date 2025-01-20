@@ -171,7 +171,8 @@ export class ModalMint implements OnInit, OnDestroy {
 
     setTimeout(() => {
       const now = performance.now();
-      if (this.lastLeaveTime && now - this.lastLeaveTime >= 500) {
+      if (this.lastLeaveTime && now - this.lastLeaveTime >= 300) {
+        console.log("yo")
         this.blockAnimation = false; // Débloque l'animation après 0.5 seconde
       }
     }, 300); // Délai de 0.5 seconde
