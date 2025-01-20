@@ -48,7 +48,7 @@ export class ModalMint implements OnInit, OnDestroy {
   discover: boolean = false; // Deux secondes apres success
   errorAfterMint: boolean = false;
 
-  isAnimationPlaying: boolean = false; // Video d'animation qui defile
+  lightBackgroundAnimation: boolean = false; // Video d'animation qui defile
   showButton: boolean = true; // Pour montrer le bouton de discover
   showAddWalletButton: boolean = false; // Pour montrer le bouton add wallet
 
@@ -401,22 +401,25 @@ export class ModalMint implements OnInit, OnDestroy {
   
 
   playAnimation() {
-    this.isAnimationPlaying = true;
+    // start light background
+    this.lightBackgroundAnimation = true;
     this.isUnblurred = true;
 
+    // start effect
     setTimeout(() => {
       this.effect = 'legendary';
     }, 2000);
 
-
+    // stop light background
     setTimeout(() => {
       this.stopVideo();
-      this.isAnimationPlaying = false;
+      this.lightBackgroundAnimation = false;
       this.showMetadata = true;
-    }, 7000);
+    }, 6900); // 100ms before 7s to fix bug
 
+    // stop effect
     setTimeout(() => {
-      this.stopRarityVideo();
+      this.stopEffect();
     }, 9000);
   }
 
@@ -425,7 +428,7 @@ export class ModalMint implements OnInit, OnDestroy {
     if(!this.showAddWalletButton) this.showAddWalletButton = true;
   }
 
-  stopRarityVideo() {
+  stopEffect() {
     this.effect = '';
   }
 

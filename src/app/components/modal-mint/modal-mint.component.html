@@ -73,12 +73,12 @@
 
         <div *ngIf="discover" class="after-mint" [@fadeInOut]>
             <div>
-                <video *ngIf="isAnimationPlaying" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
+                <video *ngIf="lightBackgroundAnimation" class="background-video" autoplay muted playsinline (ended)="stopVideo()">
                     <source src="reveal1.mp4" type="video/mp4">
                 </video>
             </div>
             <div>
-                <video *ngIf="effect !== ''" class="{{ effect }}" autoplay muted playsinline (ended)="stopVideo()">
+                <video *ngIf="effect !== ''" class="{{ effect }}" autoplay muted playsinline>
                     <source src="{{ effect }}Effect.mp4" type="video/mp4">
                 </video>
             </div>
