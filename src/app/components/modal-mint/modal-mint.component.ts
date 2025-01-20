@@ -307,36 +307,23 @@ export class ModalMint implements OnInit, OnDestroy {
     this.showButton = false;
     const box = document.querySelector(".box") as HTMLElement;
     if (!box) return;
-
-    const handleAnimationEnd = () => {
-      box.removeEventListener("animationiteration", handleAnimationEnd);
-      // Récupérer la rotation actuelle
-      const currentRotation = Math.round(this.getCurrentRotation(box));
+    const handleAnimationEnd = (currentRotation: number) => {
       
       if (currentRotation === 180) {
-        // Ajouter l'animation rotateFix
         box.classList.add("rotateFix");
-        // Attendre la fin de rotateFix avant de lancer crescendoDecrescendo
-        box.addEventListener(
-          "animationend",
-          function rotateFixEnd() {
-            box.classList.remove("rotateFix");
-            box.removeEventListener("animationend", rotateFixEnd);
-  
-            box.classList.add("spinning");
-            startCrescendoDecrescendo();
-          }
-        );
+        box.addEventListener("animationend", function rotateFixEnd() {
+          box.classList.remove("rotateFix");
+          box.removeEventListener("animationend", rotateFixEnd);
+          box.classList.add("spinning");
+          startCrescendoDecrescendo();
+        });
       } else {
         box.classList.add("spinning");
         startCrescendoDecrescendo();
       }
     };
-  
     const startCrescendoDecrescendo = () => {
       this.playAnimation();
-  
-      // Supprimer crescendoDecrescendo après sa durée
       setTimeout(() => {
         box.classList.remove("spinning");
         box.style.animation = "none"; // Fixe l'élément à sa position finale
@@ -344,9 +331,18 @@ export class ModalMint implements OnInit, OnDestroy {
         this.isInteractive = true;
       }, 7000); // Durée de crescendoDecrescendo
     };
-
-    // Ajouter un écouteur pour attendre la fin d'un cycle d'animation
-    box.addEventListener("animationiteration", handleAnimationEnd);
+    const intervalId = setInterval(() => {
+      const currentRotation = Math.round(this.getCurrentRotation(box));
+      if (currentRotation > -5 && currentRotation < 5) {
+        clearInterval(intervalId);
+        handleAnimationEnd(0);
+      } else if (currentRotation > 175 && currentRotation < 185) {
+        clearInterval(intervalId);
+        handleAnimationEnd(180);
+      }
+    }, 25);
+    
+      
   }
 
   addNFT() {
