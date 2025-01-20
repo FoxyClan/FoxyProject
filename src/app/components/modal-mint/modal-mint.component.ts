@@ -172,7 +172,6 @@ export class ModalMint implements OnInit, OnDestroy {
     setTimeout(() => {
       const now = performance.now();
       if (this.lastLeaveTime && now - this.lastLeaveTime >= 300) {
-        console.log("yo")
         this.blockAnimation = false; // Débloque l'animation après 0.5 seconde
       }
     }, 300); // Délai de 0.5 seconde
@@ -358,7 +357,7 @@ export class ModalMint implements OnInit, OnDestroy {
     }
     this.isInteractive = false; // Désactiver l'interactivité temporairement
     const box = document.querySelector(".box") as HTMLElement;
-    const image = document.querySelector(".nft-adn") as HTMLElement; // Cibler l'image
+    const image = document.getElementById("nft") as HTMLElement; // Cibler l'image
 
     if (!box || !image) {
       console.error("Element .box ou .nft-adn introuvable.");
@@ -367,14 +366,12 @@ export class ModalMint implements OnInit, OnDestroy {
 
     // Désactiver la transition temporairement
     image.style.transition = "none";
-
-    // Réinitialiser le style de flou instantanément
     image.classList.add("blurred");
+    
+    setTimeout(() => {
+      image.style.transition = '';
+    }, 0);
 
-    // Forcer un reflow pour appliquer les styles immédiatement
-    image.offsetHeight;
-
-  
     // Réinitialiser les styles et animations
     box.classList.remove("rotateFix", "spinning");
     box.style.transform = "";
