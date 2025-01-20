@@ -209,6 +209,7 @@ export class ModalMint implements OnInit, OnDestroy {
     this.successMessage = `Minting successful ! You minted ${numberOfTokens} NFT` + (numberOfTokens > 1 ? 's.' : '.');
     this.discover = false;
     try {
+      if(this.saleMintLimit - this.currentSaleMinted < numberOfTokens) throw new Error("Minting limit for this sale reached")
       const result = this.isAllowList ? await this.web3Service.mintAllowList(numberOfTokens) : await this.web3Service.mint(numberOfTokens);
       console.info('Minting successful : ' + numberOfTokens + ' token(s) minted');
       const nftDataPromises = result.map(async (nft: { tokenId: number; image: string; metadata: any }) => {
@@ -231,13 +232,10 @@ export class ModalMint implements OnInit, OnDestroy {
         this.isLoading = false;
         return
       }
-
       // Attendre que toutes les promesses soient résolues
       const nftData = await Promise.all(nftDataPromises);
-
       // Filtrer les résultats valides (pas de null)
       this.mintedNfts = nftData.filter(data => data !== null);
-
       this.success = true;
       setTimeout(() => {
         this.discover = true; // attend que le block.success grandisse pour apparaitre
