@@ -44,6 +44,7 @@ export class ModalAccount implements OnInit, OnDestroy {
   tokens: number[] = [];
   adnData: { [key: number]: string } = {};
   transferEvents: any[] = [];
+  baseUri : string = 'https://foxyclan.s3.filebase.com/';
 
   constructor(private web3Service: Web3Service, private exchangeRateService: ExchangeRateService, private http: HttpClient) {
     this.subscription = new Subscription();
@@ -65,7 +66,7 @@ export class ModalAccount implements OnInit, OnDestroy {
       this.tokenOfOwnerByIndex();
       this.loadTransferEvents();
       this.getOwner();
-      //this.fetchAllAdn();
+      this.fetchAllAdn();
     });
   }
 
@@ -177,12 +178,9 @@ export class ModalAccount implements OnInit, OnDestroy {
   }
 
   async fetchAdn(tokenId: number): Promise<string> {
-    console.log('yo')
-    const url = `https://foxyclan.s3.filebase.com/${tokenId}.json`;
-    console.log("1")
+    const url = this.baseUri + tokenId + '.json';
     try {
       const data: any = await firstValueFrom(this.http.get<any>(url)); // Récupère les données
-      console.log("2")
       return data.DNA; // Accès direct au champ "DNA"
     } catch (error) {
       console.error(`Failed to fetch data for token ${tokenId}`, error);
@@ -192,7 +190,6 @@ export class ModalAccount implements OnInit, OnDestroy {
   
 
   async fetchAllAdn(): Promise<void> {
-    console.log("hey")
     for (const tokenId of this.tokens) {
       try {
         const dna = await this.fetchAdn(tokenId);

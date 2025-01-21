@@ -31,3 +31,7 @@ ul {
     background: #484d64;
     border-radius: 20px;
 }
+
+.hidden {
+    display: none;
+}
