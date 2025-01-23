@@ -45,4 +45,4 @@
 
 </section>
 
-<app-modal-mint *ngIf="showMint" [isAllowList]="mintModalData" (close)="closeMintModal()"></app-modal-mint>
+<app-modal-mint [hidden]="!showMint" [isAllowList]="mintModalData" (close)="closeMintModal()"></app-modal-mint>

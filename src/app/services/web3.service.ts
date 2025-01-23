@@ -62,7 +62,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0x33F9117e5775bAA696C647d50eaC8CCecbFA1795';
+  private FoxyClanContractAddress = '0x1806aF37F9eA1b5a1242e18d79990a5F6089d69c';
 
   private FoxyClanABI = [
     {
@@ -743,26 +743,6 @@ export class Web3Service {
       "constant": true
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "tokenURI",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
       "inputs": [],
       "name": "totalSupply",
       "outputs": [
@@ -1051,6 +1031,26 @@ export class Web3Service {
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
     }
   ];
   
@@ -1117,7 +1117,7 @@ export class Web3Service {
           console.error('Error checking wallet connection: ', error);
       }
     } else {
-      console.log('No web wallets found');
+      console.info('No web wallets found');
     }
   }
 
@@ -1267,7 +1267,7 @@ export class Web3Service {
               method: 'wallet_switchEthereumChain',
               params: [{ chainId: '0x1' }],
           });
-          console.log('Switched to Ethereum network.');
+          console.info('Switched to Ethereum network.');
         }
       } catch (error) {
         console.error('Network change error: ', error);
@@ -1337,7 +1337,7 @@ export class Web3Service {
       const supply = await contract.methods['totalSupply']().call();
       return supply;
     } catch (error) {
-      console.error("Minting failed:", error);
+      console.error("Fail to fetch supply:", error);
       throw error;
     }
   }

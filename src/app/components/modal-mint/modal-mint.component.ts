@@ -89,11 +89,19 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.web3Service.walletAddress$.subscribe((isReady) => {
+      if (isReady) {
+        this.initializeMintData();
+      }
+    });
+  }
+
+  private initializeMintData() {
     this._supply();
     this._saleMintLimit();
     this._currentSaleMint();
     this._numAvailableToMint();
-    if(this.isAllowList) this._privateSaleIsActive();
+    if (this.isAllowList) this._privateSaleIsActive();
     this.subscription = this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
       this.creatingNftLoading = creatingNftLoading;
     });
@@ -105,6 +113,8 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   closeModal() {
+    this.errorMessage = "";
+    this.counterValue = 1;
     if(this.isLoading) return
     if(!this.success) {
       this.close.emit();

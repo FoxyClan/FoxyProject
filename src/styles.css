@@ -33,5 +33,7 @@ ul {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
+    position: relative;
+    z-index: -100;
 }
