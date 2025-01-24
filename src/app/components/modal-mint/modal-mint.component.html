@@ -9,7 +9,7 @@
 
             <div *ngIf="!isAllowList" class="line">
                 <p>Current Sale Minted : </p>
-                <p>{{ currentSaleMinted }} / {{ saleMintLimit }}</p>
+                <p>{{ saleMintLimit === 0 ? "None" : currentSaleMinted + " / " + saleMintLimit}}</p>
             </div>
 
             <div *ngIf="isAllowList" class="line">

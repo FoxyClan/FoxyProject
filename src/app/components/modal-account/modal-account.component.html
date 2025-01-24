@@ -1,7 +1,7 @@
 
 <div class="background" [class.active]="isAnimated" (click)="closeModal()">
-    <div *ngIf="owner === walletAddress" class="filter"></div>
-      <div class="palette" (click)="stopEvent($event)">
+    <div class="filter"></div>
+      <div *ngIf="owner === walletAddress" class="palette" (click)="stopEvent($event)">
         <div class="button-item">
             <button (click)="flipSale(flipNumberOfTokens, state === 'true')">Flip Sale</button>
             <input [(ngModel)]="flipNumberOfTokens" type="number" placeholder="uint numberOfTokens">

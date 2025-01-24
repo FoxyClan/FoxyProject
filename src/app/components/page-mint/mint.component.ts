@@ -81,7 +81,7 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
   
   cantAllowList() {
-    this.displayError("Public sale must be activated to mint an NFT");
+    this.displayError("Allow list must be activated to mint an NFT");
   }
   
   private displayError(message: string) {
