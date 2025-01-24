@@ -206,7 +206,7 @@ export class ModalAccount implements OnInit, OnDestroy {
   async flipSale(flipNumberOfTokens: number, state: boolean) {
     try {
       const result = await this.web3Service.flipPublicSaleState(flipNumberOfTokens, state);
-      console.log("Fliping successful");
+      console.log("FlipPublicSale successful");
     } catch (error) {
       console.error("Fliping error:", error);
     }
@@ -215,7 +215,16 @@ export class ModalAccount implements OnInit, OnDestroy {
   async flipPrivateSaleState() {
     try {
       const result = await this.web3Service.flipPrivateSaleState();
-      console.log("Fliping successful");
+      console.log("FlipPrivateSaleState successful");
+    } catch (error) {
+      console.error("Fliping error:", error);
+    }
+  }
+
+  async flipAllowListState() {
+    try {
+      const result = await this.web3Service.flipAllowListState();
+      console.log("FlipAllowListState successful");
     } catch (error) {
       console.error("Fliping error:", error);
     }
@@ -326,6 +335,15 @@ export class ModalAccount implements OnInit, OnDestroy {
        console.log("UserPoints:", Number(result))
     } catch (error) {
        console.error("UserPoints fail to fetch:", error);
+    }
+  }
+
+  async allowListisActive() {
+    try {
+       const result = await this.web3Service.allowListisActive();
+       console.log("allowListisActive:", Boolean(result))
+    } catch (error) {
+       console.error("privateSaleIsActive fail to fetch:", error);
     }
   }
   

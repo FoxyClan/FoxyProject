@@ -29,8 +29,11 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   private isConnected: boolean = false;
   private isInitialized = false;
   isPublicSaleActive: boolean = false;
+  isAllowListActive: boolean = false;
   walletAddress: any;
   showMint: boolean = false;
+  errorMessage: string = "";
+  private timeoutId: any; //for the errorMessage
   images = ['1.png', '2.png', '3.png', '4.png', '5.png', '6.png']; // obligatoirement un nombre pair d'image
   currentIndex: number = 0;
   currentFront: number = 0;
@@ -68,10 +71,29 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
         const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
         this.walletAddress = checksumAddress;
         this.publicSaleIsActive();
+        this.allowListisActive();
       }
     });
   }
 
+  cantMint() {
+    this.displayError("Public sale must be activated to mint an NFT");
+  }
+  
+  cantAllowList() {
+    this.displayError("Public sale must be activated to mint an NFT");
+  }
+  
+  private displayError(message: string) {
+    this.errorMessage = message;
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+    this.timeoutId = setTimeout(() => {
+      this.errorMessage = "";
+      this.timeoutId = null;
+    }, 3000);
+  }
   
   async startHandleRotation() {
     const box = this.box.nativeElement as HTMLElement;
@@ -165,22 +187,21 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
-  async flipSale() {
-    try {
-      const result = await this.web3Service.flipPublicSaleState(100, true);
-      this.publicSaleIsActive();
-      console.log("Fliping successful:", result);
-    } catch (error) {
-      console.error("Fliping error:", error);
-    }
-  }
-
   async publicSaleIsActive() {
     try {
        const result = await this.web3Service.publicSaleIsActive();
        this.isPublicSaleActive = Boolean(result);
     } catch (error) {
        console.error("publicSaleIsActive fail to fetch:", error);
+    }
+  }
+
+  async allowListisActive() {
+    try {
+       const result = await this.web3Service.allowListisActive();
+       this.isAllowListActive = Boolean(result);
+    } catch (error) {
+       console.error("privateSaleIsActive fail to fetch:", error);
     }
   }
 

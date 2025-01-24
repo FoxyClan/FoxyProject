@@ -32,8 +32,4 @@ ul {
     border-radius: 20px;
 }
 
-.hidden {
-    display: none !important;
-    position: relative;
-    z-index: -100;
-}
+

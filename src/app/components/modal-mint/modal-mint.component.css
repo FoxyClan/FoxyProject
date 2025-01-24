@@ -31,7 +31,7 @@
 }
 
 .block.closeAnimation {
-	animation: closeAnimation 0.5s ease-in-out forwards;;
+	animation: closeAnimation 0.5s ease-in-out forwards;
 }
 
 @keyframes closeAnimation {
@@ -642,6 +642,11 @@
 
 .btn-play:hover {
     background: #008fa9;
+	transform: scale(1.05);
+}
+
+.btn-play.clicked {
+	animation: closeAnimation 0.5s ease-in-out forwards;
 }
 
 .attributs {

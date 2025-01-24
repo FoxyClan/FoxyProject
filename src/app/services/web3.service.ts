@@ -1407,6 +1407,18 @@ export class Web3Service {
     }
   }
 
+  public async allowListisActive() {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    try {
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const state = await contract.methods['allowListisActive']().call();
+      return state;
+    } catch (error) {
+      console.error("allowListisActive fail to fetch:", error);
+      throw error;
+    }
+  }
+
   public async level(tokenId: number) {
     if (!this.web3) throw new Error("Web3 not initialized");
     try {
@@ -1471,7 +1483,6 @@ export class Web3Service {
       const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
       const privaleSaleIsActive = await this.privateSaleIsActive();
       const totalPrice = (numberOfTokens * (privaleSaleIsActive ? this.PrivateSaleFoxyPrice : this.FoxyPrice)).toString();
-  
       const result = await contract.methods['mintAllowList'](numberOfTokens).send({
         from: this.walletAddressSubject.value,
         value: this.web3.utils.toWei(totalPrice, 'ether'),
@@ -1547,6 +1558,21 @@ export class Web3Service {
       throw error;
     }
   }
+  
+  public async flipAllowListState(): Promise<any> {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+    try {
+      const result = await contract.methods['flipAllowListState']().send({
+        from: this.walletAddressSubject.value
+      });
+      return result;
+    } catch (error) {
+      console.error("Fliping Allow List failed:", error);
+      throw error;
+    }
+  }
+
 
   public async merge(tokenId1: number, tokenId2: number): Promise<any> {
     if (!this.web3) throw new Error("Web3 not initialized");

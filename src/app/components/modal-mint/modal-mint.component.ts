@@ -33,12 +33,14 @@ export class ModalMint implements OnInit, OnDestroy {
   @Output() close = new EventEmitter();
   @Input() isAllowList: boolean = false;
   
+  private walletAddressSubscription: Subscription | null = null;
   actualSupply: any = "Load...";
   currentSaleMinted: any = "Load...";
   saleMintLimit: any = "Load...";
   numAvailableToMint: any = "Load...";
-  isPrivateSaleActive: any = "Load...";
+  isPrivateSaleActive: boolean = false;
   mintPrice: number = 0.0125;
+  privateMintPrice: number = 0.0075;
   
   counterValue: number = 1;
   isLoading: boolean = false;
@@ -56,7 +58,6 @@ export class ModalMint implements OnInit, OnDestroy {
 
   isUnblurred: boolean = false; // Blur du nft
   isSpinning: boolean = false;
-  rotationSpeed: string = "5s";
   showMetadata: boolean = false;
   lastLeaveTime: number | null = null; // Stocke le moment où la souris quitte la boîte
   blockAnimation: boolean = false; // Bloque l'animation temporairement
@@ -89,9 +90,10 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.web3Service.walletAddress$.subscribe((isReady) => {
+    this.walletAddressSubscription = this.web3Service.walletAddress$.subscribe((isReady) => {
       if (isReady) {
         this.initializeMintData();
+        //this.walletAddressSubscription?.unsubscribe();
       }
     });
   }
@@ -101,7 +103,7 @@ export class ModalMint implements OnInit, OnDestroy {
     this._saleMintLimit();
     this._currentSaleMint();
     this._numAvailableToMint();
-    if (this.isAllowList) this._privateSaleIsActive();
+    this._privateSaleIsActive();
     this.subscription = this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
       this.creatingNftLoading = creatingNftLoading;
     });
@@ -110,12 +112,28 @@ export class ModalMint implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.walletAddressSubscription?.unsubscribe();
+    this.isLoading = false;
+    this.successMessage = "";
+    this.success = false;
+    this.discover = false;
+    this.errorAfterMint = false;
+    this.lightBackgroundAnimation = false;
+    this.showButton = true;
+    this.showAddWalletButton = false;
+    this.effect = '';
+    this.isUnblurred = false;
+    this.isSpinning = false;
+    this.showMetadata = false;
+    this.lastLeaveTime = null;
+    this.blockAnimation = false;
+    this.closeAnimation = false;
   }
 
   closeModal() {
+    if(this.isLoading) return
     this.errorMessage = "";
     this.counterValue = 1;
-    if(this.isLoading) return
     if(!this.success) {
       this.close.emit();
       return;
@@ -123,7 +141,8 @@ export class ModalMint implements OnInit, OnDestroy {
     this.closeAnimation = true;
     setTimeout(() => {
       this.close.emit();
-    }, 1000);
+      this.ngOnDestroy();
+    }, 500);
   }
   
 
@@ -296,23 +315,32 @@ export class ModalMint implements OnInit, OnDestroy {
     }
   }
 
-  async _privateSaleIsActive() {
+  private async _privateSaleIsActive() {
     try {
        const result = await this.web3Service.privateSaleIsActive();
        this.isPrivateSaleActive = Boolean(result);
-       if(this.isPrivateSaleActive) this.mintPrice = 0.0075;
     } catch (error) {
        console.error("privateSaleIsActive fail to fetch:", error);
     }
   }
 
 
+
   /* AFTER MINT */
 
+  animateButton(event: Event) {
+    const button = event.target as HTMLElement;
+    button.classList.add('clicked');
+    setTimeout(() => {
+      button.classList.remove('clicked');
+    }, 500);
+  }
 
   discoverNFT() {
     this.isInteractive = false;
-    this.showButton = false;
+    setTimeout(() => {
+      this.showButton = false; // For the button animation
+    }, 500);
     const box = document.querySelector(".box") as HTMLElement;
     if (!box) return;
     const handleAnimationEnd = (currentRotation: number) => {
@@ -359,16 +387,14 @@ export class ModalMint implements OnInit, OnDestroy {
       this.web3Service.clearTmpDirectory();
       return;
     }
-    this.isInteractive = false; // Désactiver l'interactivité temporairement
+    this.isInteractive = false;
     const box = document.querySelector(".box") as HTMLElement;
-    const image = document.getElementById("nft") as HTMLElement; // Cibler l'image
+    const image = document.getElementById("nft") as HTMLElement;
 
     if (!box || !image) {
       console.error("Element .box ou .nft-adn introuvable.");
       return;
     }
-
-    // Désactiver la transition temporairement
     image.style.transition = "none";
     image.classList.add("blurred");
     
@@ -376,17 +402,16 @@ export class ModalMint implements OnInit, OnDestroy {
       image.style.transition = '';
     }, 0);
 
-    // Réinitialiser les styles et animations
     box.classList.remove("rotateFix", "spinning");
     box.style.transform = "";
-
-    // Réappliquer l'animation par défaut
     box.style.animation = "";
   
     this.isUnblurred = false;
     this.showMetadata = false;
     this.tokenIndex++;
-    this.showAddWalletButton = false;
+    setTimeout(() => {
+      this.showAddWalletButton = false; // For the button animation
+    }, 500);
   }
     
   
