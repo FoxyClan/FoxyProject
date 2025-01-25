@@ -1,12 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import Web3 from 'web3';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
 import { TraitOptionsService } from '../../services/trait-options.service';
+import { Web3Service } from "../../services/web3.service";
+import axios from "axios";
 
+
+interface Metadata {
+  image: string;
+  DNA: string;
+  name: string;
+  description: string;
+  attributes: Array<{
+    value: string;
+    trait_type: string;
+  }>;
+}
 
 @Component({
   selector: 'app-collection',
@@ -56,11 +68,39 @@ export class CollectionComponent implements OnInit {
   traits: string[] = ['HEAD COVERING', 'EYES', 'MOUTH', 'CLOTHES', 'FUR', 'BACKGROUND'];
   isTraitOpen: boolean[] = [];
 
+  baseUri : string = 'https://foxyclan.s3.filebase.com/';
   numbers = Array.from({ length: 40 }, (_, i) => i + 1);
+  tokens: Metadata[] = [];
+  tokenIndex: number = 0;
   
+  
+  constructor(private http: HttpClient, protected traitOptionsService: TraitOptionsService, private web3Service: Web3Service) {
+  }
 
-  
-  constructor(private http: HttpClient, protected traitOptionsService: TraitOptionsService) {
+  ngOnInit() {
+    this.isTraitOpen = new Array(this.traits.length).fill(false);
+    this.loadToken();
+  }
+
+  loadToken() {
+    for(let i = 1; i <= 40; i++) {
+      this.fetchMetadata(this.tokenIndex);
+      this.tokenIndex++;
+    }
+  }
+
+  async fetchMetadata(tokenId: number) {
+    try {
+      const response = await axios.get<Metadata>(this.baseUri + tokenId + ".json");
+      const metadata = response.data;
+      this.tokens.push(metadata);
+    } catch (error) {
+    }
+  }
+
+  extractTokenNumber(name: string): number | null {
+    const match = name.match(/#(\d+)/); // Cherche un nombre après le caractère #
+    return match ? parseInt(match[1], 10) : null; // Convertit en nombre ou retourne null
   }
 
   toggleTrait(index: number) {
@@ -72,56 +112,7 @@ export class CollectionComponent implements OnInit {
     console.log(this.traitOptionsService.headCoveringOptions.filter(option => option.selected).map(option => option.name));
   }
   
+  
 
 
-
-  ngOnInit() {
-    this.isTraitOpen = new Array(this.traits.length).fill(false);
-    
-    /*this.getMessage();
-    const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
-    
-    web3.eth.getAccounts().then(allAccounts => {
-      this.addresses = allAccounts;
-      this.adr = this.addresses[0];
-    });
-    let contract = new web3.eth.Contract([
-      {
-        "inputs": [
-          {
-            "internalType": "uint256",
-            "name": "_nbrFav",
-            "type": "uint256"
-          }
-        ],
-        "name": "setNdrFavoris",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [],
-        "name": "nbrFavoris",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      }
-    ], '0x84607377d7aEFA15224Eb4E8Cb52fce83bD741BF');
-    let toto = contract.methods['nbrFavoris']().call().then(result => {console.log(result)});*/
-  }
-
-  /*
-  getMessage(): any {
-    this.http.get('http://localhost:8081/adn', { responseType: 'text' })
-      .subscribe(data => {
-        this.msg = 'Message reçu :' + data;
-      });
-  }
-  */
 }

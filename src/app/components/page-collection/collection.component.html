@@ -40,12 +40,12 @@
           <div class="block2">
 
             <ul class="block2-list">
-              <li  *ngFor="let i of numbers" class="block2-li">
+              <li *ngFor="let token of tokens" class="block2-li">
                 <div class="block2-div">
                   <a href="" class="block2-a">
-                    <img class="block2-img" src="https://classical-turquoise-emu.myfilebase.com/ipfs/QmUMS2rwtYpf3b2GM5ciUF2XUMzJ5VH7SwR1524px8htxE" alt="">
+                    <img class="block2-img" [src]="token.image" alt="">
                   </a>
-                  <p>#{{ i }}</p>
+                  <p>#{{ extractTokenNumber(token.name) }}</p>
                 </div>
               </li>
             </ul>

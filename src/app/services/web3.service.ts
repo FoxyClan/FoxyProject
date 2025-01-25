@@ -1727,9 +1727,5 @@ export class Web3Service {
 
 
 
-
-
-
-
 }
 

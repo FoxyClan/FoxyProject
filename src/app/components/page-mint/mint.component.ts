@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewChecked, Input } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { NotConnectedModal } from '../modal-not-connected/not-connected.component';
 import { combineLatest, Subscription } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';

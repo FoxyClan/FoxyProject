@@ -4,7 +4,7 @@ import { ModalAccount } from "../modal-account/modal-account.component";
 import { ModalWallet } from "../modal-wallet/modal-wallet.component";
 import { Web3Service } from "../../services/web3.service";
 import { Subscription, combineLatest } from 'rxjs';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import Web3 from 'web3';
 

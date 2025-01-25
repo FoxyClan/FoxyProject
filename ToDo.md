@@ -1,6 +1,9 @@
 ALL
 - mettre tout en em ou rem
 
+HEADER
+- [hidden] donnes un probleme http / injector de trait.service
+
 WEB3SERVICE
 - enlever le commentaire de switchethaccount
 
