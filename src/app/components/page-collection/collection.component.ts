@@ -142,8 +142,12 @@ export class CollectionComponent implements OnInit {
   
         const matchesAllFilters = filters.every(filter =>
           filter.selected.length === 0 ||
-          metadata.attributes.some(attr => attr.trait_type === filter.type && filter.selected.includes(attr.value))
+          metadata.attributes.some(attr =>
+            attr.trait_type.trim().toLowerCase() === filter.type.trim().toLowerCase() &&
+            filter.selected.includes(attr.value)
+          )
         );
+        console.log(matchesAllFilters, this.tokenIndex);
         if (matchesAllFilters) {
           this.tokens.push(metadata);
           tokenCount++;
