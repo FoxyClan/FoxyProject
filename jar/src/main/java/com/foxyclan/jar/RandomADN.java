@@ -179,8 +179,9 @@ public class RandomADN {
     private Map<String, Object> createMetadataFile(Map<String, String> adn, int tokenId) throws IOException {
         try {
             Map<String, Object> metadata = new HashMap<>();
+            TraitOptionsService traitOptionsService = new TraitOptionsService();
             
-            String imageUrl = "https://foxyclan.s3.filebase.com/" + tokenId + ".png"; // @ToDo mettre le token id plus tard
+            String imageUrl = "https://foxyclan.s3.filebase.com/" + tokenId + ".png";
             String description = "Foxy Clan is a unique collection of adorable and distinctive red pandas, celebrating their playful charm on the blockchain.";
             String name = "Foxy Clan #" + tokenId;
             String nftADN = adn.get("Head")
@@ -195,12 +196,12 @@ public class RandomADN {
             metadata.put("name", name);
             metadata.put("DNA", nftADN);
             metadata.put("attributes", new Object[]{
-                Map.of("trait_type", "Head Covering", "value", adn.get("Head")),
-                Map.of("trait_type", "Mouth", "value", adn.get("Mouth")),
-                Map.of("trait_type", "Eyes", "value", adn.get("Eyes")),
-                Map.of("trait_type", "Clothes", "value", adn.get("Clothes")),
-                Map.of("trait_type", "Fur", "value", adn.get("Fur")),
-                Map.of("trait_type", "Background", "value", adn.get("Background"))
+                Map.of("trait_type", "Head Covering", "value", traitOptionsService.getTraitOption("headcovering", Integer.parseInt(adn.get("Head")))),
+                Map.of("trait_type", "Mouth", "value", traitOptionsService.getTraitOption("mouth", Integer.parseInt(adn.get("Mouth")))),
+                Map.of("trait_type", "Eyes", "value", traitOptionsService.getTraitOption("eyes", Integer.parseInt(adn.get("Eyes")))),
+                Map.of("trait_type", "Clothes", "value", traitOptionsService.getTraitOption("clothes", Integer.parseInt(adn.get("Clothes")))),
+                Map.of("trait_type", "Fur", "value", traitOptionsService.getTraitOption("fur", Integer.parseInt(adn.get("Fur")))),
+                Map.of("trait_type", "Background", "value", traitOptionsService.getTraitOption("background", Integer.parseInt(adn.get("Background"))))
             });
     
             File metadataFile = new File("jar\\src\\main\\resources\\tmp\\" + tokenId + ".json");

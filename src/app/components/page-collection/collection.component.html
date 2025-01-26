@@ -13,21 +13,21 @@
                     </div>
                     <ul *ngIf="trait === 'HEAD COVERING'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
                         <li *ngFor="let option of traitOptionsService.headCoveringOptions">
-                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="getSelectedOptions()">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="filteredTokens()">
                           <label for="{{ option.name }}">{{ option.name }}</label>
                         </li>
                       </ul>
                     
                       <ul *ngIf="trait === 'MOUTH'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
                         <li *ngFor="let option of traitOptionsService.mouthOptions">
-                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="getSelectedOptions()">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="filteredTokens()">
                           <label for="{{ option.name }}">{{ option.name }}</label>
                         </li>
                       </ul>
 
                       <ul *ngIf="trait === 'EYES'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
                         <li *ngFor="let option of traitOptionsService.eyesOptions">
-                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="getSelectedOptions()">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="filteredTokens()">
                           <label for="{{ option.name }}">{{ option.name }}</label>
                         </li>
                       </ul>
@@ -45,7 +45,7 @@
                   <a href="" class="block2-a">
                     <img class="block2-img" [src]="token.image" alt="">
                   </a>
-                  <p>#{{ extractTokenNumber(token.name) }}</p>
+                  <p>#{{ token.tokenId }}</p>
                 </div>
               </li>
             </ul>

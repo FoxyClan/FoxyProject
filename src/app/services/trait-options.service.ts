@@ -100,7 +100,7 @@ export class TraitOptionsService {
     { name: '', selected: false }, //8
   ];
 
-  BackgroundOptions: BackgroundOption[] = [
+  backgroundOptions: BackgroundOption[] = [
     { name: '', selected: false }, //0
     { name: '', selected: false }, //1
     { name: '', selected: false }, //2

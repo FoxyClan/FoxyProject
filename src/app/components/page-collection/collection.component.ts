@@ -10,6 +10,7 @@ import axios from "axios";
 
 
 interface Metadata {
+  tokenId: number;
   image: string;
   DNA: string;
   name: string;
@@ -83,14 +84,14 @@ export class CollectionComponent implements OnInit {
   async loadToken() {
     let tokenCount = 0;
     let consecutiveMisses = 0;
-    while (tokenCount < 40 && consecutiveMisses < 10) {
+    while (tokenCount < 20 && consecutiveMisses < 10) {
       try {
         await this.fetchMetadata(this.tokenIndex);
         tokenCount++;
         consecutiveMisses = 0;
       } catch (error) {
         consecutiveMisses++;
-        if (consecutiveMisses >= 10) {console.log("fin"); return}
+        if (consecutiveMisses >= 10) return;
       }
       this.tokenIndex++;
     }
@@ -100,25 +101,62 @@ export class CollectionComponent implements OnInit {
     try {
       const response = await axios.get<Metadata>(this.baseUri + tokenId + ".json");
       const metadata = response.data;
+      metadata.tokenId = tokenId;
       this.tokens.push(metadata);
     } catch (error) {
       throw null
     }
   }
 
-  extractTokenNumber(name: string): number | null {
-    const match = name.match(/#(\d+)/); // Cherche un nombre après le caractère #
-    return match ? parseInt(match[1], 10) : null; // Convertit en nombre ou retourne null
-  }
-
   toggleTrait(index: number) {
     this.isTraitOpen = this.isTraitOpen.map((_, i) => i === index ? !this.isTraitOpen[i] : false);
   }
 
-  getSelectedOptions() {
-    console.log(this.traitOptionsService.mouthOptions.filter(option => option.selected).map(option => option.name))
-    console.log(this.traitOptionsService.headCoveringOptions.filter(option => option.selected).map(option => option.name));
+
+  async filteredTokens() {
+    this.tokens = [];
+    this.tokenIndex = 0;
+    let tokenCount = 0;
+    let consecutiveMisses = 0;
+    const selectedMouth = this.traitOptionsService.mouthOptions.filter(option => option.selected).map(option => option.name);
+    const selectedHeadCovering = this.traitOptionsService.headCoveringOptions.filter(option => option.selected).map(option => option.name);
+    const selectedEyes = this.traitOptionsService.eyesOptions.filter(option => option.selected).map(option => option.name);
+    const selectedClothes = this.traitOptionsService.clothesOptions.filter(option => option.selected).map(option => option.name);
+    const selectedFur = this.traitOptionsService.furOptions.filter(option => option.selected).map(option => option.name);
+    const selectedBackground = this.traitOptionsService.backgroundOptions.filter(option => option.selected).map(option => option.name);
+  
+    const filters = [
+      { type: 'Mouth', selected: selectedMouth },
+      { type: 'HEAD COVERING', selected: selectedHeadCovering },
+      { type: 'EYES', selected: selectedEyes },
+      { type: 'CLOTHES', selected: selectedClothes },
+      { type: 'FUR', selected: selectedFur },
+      { type: 'BACKGROUND', selected: selectedBackground }
+    ];
+  
+    while (tokenCount < 20 && consecutiveMisses < 10) {
+      try {
+        const response = await axios.get<Metadata>(this.baseUri + this.tokenIndex + ".json");
+        const metadata = response.data;
+        metadata.tokenId = this.tokenIndex;
+  
+        const matchesAllFilters = filters.every(filter =>
+          filter.selected.length === 0 ||
+          metadata.attributes.some(attr => attr.trait_type === filter.type && filter.selected.includes(attr.value))
+        );
+        if (matchesAllFilters) {
+          this.tokens.push(metadata);
+          tokenCount++;
+        }
+        consecutiveMisses = 0;
+      } catch (error) {
+        consecutiveMisses++;
+        if (consecutiveMisses >= 10) return;
+      }
+      this.tokenIndex++;
+    }
   }
+  
   
   
 

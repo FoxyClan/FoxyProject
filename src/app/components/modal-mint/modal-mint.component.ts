@@ -136,6 +136,7 @@ export class ModalMint implements OnInit, OnDestroy {
     this.counterValue = 1;
     if(!this.success) {
       this.close.emit();
+      this.ngOnDestroy();
       return;
     }
     this.closeAnimation = true;
