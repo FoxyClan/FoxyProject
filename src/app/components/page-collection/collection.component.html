@@ -37,7 +37,10 @@
 
 
         <div class="container-block2">
-          <div class="spinner" *ngIf="tokens.length === 0"></div>
+          <div class="no-result" *ngIf="tokens.length === 0">
+            <div *ngIf="!noResult" class="spinner"></div>
+            <p *ngIf="noResult">No result</p>
+          </div>
           <div class="block2">
             <ul class="block2-list" *ngIf="tokens.length > 0">
               <li *ngFor="let token of tokens" class="block2-li">

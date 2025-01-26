@@ -64,6 +64,7 @@ export class CollectionComponent implements OnInit {
   addresses: string[] = [];
   adr: string = "";
   msg: string = "";
+  private controller: AbortController | null = null;
 
   traits: string[] = ['HEAD COVERING', 'EYES', 'MOUTH', 'CLOTHES', 'FUR', 'BACKGROUND'];
   isTraitOpen: boolean[] = [];
@@ -71,6 +72,7 @@ export class CollectionComponent implements OnInit {
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
   tokens: Metadata[] = [];
   tokenIndex: number = 0;
+  noResult: boolean = false;
   
   
   constructor(private http: HttpClient, protected traitOptionsService: TraitOptionsService, private web3Service: Web3Service) {
@@ -84,14 +86,17 @@ export class CollectionComponent implements OnInit {
   async loadToken() {
     let tokenCount = 0;
     let consecutiveMisses = 0;
-    while (tokenCount < 20 && consecutiveMisses < 10) {
+    while (tokenCount < 20) { //  && consecutiveMisses < 10
       try {
         await this.fetchMetadata(this.tokenIndex);
         tokenCount++;
         consecutiveMisses = 0;
       } catch (error) {
         consecutiveMisses++;
-        if (consecutiveMisses >= 10) return;
+        if (consecutiveMisses >= 10) {
+          if (this.tokens.length === 0) this.noResult = true;
+          return;
+        }
       }
       this.tokenIndex++;
     }
@@ -114,9 +119,18 @@ export class CollectionComponent implements OnInit {
 
 
   async filteredTokens() {
+    if (this.controller) {
+      this.controller.abort();
+    }
+
+    // Crée un nouveau AbortController pour cette session
+    this.controller = new AbortController();
+    const signal = this.controller.signal;
+    
     this.tokens = [];
     this.tokenIndex = 0;
     let tokenCount = 0;
+    this.noResult = false;
     let consecutiveMisses = 0;
     const selectedMouth = this.traitOptionsService.mouthOptions.filter(option => option.selected).map(option => option.name);
     const selectedHeadCovering = this.traitOptionsService.headCoveringOptions.filter(option => option.selected).map(option => option.name);
@@ -133,8 +147,10 @@ export class CollectionComponent implements OnInit {
       { type: 'FUR', selected: selectedFur },
       { type: 'BACKGROUND', selected: selectedBackground }
     ];
+    
+    console.log(this.tokens)
   
-    while (tokenCount < 20 && consecutiveMisses < 10) {
+    while (tokenCount < 20) { //  && consecutiveMisses < 10
       try {
         const response = await axios.get<Metadata>(this.baseUri + this.tokenIndex + ".json");
         const metadata = response.data;
@@ -147,15 +163,18 @@ export class CollectionComponent implements OnInit {
             filter.selected.includes(attr.value)
           )
         );
-        console.log(matchesAllFilters, this.tokenIndex);
         if (matchesAllFilters) {
+          console.log(metadata.attributes[0].value)
           this.tokens.push(metadata);
           tokenCount++;
         }
         consecutiveMisses = 0;
       } catch (error) {
         consecutiveMisses++;
-        if (consecutiveMisses >= 10) return;
+        if (consecutiveMisses >= 10) {
+          if (this.tokens.length === 0) this.noResult = true;
+          return;
+        }
       }
       this.tokenIndex++;
     }
