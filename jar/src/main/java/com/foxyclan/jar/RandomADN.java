@@ -49,11 +49,11 @@ public class RandomADN {
 
         Map<String, Object> response = new HashMap<>();
         try {
-            createMetadataFile(adn, tokenId);
-            uploadToFilebase(tokenId + ".json");
-
             createNFT(adn, tokenId);
             uploadToFilebase(tokenId + ".png");
+
+            createMetadataFile(adn, tokenId);
+            uploadToFilebase(tokenId + ".json");
 
             Path imagePath = Path.of("jar/src/main/resources/tmp/" + tokenId + ".png");
             String imageBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath));

@@ -37,9 +37,9 @@
 
 
         <div class="container-block2">
+          <div class="spinner" *ngIf="tokens.length === 0"></div>
           <div class="block2">
-
-            <ul class="block2-list">
+            <ul class="block2-list" *ngIf="tokens.length > 0">
               <li *ngFor="let token of tokens" class="block2-li">
                 <div class="block2-div">
                   <a href="" class="block2-a">

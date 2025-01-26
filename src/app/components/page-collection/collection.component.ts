@@ -64,12 +64,10 @@ export class CollectionComponent implements OnInit {
   adr: string = "";
   msg: string = "";
 
-  myValue: string = '';
   traits: string[] = ['HEAD COVERING', 'EYES', 'MOUTH', 'CLOTHES', 'FUR', 'BACKGROUND'];
   isTraitOpen: boolean[] = [];
 
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
-  numbers = Array.from({ length: 40 }, (_, i) => i + 1);
   tokens: Metadata[] = [];
   tokenIndex: number = 0;
   
@@ -82,9 +80,18 @@ export class CollectionComponent implements OnInit {
     this.loadToken();
   }
 
-  loadToken() {
-    for(let i = 1; i <= 40; i++) {
-      this.fetchMetadata(this.tokenIndex);
+  async loadToken() {
+    let tokenCount = 0;
+    let consecutiveMisses = 0;
+    while (tokenCount < 40 && consecutiveMisses < 10) {
+      try {
+        await this.fetchMetadata(this.tokenIndex);
+        tokenCount++;
+        consecutiveMisses = 0;
+      } catch (error) {
+        consecutiveMisses++;
+        if (consecutiveMisses >= 10) {console.log("fin"); return}
+      }
       this.tokenIndex++;
     }
   }
@@ -95,6 +102,7 @@ export class CollectionComponent implements OnInit {
       const metadata = response.data;
       this.tokens.push(metadata);
     } catch (error) {
+      throw null
     }
   }
 

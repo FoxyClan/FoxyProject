@@ -30,6 +30,7 @@ GANACHE
 MODAL MINT
 - probleme rotation instant quand discover de temps en temps
 - border rarity en fonction des chiffres a passer en fonction des traits
+- voir animation boutton add et discover ??
 
 
 MINT PAGE
