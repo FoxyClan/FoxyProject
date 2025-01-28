@@ -80,26 +80,7 @@ export class CollectionComponent implements OnInit {
 
   ngOnInit() {
     this.isTraitOpen = new Array(this.traits.length).fill(false);
-    this.loadToken();
-  }
-
-  async loadToken() {
-    let tokenCount = 0;
-    let consecutiveMisses = 0;
-    while (tokenCount < 20) { //  && consecutiveMisses < 10
-      try {
-        await this.fetchMetadata(this.tokenIndex);
-        tokenCount++;
-        consecutiveMisses = 0;
-      } catch (error) {
-        consecutiveMisses++;
-        if (consecutiveMisses >= 10) {
-          if (this.tokens.length === 0) this.noResult = true;
-          return;
-        }
-      }
-      this.tokenIndex++;
-    }
+    this.filteredTokens();
   }
 
   async fetchMetadata(tokenId: number) {
@@ -119,11 +100,7 @@ export class CollectionComponent implements OnInit {
 
 
   async filteredTokens() {
-    if (this.controller) {
-      this.controller.abort();
-    }
-
-    // Crée un nouveau AbortController pour cette session
+    if (this.controller) this.controller.abort();
     this.controller = new AbortController();
     const signal = this.controller.signal;
     
@@ -132,6 +109,7 @@ export class CollectionComponent implements OnInit {
     let tokenCount = 0;
     this.noResult = false;
     let consecutiveMisses = 0;
+
     const selectedMouth = this.traitOptionsService.mouthOptions.filter(option => option.selected).map(option => option.name);
     const selectedHeadCovering = this.traitOptionsService.headCoveringOptions.filter(option => option.selected).map(option => option.name);
     const selectedEyes = this.traitOptionsService.eyesOptions.filter(option => option.selected).map(option => option.name);
@@ -147,12 +125,10 @@ export class CollectionComponent implements OnInit {
       { type: 'FUR', selected: selectedFur },
       { type: 'BACKGROUND', selected: selectedBackground }
     ];
-    
-    console.log(this.tokens)
   
     while (tokenCount < 20) { //  && consecutiveMisses < 10
       try {
-        const response = await axios.get<Metadata>(this.baseUri + this.tokenIndex + ".json");
+        const response = await axios.get<Metadata>(this.baseUri + this.tokenIndex + ".json", { signal });
         const metadata = response.data;
         metadata.tokenId = this.tokenIndex;
   
@@ -164,7 +140,6 @@ export class CollectionComponent implements OnInit {
           )
         );
         if (matchesAllFilters) {
-          console.log(metadata.attributes[0].value)
           this.tokens.push(metadata);
           tokenCount++;
         }
@@ -172,7 +147,10 @@ export class CollectionComponent implements OnInit {
       } catch (error) {
         consecutiveMisses++;
         if (consecutiveMisses >= 10) {
-          if (this.tokens.length === 0) this.noResult = true;
+          if (this.tokens.length === 0 && signal.aborted === false) {
+            this.noResult = true;
+          }
+          this.tokenIndex = 0;
           return;
         }
       }

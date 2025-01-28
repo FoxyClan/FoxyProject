@@ -11,7 +11,6 @@ MODAL-WALLET
 - mettre le wallet recent en haut
 
 MODAL-ACCOUNT
-- fetching adn CORS problem
 - ne rien afficher si le reseau n'est pas eth
 
 SMART CONTRACT
@@ -39,3 +38,4 @@ MINT PAGE
 
 JAR 
 - generateTraitDNA en private
+- traits png -> jpeg ?
