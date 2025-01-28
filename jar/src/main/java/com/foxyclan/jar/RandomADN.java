@@ -253,5 +253,72 @@ public class RandomADN {
         }
     }
 
+
+
+    /* UNDISCOVERED */
+
+
+
+
+    public void createUndiscoveredMetadataFile(int tokenId) throws IOException {
+        try {
+            Map<String, Object> metadata = new HashMap<>();
+            
+            String imageUrl = "https://foxyclan.s3.filebase.com/undiscovered.png";
+            String description = "A mysterious member of the Foxy Clan, waiting to reveal its unique traits. Will it be a rare gem or a playful companion? Only time will tell as the secrets of this red panda are uncovered. Visit our website to unveil it !";
+            String name = "Foxy Clan #" + tokenId;
+    
+            metadata.put("image", imageUrl);
+            metadata.put("description", description);
+            metadata.put("name", name);
+    
+            File metadataFile = new File(tokenId + ".json");
+    
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.writeValue(metadataFile, metadata);
+    
+            System.out.println("Fichier JSON des métadonnées créé : " + tokenId + ".json");
+            this.uploadUndiscoveredToFilebase(tokenId + ".json", metadataFile);
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la création du fichier JSON pour le token " + tokenId);
+            e.printStackTrace();
+            if (e instanceof JsonProcessingException) {
+                throw new IOException("Erreur lors du traitement JSON pour le token " + tokenId, e);
+            }
+            throw e;
+        } catch (Exception e) {
+            System.err.println("Une erreur inattendue s'est produite lors de la création des métadonnées pour le token " + tokenId);
+            e.printStackTrace();
+            throw new IOException("Erreur inconnue lors de la création des métadonnées pour le token " + tokenId, e);
+        }
+    }
+
+    private void uploadUndiscoveredToFilebase(String fileName, File file) throws IOException {
+        String accessKey = "14BF7594BA96ADCC021B";
+        String secretKey = "1mSomlS0ABFMBWA0kRb59iNzUxGDkjAW5pbXecHR";
+        String endpointUrl = "https://s3.filebase.com";
+        String bucketName = "foxyclan";
+
+        try {
+            S3Client s3Client = S3Client.builder()
+                .region(Region.US_EAST_1)
+                .endpointOverride(java.net.URI.create(endpointUrl))
+                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
+                .build();
+
+                Path filePath = file.toPath();
+                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .build();
+
+            s3Client.putObject(putObjectRequest, filePath);
+            System.out.println("Fichier téléversé : " + fileName);
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new IOException("Erreur lors du téléversement du fichier : " + fileName, e);
+        }
+    }
+
     
 }
