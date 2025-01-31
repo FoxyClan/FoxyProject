@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -59,7 +59,9 @@ interface Metadata {
 })
 
 
-export class CollectionComponent implements OnInit {
+export class CollectionComponent implements OnInit, AfterViewInit {
+  @ViewChild('containerBlock2', { static: true }) containerBlock2!: ElementRef;
+  
   addresses: string[] = [];
   adr: string = "";
   msg: string = "";
@@ -76,7 +78,6 @@ export class CollectionComponent implements OnInit {
   
   constructor(private http: HttpClient, protected traitOptionsService: TraitOptionsService) {
     if ('caches' in window) {                             // a tester /////////////////////////////////////
-      console.log("hey")
       caches.keys().then((cacheNames) => {
         cacheNames.forEach((cacheName) => {
           caches.delete(cacheName);
@@ -85,10 +86,31 @@ export class CollectionComponent implements OnInit {
     }
   }
 
-  async ngOnInit() {
+
+  ngOnInit() {
     this.isTraitOpen = new Array(this.traits.length).fill(false);
-    await this.filteredTokens(0);
+    this.filteredTokens();
   }
+
+
+  ngAfterViewInit() {
+    this.containerBlock2.nativeElement.addEventListener('scroll', () => this.onScroll());
+  }
+
+  
+  @HostListener('window:scroll', [])
+  onScroll(): void {
+    if (!this.containerBlock2) return;
+
+    const element = this.containerBlock2.nativeElement;
+    const bottomReached = element.scrollTop + element.clientHeight >= element.scrollHeight - 10;
+
+    if (bottomReached) {
+      console.log("Chargement de 20 nouveaux NFT...");
+      this.filteredTokens(this.tokenIndex);
+    }
+  }
+
 
   toggleTrait(index: number) {
     this.isTraitOpen = this.isTraitOpen.map((_, i) => i === index ? !this.isTraitOpen[i] : false);
@@ -142,10 +164,11 @@ export class CollectionComponent implements OnInit {
         const tokenId = jsonFiles[i].replace('.json', '');
         const imageKey = `${tokenId}.png`;
 
-        // 🔹 Vérifier si l'image PNG correspondante existe
+        // Vérifier si l'image PNG correspondante existe
         if (!keys.includes(imageKey)) continue;
 
         try {
+          console.log(jsonFiles[i])
           const response = await axios.get<Metadata>(`${this.baseUri}${jsonFiles[i]}`, { signal });
           const metadata = response.data;
           metadata.tokenId = parseInt(tokenId);
@@ -171,7 +194,6 @@ export class CollectionComponent implements OnInit {
       console.error("Erreur lors de la récupération des fichiers du bucket:", error);
       this.noResult = true;
     } finally {
-      //this.isLoading = false;
     }
   }
   
