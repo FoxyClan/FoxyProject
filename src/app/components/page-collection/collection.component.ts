@@ -6,6 +6,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { FormsModule } from '@angular/forms';
 import { TraitOptionsService } from '../../services/trait-options.service';
 import axios from "axios";
+import { ModalCollection } from "../modal-collection/modal-collection.component";
 
 
 interface Metadata {
@@ -23,7 +24,7 @@ interface Metadata {
 @Component({
   selector: 'app-collection',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, ModalCollection],
   templateUrl: './collection.component.html',
   styleUrls: ['./collection.component.css'],
   animations: [
@@ -75,6 +76,9 @@ export class CollectionComponent implements OnInit, AfterViewInit {
   noResult: boolean = false;
   tokenIndex: number = 0;
   isLoading: boolean = false;
+
+  selectedToken: Metadata | null = null
+  showModal: boolean = false;
   
   
   constructor(private http: HttpClient, protected traitOptionsService: TraitOptionsService) {
@@ -194,6 +198,16 @@ export class CollectionComponent implements OnInit, AfterViewInit {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  openModal(token: Metadata) {
+    this.selectedToken = token;
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.selectedToken = null;
   }
   
   
