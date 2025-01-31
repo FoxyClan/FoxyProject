@@ -71,6 +71,7 @@ export class CollectionComponent implements OnInit {
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
   tokens: Metadata[] = [];
   noResult: boolean = false;
+  tokenIndex: number = 0;
   
   
   constructor(private http: HttpClient, protected traitOptionsService: TraitOptionsService) {
@@ -84,22 +85,23 @@ export class CollectionComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.isTraitOpen = new Array(this.traits.length).fill(false);
-    this.filteredTokens();
+    await this.filteredTokens(0);
   }
 
   toggleTrait(index: number) {
     this.isTraitOpen = this.isTraitOpen.map((_, i) => i === index ? !this.isTraitOpen[i] : false);
   }
 
-  
-  async filteredTokens() {
+
+  async filteredTokens(tokenIndex: number = 0) {
     if (this.controller) this.controller.abort();
     this.controller = new AbortController();
     const signal = this.controller.signal;
     
-    this.tokens = [];
+    if(tokenIndex === 0) this.tokens = [];
+    
     let tokenCount = 0;
     this.noResult = false;
 
@@ -134,17 +136,17 @@ export class CollectionComponent implements OnInit {
         return numA - numB;
       });
 
-      for (let jsonFile of jsonFiles) {
+      let i = tokenIndex;
+      for (i; i < jsonFiles.length; i++) {
         if (tokenCount >= 20) break; // Limite de 20 tokens affichés
-
-        const tokenId = jsonFile.replace('.json', '');
+        const tokenId = jsonFiles[i].replace('.json', '');
         const imageKey = `${tokenId}.png`;
 
         // 🔹 Vérifier si l'image PNG correspondante existe
         if (!keys.includes(imageKey)) continue;
 
         try {
-          const response = await axios.get<Metadata>(`${this.baseUri}${jsonFile}`, { signal });
+          const response = await axios.get<Metadata>(`${this.baseUri}${jsonFiles[i]}`, { signal });
           const metadata = response.data;
           metadata.tokenId = parseInt(tokenId);
 
@@ -160,10 +162,10 @@ export class CollectionComponent implements OnInit {
             tokenCount++;
           }
         } catch (error) {
-          console.warn(`Erreur lors de la récupération du JSON : ${jsonFile}`, error);
+          console.warn(`Erreur lors de la récupération du JSON : ${jsonFiles[i]}`, error);
         }
       }
-      console.log(this.tokens.length === 0)
+      this.tokenIndex = i;
       if (this.tokens.length === 0 && !signal.aborted) this.noResult = true;
     } catch (error) {
       console.error("Erreur lors de la récupération des fichiers du bucket:", error);
