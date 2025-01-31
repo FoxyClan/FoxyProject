@@ -128,6 +128,8 @@ export class ModalMint implements OnInit, OnDestroy {
     this.lastLeaveTime = null;
     this.blockAnimation = false;
     this.closeAnimation = false;
+    this.mintedNfts = [];
+    this.tokenIndex = 0;
   }
 
   closeModal() {

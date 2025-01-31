@@ -62,7 +62,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0xc5c8a0f0a27ab5f4a35d33bb9affbc54af13fa70';
+  private FoxyClanContractAddress = '0xb67b3769514a245357df90475ed791cdde01b20e';
 
   private FoxyClanABI = [
     {
@@ -377,14 +377,8 @@ export class Web3Service {
       "constant": true
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "burnedTokenIds",
+      "inputs": [],
+      "name": "currentSaleMinted",
       "outputs": [
         {
           "internalType": "uint256",
@@ -398,12 +392,26 @@ export class Web3Service {
     },
     {
       "inputs": [],
-      "name": "currentSaleMinted",
+      "name": "foxyAward",
       "outputs": [
         {
-          "internalType": "uint256",
+          "internalType": "address",
           "name": "",
-          "type": "uint256"
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [],
+      "name": "foxyAwardContract",
+      "outputs": [
+        {
+          "internalType": "contract FoxyAward",
+          "name": "",
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -848,6 +856,37 @@ export class Web3Service {
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "adr",
+          "type": "address"
+        }
+      ],
+      "name": "setFoxyAward",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "nbrPoints",
+          "type": "uint256"
+        }
+      ],
+      "name": "usePoint",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256[]",
           "name": "tokenIds",
           "type": "uint256[]"
@@ -900,6 +939,26 @@ export class Web3Service {
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -1031,26 +1090,6 @@ export class Web3Service {
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "tokenURI",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
     }
   ];
   

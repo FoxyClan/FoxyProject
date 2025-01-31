@@ -76,22 +76,19 @@ export class CollectionComponent implements OnInit {
   
   
   constructor(private http: HttpClient, protected traitOptionsService: TraitOptionsService, private web3Service: Web3Service) {
+    if ('caches' in window) {
+      console.log("hey")
+      caches.keys().then((cacheNames) => {
+        cacheNames.forEach((cacheName) => {
+          caches.delete(cacheName);
+        });
+      });
+    }
   }
 
   ngOnInit() {
     this.isTraitOpen = new Array(this.traits.length).fill(false);
     this.filteredTokens();
-  }
-
-  async fetchMetadata(tokenId: number) {
-    try {
-      const response = await axios.get<Metadata>(this.baseUri + tokenId + ".json");
-      const metadata = response.data;
-      metadata.tokenId = tokenId;
-      this.tokens.push(metadata);
-    } catch (error) {
-      throw null
-    }
   }
 
   toggleTrait(index: number) {
@@ -126,8 +123,9 @@ export class CollectionComponent implements OnInit {
       { type: 'BACKGROUND', selected: selectedBackground }
     ];
   
-    while (tokenCount < 20) { //  && consecutiveMisses < 10
+    while (tokenCount < 20) {
       try {
+        await axios.head(this.baseUri + this.tokenIndex + ".png", { signal });
         const response = await axios.get<Metadata>(this.baseUri + this.tokenIndex + ".json", { signal });
         const metadata = response.data;
         metadata.tokenId = this.tokenIndex;

@@ -17,8 +17,8 @@ SMART CONTRACT
 - mettre a jour les commentaires
 - voir si rareté FoxyPoint par jour
 - a tester nombre d'addresse passable dans airdrop (test net) (100)
-
-- micka : _safeMint emplacements
+- award fonctions usePoints
+- si des trous dans tokenByIndex, probleme dans les affichage style opensea ?? -> micka
 
 
 

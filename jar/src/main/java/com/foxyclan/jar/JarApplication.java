@@ -20,7 +20,7 @@ public class JarApplication {
 			System.out.println(tab[i]);
 		}
 		*/
-
+		/*
 		for(int i = 0; i<100; i++) {
 			try {
 				rand.createUndiscoveredMetadataFile(i);
@@ -29,7 +29,7 @@ public class JarApplication {
 				throw null;
 			}
 		}
-		
+		*/
 		
 	}
 
