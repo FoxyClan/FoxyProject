@@ -62,7 +62,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0x38a33d1397e44433Ef3cD26F2787BbBA2FcBE228';
+  private FoxyClanContractAddress = '0x81d8ea8571e7ecdbb90f77ab8d0b90f9d49634d7';
 
   private FoxyClanABI = [
     {

@@ -74,6 +74,7 @@ export class CollectionComponent implements OnInit, AfterViewInit {
   tokens: Metadata[] = [];
   noResult: boolean = false;
   tokenIndex: number = 0;
+  isLoading: boolean = false;
   
   
   constructor(private http: HttpClient, protected traitOptionsService: TraitOptionsService) {
@@ -105,8 +106,7 @@ export class CollectionComponent implements OnInit, AfterViewInit {
     const element = this.containerBlock2.nativeElement;
     const bottomReached = element.scrollTop + element.clientHeight >= element.scrollHeight - 10;
 
-    if (bottomReached) {
-      console.log("Chargement de 20 nouveaux NFT...");
+    if (bottomReached && !this.isLoading && this.tokenIndex != -1) {
       this.filteredTokens(this.tokenIndex);
     }
   }
@@ -118,6 +118,7 @@ export class CollectionComponent implements OnInit, AfterViewInit {
 
 
   async filteredTokens(tokenIndex: number = 0) {
+    this.isLoading = true;
     if (this.controller) this.controller.abort();
     this.controller = new AbortController();
     const signal = this.controller.signal;
@@ -144,13 +145,11 @@ export class CollectionComponent implements OnInit, AfterViewInit {
     ];
 
     try {
-      // 🔹 Récupérer la liste des fichiers du bucket
       const bucketResponse = await axios.get(this.baseUri, { responseType: 'text' });
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(bucketResponse.data, 'application/xml');
       const keys = Array.from(xmlDoc.getElementsByTagName('Key')).map(node => node.textContent || '');
 
-      // 🔹 Filtrer les fichiers JSON existants
       const jsonFiles = keys.filter(key => key.endsWith('.json'));
       jsonFiles.sort((a, b) => {
         const numA = parseInt(a.replace(".json", ""), 10);
@@ -160,7 +159,7 @@ export class CollectionComponent implements OnInit, AfterViewInit {
 
       let i = tokenIndex;
       for (i; i < jsonFiles.length; i++) {
-        if (tokenCount >= 20) break; // Limite de 20 tokens affichés
+        if (tokenCount >= 20) break;
         const tokenId = jsonFiles[i].replace('.json', '');
         const imageKey = `${tokenId}.png`;
 
@@ -168,7 +167,6 @@ export class CollectionComponent implements OnInit, AfterViewInit {
         if (!keys.includes(imageKey)) continue;
 
         try {
-          console.log(jsonFiles[i])
           const response = await axios.get<Metadata>(`${this.baseUri}${jsonFiles[i]}`, { signal });
           const metadata = response.data;
           metadata.tokenId = parseInt(tokenId);
@@ -188,12 +186,13 @@ export class CollectionComponent implements OnInit, AfterViewInit {
           console.warn(`Erreur lors de la récupération du JSON : ${jsonFiles[i]}`, error);
         }
       }
-      this.tokenIndex = i;
+      this.tokenIndex = i >= jsonFiles.length ? -1 : i;
       if (this.tokens.length === 0 && !signal.aborted) this.noResult = true;
     } catch (error) {
       console.error("Erreur lors de la récupération des fichiers du bucket:", error);
       this.noResult = true;
     } finally {
+      this.isLoading = false;
     }
   }
   

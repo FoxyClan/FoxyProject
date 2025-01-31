@@ -38,8 +38,8 @@
 
         <div class="container-block2" #containerBlock2>
           <div class="no-result" *ngIf="tokens.length === 0">
-            <div *ngIf="!noResult" class="spinner"></div>
-            <p *ngIf="noResult">No result</p>
+            <div *ngIf="isLoading" class="spinner"></div>
+            <p *ngIf="!isLoading">No result</p>
           </div>
           
           <div class="block2">
@@ -55,7 +55,10 @@
             </ul>
           </div>
         
-          <div *ngIf="tokens.length == 20" class="spinner"></div> <!-- Spinner en bas -->
+          <div>
+            <div *ngIf="isLoading && tokenIndex >= 20" class="spinner"></div>
+          </div>
+          
         </div>
     </div>
 </section>
