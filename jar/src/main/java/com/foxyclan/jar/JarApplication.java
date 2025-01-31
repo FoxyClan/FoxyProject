@@ -1,5 +1,7 @@
 package com.foxyclan.jar;
 
+import java.util.List;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -11,6 +13,7 @@ public class JarApplication {
 		SpringApplication.run(JarApplication.class, args);
 		
 		RandomADN rand = new RandomADN();
+		NFTService nftservice = new NFTService();
 		/*
 		int[] tab = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 		for(int i=0; i<20000; i++) {
@@ -30,6 +33,10 @@ public class JarApplication {
 			}
 		}
 		*/
+		List<NFT> nfts = nftservice.getAvailableNFTs(0, 20);
+		for(int i=0; i<nfts.size(); i++) {
+			System.out.println(nfts.get(i).id + "  " + nfts.get(i).name + "  " + nfts.get(i).imageUrl);
+		}
 		
 	}
 

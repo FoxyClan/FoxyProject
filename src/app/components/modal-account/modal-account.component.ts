@@ -67,7 +67,6 @@ export class ModalAccount implements OnInit, OnDestroy {
       this.loadTransferEvents();
       this.getOwner();
       this.fetchAllAdn();
-      console.log("hey")
     });
   }
 
