@@ -12,7 +12,7 @@
     font-family: "Orbitron", sans-serif;
   }
 
-  .background {
+  .logo-background {
     position: absolute;
     z-index: 4;
     width: 80%;
@@ -21,7 +21,7 @@
     justify-content: right;
   }
 
-  .background img {
+  .logo-background img {
     width: 50%;
     aspect-ratio: 1 / 1;
     object-fit: contain;
@@ -29,6 +29,26 @@
     mix-blend-mode: multiply;
     opacity: 0.5;
   }
+
+  .background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Place l'image derrière le contenu */
+    border-radius: inherit; /* Applique le même border-radius que .modal-content */
+    overflow: hidden;
+  }
+  
+  .background img {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* S'assure que l'image remplit sans déformation */
+    opacity: 0.9;
+  }
+  
   
   .modal-content {
     position: relative;
@@ -36,12 +56,13 @@
     width: 80%;
     height: 80%;
     display: flex;
-    background: linear-gradient(to bottom, #010204e7, #32a6bae7);
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
     padding: 1.5rem;
   }
+
+  
 
   .close {
     position: absolute;
@@ -129,8 +150,7 @@
     flex-direction: column;
     justify-content: center;
   }
-  
-  /* ✅ Effet au survol */
+
   .attribute-card:hover {
     transform: scale(1.05);
   }

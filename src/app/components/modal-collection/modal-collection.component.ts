@@ -60,10 +60,10 @@ export class ModalCollection implements OnChanges {
   ngOnChanges() {
     if (this.token) {
       const backgroundAttr = this.token.attributes.find(attr => attr.trait_type.toLowerCase() === 'background');
-      console.log(backgroundAttr)
 
       if (backgroundAttr) {
-        this.backgroundColor = "backgroundAttr.value"; // Appliquer la couleur trouvée
+        this.backgroundColor = "Background/" + backgroundAttr.value + ".png";
+        console.log(this.backgroundColor)
       }
     }
   }

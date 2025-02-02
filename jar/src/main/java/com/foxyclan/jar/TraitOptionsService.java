@@ -34,8 +34,20 @@ public class TraitOptionsService {
     );
 
     private final List<String> backgroundOptions = Arrays.asList(
-        "", "", "", "", "", "", "", "", "", "", "", "", ""
-    );
+    "Hell", 
+    "Heavenly Skies", 
+    "Ancient Egypt", 
+    "Green", 
+    "Raspberry Red", 
+    "Deep Teal", 
+    "Soft Beige", 
+    "Brown", 
+    "Light Blue", 
+    "Orange", 
+    "Orange", 
+    "Red", 
+    "Soft Mauve"
+);
 
     public String getTraitOption(String category, int index) {
         List<String> options = switch (category.toLowerCase()) {

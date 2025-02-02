@@ -101,19 +101,19 @@ export class TraitOptionsService {
   ];
 
   backgroundOptions: BackgroundOption[] = [
-    { name: '', selected: false }, //0
-    { name: '', selected: false }, //1
-    { name: '', selected: false }, //2
-    { name: '', selected: false }, //3
-    { name: '', selected: false }, //4
-    { name: '', selected: false }, //5
-    { name: '', selected: false }, //6
-    { name: '', selected: false }, //7
-    { name: '', selected: false }, //8
-    { name: '', selected: false }, //9
-    { name: '', selected: false }, //10
-    { name: '', selected: false }, //11
-    { name: '', selected: false }, //12
+    { name: 'Hell', selected: false }, //0
+    { name: 'Heavenly Skies', selected: false }, //1
+    { name: 'Ancient Egypt', selected: false }, //2
+    { name: 'Green', selected: false }, //3
+    { name: 'Raspberry Red', selected: false }, //4
+    { name: 'Deep Teal', selected: false }, //5
+    { name: 'Soft Beige', selected: false }, //6
+    { name: 'Brown', selected: false }, //7
+    { name: 'Light Blue', selected: false }, //8
+    { name: 'Orange', selected: false }, //9
+    { name: 'Orange', selected: false }, //10
+    { name: 'Red', selected: false }, //11
+    { name: 'Soft Mauve', selected: false }, //12
   ];
 
 
