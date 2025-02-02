@@ -82,13 +82,6 @@ export class CollectionComponent implements OnInit, AfterViewInit {
   
   
   constructor(private http: HttpClient, protected traitOptionsService: TraitOptionsService) {
-    if ('caches' in window) {                             // a tester /////////////////////////////////////
-      caches.keys().then((cacheNames) => {
-        cacheNames.forEach((cacheName) => {
-          caches.delete(cacheName);
-        });
-      });
-    }
   }
 
 
@@ -150,6 +143,10 @@ export class CollectionComponent implements OnInit, AfterViewInit {
 
     try {
       const bucketResponse = await axios.get(this.baseUri, { responseType: 'text' });
+      if (typeof window === 'undefined' || typeof DOMParser === 'undefined') {
+        console.warn('DOMParser is undefined');
+        return;
+      }
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(bucketResponse.data, 'application/xml');
       const keys = Array.from(xmlDoc.getElementsByTagName('Key')).map(node => node.textContent || '');

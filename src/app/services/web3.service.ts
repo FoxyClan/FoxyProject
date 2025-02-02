@@ -62,7 +62,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0x81d8ea8571e7ecdbb90f77ab8d0b90f9d49634d7';
+  private FoxyClanContractAddress = '0x0D440813eF7D7Eb3b05461B50EDAe44337c05337';
 
   private FoxyClanABI = [
     {
@@ -1454,6 +1454,18 @@ export class Web3Service {
       return state;
     } catch (error) {
       console.error("allowListisActive fail to fetch:", error);
+      throw error;
+    }
+  }
+
+  public async ownerOf(tokenId: number) {
+    if (!this.web3) throw new Error("Web3 not initialized");
+    try {
+      const contract = new this.web3.eth.Contract(this.FoxyClanABI, this.FoxyClanContractAddress);
+      const result = await contract.methods['ownerOf'](tokenId).call();
+      return result;
+    } catch (error) {
+      console.error("Fail to fetch owner of " + "tokenId", error);
       throw error;
     }
   }

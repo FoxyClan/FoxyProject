@@ -1,23 +1,30 @@
 <div class="modal-overlay" (click)="closeModal()" [@fadeInOut]>
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      
-      <!-- Image du token -->
+    <div class="background"><img src="FoxyLogoNoBackground.png" alt=""></div>
+    <div class="modal-content" (click)="$event.stopPropagation()" [ngStyle]="{'background': backgroundColor}">
+      <img class="close" src="close.png" alt="close" (click)="closeModal()">
       <div class="modal-left">
         <img [src]="token?.image" [alt]="token?.name" class="nft-image">
       </div>
   
-      <!-- Détails du NFT -->
       <div class="modal-right">
-        <h2 class="nft-name">{{ token?.name }}</h2>
-  
-        <div class="attributes">
-          <div *ngFor="let attr of token?.attributes" class="attribute-card">
-            <p class="trait-type">{{ attr.trait_type }}</p>
-            <p class="trait-value">{{ attr.value }}</p>
+        <div class="metadata-block">
+          <h2 class="nft-name">{{ token?.name }}</h2>
+          <div class="metadata">
+            <div class="specialities">
+              <h4>Level : {{ tokenLevel }}</h4>
+              <h4>Foxy Points : {{ foxyPoints }}</h4>
+            </div>
+            <div class="attributes">
+              <div *ngFor="let attr of token?.attributes" class="attribute-card">
+                <p class="trait-type">{{ attr.trait_type }}</p>
+                <p class="trait-value">{{ attr.value }}</p>
+              </div>
+            </div>
           </div>
+          <h4>Owner : {{ ownerOfToken }}</h4>
         </div>
+        
   
-        <button class="close-btn" (click)="closeModal()">Fermer</button>
       </div>
   
     </div>
