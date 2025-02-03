@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Web3Service } from "../../services/web3.service";
+import { Router } from '@angular/router';
 
 interface Metadata {
   tokenId: number;
@@ -30,71 +31,77 @@ interface Metadata {
     ])
   ]
 })
-
-
-export class ModalCollection implements OnChanges {
+export class ModalCollection {
   @Input() token!: Metadata | null;
   @Output() closeModalEvent = new EventEmitter<void>();
 
   tokenLevel: any = "Loading...";
   foxyPoints: any = "Loading...";
   ownerOfToken: string = "Loading...";
+  backgroundColor: string = '';
+  isLoading: boolean = true;
 
-  backgroundColor: string = 'linear-gradient(to bottom, #010204, #32a5ba)';
+  constructor(private web3Service: Web3Service, private router: Router) {}
 
-  constructor(private web3Service: Web3Service) {}
-
-  ngOnInit() {
-    if(this.token) {
-      this.level(this.token.tokenId);
-      this.getTokenPoints(this.token.tokenId);
-      this.ownerOf(this.token.tokenId);
+  async ngOnInit() {
+    if (this.token) {
+      await Promise.all([
+        this.level(this.token.tokenId),
+        this.getTokenPoints(this.token.tokenId),
+        this.ownerOf(this.token.tokenId),
+        this.setBackground()
+      ]);
+      this.isLoading = false;
     }
-    
   }
 
   closeModal() {
     this.closeModalEvent.emit();
   }
 
-  ngOnChanges() {
-    if (this.token) {
-      const backgroundAttr = this.token.attributes.find(attr => attr.trait_type.toLowerCase() === 'background');
-
-      if (backgroundAttr) {
-        this.backgroundColor = "Background/" + backgroundAttr.value + ".png";
-        console.log(this.backgroundColor)
-      }
-    }
-  }
 
   async level(levelTokenId: number) {
     try {
-       const result = await this.web3Service.level(levelTokenId);
-       this.tokenLevel = Number(result);
+      const result = await this.web3Service.level(levelTokenId);
+      this.tokenLevel = Number(result);
     } catch (error) {
-       console.error("level fail to fetch:", error);
-       this.tokenLevel = "Fail to fetch";
+      console.error("Level fetch failed:", error);
+      this.tokenLevel = "Fail to fetch";
     }
   }
 
-  async getTokenPoints(tokenPoints: number) {
+  async getTokenPoints(tokenId: number) {
     try {
-       const result = await this.web3Service.getTokenPoints(tokenPoints);
-       this.foxyPoints =  Number(result);
+      const result = await this.web3Service.getTokenPoints(tokenId);
+      this.foxyPoints = Number(result);
     } catch (error) {
-       console.error("TokenPoints fail to fetch:", error);
-       this.foxyPoints = "Fail to fetch";
+      console.error("Token Points fetch failed:", error);
+      this.foxyPoints = "Fail to fetch";
     }
   }
 
-  async ownerOf(tokenPoints: number) {
+  async ownerOf(tokenId: number) {
     try {
-       const result = await this.web3Service.ownerOf(tokenPoints);
-       this.ownerOfToken = String(result);
+      const result = await this.web3Service.ownerOf(tokenId);
+      this.ownerOfToken = String(result);
     } catch (error) {
-       console.error("Fail to fetch owner of " + "tokenId", error);
-       this.ownerOfToken = "Fail to fetch";
+      console.error("Owner fetch failed:", error);
+      this.ownerOfToken = "Fail to fetch";
     }
+  }
+
+  async setBackground() {
+    if (this.token) {
+      const backgroundAttr = this.token.attributes.find(attr => attr.trait_type.toLowerCase() === 'background');
+      this.backgroundColor = backgroundAttr ? "Background/" + backgroundAttr.value + ".png" : 'linear-gradient(to bottom,rgba(1, 2, 4, 0.9),rgba(50, 166, 186, 0.9))';
+    }
+  }
+
+  filterByAttribute(attribute: { trait_type: string, value: string }) {
+    this.closeModal();
+    this.router.navigate(['/collection'], { 
+      queryParams: { trait: attribute.trait_type, value: attribute.value }, 
+      queryParamsHandling: 'merge' 
+    });
   }
 }

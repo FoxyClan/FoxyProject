@@ -1,8 +1,11 @@
-<div class="modal-overlay" (click)="closeModal()" [@fadeInOut]>
-    <div class="logo-background"><img src="FoxyLogoNoBackground.png" alt=""></div>
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="background"><img alt="" [src]="backgroundColor"></div>
+<div class="modal-overlay" (click)="closeModal()">
+  <div *ngIf="isLoading" class="spinner"></div>
+    <div *ngIf="!isLoading" class="logo-background"><img src="FoxyLogoNoBackground.png" alt=""></div>
+
+    <div *ngIf="!isLoading" class="modal-content" (click)="$event.stopPropagation()" [@fadeInOut]>
+      <div class="background"><div class="filter"></div><img alt="" [src]="backgroundColor"></div>
       <img class="close" src="close.png" alt="close" (click)="closeModal()">
+
       <div class="modal-left">
         <img [src]="token?.image" [alt]="token?.name" class="nft-image">
       </div>
@@ -16,7 +19,7 @@
               <h4>FOXY POINTS : {{ foxyPoints }}</h4>
             </div>
             <div class="attributes">
-              <div *ngFor="let attr of token?.attributes" class="attribute-card">
+              <div *ngFor="let attr of token?.attributes" class="attribute-card" (click)="filterByAttribute(attr)">
                 <p class="trait-type">{{ attr.trait_type }}</p>
                 <p class="trait-value">{{ attr.value }}</p>
               </div>
@@ -25,7 +28,6 @@
           <h4>OWNER : {{ ownerOfToken !== "Fail to fetch" ? (ownerOfToken.substring(0, 6) + '...' + ownerOfToken.substring(38)) : ownerOfToken }}</h4>
         </div>
         
-  
       </div>
   
     </div>

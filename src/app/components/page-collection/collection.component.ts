@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { TraitOptionsService } from '../../services/trait-options.service';
 import axios from "axios";
 import { ModalCollection } from "../modal-collection/modal-collection.component";
+import { ActivatedRoute } from '@angular/router';
+
 
 
 interface Metadata {
@@ -81,13 +83,27 @@ export class CollectionComponent implements OnInit, AfterViewInit {
   showModal: boolean = false;
   
   
-  constructor(private http: HttpClient, protected traitOptionsService: TraitOptionsService) {
-  }
+  constructor(private http: HttpClient, 
+    protected traitOptionsService: TraitOptionsService, 
+    private route: ActivatedRoute) {}
 
 
   ngOnInit() {
     this.isTraitOpen = new Array(this.traits.length).fill(false);
-    this.filteredTokens();
+  
+    this.resetFilters();
+  
+    this.route.queryParams.subscribe(params => {
+      const trait = params['trait'];
+      const value = params['value'];
+  
+      if (trait && value) {
+        this.resetFilters();
+        this.applyQueryFilter(trait, value);
+      } else {
+        this.filteredTokens();
+      }
+    });
   }
 
 
@@ -105,6 +121,40 @@ export class CollectionComponent implements OnInit, AfterViewInit {
 
     if (bottomReached && !this.isLoading && this.tokenIndex != -1) {
       this.filteredTokens(this.tokenIndex);
+    }
+  }
+
+  resetFilters() {
+    this.traitOptionsService.mouthOptions.forEach(option => option.selected = false);
+    this.traitOptionsService.headCoveringOptions.forEach(option => option.selected = false);
+    this.traitOptionsService.eyesOptions.forEach(option => option.selected = false);
+    this.traitOptionsService.clothesOptions.forEach(option => option.selected = false);
+    this.traitOptionsService.furOptions.forEach(option => option.selected = false);
+    this.traitOptionsService.backgroundOptions.forEach(option => option.selected = false);
+    
+    console.log(this.traitOptionsService)
+  }
+
+  applyQueryFilter(trait: string, value: string) {
+    const filterCategory = this.getFilterCategory(trait);
+    if (filterCategory) {
+      const option = filterCategory.find(opt => opt.name === value);
+      if (option) {
+        option.selected = true;
+        this.filteredTokens();
+      }
+    }
+  }
+
+  getFilterCategory(trait: string) {
+    switch (trait.toUpperCase()) {
+      case 'MOUTH': return this.traitOptionsService.mouthOptions;
+      case 'HEAD COVERING': return this.traitOptionsService.headCoveringOptions;
+      case 'EYES': return this.traitOptionsService.eyesOptions;
+      case 'CLOTHES': return this.traitOptionsService.clothesOptions;
+      case 'FUR': return this.traitOptionsService.furOptions;
+      case 'BACKGROUND': return this.traitOptionsService.backgroundOptions;
+      default: return null;
     }
   }
 

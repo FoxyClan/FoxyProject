@@ -4,7 +4,7 @@ import { ModalAccount } from "../modal-account/modal-account.component";
 import { ModalWallet } from "../modal-wallet/modal-wallet.component";
 import { Web3Service } from "../../services/web3.service";
 import { Subscription, combineLatest } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import Web3 from 'web3';
 
@@ -33,7 +33,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @ViewChild('ModalAccount') modalAccount! : ModalAccount;
   @ViewChild('ModalWallet') modalWallet! : ModalWallet;
 
-  constructor(private web3Service: Web3Service, private router: Router) {
+  constructor(private web3Service: Web3Service, private router: Router, private route: ActivatedRoute) {
     this.subscription = new Subscription();
   }
 
@@ -85,7 +85,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   isActive(route: string): boolean {
-    return this.router.url === route || (route === '/home' && (this.router.url === '' || this.router.url === '/'));
+    return this.router.url === route || (route === '/home' && (this.router.url === '' || this.router.url === '/')) || this.redirected(route);
+  }
+
+  redirected(route: string): boolean {
+    if (route === '/collection') {
+      return this.route.snapshot.queryParams['trait'] ? true : this.route.snapshot.url.join('') === route;
+    }
+    return this.route.snapshot.url.join('') === route;
   }
 
 
