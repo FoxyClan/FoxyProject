@@ -32,7 +32,6 @@ export class ModalWallet implements OnInit {
   ngOnInit() {
     this.subscription = this.web3Service.installedWallets$.subscribe((installedWallets) => {
       this.installedWallets = installedWallets;
-      console.log("yooo")
     });
   }
 

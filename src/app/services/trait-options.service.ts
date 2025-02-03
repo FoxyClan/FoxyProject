@@ -91,13 +91,14 @@ export class TraitOptionsService {
   furOptions: FurOption[] = [
     { name: 'Magma', selected: false }, //0
     { name: 'Angel', selected: false }, //1
-    { name: '', selected: false }, //2
-    { name: '', selected: false }, //3
-    { name: '', selected: false }, //4
-    { name: '', selected: false }, //5
-    { name: '', selected: false }, //6
-    { name: '', selected: false }, //7
-    { name: '', selected: false }, //8
+    { name: 'Golden Obsidian', selected: false }, //2
+    { name: 'Dirty', selected: false }, //3
+    { name: 'Scarred', selected: false }, //4
+    { name: 'Robot', selected: false }, //5
+    { name: 'Beige', selected: false }, //6
+    { name: 'Brown', selected: false }, //7
+    { name: 'Orange', selected: false }, //8
+    { name: 'Orange', selected: false }, //9
   ];
 
   backgroundOptions: BackgroundOption[] = [

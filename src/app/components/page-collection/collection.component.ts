@@ -131,8 +131,6 @@ export class CollectionComponent implements OnInit, AfterViewInit {
     this.traitOptionsService.clothesOptions.forEach(option => option.selected = false);
     this.traitOptionsService.furOptions.forEach(option => option.selected = false);
     this.traitOptionsService.backgroundOptions.forEach(option => option.selected = false);
-    
-    console.log(this.traitOptionsService)
   }
 
   applyQueryFilter(trait: string, value: string) {

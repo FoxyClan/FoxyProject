@@ -31,6 +31,27 @@
                           <label for="{{ option.name }}">{{ option.name }}</label>
                         </li>
                       </ul>
+
+                      <ul *ngIf="trait === 'CLOTHES'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                        <li *ngFor="let option of traitOptionsService.clothesOptions">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="filteredTokens()">
+                          <label for="{{ option.name }}">{{ option.name }}</label>
+                        </li>
+                      </ul>
+
+                      <ul *ngIf="trait === 'FUR'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                        <li *ngFor="let option of traitOptionsService.furOptions">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="filteredTokens()">
+                          <label for="{{ option.name }}">{{ option.name }}</label>
+                        </li>
+                      </ul>
+
+                      <ul *ngIf="trait === 'BACKGROUND'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                        <li *ngFor="let option of traitOptionsService.backgroundOptions">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="filteredTokens()">
+                          <label for="{{ option.name }}">{{ option.name }}</label>
+                        </li>
+                      </ul>
                 </div>
             </div>
         </div>
