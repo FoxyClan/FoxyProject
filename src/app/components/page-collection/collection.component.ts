@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { TraitOptionsService } from '../../services/trait-options.service';
 import axios from "axios";
 import { ModalCollection } from "../modal-collection/modal-collection.component";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 
@@ -86,13 +86,15 @@ export class CollectionComponent implements OnInit, AfterViewInit {
   
   constructor(private http: HttpClient, 
     protected traitOptionsService: TraitOptionsService, 
-    private route: ActivatedRoute) {}
+    private route: ActivatedRoute,
+    private router: Router) {}
 
 
   ngOnInit() {
     this.isTraitOpen = new Array(this.traits.length).fill(false);
   
     this.resetFilters();
+    this.clearAllFilters();
   
     this.route.queryParams.subscribe(params => {
       const trait = params['trait'];
@@ -100,7 +102,9 @@ export class CollectionComponent implements OnInit, AfterViewInit {
   
       if (trait && value) {
         this.resetFilters();
+        this.clearAllFilters();
         this.applyQueryFilter(trait, value);
+        this.updateSelectedFilters(value, trait)
       } else {
         this.filteredTokens();
       }
@@ -157,6 +161,10 @@ export class CollectionComponent implements OnInit, AfterViewInit {
     this.selectedFilters = [];
     this.resetFilters();
     this.filteredTokens();
+
+    // Mise à jour de l'URL sans paramètres
+    const newUrl = window.location.origin + '/collection';
+    window.history.pushState({}, '', newUrl);
   }
   
 
@@ -175,7 +183,6 @@ export class CollectionComponent implements OnInit, AfterViewInit {
       const option = filterCategory.find(opt => opt.name === value);
       if (option) {
         option.selected = true;
-        this.filteredTokens();
       }
     }
   }

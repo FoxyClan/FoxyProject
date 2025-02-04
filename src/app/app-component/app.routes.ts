@@ -9,7 +9,7 @@ export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'mint', component: MintComponent },
-  { path: 'collection', component: CollectionComponent },
+  { path: 'collection', component: CollectionComponent, pathMatch: 'prefix' },
   { path: 'roadmap', component: RoadmapComponent },
   { path: 'ErrorPage', component: ErrorComponent },
   { path: '**', redirectTo: 'ErrorPage', pathMatch: 'full'}
