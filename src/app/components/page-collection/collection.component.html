@@ -5,54 +5,66 @@
                 <h1>FOXY</h1>
                 <p>The 20,000 red pandas, each unique and generated from more than 80 possible traits.</p>
             </div>
+
+            <div class="selected-filters" *ngIf="selectedFilters.length > 0">
+              <div class="filter-tag" *ngFor="let filter of selectedFilters" (click)="removeFilter(filter)">
+                {{ filter.value }}
+                <span class="remove-filter">&#10005;</span>
+              </div>
+              <span class="clear-filters" (click)="clearAllFilters()">
+                <i class="fas fa-trash-alt"></i>
+              </span>
+              
+            </div>
+
             <div class="filter-block">
-                <div class="trait-block" *ngFor="let trait of traits; let i = index">
-                    <div class="trait" (click)="toggleTrait(i)">
-                        <p>{{ trait }}</p>
-                        <img [src]="'arrow-down.png'" [class.rotated]="isTraitOpen[i]" alt="arrow icon">
-                    </div>
-                    <ul *ngIf="trait === 'HEAD COVERING'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
-                        <li *ngFor="let option of traitOptionsService.headCoveringOptions">
-                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="filteredTokens()">
-                          <label for="{{ option.name }}">{{ option.name }}</label>
-                        </li>
-                      </ul>
-                    
-                      <ul *ngIf="trait === 'MOUTH'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
-                        <li *ngFor="let option of traitOptionsService.mouthOptions">
-                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="filteredTokens()">
-                          <label for="{{ option.name }}">{{ option.name }}</label>
-                        </li>
-                      </ul>
-
-                      <ul *ngIf="trait === 'EYES'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
-                        <li *ngFor="let option of traitOptionsService.eyesOptions">
-                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="filteredTokens()">
-                          <label for="{{ option.name }}">{{ option.name }}</label>
-                        </li>
-                      </ul>
-
-                      <ul *ngIf="trait === 'CLOTHES'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
-                        <li *ngFor="let option of traitOptionsService.clothesOptions">
-                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="filteredTokens()">
-                          <label for="{{ option.name }}">{{ option.name }}</label>
-                        </li>
-                      </ul>
-
-                      <ul *ngIf="trait === 'FUR'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
-                        <li *ngFor="let option of traitOptionsService.furOptions">
-                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="filteredTokens()">
-                          <label for="{{ option.name }}">{{ option.name }}</label>
-                        </li>
-                      </ul>
-
-                      <ul *ngIf="trait === 'BACKGROUND'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
-                        <li *ngFor="let option of traitOptionsService.backgroundOptions">
-                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="filteredTokens()">
-                          <label for="{{ option.name }}">{{ option.name }}</label>
-                        </li>
-                      </ul>
+              <div class="trait-block" *ngFor="let trait of traits; let i = index">
+                <div class="trait" (click)="toggleTrait(i)">
+                    <p>{{ trait }}</p>
+                    <img [src]="'arrow-down.png'" [class.rotated]="isTraitOpen[i]" alt="arrow icon">
                 </div>
+                <ul *ngIf="trait === 'HEAD COVERING'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                  <li *ngFor="let option of traitOptionsService.headCoveringOptions">
+                    <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'HEAD COVERING')">
+                    <label for="{{ option.name }}">{{ option.name }}</label>
+                  </li>
+                </ul>
+                
+                <ul *ngIf="trait === 'MOUTH'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                  <li *ngFor="let option of traitOptionsService.mouthOptions">
+                    <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'MOUTH')">
+                    <label for="{{ option.name }}">{{ option.name }}</label>
+                  </li>
+                </ul>
+
+                <ul *ngIf="trait === 'EYES'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                  <li *ngFor="let option of traitOptionsService.eyesOptions">
+                    <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'EYES')">
+                    <label for="{{ option.name }}">{{ option.name }}</label>
+                  </li>
+                </ul>
+
+                <ul *ngIf="trait === 'CLOTHES'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                  <li *ngFor="let option of traitOptionsService.clothesOptions">
+                    <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'CLOTHES')">
+                    <label for="{{ option.name }}">{{ option.name }}</label>
+                  </li>
+                </ul>
+
+                <ul *ngIf="trait === 'FUR'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                  <li *ngFor="let option of traitOptionsService.furOptions">
+                    <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'FUR')">
+                    <label for="{{ option.name }}">{{ option.name }}</label>
+                  </li>
+                </ul>
+
+                <ul *ngIf="trait === 'BACKGROUND'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                  <li *ngFor="let option of traitOptionsService.backgroundOptions">
+                    <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'BACKGROUND')">
+                    <label for="{{ option.name }}">{{ option.name }}</label>
+                  </li>
+                </ul>
+              </div>
             </div>
         </div>
 

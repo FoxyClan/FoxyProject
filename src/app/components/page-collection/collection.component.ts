@@ -80,6 +80,7 @@ export class CollectionComponent implements OnInit, AfterViewInit {
   isLoading: boolean = false;
 
   selectedToken: Metadata | null = null
+  selectedFilters: { value: string, type: string }[] = [];
   showModal: boolean = false;
   
   
@@ -123,6 +124,41 @@ export class CollectionComponent implements OnInit, AfterViewInit {
       this.filteredTokens(this.tokenIndex);
     }
   }
+
+  updateSelectedFilters(value: string, type: string) {
+    const category = this.getFilterCategory(type);
+    if (category) {
+      const option = category.find(opt => opt.name === value);
+      if (option) {
+        
+        if (option.selected) {
+          this.selectedFilters.push({ value, type });
+        } else {
+          this.selectedFilters = this.selectedFilters.filter(f => !(f.value === value && f.type === type));
+        }
+      }
+    }
+    this.filteredTokens();
+  }
+
+  removeFilter(filter: { value: string, type: string }) {
+    const category = this.getFilterCategory(filter.type);
+    if (category) {
+      const option = category.find(opt => opt.name === filter.value);
+      if (option) {
+        option.selected = false;
+      }
+    }
+    this.selectedFilters = this.selectedFilters.filter(f => !(f.value === filter.value && f.type === filter.type));
+    this.filteredTokens();
+  }
+
+  clearAllFilters() {
+    this.selectedFilters = [];
+    this.resetFilters();
+    this.filteredTokens();
+  }
+  
 
   resetFilters() {
     this.traitOptionsService.mouthOptions.forEach(option => option.selected = false);
