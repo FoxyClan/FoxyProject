@@ -101,7 +101,7 @@ export class ModalCollection {
     this.closeModal();
     this.router.navigate(['/collection'], { 
       queryParams: { trait: attribute.trait_type, value: attribute.value }, 
-      queryParamsHandling: 'merge' 
+      queryParamsHandling: 'merge'
     });
   }
 }

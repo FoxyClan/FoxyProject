@@ -7,8 +7,17 @@ import { Subscription, combineLatest } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import Web3 from 'web3';
+import axios from "axios";
+import { ModalCollection } from "../modal-collection/modal-collection.component";
 
-
+interface Metadata {
+  tokenId: number;
+  image: string;
+  DNA: string;
+  name: string;
+  description: string;
+  attributes: Array<{ value: string; trait_type: string }>;
+}
 
 @Component({
   selector: 'app-header',
@@ -17,7 +26,8 @@ import Web3 from 'web3';
     CommonModule,
     ModalAccount,
     ModalWallet,
-    RouterLink
+    RouterLink,
+    ModalCollection
 ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -29,6 +39,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isConnected: boolean = false;
   walletAddress: any;
   private subscription: Subscription;
+  
+  selectedToken: Metadata | null = null
+  showModal: boolean = false;
+
+  isLoading: boolean = false;
+  searchQuery: string = '';
+  searchIconColor: string = "assets/images/search.png";
 
   @ViewChild('ModalAccount') modalAccount! : ModalAccount;
   @ViewChild('ModalWallet') modalWallet! : ModalWallet;
@@ -93,6 +110,71 @@ export class HeaderComponent implements OnInit, OnDestroy {
       return this.route.snapshot.queryParams['trait'] ? true : this.route.snapshot.url.join('') === route;
     }
     return this.route.snapshot.url.join('') === route;
+  }
+
+
+  /* SEARCH BAR */
+
+  onSearchInput(event: Event) {
+    this.removeBorderRed();
+    this.searchQuery = (event.target as HTMLInputElement).value;
+  }
+  
+  // Fonction pour rechercher un token
+  async searchToken() {
+    console.log("hey")
+    this.removeBorderRed();
+    if (!this.searchQuery.trim()) return;
+  
+    this.isLoading = true;
+    this.searchIconColor = "assets/images/search.png"; // Remettre l'icône par défaut
+  
+    const tokenId = this.searchQuery.trim();
+    const tokenUri = `https://foxyclan.s3.filebase.com/`;
+  
+    const bucketResponse = await axios.get(tokenUri, { responseType: 'text' });
+    if (typeof window === 'undefined' || typeof DOMParser === 'undefined') {
+      console.warn('DOMParser is undefined');
+      return;
+    }
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(bucketResponse.data, 'application/xml');
+    const keys = Array.from(xmlDoc.getElementsByTagName('Key')).map(node => node.textContent || '');
+    const jsonFiles = keys.filter(key => key.endsWith('.json'));
+    const metadataKey = `${tokenId}.json`;
+
+    if (jsonFiles.includes(metadataKey)) {
+      const response = await axios.get<Metadata>(`${tokenUri}${metadataKey}`);
+      const metadata = response.data;
+      metadata.tokenId = parseInt(tokenId);
+      this.selectedToken = metadata;
+      console.log(metadata)
+      this.openCollectionModal();
+    }
+    else {
+      const bar = document.querySelector('.search-bar');
+      if (bar) {
+        bar.classList.add('border-red');
+      }
+
+    }
+    this.isLoading = false;
+  }
+
+  removeBorderRed() {
+    const bar = document.querySelector('.search-bar');
+    if (bar) {
+      bar.classList.remove('border-red');
+    }
+  }
+  
+
+  openCollectionModal() {
+    this.showModal = true;
+  }
+
+  closeCollectionModal() {
+    this.showModal = false;
   }
 
 

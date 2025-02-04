@@ -1,13 +1,12 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
 import { TraitOptionsService } from '../../services/trait-options.service';
 import axios from "axios";
 import { ModalCollection } from "../modal-collection/modal-collection.component";
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 
 
@@ -84,10 +83,7 @@ export class CollectionComponent implements OnInit, AfterViewInit {
   showModal: boolean = false;
   
   
-  constructor(private http: HttpClient, 
-    protected traitOptionsService: TraitOptionsService, 
-    private route: ActivatedRoute,
-    private router: Router) {}
+  constructor(protected traitOptionsService: TraitOptionsService, private route: ActivatedRoute) {}
 
 
   ngOnInit() {

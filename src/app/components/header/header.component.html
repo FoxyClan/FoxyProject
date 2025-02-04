@@ -1,10 +1,14 @@
 <header>
     <a>Foxy Clan</a>
     <div class="input-container">
-        <span class="hashtag"># |</span>
-        <input type="text" class="search-bar" placeholder="Rechercher...">
-        <span class="search-icon"><img src="search.png"></span>
-    </div>
+    <span class="hashtag"># |</span>
+    <input type="text" class="search-bar" placeholder="Search..." (input)="onSearchInput($event)" (keydown.enter)="searchToken()" (blur)="removeBorderRed()">
+    <span class="search-icon" (click)="searchToken()">
+        <img *ngIf="!isLoading" src="search.png">
+        <div *ngIf="isLoading" class="spinner"></div>
+    </span>
+</div>
+
     <ul>
         <li>
             <a [routerLink]="['/home']" [ngClass]="{ 'active-link': isActive('/home') }">Home</a>
@@ -35,3 +39,4 @@
 
 <app-modal-account *ngIf="showAccount" [walletAddress]="walletAddress" (close)="closeModal()" #ModalAccount></app-modal-account>
 <app-modal-wallet *ngIf="showWallet" (close)="closeModal()" #ModalWallet></app-modal-wallet>
+<app-modal-collection *ngIf="showModal" [token]="selectedToken" (closeModalEvent)="closeCollectionModal()"></app-modal-collection>
