@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Web3Service } from "../../services/web3.service";
@@ -31,7 +31,7 @@ interface Metadata {
     ])
   ]
 })
-export class ModalCollection {
+export class ModalCollection implements OnInit {
   @Input() token!: Metadata | null;
   @Output() closeModalEvent = new EventEmitter<void>();
 
@@ -46,14 +46,15 @@ export class ModalCollection {
   async ngOnInit() {
     if (this.token) {
       await Promise.all([
+        this.setBackground(),
         this.level(this.token.tokenId),
         this.getTokenPoints(this.token.tokenId),
-        this.ownerOf(this.token.tokenId),
-        this.setBackground()
+        this.ownerOf(this.token.tokenId)
       ]);
       this.isLoading = false;
     }
   }
+  
 
   closeModal() {
     this.closeModalEvent.emit();

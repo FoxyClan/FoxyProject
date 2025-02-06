@@ -1,13 +1,13 @@
 <header>
     <a>Foxy Clan</a>
     <div class="input-container">
-    <span class="hashtag"># |</span>
-    <input type="text" class="search-bar" placeholder="Search..." (input)="onSearchInput($event)" (keydown.enter)="searchToken()" (blur)="removeBorderRed()">
-    <span class="search-icon" (click)="searchToken()">
-        <img *ngIf="!isLoading" src="search.png">
-        <div *ngIf="isLoading" class="spinner"></div>
-    </span>
-</div>
+        <span class="hashtag"># |</span>
+        <input type="text" class="search-bar" placeholder="Search..." (input)="onSearchInput($event)" (keydown.enter)="searchToken()" (blur)="removeBorderRed()">
+        <span class="search-icon" (click)="searchToken()">
+            <img *ngIf="!isLoading" src="search.png">
+            <div *ngIf="isLoading" class="spinner"></div>
+        </span>
+    </div>
 
     <ul>
         <li>

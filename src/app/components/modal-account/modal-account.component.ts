@@ -1,11 +1,24 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Web3Service } from "../../services/web3.service";
-import { Subscription, catchError, combineLatest, firstValueFrom } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ExchangeRateService } from '../../services/exchange-rate.service';
 import { HttpClient } from '@angular/common/http';
+import axios from "axios";
 import { FormsModule } from '@angular/forms';
+import { CacheService } from '../../services/cache.service';
+
+interface Metadata {
+  tokenId: number;
+  image: string;
+  DNA: string;
+  name: string;
+  description: string;
+  attributes: Array<{
+    value: string;
+    trait_type: string;
+  }>;
+}
 
 @Component({
   selector: 'app-modal-account',
@@ -33,45 +46,43 @@ export class ModalAccount implements OnInit, OnDestroy {
   reserve: number = 0;
   levelTokenId: number = 0;
   tokenPoints: number = 0;
+  cacheVersion: string = '';
 
   isAnimated: boolean = false;
   public networkId: string = '';
   public selectedWallet: string = '';
-  private subscription: Subscription;
   selectedOption: string = 'Token';
 
   balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
-  tokens: number[] = [];
-  adnData: { [key: number]: string } = {};
+  tokenIds: number[] = [];
+  tokens: { [key: number]: Metadata | null } = {};
   transferEvents: any[] = [];
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
 
-  constructor(private web3Service: Web3Service, private exchangeRateService: ExchangeRateService, private http: HttpClient) {
-    this.subscription = new Subscription();
+  constructor(private web3Service: Web3Service, 
+    private exchangeRateService: ExchangeRateService, 
+    private http: HttpClient, 
+    private cacheService : CacheService) {
   }
 
-  ngOnInit() {
-    this.subscription = combineLatest([
-      this.web3Service.networkId$,
-      this.web3Service.selectedWallet$
-    ]).subscribe(([networkId, selectedWallet, ]) => {
-      this.networkId = networkId;
-      this.selectedWallet = selectedWallet;
-      
-      this.loadBalance().then(balances => {
-        this.balances = balances;
-      }).catch((error) => {
-        console.error("Error loading balances:", error);
-      });
-      this.tokenOfOwnerByIndex();
-      this.loadTransferEvents();
-      this.getOwner();
-      this.fetchAllAdn();
+  async ngOnInit() {
+    this.cacheService.cacheVersion$.subscribe((version) => {
+      this.cacheVersion = version;
     });
+    this.web3Service.networkId$.subscribe((networkId) => {
+      this.networkId = networkId;
+    });
+    this.web3Service.selectedWallet$.subscribe((selectedWallet) => {
+      this.selectedWallet = selectedWallet;
+    });
+    await this.loadBalance();
+    await this.tokenOfOwnerByIndex();
+    await this.loadTransferEvents();
+    await this.getOwner();
+    await this.fetchMetadata();
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 
   showModal() {
@@ -110,7 +121,7 @@ export class ModalAccount implements OnInit, OnDestroy {
   }
 
   
-  async loadBalance(): Promise<{ symbol: string, balance: string, balanceConverted: number }[]> {
+  async loadBalance() {
     const balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
     try {
       const symbols: Array<'ETH' | 'WETH' | 'USDT' | 'USDC'> = ['ETH', 'WETH', 'USDT', 'USDC'];
@@ -119,10 +130,10 @@ export class ModalAccount implements OnInit, OnDestroy {
         const balanceConverted = await this.exchangeRateService.convertToUsd(Number(balance), symbol);
         balances.push({ symbol, balance, balanceConverted });
       }
-      return this.sortBalances(balances);
     } catch (error) {
       //console.error("Error loading balances:", error);
-      return this.sortBalances(balances);
+    } finally {
+      this.balances = this.sortBalances(balances);
     }
   }
   
@@ -163,7 +174,7 @@ export class ModalAccount implements OnInit, OnDestroy {
   async tokenOfOwnerByIndex() {
     try {
       const result = await this.web3Service.tokenOfOwnerByIndex(this.walletAddress);
-      this.tokens = result;
+      this.tokenIds = result;
     } catch (error) {
       console.error("Balance error:", error);
     }
@@ -177,26 +188,17 @@ export class ModalAccount implements OnInit, OnDestroy {
     });
   }
 
-  async fetchAdn(tokenId: number): Promise<string> {
-    const url = this.baseUri + tokenId + '.json';
-    try {
-      const data: any = await firstValueFrom(this.http.get<any>(url)); // Récupère les données
-      return data.DNA; // Accès direct au champ "DNA"
-    } catch (error) {
-      console.error(`Failed to fetch data for token ${tokenId}`, error);
-      return 'Error'; // Retourne une valeur par défaut en cas d'erreur
-    }
-  }
   
 
-  async fetchAllAdn(): Promise<void> {
-    for (const tokenId of this.tokens) {
+  async fetchMetadata(): Promise<void> {
+    for (const tokenId of this.tokenIds) {
       try {
-        const dna = await this.fetchAdn(tokenId);
-        dna ? this.adnData[tokenId] = dna : this.adnData[tokenId] = "0";
+        const url = this.baseUri + tokenId + '.json';
+        const response = await axios.get<Metadata>(url + `?t=${this.cacheVersion}`);
+        this.tokens[tokenId] = response.data;
       } catch (error) {
-        console.error(`Error fetching DNA for token ${tokenId}:`, error);
-        this.adnData[tokenId] = 'Error';
+        console.error(`Failed to fetch data for token ${tokenId} : `, error);
+        this.tokens[tokenId] = null;
       }
     }
   }

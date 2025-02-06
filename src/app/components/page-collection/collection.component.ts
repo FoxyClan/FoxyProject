@@ -1,9 +1,10 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
 import { TraitOptionsService } from '../../services/trait-options.service';
+import { CacheService } from '../../services/cache.service';
 import axios from "axios";
 import { ModalCollection } from "../modal-collection/modal-collection.component";
 import { ActivatedRoute } from '@angular/router';
@@ -61,13 +62,14 @@ interface Metadata {
 })
 
 
-export class CollectionComponent implements OnInit, AfterViewInit {
+export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('containerBlock2', { static: true }) containerBlock2!: ElementRef;
   
   addresses: string[] = [];
   adr: string = "";
   msg: string = "";
   private controller: AbortController | null = null;
+  cacheVersion: string = '';
 
   traits: string[] = ['HEAD COVERING', 'EYES', 'MOUTH', 'CLOTHES', 'FUR', 'BACKGROUND'];
   isTraitOpen: boolean[] = [];
@@ -83,10 +85,13 @@ export class CollectionComponent implements OnInit, AfterViewInit {
   showModal: boolean = false;
   
   
-  constructor(protected traitOptionsService: TraitOptionsService, private route: ActivatedRoute) {}
+  constructor(protected traitOptionsService: TraitOptionsService, private route: ActivatedRoute, private cacheService: CacheService) {}
 
 
   ngOnInit() {
+    this.cacheService.cacheVersion$.subscribe((version) => {
+      this.cacheVersion = version;
+    });
     this.isTraitOpen = new Array(this.traits.length).fill(false);
   
     this.resetFilters();
@@ -105,6 +110,11 @@ export class CollectionComponent implements OnInit, AfterViewInit {
         this.filteredTokens();
       }
     });
+    
+  }
+
+  ngOnDestroy(): void {
+      this.tokens = [];
   }
 
 
@@ -229,7 +239,7 @@ export class CollectionComponent implements OnInit, AfterViewInit {
     ];
 
     try {
-      const bucketResponse = await axios.get(this.baseUri, { responseType: 'text' });
+      const bucketResponse = await axios.get(this.baseUri + `?t=${this.cacheVersion}`, { responseType: 'text' });
       if (typeof window === 'undefined' || typeof DOMParser === 'undefined') {
         console.warn('DOMParser is undefined');
         return;
@@ -255,7 +265,7 @@ export class CollectionComponent implements OnInit, AfterViewInit {
         if (!keys.includes(imageKey)) continue;
 
         try {
-          const response = await axios.get<Metadata>(`${this.baseUri}${jsonFiles[i]}`, { signal });
+          const response = await axios.get<Metadata>(`${this.baseUri}${jsonFiles[i]}` + `?t=${this.cacheVersion}`, { signal });
           const metadata = response.data;
           metadata.tokenId = parseInt(tokenId);
 
