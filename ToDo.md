@@ -40,8 +40,3 @@ JAR
 - generateTraitDNA en private
 - traits png -> jpeg ?
 
-
-
-ACTUAL MODAL ACCOUNT :
-- mettre un spinner pour les chargements des nft
-- clic sur nft = mini modal 

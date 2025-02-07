@@ -1,0 +1,27 @@
+<div class="nft-collection-container">
+  <header class="header">
+    <h1 class="title">NFT COLLECTION</h1>
+    <div class="address-container">
+      <p *ngIf="address" class="address-text">
+        Viewing NFTs for <span>{{ address }}</span>
+      </p>
+      <p *ngIf="!address" class="address-text no-address">
+        No address provided. Please provide an Ethereum address.
+      </p>
+    </div>
+  </header>
+
+  <div *ngIf="nfts.length > 0" class="nft-grid">
+    <div *ngFor="let nft of nfts" class="nft-card">
+      <img [src]="nft.image" [alt]="'NFT #' + nft.id" class="nft-image" />
+      <div class="nft-details">
+        <p class="nft-id">#{{ nft.id }}</p>
+        <button class="view-button" (click)="viewNFT(nft)">View</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="nfts.length === 0" class="no-nfts">
+    <p>No NFTs found for this address.</p>
+  </div>
+</div>

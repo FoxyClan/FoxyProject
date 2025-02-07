@@ -1,9 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Web3Service } from "../../services/web3.service";
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ExchangeRateService } from '../../services/exchange-rate.service';
-import { HttpClient } from '@angular/common/http';
 import axios from "axios";
 import { FormsModule } from '@angular/forms';
 import { CacheService } from '../../services/cache.service';
@@ -64,13 +63,14 @@ export class ModalAccount implements OnInit, OnDestroy {
   transferEvents: any[] = [];
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
   isLoadingNFTs: boolean = true;
+
   showNFTModal: boolean = false;
 
 
   constructor(private web3Service: Web3Service, 
-    private exchangeRateService: ExchangeRateService, 
-    private http: HttpClient, 
-    private cacheService : CacheService) {
+    private exchangeRateService: ExchangeRateService,
+    private cacheService : CacheService,
+    private router: Router  ) {
   }
 
   async ngOnInit() {
@@ -102,6 +102,11 @@ export class ModalAccount implements OnInit, OnDestroy {
     setTimeout(() => {
       this.close.emit();
     }, 300);
+  }
+
+  openUserCollectionPage() {
+    this.closeModal();
+    this.router.navigate(['/profil'], { queryParams: { address:this.walletAddress} });
   }
 
   stopEvent(event: Event) {
@@ -227,7 +232,7 @@ export class ModalAccount implements OnInit, OnDestroy {
     this.selectedNFT = null;
   }
 
-  openshowNFTModal() {
+  openNFTModal() {
     this.showNFTModal = true;
   }
 
