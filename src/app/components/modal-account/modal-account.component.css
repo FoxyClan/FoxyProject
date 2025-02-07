@@ -365,15 +365,16 @@
 }
 
 .nft-image-large {
-    width: 90%;
+    width: 80%;
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     margin-bottom: 1rem;
 }
 
-.nft-detail-text {
+.nft-detail-text-blue {
     font-size: 1rem;
-    color: #fff;
+    color: #3498db; 
+    margin-bottom: 1rem;
 }
 
 .back-arrow {
@@ -390,6 +391,11 @@
 .back-arrow:hover {
     transform: scale(1.1);
     transition: transform 0.1s ease-in-out;
+}
+
+.stat-container {
+    width: 80%;
+    font-size: 0.8rem;
 }
 
 

@@ -59,6 +59,8 @@ export class ModalAccount implements OnInit, OnDestroy {
   tokenIds: number[] = [];
   tokens: { [key: number]: Metadata | null } = {};
   selectedNFT: Metadata | null = null;
+  selectedNFTLevel: any = "Loading...";
+  selectedNFTPoints: any = "Loading...";
   transferEvents: any[] = [];
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
   isLoadingNFTs: boolean = true;
@@ -215,8 +217,10 @@ export class ModalAccount implements OnInit, OnDestroy {
 
   /* NFT VIEW */
 
-  selectNFT(tokenId: number) {
+  async selectNFT(tokenId: number) {
     this.selectedNFT = this.tokens[tokenId] ?? null;
+    this.selectedNFTLevel = await this.level(tokenId);
+    this.selectedNFTPoints = await this.getTokenPoints(tokenId);
   }
 
   closeNFTView() {
@@ -234,6 +238,7 @@ export class ModalAccount implements OnInit, OnDestroy {
 
 
   /* PALETTE */
+  
 
   async flipSale(flipNumberOfTokens: number, state: boolean) {
     try {
@@ -347,8 +352,10 @@ export class ModalAccount implements OnInit, OnDestroy {
     try {
        const result = await this.web3Service.level(levelTokenId);
        console.log("level:", Number(result))
+       return Number(result);
     } catch (error) {
        console.error("level fail to fetch:", error);
+       throw error;
     }
   }
 
@@ -356,8 +363,10 @@ export class ModalAccount implements OnInit, OnDestroy {
     try {
        const result = await this.web3Service.getTokenPoints(tokenPoints);
        console.log("FoxyPoints:", Number(result))
+       return Number(result); 
     } catch (error) {
        console.error("TokenPoints fail to fetch:", error);
+       throw error;
     }
   }
 

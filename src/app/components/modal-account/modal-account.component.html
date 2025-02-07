@@ -198,7 +198,11 @@
         <div class="panel nft-detail" *ngIf="selectedNFT">
             <p class="back-arrow" (click)="closeNFTView()">&larr;</p>
             <img class="nft-image-large" [src]="selectedNFT.image + '?t={{ cacheVersion }}'" alt="NFT Image">
-            <p class="nft-detail-text">#{{ selectedNFT.tokenId }}</p>
+            <p class="nft-detail-text-blue">{{ selectedNFT.name }}</p>
+            <div class="stat-container">
+                <p>Level : {{ selectedNFTLevel }}</p>
+                <p>Foxy Points : {{ selectedNFTPoints }}</p>
+            </div>
             <div class="button-container">
                 <button class="button-modal" role="button" (click)="openshowNFTModal()"><span class="text">More details</span></button>
             </div>
