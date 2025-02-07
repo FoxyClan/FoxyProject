@@ -33,7 +33,7 @@ interface Metadata {
 })
 export class ModalCollection implements OnInit {
   @Input() token!: Metadata | null;
-  @Output() closeModalEvent = new EventEmitter<void>();
+  @Output() closeModalEvent = new EventEmitter<void | boolean>();
 
   tokenLevel: any = "Loading...";
   foxyPoints: any = "Loading...";
@@ -56,8 +56,8 @@ export class ModalCollection implements OnInit {
   }
   
 
-  closeModal() {
-    this.closeModalEvent.emit();
+  closeModal(closeAll?: boolean) {
+    this.closeModalEvent.emit(closeAll);
   }
 
 
@@ -99,7 +99,7 @@ export class ModalCollection implements OnInit {
   }
 
   filterByAttribute(attribute: { trait_type: string, value: string }) {
-    this.closeModal();
+    this.closeModal(true);
     this.router.navigate(['/collection'], { 
       queryParams: { trait: attribute.trait_type, value: attribute.value }, 
       queryParamsHandling: 'merge'

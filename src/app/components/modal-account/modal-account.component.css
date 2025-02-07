@@ -377,19 +377,18 @@
 }
 
 .back-arrow {
-    align-self: flex-start;
-    width: 10%;
+    font-size: 2rem;
     aspect-ratio: 1 / 1;
     padding: 2%;
     cursor: pointer;
     position: absolute;
-    top: 2%;
-    left: 2%;
+    top: 0%;
+    left: 3%;
 }
 
 
 .back-arrow:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
     transition: transform 0.1s ease-in-out;
 }
 

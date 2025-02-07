@@ -227,8 +227,9 @@ export class ModalAccount implements OnInit, OnDestroy {
     this.showNFTModal = true;
   }
 
-  closeNFTModal() {
+  closeNFTModal(closeAll?: boolean | void) {
     this.showNFTModal = false;
+    if(closeAll) this.closeModal();
   }
 
 

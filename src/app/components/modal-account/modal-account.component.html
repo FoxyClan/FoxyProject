@@ -196,9 +196,9 @@
 
         </div>
         <div class="panel nft-detail" *ngIf="selectedNFT">
-            <img class="back-arrow" src="arrow-left.png" (click)="closeNFTView()">
+            <p class="back-arrow" (click)="closeNFTView()">&larr;</p>
             <img class="nft-image-large" [src]="selectedNFT.image + '?t={{ cacheVersion }}'" alt="NFT Image">
-            <p class="nft-detail-text">Token ID: #{{ selectedNFT.tokenId }}</p>
+            <p class="nft-detail-text">#{{ selectedNFT.tokenId }}</p>
             <div class="button-container">
                 <button class="button-modal" role="button" (click)="openshowNFTModal()"><span class="text">More details</span></button>
             </div>
@@ -208,4 +208,4 @@
 </div>
 
 
-<app-modal-collection *ngIf="showNFTModal" [token]="selectedNFT" (closeModalEvent)="closeNFTModal()"></app-modal-collection>
+<app-modal-collection *ngIf="showNFTModal" [token]="selectedNFT" (closeModalEvent)="closeNFTModal($event)"></app-modal-collection>
