@@ -1,11 +1,18 @@
-/* Container principal */
+.page-container {
+  width: 100vw;
+  height: 100vh;
+  background: #121212;
+  display: flex;
+  align-items: end;
+}
+
 .nft-collection-container {
+  height: 80%;
+  width: 100%;
   font-family: 'Orbitron', sans-serif;
   color: #fff;
-  background: #121212;
   padding: 20px;
   text-align: center;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;

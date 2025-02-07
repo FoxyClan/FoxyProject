@@ -40,3 +40,7 @@ JAR
 - generateTraitDNA en private
 - traits png -> jpeg ?
 
+
+
+ACTUAL :
+user collection
