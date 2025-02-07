@@ -49,7 +49,7 @@
     </div>
 
     <div class="border-container" [class.active]="isAnimated" (click)="stopEvent($event)">
-        <div class="panel">
+        <div class="panel" *ngIf="!selectedNFT">
 
             <div class="block1">
                 <div>
@@ -163,7 +163,7 @@
                     <div *ngIf="isLoadingNFTs" class="spinner"></div>
                     
                     <div *ngIf="!isLoadingNFTs && tokenIds.length > 0" class="token-block">
-                        <div *ngFor="let tokenId of tokenIds" class="token-list no-padding">
+                        <div *ngFor="let tokenId of tokenIds" class="token-list no-padding" (click)="selectNFT(tokenId)">
                             <div>
                                 <img class="NFTimg" [src]="tokens[tokenId]?.image + '?t={{ cacheVersion }}'" alt="">
                             </div>
@@ -193,6 +193,19 @@
                 </div>
                 
             </div>
+
+        </div>
+        <div class="panel nft-detail" *ngIf="selectedNFT">
+            <img class="back-arrow" src="arrow-left.png" (click)="closeNFTView()">
+            <img class="nft-image-large" [src]="selectedNFT.image + '?t={{ cacheVersion }}'" alt="NFT Image">
+            <p class="nft-detail-text">Token ID: #{{ selectedNFT.tokenId }}</p>
+            <div class="button-container">
+                <button class="button-modal" role="button" (click)="openshowNFTModal()"><span class="text">More details</span></button>
+            </div>
+
         </div>
     </div>
 </div>
+
+
+<app-modal-collection *ngIf="showNFTModal" [token]="selectedNFT" (closeModalEvent)="closeNFTModal()"></app-modal-collection>

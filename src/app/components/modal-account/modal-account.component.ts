@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import axios from "axios";
 import { FormsModule } from '@angular/forms';
 import { CacheService } from '../../services/cache.service';
+import { ModalCollection } from "../modal-collection/modal-collection.component";
 
 interface Metadata {
   tokenId: number;
@@ -26,7 +27,8 @@ interface Metadata {
   imports: [
     CommonModule,
     RouterLink,
-    FormsModule
+    FormsModule,
+    ModalCollection
   ],
   templateUrl: './modal-account.component.html',
   styleUrl: './modal-account.component.css'
@@ -56,9 +58,11 @@ export class ModalAccount implements OnInit, OnDestroy {
   balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
   tokenIds: number[] = [];
   tokens: { [key: number]: Metadata | null } = {};
+  selectedNFT: Metadata | null = null;
   transferEvents: any[] = [];
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
   isLoadingNFTs: boolean = true;
+  showNFTModal: boolean = false;
 
 
   constructor(private web3Service: Web3Service, 
@@ -199,6 +203,7 @@ export class ModalAccount implements OnInit, OnDestroy {
         const url = this.baseUri + tokenId + '.json';
         const response = await axios.get<Metadata>(url + `?t=${this.cacheVersion}`);
         this.tokens[tokenId] = response.data;
+        this.tokens[tokenId].tokenId = tokenId;
       } catch (error) {
         console.error(`Failed to fetch data for token ${tokenId} : `, error);
         this.tokens[tokenId] = null;
@@ -207,6 +212,25 @@ export class ModalAccount implements OnInit, OnDestroy {
       }
     }
   }
+
+  /* NFT VIEW */
+
+  selectNFT(tokenId: number) {
+    this.selectedNFT = this.tokens[tokenId] ?? null;
+  }
+
+  closeNFTView() {
+    this.selectedNFT = null;
+  }
+
+  openshowNFTModal() {
+    this.showNFTModal = true;
+  }
+
+  closeNFTModal() {
+    this.showNFTModal = false;
+  }
+
 
   /* PALETTE */
 
