@@ -246,6 +246,10 @@
     box-sizing: border-box;
 }
 
+.token .no-nft-message {
+    margin: auto;
+}
+
 .balance-block {
     margin: 5px;
     padding: 15px;
@@ -315,4 +319,31 @@
     font-size: 0.8rem;
 }
 
+.spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+    
+.spinner:before {
+    content: '';
+    aspect-ratio: 1/1;
+    width: 15%;
+    height: auto;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1.3s ease infinite;
+}
+    
+@keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(720deg);
+    }
+}
 

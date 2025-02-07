@@ -58,6 +58,8 @@ export class ModalAccount implements OnInit, OnDestroy {
   tokens: { [key: number]: Metadata | null } = {};
   transferEvents: any[] = [];
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
+  isLoadingNFTs: boolean = true;
+
 
   constructor(private web3Service: Web3Service, 
     private exchangeRateService: ExchangeRateService, 
@@ -191,6 +193,7 @@ export class ModalAccount implements OnInit, OnDestroy {
   
 
   async fetchMetadata(): Promise<void> {
+    this.isLoadingNFTs = true;
     for (const tokenId of this.tokenIds) {
       try {
         const url = this.baseUri + tokenId + '.json';
@@ -199,6 +202,8 @@ export class ModalAccount implements OnInit, OnDestroy {
       } catch (error) {
         console.error(`Failed to fetch data for token ${tokenId} : `, error);
         this.tokens[tokenId] = null;
+      } finally {
+        this.isLoadingNFTs = false;
       }
     }
   }

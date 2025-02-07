@@ -169,8 +169,10 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
     this.filteredTokens();
 
     // Mise à jour de l'URL sans paramètres
-    const newUrl = window.location.origin + '/collection';
-    window.history.pushState({}, '', newUrl);
+    if (typeof window !== 'undefined') {
+      const newUrl = window.location.origin + '/collection';
+      window.history.pushState({}, '', newUrl);
+    }
   }
   
 
@@ -240,10 +242,7 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
     try {
       const bucketResponse = await axios.get(this.baseUri + `?t=${this.cacheVersion}`, { responseType: 'text' });
-      if (typeof window === 'undefined' || typeof DOMParser === 'undefined') {
-        console.warn('DOMParser is undefined');
-        return;
-      }
+      if (typeof window === 'undefined' || typeof DOMParser === 'undefined') return;
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(bucketResponse.data, 'application/xml');
       const keys = Array.from(xmlDoc.getElementsByTagName('Key')).map(node => node.textContent || '');

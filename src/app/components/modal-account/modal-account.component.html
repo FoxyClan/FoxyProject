@@ -160,10 +160,12 @@
                 </div>
 
                 <div *ngIf="selectedOption === 'NFT'" class="token">
-                    <div class="token-block">
+                    <div *ngIf="isLoadingNFTs" class="spinner"></div>
+                    
+                    <div *ngIf="!isLoadingNFTs && tokenIds.length > 0" class="token-block">
                         <div *ngFor="let tokenId of tokenIds" class="token-list no-padding">
                             <div>
-                                <img class="NFTimg" [src]="tokens[tokenId]?.image" [alt]="'#' + tokenId">
+                                <img class="NFTimg" [src]="tokens[tokenId]?.image + '?t={{ cacheVersion }}'" alt="">
                             </div>
                             <div class="token-text">
                                 <div>   
@@ -173,6 +175,8 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <h5 class="no-nft-message" *ngIf="!isLoadingNFTs && tokenIds.length === 0" >No NFTs found</h5>
                 </div>
 
 

@@ -133,10 +133,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const tokenUri = `https://foxyclan.s3.filebase.com/`;
   
     const bucketResponse = await axios.get(tokenUri, { responseType: 'text' });
-    if (typeof window === 'undefined' || typeof DOMParser === 'undefined') {
-      console.warn('DOMParser is undefined');
-      return;
-    }
+    if (typeof window === 'undefined' || typeof DOMParser === 'undefined') return;
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(bucketResponse.data, 'application/xml');
     const keys = Array.from(xmlDoc.getElementsByTagName('Key')).map(node => node.textContent || '');

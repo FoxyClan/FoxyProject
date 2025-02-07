@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, OnInit, OnDestroy, Input } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Web3Service } from "../../services/web3.service";
+import { CacheService } from "../../services/cache.service";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -85,7 +86,7 @@ export class ModalMint implements OnInit, OnDestroy {
   private animationFrame: number | null = null;
   private lastCallTime = 0;
 
-  constructor(private web3Service: Web3Service) {
+  constructor(private web3Service: Web3Service, private cacheService: CacheService) {
     this.subscription = new Subscription();
   }
 
@@ -277,6 +278,7 @@ export class ModalMint implements OnInit, OnDestroy {
       this.errorMessage = error.message;
     } finally {
       this.isLoading = false;
+      this.cacheService.updateCacheVersion();
     }
   }
   

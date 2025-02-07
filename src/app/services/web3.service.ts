@@ -62,7 +62,7 @@ export class Web3Service {
     }
   ];
 
-  private FoxyClanContractAddress = '0xa226675E4dCF827652E2709060EEAD9FCE17207d';
+  private FoxyClanContractAddress = '0xebd16879729f344fde99ca56eb4067e865e7a867';
 
   private FoxyClanABI = [
     {
@@ -1155,8 +1155,6 @@ export class Web3Service {
       } catch(error: any) {
           console.error('Error checking wallet connection: ', error);
       }
-    } else {
-      console.info('No web wallets found');
     }
   }
 
