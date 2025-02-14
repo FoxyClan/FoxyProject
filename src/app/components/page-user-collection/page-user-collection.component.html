@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="owner-image">
-      <img src="https://foxyclan.s3.filebase.com/0.png" alt="Owner Image" />
+      <img [src]="tokens[0]?.image"/>
     </div>
   </div>
   
@@ -19,7 +19,8 @@
     <h2>FOXY Collection</h2>
     <div class="nft-grid">
       <div *ngFor="let token of tokens | keyvalue" class="nft-item" (click)="viewNFT()">
-        <img [src]="token.value?.image" [alt]="'NFT ' + token.value?.tokenId" />
+        <img [src]="token.value?.image"/>
+        <p>#{{ token.value?.tokenId }}</p>
       </div>
     </div>
   </div>

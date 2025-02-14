@@ -66,6 +66,9 @@
 
 .nft-collection {
   width: 80%;
+}
+
+.nft-collection h2 {
   text-align: center;
 }
 
@@ -79,10 +82,12 @@
 .nft-item img {
   width: 100%;
   border-radius: 10px;
+}
+
+.nft-item {
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
 }
-
-.nft-item img:hover {
+.nft-item:hover {
   transform: scale(1.1);
 }

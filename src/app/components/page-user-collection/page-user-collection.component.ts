@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Web3Service } from "../../services/web3.service";
 import axios from 'axios';
 import { CacheService } from '../../services/cache.service';
+import { take } from 'rxjs';
 
 interface Metadata {
   tokenId: number;
@@ -27,6 +28,7 @@ interface Metadata {
 export class PageUserCollectionComponent implements OnInit {
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
   cacheVersion: string = '';
+  private walletCheckedSubscription: any;
 
   address: string | null = null;
   walletAddress: string | null = null;
@@ -45,15 +47,19 @@ export class PageUserCollectionComponent implements OnInit {
     });
     this.route.queryParams.subscribe((params) => {
       this.address = params['address'] || null;
-      if (this.address) {
-        this.fetchNFTs(this.address);
-      } else {
-        console.warn('No address provided in query params.');
-      }
     });
     this.web3Service.walletAddress$.subscribe((walletAddress) => {
       this.walletAddress = walletAddress;
       if(this.walletAddress === this.address) this.isOwner = true;
+    });
+    this.web3Service.isWalletCheckedSubject$.pipe(take(1)).subscribe(async (isWalletChecked) => {
+      if(isWalletChecked) {
+        if(!this.address) return
+        console.log(isWalletChecked)
+        await this.fetchNFTs(this.address);
+        this.walletCheckedSubscription.unsubscribe();
+      } else {
+      }
     });
   }
 
