@@ -2,117 +2,87 @@
   width: 100vw;
   height: 100vh;
   background: #121212;
-  display: flex;
-  align-items: end;
-}
-
-.nft-collection-container {
-  height: 80%;
-  width: 100%;
-  font-family: 'Orbitron', sans-serif;
-  color: #fff;
-  padding: 20px;
-  text-align: center;
+  padding-top: 20vh;
+  color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  font-family: "Orbitron", sans-serif;
 }
 
-/* En-tête */
-.header {
+.owner {
+  height: 60vh;
   width: 100%;
-  max-width: 1200px;
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10%;
+  box-sizing: border-box;
 }
 
-.title {
-  font-size: 2.5rem;
-  margin: 0;
-  color: #f9f9f9;
+.owner-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  text-align: left;
+  height: 100%;
+  padding: 20px 0;
+  box-sizing: border-box;
 }
 
-.address-container {
-  margin-top: 10px;
+.wallet {
+  color: rgba(227, 227, 227, 0.784);
 }
 
-.address-text {
-  font-size: 1.2rem;
-  color: #bbb;
-}
-
-.address-text span {
+.owner-info h1, .nft-collection h2 {
+  font-size: 1.5rem;
   font-weight: bold;
-  color: #fff;
+  letter-spacing: 1px;
 }
 
-.no-address {
-  color: #f44336;
+.nft-collection h2 {
+  margin: 40px 0;
 }
 
-/* Grille des NFTs */
-.nft-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+.owner-info p {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.owner-image {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.owner-image img {
   width: 100%;
-  max-width: 1200px;
-}
-
-/* Carte de NFT */
-.nft-card {
-  background: #1e1e1e;
+  height: 100%;
+  object-fit: cover;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
 }
 
-.nft-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-}
-
-/* Image du NFT */
-.nft-image {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-bottom: 1px solid #333;
-}
-
-/* Détails du NFT */
-.nft-details {
-  padding: 10px;
+.nft-collection {
+  width: 80%;
   text-align: center;
 }
 
-.nft-id {
-  margin: 0;
-  font-size: 1rem;
-  color: #ccc;
+.nft-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  justify-content: center;
 }
 
-.view-button {
-  background-color: #4caf50;
-  border: none;
-  color: white;
-  padding: 8px 16px;
-  font-size: 1rem;
-  margin-top: 10px;
-  border-radius: 5px;
+.nft-item img {
+  width: 100%;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: transform 0.2s ease-in-out;
 }
 
-.view-button:hover {
-  background-color: #45a049;
-}
-
-/* Aucun NFT trouvé */
-.no-nfts {
-  font-size: 1.5rem;
-  color: #999;
-  margin-top: 50px;
+.nft-item img:hover {
+  transform: scale(1.1);
 }

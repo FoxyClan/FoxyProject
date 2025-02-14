@@ -1,29 +1,26 @@
 <div class="page-container">
-  <div class="nft-collection-container">
-    <header class="header">
-      <h1 class="title">NFT COLLECTION</h1>
-      <div class="address-container">
-        <p *ngIf="address" class="address-text">
-          Viewing NFTs for <span>{{ address }}</span>
-        </p>
-        <p *ngIf="!address" class="address-text no-address">
-          No address provided. Please provide an Ethereum address.
-        </p>
+  <div class="owner">
+    <div class="owner-info">
+      <div>
+        <h3 class="wallet">Wallet</h3>
+        <h1 class="address">{{ address }}</h1>
       </div>
-    </header>
-
-    <div *ngIf="nfts.length > 0" class="nft-grid">
-      <div *ngFor="let nft of nfts" class="nft-card">
-        <img [src]="nft.image" [alt]="'NFT #' + nft.id" class="nft-image" />
-        <div class="nft-details">
-          <p class="nft-id">#{{ nft.id }}</p>
-          <button class="view-button" (click)="viewNFT(nft)">View</button>
-        </div>
+      <div>
+        <p class="info">FoxyPoints: {{ foxypoints }}</p>
+        <p class="info">Number of Foxys: {{ numberOfFoxys }}</p>
       </div>
     </div>
-
-    <div *ngIf="nfts.length === 0" class="no-nfts">
-      <p>No NFTs found for this address.</p>
+    <div class="owner-image">
+      <img src="https://foxyclan.s3.filebase.com/0.png" alt="Owner Image" />
+    </div>
+  </div>
+  
+  <div class="nft-collection">
+    <h2>FOXY Collection</h2>
+    <div class="nft-grid">
+      <div *ngFor="let nft of nfts" class="nft-item" (click)="viewNFT(nft)">
+        <img [src]="nft.image" [alt]="'NFT ' + nft.id" />
+      </div>
     </div>
   </div>
 </div>

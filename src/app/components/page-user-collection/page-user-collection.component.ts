@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Web3Service } from "../../services/web3.service";
 
 @Component({
   selector: 'app-page-user-collection',
@@ -10,20 +11,28 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './page-user-collection.component.css'
 })
 export class PageUserCollectionComponent implements OnInit {
-  address: string | null = null; // Adresse Ethereum de la query param
-  nfts: Array<{ id: number; image: string }> = []; // Liste de NFTs
+  address: string | null = null;
+  walletAddress: string | null = null;
+  isOwner: boolean = false;
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  foxypoints: number = 50;
+  numberOfFoxys: number = 10;
+  nfts: Array<{ id: number; image: string }> = [];
+
+  constructor(private route: ActivatedRoute, private router: Router, private web3Service: Web3Service) {}
 
   ngOnInit(): void {
-    // Récupérer la query parameter `address`
     this.route.queryParams.subscribe((params) => {
       this.address = params['address'] || null;
       if (this.address) {
-        this.fetchNFTs(this.address); // Charger les NFTs liés à l'adresse
+        this.fetchNFTs(this.address);
       } else {
         console.warn('No address provided in query params.');
       }
+    });
+    this.web3Service.walletAddress$.subscribe((walletAddress) => {
+      this.walletAddress = walletAddress;
+      if(this.walletAddress === this.address) this.isOwner = true;
     });
   }
 
@@ -31,9 +40,9 @@ export class PageUserCollectionComponent implements OnInit {
     // Remplace par un appel API réel
     console.log(`Fetching NFTs for address: ${address}`);
     this.nfts = [
-      { id: 5100, image: 'https://example.com/nft1.png' },
-      { id: 356, image: 'https://example.com/nft2.png' },
-      { id: 789, image: 'https://example.com/nft3.png' },
+      { id: 5100, image: 'https://foxyclan.s3.filebase.com/0.png' },
+      { id: 356, image: 'https://foxyclan.s3.filebase.com/0.png' },
+      { id: 789, image: 'https://foxyclan.s3.filebase.com/0.png' },
     ]; // Exemple mocké
   }
 
