@@ -1175,7 +1175,6 @@ export class Web3Service {
           });
           this.provider = CoinbaseWallet.makeWeb3Provider({
             options: 'all',
-            //keysUrl: 'https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35'
           });
           this.web3 = new Web3(this.provider);
           await this.provider.request({
@@ -1692,6 +1691,7 @@ export class Web3Service {
       const tokenId = await contract.methods['tokenOfOwnerByIndex'](owner, i).call();
       result.push(Number(tokenId));
     }
+    console.log("owner", result);
     return result;
   }
 

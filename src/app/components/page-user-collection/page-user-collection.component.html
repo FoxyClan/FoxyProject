@@ -18,8 +18,8 @@
   <div class="nft-collection">
     <h2>FOXY Collection</h2>
     <div class="nft-grid">
-      <div *ngFor="let nft of nfts" class="nft-item" (click)="viewNFT(nft)">
-        <img [src]="nft.image" [alt]="'NFT ' + nft.id" />
+      <div *ngFor="let token of tokens | keyvalue" class="nft-item" (click)="viewNFT()">
+        <img [src]="token.value?.image" [alt]="'NFT ' + token.value?.tokenId" />
       </div>
     </div>
   </div>
