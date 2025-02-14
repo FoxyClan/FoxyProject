@@ -165,7 +165,7 @@
                     <div *ngIf="!isLoadingNFTs && tokenIds.length > 0" class="token-block">
                         <div *ngFor="let tokenId of tokenIds" class="token-list no-padding" (click)="selectNFT(tokenId)">
                             <div>
-                                <img class="NFTimg" [src]="tokens[tokenId]?.image + '?t={{ cacheVersion }}'" alt="">
+                                <img class="NFTimg" [src]="tokens[tokenId]?.image + '?t=' + cacheVersion" alt="">
                             </div>
                             <div class="token-text">
                                 <div>   
@@ -197,7 +197,7 @@
         </div>
         <div class="panel nft-detail" *ngIf="selectedNFT">
             <p class="back-arrow" (click)="closeNFTView()">&larr;</p>
-            <img class="nft-image-large" [src]="selectedNFT.image + '?t={{ cacheVersion }}'" alt="NFT Image">
+            <img class="nft-image-large" [src]="selectedNFT.image + '?t=' + cacheVersion" alt="NFT Image">
             <p class="nft-detail-text-blue">{{ selectedNFT.name }}</p>
             <div class="stat-container">
                 <p>Level : {{ selectedNFTLevel }}</p>

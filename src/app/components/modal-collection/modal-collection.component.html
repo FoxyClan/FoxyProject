@@ -7,7 +7,7 @@
       <img class="close" src="close.png" alt="close" (click)="closeModal()">
 
       <div class="modal-left">
-        <img [src]="token?.image" [alt]="token?.name" class="nft-image">
+        <img [src]="token?.image + '?t=' + cacheVersion" [alt]="token?.name" class="nft-image">
       </div>
   
       <div class="modal-right">

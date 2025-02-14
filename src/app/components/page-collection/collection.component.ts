@@ -85,7 +85,11 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
   showModal: boolean = false;
   
   
-  constructor(protected traitOptionsService: TraitOptionsService, private route: ActivatedRoute, private cacheService: CacheService) {}
+  constructor(
+    protected traitOptionsService: TraitOptionsService, 
+    private route: ActivatedRoute, 
+    private cacheService: CacheService
+  ) {}
 
 
   ngOnInit() {

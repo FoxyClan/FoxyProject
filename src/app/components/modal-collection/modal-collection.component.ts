@@ -3,6 +3,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { CommonModule } from '@angular/common';
 import { Web3Service } from "../../services/web3.service";
 import { Router } from '@angular/router';
+import { CacheService } from '../../services/cache.service';
 
 interface Metadata {
   tokenId: number;
@@ -40,10 +41,18 @@ export class ModalCollection implements OnInit {
   ownerOfToken: string = "Loading...";
   backgroundColor: string = '';
   isLoading: boolean = true;
+  
+  cacheVersion: string = '';
 
-  constructor(private web3Service: Web3Service, private router: Router) {}
+  constructor(private web3Service: Web3Service, 
+    private router: Router,
+    private cacheService: CacheService
+  ) {}
 
   async ngOnInit() {
+    this.cacheService.cacheVersion$.subscribe((version) => {
+      this.cacheVersion = version;
+    });
     if (this.token) {
       await Promise.all([
         this.setBackground(),
