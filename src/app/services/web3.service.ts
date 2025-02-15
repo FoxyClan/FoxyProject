@@ -70,7 +70,6 @@ export class Web3Service {
     if (typeof window !== 'undefined') {
       try {
         if(this.provider) {
-          console.log("provider")
           const accounts = await this.provider.request({ method: 'eth_accounts' });
           if (accounts.length > 0) {
             this.walletAddressSubject.next(accounts[0]);
@@ -82,7 +81,6 @@ export class Web3Service {
             await this.disconnectWallet();
           }    
         } else {
-          console.log("noprovider")
           this.detectInstalledWallets();
           const savedSelectedWallet = localStorage.getItem('selectedWallet');
           const connectionTime = localStorage.getItem('connectionTime');
@@ -93,118 +91,119 @@ export class Web3Service {
       } catch(error: any) {
         console.error('Error checking wallet connection: ', error);
       } finally {
-        console.log(this.isConnectedSubject.value, this.isWalletCheckedSubject.value)
         this.isWalletCheckedSubject.next(true)
       }
     }
   }
 
 
-  async connectWallet(selectedWallet: string) {
-    if(selectedWallet === '' || typeof selectedWallet !== 'string' || !this.installedWalletsSubject.value.includes(selectedWallet)) {
-      console.error('Selected wallet is not installed or null');
-      this.iMetaMask = 0;
-      return
-    }
-    else if (typeof window !== 'undefined') {
-      try {
-        if(selectedWallet === 'CoinbaseWallet') {     // Coinbase Wallet
-          const CoinbaseWallet = new Coinbase({
-            appName: 'FoxyCLan',
-            appLogoUrl: 'FoxyLogo.jpeg',
-            appChainIds: [1],
-          });
-          this.provider = CoinbaseWallet.makeWeb3Provider({
-            options: 'all',
-          });
-          this.web3 = new Web3(this.provider);
-          await this.provider.request({
-            method: 'eth_requestAccounts'
-          });
-          const accounts = await this.web3.eth.getAccounts();
-          this.walletAddressSubject.next(accounts[0]);
-          this.isConnectedSubject.next(true);
-          this.selectedWalletSubject.next(selectedWallet);
-          this.getNetworkId();
-          localStorage.setItem('connectionTime', new Date().getTime().toString());
-          localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
-          this.startCheckingConnection();
-        }
-
-        else if(selectedWallet === 'MetaMask') {    // MetaMask Wallet
-          const MMSDK = new MetaMaskSDK({
-            dappMetadata: {
-              name: "FoxyCLan",
-              url: window.location.href,
-            },
-          });
-          setTimeout(() => {
-            if(this.iMetaMask === 0) {
-              if(MMSDK.isInitialized() === false) {
-                this.iMetaMask++;
-                this.connectWallet("MetaMask");
-                return
-              }
-            }
-            this.iMetaMask = 0;
-            this.provider = MMSDK.getProvider();
-            if (this.provider) {
-              this.provider.request({ method: "eth_requestAccounts", params: [] })
-                .then(() => { 
-                  this.web3 = new Web3(this.provider);
-                  return this.web3.eth.getAccounts();
-                })
-                .then((accounts: string[]) => {
-                  if (accounts.length > 0) {
-                      this.walletAddressSubject.next(accounts[0]);
-                      this.isConnectedSubject.next(true);
-                      this.selectedWalletSubject.next(selectedWallet);
-                      //this.connectToEthereum();
-                      this.getNetworkId();
-                      localStorage.setItem('connectionTime', new Date().getTime().toString());
-                      localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
-                      this.startCheckingConnection();
-                  } else {
-                      console.error("No accounts found");
-                  }
-                })
-                .catch((err: any) => {
-                  if (err instanceof Error) {
-                    console.error("Error recovering accounts:", err.message);
-                  } else {
-                    console.error("Unknown error:", err);
-                  }
-                });
-              } else {
-                console.error("Provider not found");
-              }
-          }, 0);
-        }
-
-        else if(selectedWallet === 'TrustWallet') {     // TrustWallet
-          this.provider = window.trustWallet
-          await this.provider.request({ method: 'eth_requestAccounts'});
-          this.web3 = new Web3(this.provider)
-          const accounts = await this.web3.eth.getAccounts();
-          this.walletAddressSubject.next(accounts[0]);
-          this.isConnectedSubject.next(true);
-          this.selectedWalletSubject.next(selectedWallet);
-          this.connectToEthereum();
-          this.getNetworkId();
-          localStorage.setItem('connectionTime', new Date().getTime().toString());
-          localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
-          this.startCheckingConnection();
-        }
-        else {
-          console.error('Unistalled Wallet');
-        }
-      } catch (error) {
+  async connectWallet(selectedWallet: string): Promise<void> {
+    return new Promise<void>(async (resolve, reject) => {
+      if(selectedWallet === '' || typeof selectedWallet !== 'string' || !this.installedWalletsSubject.value.includes(selectedWallet)) {
+        console.error('Selected wallet is not installed or null');
         this.iMetaMask = 0;
-        console.error('Error connecting to wallet', error);
+        return
       }
-    } else {
-      alert('No web wallets found');
-    }
+      else if (typeof window !== 'undefined') {
+        try {
+          if(selectedWallet === 'CoinbaseWallet') {     // Coinbase Wallet
+            const CoinbaseWallet = new Coinbase({
+              appName: 'FoxyCLan',
+              appLogoUrl: 'FoxyLogo.jpeg',
+              appChainIds: [1],
+            });
+            this.provider = CoinbaseWallet.makeWeb3Provider({
+              options: 'all',
+            });
+            this.web3 = new Web3(this.provider);
+            await this.provider.request({
+              method: 'eth_requestAccounts'
+            });
+            const accounts = await this.web3.eth.getAccounts();
+            this.walletAddressSubject.next(accounts[0]);
+            this.isConnectedSubject.next(true);
+            this.selectedWalletSubject.next(selectedWallet);
+            this.getNetworkId();
+            localStorage.setItem('connectionTime', new Date().getTime().toString());
+            localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
+            this.startCheckingConnection();
+          }
+
+          else if(selectedWallet === 'MetaMask') {    // MetaMask Wallet
+            const MMSDK = new MetaMaskSDK({
+              dappMetadata: {
+                name: "FoxyCLan",
+                url: window.location.href,
+              },
+            });
+            setTimeout(() => {
+              if(this.iMetaMask === 0) {
+                if(MMSDK.isInitialized() === false) {
+                  this.iMetaMask++;
+                  this.connectWallet("MetaMask");
+                  return
+                }
+              }
+              this.iMetaMask = 0;
+              this.provider = MMSDK.getProvider();
+              if (this.provider) {
+                this.provider.request({ method: "eth_requestAccounts", params: [] })
+                  .then(() => { 
+                    this.web3 = new Web3(this.provider);
+                    return this.web3.eth.getAccounts();
+                  })
+                  .then((accounts: string[]) => {
+                    if (accounts.length > 0) {
+                        this.walletAddressSubject.next(accounts[0]);
+                        this.isConnectedSubject.next(true);
+                        this.selectedWalletSubject.next(selectedWallet);
+                        //this.connectToEthereum();
+                        this.getNetworkId();
+                        localStorage.setItem('connectionTime', new Date().getTime().toString());
+                        localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
+                        this.startCheckingConnection();
+                    } else {
+                        console.error("No accounts found");
+                    }
+                  })
+                  .catch((err: any) => {
+                    if (err instanceof Error) {
+                      console.error("Error recovering accounts:", err.message);
+                    } else {
+                      console.error("Unknown error:", err);
+                    }
+                  });
+                } else {
+                  console.error("Provider not found");
+                }
+            }, 0);
+          }
+
+          else if(selectedWallet === 'TrustWallet') {     // TrustWallet
+            this.provider = window.trustWallet
+            await this.provider.request({ method: 'eth_requestAccounts'});
+            this.web3 = new Web3(this.provider)
+            const accounts = await this.web3.eth.getAccounts();
+            this.walletAddressSubject.next(accounts[0]);
+            this.isConnectedSubject.next(true);
+            this.selectedWalletSubject.next(selectedWallet);
+            this.connectToEthereum();
+            this.getNetworkId();
+            localStorage.setItem('connectionTime', new Date().getTime().toString());
+            localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
+            this.startCheckingConnection();
+          }
+          else {
+            console.error('Unistalled Wallet');
+          }
+        } catch (error) {
+          this.iMetaMask = 0;
+          console.error('Error connecting to wallet', error);
+        }
+      } else {
+        alert('No web wallets found');
+      }
+    });
   }
 
 
@@ -635,7 +634,6 @@ export class Web3Service {
   }
 
   public async tokenOfOwnerByIndex(owner: String) {
-    console.log("tokenIndex")
     const contract = this.web3Modifier();
     
     const numberOfTokens = await this.balanceOf(owner);

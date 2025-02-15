@@ -1,5 +1,6 @@
 <div class="page-container">
-  <div class="owner">
+  <div *ngIf="isLoading" class="spinner"></div>
+  <div *ngIf="!isLoading" class="owner">
     <div class="owner-info">
       <div>
         <h3 class="wallet">Wallet</h3>
@@ -15,7 +16,7 @@
     </div>
   </div>
   
-  <div class="nft-collection">
+  <div *ngIf="!isLoading" class="nft-collection">
     <h2>FOXY Collection</h2>
     <div class="nft-grid">
       <div *ngFor="let token of tokens | keyvalue" class="nft-item" (click)="viewNFT()">

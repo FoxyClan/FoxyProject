@@ -29,6 +29,7 @@ export class PageUserCollectionComponent implements OnInit {
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
   cacheVersion: string = '';
   private walletCheckedSubscription: any;
+  isLoading: boolean = false;
 
   address: string | null = null;
   walletAddress: string | null = null;
@@ -42,6 +43,7 @@ export class PageUserCollectionComponent implements OnInit {
   constructor(private route: ActivatedRoute, private router: Router, private web3Service: Web3Service, private cacheService : CacheService,) {}
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.cacheService.cacheVersion$.subscribe((version) => {
       this.cacheVersion = version;
     });
@@ -52,12 +54,12 @@ export class PageUserCollectionComponent implements OnInit {
       this.walletAddress = walletAddress;
       if(this.walletAddress === this.address) this.isOwner = true;
     });
-    this.web3Service.isWalletCheckedSubject$.pipe(take(1)).subscribe(async (isWalletChecked) => {
+    this.walletCheckedSubscription = this.web3Service.isWalletCheckedSubject$.subscribe(async (isWalletChecked) => {
       if(isWalletChecked) {
         if(!this.address) return
-        console.log(isWalletChecked)
         await this.fetchNFTs(this.address);
         this.walletCheckedSubscription.unsubscribe();
+        this.isLoading = false;
       } else {
       }
     });
