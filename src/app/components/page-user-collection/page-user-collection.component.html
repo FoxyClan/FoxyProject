@@ -4,12 +4,18 @@
   <div *ngIf="!isLoading" class="owner">
     <div class="owner-info">
       <div>
-        <h3 class="wallet">Wallet</h3>
-        <h1 class="address">{{ address }}</h1>
+        <h3 class="wallet">FOXY WALLET</h3>
+        <h2 class="address">{{ address }}</h2>
       </div>
-      <div>
-        <p *ngIf="!noNft" class="info">FoxyPoints: {{ userFoxyPoints }}</p>
-        <p *ngIf="!noNft" class="info">Number of Foxys: {{ numberOfFoxys }}</p>
+      <div class="info-container">
+        <div *ngIf="!noNft" class="info">
+          <span>{{ numberOfFoxys }}</span>
+          <p>Foxys</p>
+        </div>
+        <div *ngIf="!noNft" class="info">
+          <span>{{ userFoxyPoints }}</span>
+          <p>FoxyPoints</p>
+        </div>
       </div>
     </div>
     <div class="owner-image">
