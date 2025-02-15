@@ -1,5 +1,6 @@
 <div class="page-container">
   <div *ngIf="isLoading" class="spinner"></div>
+
   <div *ngIf="!isLoading" class="owner">
     <div class="owner-info">
       <div>
@@ -7,16 +8,16 @@
         <h1 class="address">{{ address }}</h1>
       </div>
       <div>
-        <p class="info">FoxyPoints: {{ foxypoints }}</p>
-        <p class="info">Number of Foxys: {{ numberOfFoxys }}</p>
+        <p *ngIf="!noNft" class="info">FoxyPoints: {{ userFoxyPoints }}</p>
+        <p *ngIf="!noNft" class="info">Number of Foxys: {{ numberOfFoxys }}</p>
       </div>
     </div>
     <div class="owner-image">
-      <img [src]="tokens[0]?.image"/>
+      <img [src]="noNft ? 'FoxyLogo.jpeg' : tokens[0]?.image"/>
     </div>
   </div>
   
-  <div *ngIf="!isLoading" class="nft-collection">
+  <div *ngIf="!isLoading && !noNft" class="nft-collection">
     <h2>FOXY Collection</h2>
     <div class="nft-grid">
       <div *ngFor="let token of tokens | keyvalue" class="nft-item" (click)="viewNFT()">

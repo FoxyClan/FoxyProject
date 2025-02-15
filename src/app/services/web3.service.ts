@@ -596,10 +596,15 @@ export class Web3Service {
   }
 
   public async balanceOf(owner: String) {
-    const contract = this.web3Modifier();
+    try {
+      const contract = this.web3Modifier();
+      const balance = await contract.methods['balanceOf'](owner).call();
+      return balance;
+    } catch (error) {
+      console.error("Fail to fetch token balance:", error);
+      throw error;
+    }
     
-    const balance = await contract.methods['balanceOf'](owner).call();
-    return balance;
   }
 
   public async currentSaleMinted() {
@@ -635,7 +640,6 @@ export class Web3Service {
 
   public async tokenOfOwnerByIndex(owner: String) {
     const contract = this.web3Modifier();
-    
     const numberOfTokens = await this.balanceOf(owner);
     const balance = Number(numberOfTokens);
     let result = [];

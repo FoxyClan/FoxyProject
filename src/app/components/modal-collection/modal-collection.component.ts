@@ -32,6 +32,7 @@ interface Metadata {
     ])
   ]
 })
+
 export class ModalCollection implements OnInit {
   @Input() token!: Metadata | null;
   @Output() closeModalEvent = new EventEmitter<void | boolean>();

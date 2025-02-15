@@ -104,10 +104,6 @@ export class ModalAccount implements OnInit, OnDestroy {
     }, 300);
   }
 
-  openUserCollectionPage() {
-    this.closeModal();
-    this.router.navigate(['/profil'], { queryParams: { address:this.walletAddress} });
-  }
 
   stopEvent(event: Event) {
     event.stopPropagation();

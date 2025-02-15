@@ -25,6 +25,7 @@ interface Metadata {
   templateUrl: './page-user-collection.component.html',
   styleUrl: './page-user-collection.component.css'
 })
+
 export class PageUserCollectionComponent implements OnInit {
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
   cacheVersion: string = '';
@@ -37,8 +38,9 @@ export class PageUserCollectionComponent implements OnInit {
   tokens: { [key: number]: Metadata | null } = {};
   selectedNFT: Metadata | null = null;
 
-  foxypoints: number = 50;
-  numberOfFoxys: number = 10;
+  userFoxyPoints: any = "Loading...";
+  numberOfFoxys: any = "Loading...";
+  noNft: boolean = false;
 
   constructor(private route: ActivatedRoute, private router: Router, private web3Service: Web3Service, private cacheService : CacheService,) {}
 
@@ -57,10 +59,18 @@ export class PageUserCollectionComponent implements OnInit {
     this.walletCheckedSubscription = this.web3Service.isWalletCheckedSubject$.subscribe(async (isWalletChecked) => {
       if(isWalletChecked) {
         if(!this.address) return
-        await this.fetchNFTs(this.address);
-        this.walletCheckedSubscription.unsubscribe();
-        this.isLoading = false;
-      } else {
+        try {
+          await this.fetchNFTs(this.address);
+          this.numberOfFoxys = Object.keys(this.tokens).length;
+          const result = await this.web3Service.getUserPoints();
+          this.userFoxyPoints =  Number(result);
+        } catch (error) {
+            this.noNft = true;
+            throw error;
+        } finally {
+          this.walletCheckedSubscription.unsubscribe();
+          this.isLoading = false;
+        }
       }
     });
   }
@@ -68,19 +78,20 @@ export class PageUserCollectionComponent implements OnInit {
 
   async fetchNFTs(address: string): Promise<void> {
     const result = await this.web3Service.tokenOfOwnerByIndex(address);
-      for (const tokenId of result) {
-        try {
-          const url = this.baseUri + tokenId + '.json';
-          const response = await axios.get<Metadata>(url + `?t=${this.cacheVersion}`);
-          this.tokens[tokenId] = response.data;
-          this.tokens[tokenId].tokenId = tokenId;
-        } catch (error) {
-          console.error(`Failed to fetch data for token ${tokenId} : `, error);
-          this.tokens[tokenId] = null;
-        } finally {
-        }
+    for (const tokenId of result) {
+      try {
+        const url = this.baseUri + tokenId + '.json';
+        const response = await axios.get<Metadata>(url + `?t=${this.cacheVersion}`);
+        this.tokens[tokenId] = response.data;
+        this.tokens[tokenId].tokenId = tokenId;
+      } catch (error) {
+        console.error(`Failed to fetch data for token ${tokenId} : `, error);
+        this.tokens[tokenId] = null;
+      } finally {
       }
     }
+  }
+
 
   viewNFT(): void {
     console.log('Viewing NFT:');
