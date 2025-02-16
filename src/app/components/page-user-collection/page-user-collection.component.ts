@@ -5,6 +5,7 @@ import { Web3Service } from "../../services/web3.service";
 import axios from 'axios';
 import { CacheService } from '../../services/cache.service';
 import { take } from 'rxjs';
+import Web3 from 'web3';
 
 interface Metadata {
   tokenId: number;
@@ -53,8 +54,9 @@ export class PageUserCollectionComponent implements OnInit {
       this.address = params['address'] || null;
     });
     this.web3Service.walletAddress$.subscribe((walletAddress) => {
-      this.walletAddress = walletAddress;
-      if(this.walletAddress === this.address) this.isOwner = true;
+      const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
+      this.walletAddress = checksumAddress;
+      this.isOwner = this.walletAddress === this.address;
     });
     this.walletCheckedSubscription = this.web3Service.isWalletCheckedSubject$.subscribe(async (isWalletChecked) => {
       if(isWalletChecked) {

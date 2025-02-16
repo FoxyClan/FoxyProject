@@ -2,12 +2,14 @@
   <div *ngIf="isLoading" class="spinner"></div>
 
   <div *ngIf="!isLoading" class="owner">
+    <div *ngIf="!isLoading" class="logo-background"><img src="FoxyLogoNoBackground.png" alt=""></div>
     <div class="owner-info">
       <div>
-        <h3 class="wallet">FOXY WALLET</h3>
-        <h2 class="address">{{ address }}</h2>
+        <h3 *ngIf="!isOwner" class="wallet">FOXY WALLET</h3>
+        <h2 [ngClass]="isOwner ? 'title' : 'address'">{{ isOwner ? "MY FOXY WALLET" : address }}</h2>
       </div>
       <div class="info-container">
+        <h2 *ngIf="noNft" class="no-nft-message">This address is not yet part of the foxy family</h2>
         <div *ngIf="!noNft" class="info">
           <span>{{ numberOfFoxys }}</span>
           <p>Foxys</p>
