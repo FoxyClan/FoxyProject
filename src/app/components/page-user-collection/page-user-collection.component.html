@@ -9,16 +9,17 @@
         <h2 [ngClass]="isOwner ? 'title' : 'address'">{{ isOwner ? "MY FOXY WALLET" : address }}</h2>
       </div>
       <div class="info-container">
-        <h2 *ngIf="noNft" class="no-nft-message">This address is not yet part of the foxy family</h2>
-        <div *ngIf="!noNft" class="info">
-          <span>{{ numberOfFoxys }}</span>
+        <div class="info">
+          <span>{{ noNft ? 0 : numberOfFoxys }}</span>
           <p>Foxys</p>
         </div>
-        <div *ngIf="!noNft" class="info">
-          <span>{{ userFoxyPoints }}</span>
-          <p>FoxyPoints</p>
+        <div class="info">
+          <span>{{ noNft ? 0 : userFoxyPoints }}</span>
+          <p>FoxyPoints <span class="info-icon" (mouseenter)="showTooltip=true" (mouseleave)="showTooltip=false">ℹ️</span></p>
+          <div *ngIf="showTooltip" class="tooltip">FoxyPoints are loyalty points earned by holding Foxy NFTs.</div>
         </div>
       </div>
+      <h2 *ngIf="noNft" class="no-nft-message">This address is not yet part of the foxy family</h2>
     </div>
     <div class="owner-image">
       <img [src]="noNft ? 'FoxyLogo.jpeg' : tokens[0]?.image"/>

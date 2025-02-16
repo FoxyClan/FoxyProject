@@ -136,6 +136,28 @@
   color: #42ddf8;
 }
 
+.info-icon {
+  margin-left: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #42ddf8;
+  z-index: 10;
+}
+
+.tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  top: 0;
+  left: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 11;
+}
+
 .wallet {
   color: rgba(227, 227, 227, 0.600);
   font-weight: bold;

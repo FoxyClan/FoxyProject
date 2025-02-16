@@ -42,6 +42,7 @@ export class PageUserCollectionComponent implements OnInit {
   userFoxyPoints: any = "Loading...";
   numberOfFoxys: any = "Loading...";
   noNft: boolean = false;
+  showTooltip: boolean = false;
 
   constructor(private route: ActivatedRoute, private router: Router, private web3Service: Web3Service, private cacheService : CacheService,) {}
 
