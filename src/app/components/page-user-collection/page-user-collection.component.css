@@ -123,7 +123,9 @@
   font-size: 0.8rem;
   width: 100%;
   display: flex;
+  align-items: center; /* Alignement vertical */
   justify-content: center;
+  gap: 5px; /* Espacement entre le texte et l'icône */
 }
 
 .owner-info .info {
@@ -139,26 +141,28 @@
 }
 
 .info-icon {
-  margin-left: 5px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1rem !important;
+  display: inline-flex;
+  align-items: center;
   color: #42ddf8;
   z-index: 10;
 }
 
 .tooltip {
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.9);
   color: white;
-  padding: 5px;
+  padding: 8px 12px;
   border-radius: 5px;
   font-size: 0.8rem;
-  top: 0;
-  left: 0;
-  transform: translateX(-50%);
   white-space: nowrap;
   z-index: 11;
+  display: inline-block;
+  transform: translateX(1.1rem);
+  clip-path: polygon(10px 0%, 100% 0%, 100% 100%, 10px 100%, 0% 50%);
 }
+
 
 .wallet {
   color: rgba(227, 227, 227, 0.600);

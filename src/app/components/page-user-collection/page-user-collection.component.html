@@ -19,8 +19,10 @@
         </div>
         <div class="info">
           <span>{{ noNft ? 0 : userFoxyPoints }}</span>
-          <p>FoxyPoints <span class="info-icon" (mouseenter)="showTooltip=true" (mouseleave)="showTooltip=false">ℹ️</span></p>
-          <div *ngIf="showTooltip" class="tooltip">FoxyPoints are loyalty points earned by holding Foxy NFTs.</div>
+          <p>FoxyPoints <span class="info-icon" (mouseenter)="showTooltip=true" (mouseleave)="showTooltip=false">&#9432;<div *ngIf="showTooltip" class="tooltip">
+            FoxyPoints are loyalty points earned by holding Foxy NFTs<br>(Dependent on token level)or by completing missions.<br>Nobody knows what these mysterious points are for...  
+          </div></span></p>
+          
         </div>
       </div>
       <h2 *ngIf="noNft" class="no-nft-message">This address is not yet part of the foxy family</h2>
