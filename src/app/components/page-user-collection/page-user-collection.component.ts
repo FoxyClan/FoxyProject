@@ -46,6 +46,7 @@ export class PageUserCollectionComponent implements OnInit {
 
   selectedToken: Metadata | null = null
   showModal: boolean = false;
+  mergeButtonMode: boolean = false;
 
   constructor(private route: ActivatedRoute, 
     private router: Router, 
