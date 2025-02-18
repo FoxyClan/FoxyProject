@@ -189,17 +189,18 @@
   border-radius: 10px;
 }
 
+.nft-collection {
+  width: 80%;
+  z-index: 2;
+  min-height: calc(100vh - 60px);
+}
+
 .nft-collection h2 {
   font-size: 1.5rem;
   font-weight: bold;
   letter-spacing: 1px;
   margin: 40px 0;
   text-align: center;
-}
-
-.nft-collection {
-  width: 80%;
-  z-index: 2;
 }
 
 .nft-grid {

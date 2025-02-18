@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Web3Service } from "../../services/web3.service";
 import axios from 'axios';
 import { CacheService } from '../../services/cache.service';
-import { take } from 'rxjs';
+import { ModalCollection } from "../modal-collection/modal-collection.component";
 import Web3 from 'web3';
 
 interface Metadata {
@@ -22,7 +22,7 @@ interface Metadata {
 @Component({
   selector: 'app-page-user-collection',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ModalCollection],
   templateUrl: './page-user-collection.component.html',
   styleUrl: './page-user-collection.component.css'
 })
@@ -44,7 +44,14 @@ export class PageUserCollectionComponent implements OnInit {
   noNft: boolean = false;
   showTooltip: boolean = false;
 
-  constructor(private route: ActivatedRoute, private router: Router, private web3Service: Web3Service, private cacheService : CacheService,) {}
+  selectedToken: Metadata | null = null
+  showModal: boolean = false;
+
+  constructor(private route: ActivatedRoute, 
+    private router: Router, 
+    private web3Service: Web3Service, 
+    private cacheService : CacheService,
+  ) {}
 
   ngOnInit(): void {
     this.isLoading = true;
@@ -96,13 +103,14 @@ export class PageUserCollectionComponent implements OnInit {
     }
   }
 
-
-  viewNFT(): void {
-    console.log('Viewing NFT:');
-    // Implémente la logique pour afficher plus de détails si nécessaire
+  openModal(token: Metadata) {
+    this.selectedToken = token;
+    this.showModal = true;
   }
 
-  navigateToHome() {
-    this.router.navigate(['/']); // Exemple : retour à la page d'accueil
+  closeModal() {
+    this.showModal = false;
+    this.selectedToken = null;
   }
+  
 }

@@ -35,10 +35,11 @@
   <div *ngIf="!isLoading && !noNft" class="nft-collection">
     <h2>FOXY Collection</h2>
     <div class="nft-grid">
-      <div *ngFor="let token of tokens | keyvalue" class="nft-item" (click)="viewNFT()">
-        <img [src]="token.value?.image"/>
+      <div *ngFor="let token of tokens | keyvalue" class="nft-item" (click)="token.value ? openModal(token.value) : null">        <img [src]="token.value?.image"/>
         <p>#{{ token.value?.tokenId }}</p>
       </div>
     </div>
   </div>
 </div>
+
+<app-modal-collection *ngIf="showModal" [token]="selectedToken" (closeModalEvent)="closeModal()"></app-modal-collection>
