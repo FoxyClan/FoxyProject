@@ -413,3 +413,40 @@
 .merge-btn:hover {
   background: linear-gradient(45deg, #7e03aa, #00fffb, #ffae00);
 }
+
+.drop-zone {
+  aspect-ratio: 1 / 1;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed #42ddf8;
+  border-radius: 10px;
+  transition: background 0.3s ease-in-out;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.drop-zone img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #42ddf8;
+  box-sizing: border-box;
+}
+
+.drop-zone.has-image {
+  border: none;
+}
+
+.placeholder-text {
+  color: #42ddf8;
+  font-size: 1.2rem;
+  opacity: 0.7;
+}
+
+.drop-zone.drag-over {
+  background: rgba(66, 221, 248, 0.1);
+}
+

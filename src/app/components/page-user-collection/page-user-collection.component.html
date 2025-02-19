@@ -37,33 +37,45 @@
   </div>
 
   <!-- MERGE -->
-  <div *ngIf="!isLoading && mergeMode" class="merge-container">
-    <div class="merge-content">
-      <div class="merge-image">
-        <img src="image-left.png" alt="NFT Left">
-      </div>
-      <div class="merge-info">
-        <h2 class="merge-title">Merge Your Foxys</h2>
-        <p class="merge-description">Combine your Foxy NFTs to create something unique.</p>
-        <button class="btn merge-btn" (click)="merge()">Confirm Merge</button>
-      </div>
-      <div class="merge-image">
-        <img src="image-right.png" alt="NFT Right">
-      </div>
+<div *ngIf="!isLoading && mergeMode" class="merge-container">
+  <div class="merge-content">
+    <!-- Cadran Gauche -->
+    <div class="merge-image drop-zone" [ngClass]="getDropZoneClass('left')" 
+         (dragover)="onDragOver($event)" 
+         (drop)="onDrop($event, 'left')">
+      <img *ngIf="selectedNFTs.left" [src]="selectedNFTs.left.image" alt="NFT Left">
+      <p *ngIf="!selectedNFTs.left" class="placeholder-text">Drop NFT Here</p>
     </div>
-  </div>
-  
-  
 
-  <!-- COLLECTION -->
-  <div *ngIf="!isLoading && !noNft" class="nft-collection">
-    <h2>{{ mergeMode ? "Select Foxys to Merge : " : "FOXY Collection" }}</h2>
-    <div class="nft-grid">
-      <div *ngFor="let token of tokens | keyvalue" class="nft-item" (click)="token.value ? openModal(token.value) : null">        <img [src]="token.value?.image"/>
-        <p>#{{ token.value?.tokenId }}</p>
-      </div>
+    <div class="merge-info">
+      <h2 class="merge-title">Merge Your Foxys</h2>
+      <p class="merge-description">Drag and drop two NFTs to create something unique.</p>
+      <button class="btn merge-btn" [disabled]="!selectedNFTs.left || !selectedNFTs.right" (click)="merge()">Confirm Merge</button>
+    </div>
+
+    <!-- Cadran Droit -->
+    <div class="merge-image drop-zone" [ngClass]="getDropZoneClass('right')" 
+         (dragover)="onDragOver($event)" 
+         (drop)="onDrop($event, 'right')">
+      <img *ngIf="selectedNFTs.right" [src]="selectedNFTs.right.image" alt="NFT Right">
+      <p *ngIf="!selectedNFTs.right" class="placeholder-text">Drop NFT Here</p>
     </div>
   </div>
 </div>
+
+<!-- COLLECTION -->
+<div *ngIf="!isLoading && !noNft" class="nft-collection">
+  <h2>{{ mergeMode ? "Select Foxys to Merge :" : "FOXY Collection" }}</h2>
+  <div class="nft-grid">
+    <div *ngFor="let token of tokens | keyvalue" 
+         class="nft-item" 
+         draggable="true" 
+         (dragstart)="token.value ? onDragStart($event, token.value) : null">
+      <img [src]="token.value?.image"/>
+      <p>#{{ token.value?.tokenId }}</p>
+    </div>
+  </div>
+</div>
+
 
 <app-modal-collection *ngIf="showModal" [token]="selectedToken" (closeModalEvent)="closeModal()"></app-modal-collection>

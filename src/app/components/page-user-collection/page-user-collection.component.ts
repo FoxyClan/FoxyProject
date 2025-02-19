@@ -46,7 +46,9 @@ export class PageUserCollectionComponent implements OnInit {
 
   selectedToken: Metadata | null = null
   showModal: boolean = false;
+
   mergeMode: boolean = false;
+  selectedNFTs: { left: Metadata | null, right: Metadata | null } = { left: null, right: null };
 
   constructor(private route: ActivatedRoute,
     private web3Service: Web3Service, 
@@ -113,8 +115,50 @@ export class PageUserCollectionComponent implements OnInit {
     this.showModal = false;
     this.selectedToken = null;
   }
+
+  /* MERGE */
   
-  merge() {
-    
+
+// Événement déclenché lorsqu'on commence à glisser un NFT
+onDragStart(event: DragEvent, token: Metadata) {
+  event.dataTransfer?.setData("text/plain", JSON.stringify(token));
+}
+
+// Empêche le comportement par défaut pour permettre le drop
+onDragOver(event: DragEvent) {
+  event.preventDefault();
+}
+
+// Gère le dépôt d'un NFT dans un des cadrans
+onDrop(event: DragEvent, position: 'left' | 'right') {
+  event.preventDefault();
+  const data = event.dataTransfer?.getData("text/plain");
+  
+  if (data) {
+    const nft: Metadata = JSON.parse(data);
+
+    // Vérifier que l'utilisateur ne dépose pas deux fois le même NFT
+    if (this.selectedNFTs.left?.tokenId === nft.tokenId || this.selectedNFTs.right?.tokenId === nft.tokenId) {
+      console.warn("NFT déjà sélectionné !");
+      return;
+    }
+
+    this.selectedNFTs[position] = nft;
   }
+}
+
+getDropZoneClass(position: 'left' | 'right') {
+  return this.selectedNFTs[position] ? 'drop-zone has-image' : 'drop-zone';
+}
+
+
+// Fonction merge (à adapter selon la logique de fusion)
+merge() {
+  if (this.selectedNFTs.left && this.selectedNFTs.right) {
+    console.log("Merging NFTs:", this.selectedNFTs.left, this.selectedNFTs.right);
+    
+    // Ajoute ici l'appel backend pour effectuer la fusion
+  }
+}
+
 }
