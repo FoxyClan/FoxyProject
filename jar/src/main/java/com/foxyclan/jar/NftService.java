@@ -27,7 +27,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @RestController
-public class RandomADN {
+public class NftService {
     
     @GetMapping("/adn")
     @CrossOrigin(origins = "http://localhost:4200")
@@ -320,5 +320,9 @@ public class RandomADN {
         }
     }
 
+    @GetMapping("/merge")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Map<String, Object> generateMergedDNA(@RequestParam int tokenId) throws IOException {
+    }
     
 }

@@ -43,4 +43,3 @@ JAR
 
 
 ACTUAL :
-user collection refresh probleme web3service pas encore pret

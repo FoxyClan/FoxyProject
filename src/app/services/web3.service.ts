@@ -17,7 +17,7 @@ export class Web3Service {
   private networkIdSubject = new BehaviorSubject<string>('');
   networkId$ = this.networkIdSubject.asObservable();
   
-  private walletAddressSubject = new BehaviorSubject<any>('');
+  private walletAddressSubject = new BehaviorSubject<string>('');
   walletAddress$ = this.walletAddressSubject.asObservable();
 
   private isConnectedSubject = new BehaviorSubject<boolean>(false);
@@ -72,7 +72,8 @@ export class Web3Service {
         if(this.provider) {
           const accounts = await this.provider.request({ method: 'eth_accounts' });
           if (accounts.length > 0) {
-            this.walletAddressSubject.next(accounts[0]);
+            const checksumAddress = Web3.utils.toChecksumAddress(accounts[0]);
+            if(this.walletAddressSubject.value !== checksumAddress) this.walletAddressSubject.next(checksumAddress);
             localStorage.setItem('userAddress', this.walletAddressSubject.value);
             localStorage.setItem('connectionTime', new Date().getTime().toString());
             await this.getNetworkId();
@@ -120,7 +121,8 @@ export class Web3Service {
               method: 'eth_requestAccounts'
             });
             const accounts = await this.web3.eth.getAccounts();
-            this.walletAddressSubject.next(accounts[0]);
+            const checksumAddress = Web3.utils.toChecksumAddress(accounts[0]);
+            this.walletAddressSubject.next(checksumAddress);
             this.isConnectedSubject.next(true);
             this.selectedWalletSubject.next(selectedWallet);
             this.getNetworkId();
@@ -154,7 +156,8 @@ export class Web3Service {
                   })
                   .then((accounts: string[]) => {
                     if (accounts.length > 0) {
-                        this.walletAddressSubject.next(accounts[0]);
+                      const checksumAddress = Web3.utils.toChecksumAddress(accounts[0]);
+                      this.walletAddressSubject.next(checksumAddress);
                         this.isConnectedSubject.next(true);
                         this.selectedWalletSubject.next(selectedWallet);
                         //this.connectToEthereum();
@@ -184,7 +187,8 @@ export class Web3Service {
             await this.provider.request({ method: 'eth_requestAccounts'});
             this.web3 = new Web3(this.provider)
             const accounts = await this.web3.eth.getAccounts();
-            this.walletAddressSubject.next(accounts[0]);
+            const checksumAddress = Web3.utils.toChecksumAddress(accounts[0]);
+            this.walletAddressSubject.next(checksumAddress);
             this.isConnectedSubject.next(true);
             this.selectedWalletSubject.next(selectedWallet);
             this.connectToEthereum();
@@ -407,12 +411,12 @@ export class Web3Service {
     }
   }
 
-  public async ownerOf(tokenId: number) {
-    const contract = this.web3Modifier();
+  public async ownerOf(tokenId: number): Promise<string> {
     try {
-      
+      const contract = this.web3Modifier();
       const result = await contract.methods['ownerOf'](tokenId).call();
-      return result;
+      console.log(result, this.walletAddressSubject.value)
+      return String(result);
     } catch (error) {
       console.error("Fail to fetch owner of " + "tokenId", error);
       throw error;
@@ -497,13 +501,11 @@ export class Web3Service {
   }
 
   private async _createNFT(tokenIdsBefore: number[], fromAddress: string) {
-    // Attendre que les nouveaux jetons soient disponibles
     let tokenIdsAfter: number[] = [];
     try {
       do {
           tokenIdsAfter = await this.tokenOfOwnerByIndex(fromAddress);
       } while (tokenIdsAfter.length === tokenIdsBefore.length);
-      // Identifier les nouveaux jetons mintés
       const newTokenIds: number[] = tokenIdsAfter.filter(
           (id) => !tokenIdsBefore.includes(id)
       );
@@ -511,6 +513,68 @@ export class Web3Service {
         newTokenIds.map(async (tokenId) => {
           try {
             const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`);
+            return {
+                tokenId,
+                image: response.data.image, // Image en base64
+                metadata: response.data.metadata, // Métadonnées
+            };
+          } catch (error) {
+            console.error(`Erreur lors de la récupération de l'ADN pour le Token ID ${tokenId}:`, error);
+            return null;
+          }
+        })
+      )
+      this.creatingNftLoadingSubject.next(false);
+      return nftData.filter((data) => data !== null);
+    } catch (error) {
+      console.error("Error while creating NFT:", error);
+      throw error;
+    }
+  }
+
+  public async merge(tokenId1: number, tokenId2: number): Promise<any> {
+    if(tokenId1 === tokenId2) throw new Error("Cannot merge the same token");
+
+    const owner1: string = await this.ownerOf(tokenId1);
+        const owner2: string = await this.ownerOf(tokenId2);
+
+        // Vérifier si l'utilisateur est propriétaire des deux tokens
+        const userWallet: string | null = this.walletAddressSubject.value;
+        if (!userWallet) throw new Error("Wallet address not found");
+
+        if (owner1 !== userWallet || owner2 !== userWallet) {
+            throw new Error("You are not the owner of one of the tokens");
+        }
+
+    const contract = this.web3Modifier();
+    const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(this.walletAddressSubject.value);
+    try {
+      const result = await contract.methods['merge'](tokenId1, tokenId2).send({
+        from: this.walletAddressSubject.value
+      });
+      this.creatingNftLoadingSubject.next(true);
+      return this._createMergedNFT(tokenIdsBefore, this.walletAddressSubject.value, tokenId1, tokenId2);
+    } catch (error) {
+      console.error("Merge failed:", error);
+      this.creatingNftLoadingSubject.next(false);
+      throw error;
+    }
+  }
+
+  private async _createMergedNFT(tokenIdsBefore: number[], fromAddress: string, tokenId1: number, tokenId2: number) {
+    let tokenIdsAfter: number[] = [];
+    try {
+      do {
+          tokenIdsAfter = await this.tokenOfOwnerByIndex(fromAddress);
+      } while (tokenIdsAfter.length === tokenIdsBefore.length);
+      const newTokenIds: number[] = tokenIdsAfter.filter(
+          (id) => !tokenIdsBefore.includes(id)
+      );
+      console.log(newTokenIds)
+      const nftData = await Promise.all(
+        newTokenIds.map(async (tokenId) => {
+          try {
+            const response = await axios.get(`http://localhost:8080/merge?tokenId1=${tokenId1}&tokenId2=${tokenId2}&tokenId=${tokenId}`);
             return {
                 tokenId,
                 image: response.data.image, // Image en base64
@@ -569,21 +633,6 @@ export class Web3Service {
       return result;
     } catch (error) {
       console.error("Fliping Allow List failed:", error);
-      throw error;
-    }
-  }
-
-
-  public async merge(tokenId1: number, tokenId2: number): Promise<any> {
-    const contract = this.web3Modifier();
-    
-    try {
-      const result = await contract.methods['merge'](tokenId1, tokenId2).send({
-        from: this.walletAddressSubject.value
-      });
-      return result;
-    } catch (error) {
-      console.error("Merge failed:", error);
       throw error;
     }
   }
