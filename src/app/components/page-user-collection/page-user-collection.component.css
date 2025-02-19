@@ -49,7 +49,7 @@
   padding-top: 10vh ;
   padding-left: 10%;
   position: absolute;
-  z-index: 1;
+  z-index: 0;
   height: 100%;
   width: 100%;
   display: flex;
@@ -80,6 +80,7 @@
 }
 
 .owner {
+  z-index: 1;
   height: 65vh;
   width: 100%;
   display: flex;
@@ -105,6 +106,7 @@
   letter-spacing: 2px;
   font-size: 2rem;
   color:#42ddf8;
+  opacity: 0.9;
 }
 
 .no-nft-message {
@@ -138,6 +140,7 @@
   font-size: 2.5rem;
   font-weight: bold;
   color: #42ddf8;
+  opacity: 0.9;
 }
 
 .info-icon {
@@ -333,4 +336,80 @@
 
 .nft-item:hover {
   transform: scale(1.1);
+}
+
+
+
+/* MERGE */
+
+.merge-container {
+  z-index: 1;
+  height: 45vh;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 10%;
+  box-sizing: border-box;
+}
+
+.merge-content {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.merge-image {
+  aspect-ratio: 1 / 1;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.merge-image img {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #42ddf8;
+}
+
+.merge-info {
+  width: 20%;
+  text-align: center;
+  color: white;
+}
+
+.merge-title {
+  font-size: 2rem;
+  color: #42ddf8;
+  letter-spacing: 2px;
+}
+
+.merge-description {
+  font-size: 1rem;
+  margin: 20px 0;
+  color: #afafaf;
+}
+
+.merge-btn {
+  font-family: "Orbitron", sans-serif;
+  margin-top: 10px;
+  background: linear-gradient(45deg, #ffae00, #7e03aa, #00fffb);
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  transition: 0.3s;
+}
+
+.merge-btn:hover {
+  background: linear-gradient(45deg, #7e03aa, #00fffb, #ffae00);
 }

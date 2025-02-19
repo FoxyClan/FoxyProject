@@ -122,7 +122,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   
   // Fonction pour rechercher un token
   async searchToken() {
-    console.log("hey")
     this.removeBorderRed();
     if (!this.searchQuery.trim()) return;
   

@@ -4,7 +4,8 @@
   <div class="page-container">
   <div *ngIf="isLoading" class="spinner"></div>
 
-  <div *ngIf="!isLoading" class="owner">
+  <!-- ADDRESS INFO -->
+  <div *ngIf="!isLoading && !mergeMode" class="owner">
 
     <div class="owner-info">
       <div>
@@ -24,19 +25,39 @@
           </div></span></p>
         </div>
         <div class="btn-container">
-          <button class="btn" (click)="mergeButtonMode = true
+          <button *ngIf="!noNft && isOwner" class="btn" (click)="mergeMode = true
           ">Merge</button>
         </div>
       </div>
-      <h2 *ngIf="noNft" class="no-nft-message">This address is not yet part of the foxy family</h2>
+      <h2 *ngIf="noNft && !isOwner" class="no-nft-message">This address is not yet part of the foxy family</h2>
     </div>
     <div class="owner-image">
       <img [src]="noNft ? 'FoxyLogo.jpeg' : tokens[0]?.image"/>
     </div>
   </div>
+
+  <!-- MERGE -->
+  <div *ngIf="!isLoading && mergeMode" class="merge-container">
+    <div class="merge-content">
+      <div class="merge-image">
+        <img src="image-left.png" alt="NFT Left">
+      </div>
+      <div class="merge-info">
+        <h2 class="merge-title">Merge Your Foxys</h2>
+        <p class="merge-description">Combine your Foxy NFTs to create something unique.</p>
+        <button class="btn merge-btn" (click)="merge()">Confirm Merge</button>
+      </div>
+      <div class="merge-image">
+        <img src="image-right.png" alt="NFT Right">
+      </div>
+    </div>
+  </div>
   
+  
+
+  <!-- COLLECTION -->
   <div *ngIf="!isLoading && !noNft" class="nft-collection">
-    <h2>FOXY Collection</h2>
+    <h2>{{ mergeMode ? "Select Foxys to Merge : " : "FOXY Collection" }}</h2>
     <div class="nft-grid">
       <div *ngFor="let token of tokens | keyvalue" class="nft-item" (click)="token.value ? openModal(token.value) : null">        <img [src]="token.value?.image"/>
         <p>#{{ token.value?.tokenId }}</p>

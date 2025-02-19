@@ -46,10 +46,9 @@ export class PageUserCollectionComponent implements OnInit {
 
   selectedToken: Metadata | null = null
   showModal: boolean = false;
-  mergeButtonMode: boolean = false;
+  mergeMode: boolean = false;
 
-  constructor(private route: ActivatedRoute, 
-    private router: Router, 
+  constructor(private route: ActivatedRoute,
     private web3Service: Web3Service, 
     private cacheService : CacheService,
   ) {}
@@ -90,6 +89,7 @@ export class PageUserCollectionComponent implements OnInit {
 
   async fetchNFTs(address: string): Promise<void> {
     const result = await this.web3Service.tokenOfOwnerByIndex(address);
+    if(result.length === 0) this.noNft = true;
     for (const tokenId of result) {
       try {
         const url = this.baseUri + tokenId + '.json';
@@ -114,4 +114,7 @@ export class PageUserCollectionComponent implements OnInit {
     this.selectedToken = null;
   }
   
+  merge() {
+    
+  }
 }
