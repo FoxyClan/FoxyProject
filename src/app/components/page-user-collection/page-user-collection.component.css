@@ -402,15 +402,17 @@
   margin: 1rem;
 }
 
-.merge-title {
-  font-size: 2rem;
-  color: #42ddf8;
-  letter-spacing: 2px;
+.merge-info img {
+  width: 50%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
+
 
 .merge-description {
   font-size: 1rem;
-  margin: 20px 0;
+  margin-bottom: 1rem;
   color: #afafaf;
 }
 

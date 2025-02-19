@@ -51,8 +51,10 @@
     </div>
 
     <div class="merge-info">
-      <h2 class="merge-title">Merge Your Foxys</h2>
-      <p class="merge-description">Drag and drop two NFTs to create something unique.</p>
+      <div class="merge-description">
+        <img src="FoxyLogoNoBackground.png" alt="">
+        <p>Drag and drop two NFTs to create something unique.</p>
+      </div>
       <button class="btn merge-btn" [disabled]="!selectedNFTs.left || !selectedNFTs.right" (click)="merge()">Confirm Merge</button>
     </div>
 

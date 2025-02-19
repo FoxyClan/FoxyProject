@@ -119,105 +119,103 @@ export class PageUserCollectionComponent implements OnInit {
     this.selectedToken = null;
   }
 
+
+
   /* MERGE */
   
 
-// Événement déclenché lorsqu'on commence à glisser un NFT
-onDragStart(event: DragEvent, token: Metadata) {
-  event.dataTransfer?.setData("text/plain", JSON.stringify(token));
-}
+  // Événement déclenché lorsqu'on commence à glisser un NFT
+  onDragStart(event: DragEvent, token: Metadata) {
+    event.dataTransfer?.setData("text/plain", JSON.stringify(token));
+  }
 
-// Empêche le comportement par défaut pour permettre le drop
-onDragOver(event: DragEvent) {
-  event.preventDefault();
-}
+  // Empêche le comportement par défaut pour permettre le drop
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+  }
 
-onDrop(event: DragEvent, position: 'left' | 'right') {
-  event.preventDefault();
-  const data = event.dataTransfer?.getData("text/plain");
-  
-  if (data) {
-    const nft: Metadata = JSON.parse(data);
+  onDrop(event: DragEvent, position: 'left' | 'right') {
+    event.preventDefault();
+    const data = event.dataTransfer?.getData("text/plain");
+    
+    if (data) {
+      const nft: Metadata = JSON.parse(data);
+      // Vérifier si le NFT est déjà dans un cadran
+      if (this.selectedNFTs.left?.tokenId === nft.tokenId || this.selectedNFTs.right?.tokenId === nft.tokenId) {
+        console.warn("NFT déjà sélectionné !");
+        return;
+      }
+      // Si un NFT est déjà dans le cadran, on le remet dans la collection
+      if (this.selectedNFTs[position]) {
+        const removedNFT = this.selectedNFTs[position];
+        this.availableTokens[removedNFT.tokenId] = removedNFT; // Remettre dans la collection
+      }
+      // Ajouter le nouveau NFT au cadran
+      this.selectedNFTs[position] = nft;
+      // Supprimer temporairement l’élément de la collection
+      delete this.availableTokens[nft.tokenId];
+    }
+  }
 
-    // Vérifier si le NFT est déjà dans un cadran
-    if (this.selectedNFTs.left?.tokenId === nft.tokenId || this.selectedNFTs.right?.tokenId === nft.tokenId) {
+
+  resetAvailableTokens() {
+    this.availableTokens = { ...this.tokens };
+  }
+
+  getDropZoneClass(position: 'left' | 'right') {
+    return this.selectedNFTs[position] ? 'drop-zone has-image' : 'drop-zone';
+  }
+
+  addToMerge(token: Metadata | null) {
+    if(!token) return
+    if (this.selectedNFTs.left?.tokenId === token.tokenId || this.selectedNFTs.right?.tokenId === token.tokenId) {
       console.warn("NFT déjà sélectionné !");
       return;
     }
 
-    // Si un NFT est déjà dans le cadran, on le remet dans la collection
-    if (this.selectedNFTs[position]) {
-      const removedNFT = this.selectedNFTs[position];
-      this.availableTokens[removedNFT.tokenId] = removedNFT; // Remettre dans la collection
+    if (!this.selectedNFTs.left) {
+      this.selectedNFTs.left = token;
+    } else if (!this.selectedNFTs.right) {
+      this.selectedNFTs.right = token;
+    } else {
+      console.warn("Les deux emplacements sont déjà remplis !");
+      return;
     }
 
-    // Ajouter le nouveau NFT au cadran
-    this.selectedNFTs[position] = nft;
-
     // Supprimer temporairement l’élément de la collection
-    delete this.availableTokens[nft.tokenId];
-  }
-}
-
-
-resetAvailableTokens() {
-  this.availableTokens = { ...this.tokens };
-}
-
-getDropZoneClass(position: 'left' | 'right') {
-  return this.selectedNFTs[position] ? 'drop-zone has-image' : 'drop-zone';
-}
-
-addToMerge(token: Metadata | null) {
-  if(!token) return
-  if (this.selectedNFTs.left?.tokenId === token.tokenId || this.selectedNFTs.right?.tokenId === token.tokenId) {
-    console.warn("NFT déjà sélectionné !");
-    return;
+    delete this.availableTokens[token.tokenId];
   }
 
-  if (!this.selectedNFTs.left) {
-    this.selectedNFTs.left = token;
-  } else if (!this.selectedNFTs.right) {
-    this.selectedNFTs.right = token;
-  } else {
-    console.warn("Les deux emplacements sont déjà remplis !");
-    return;
+  /** Retire un NFT d'un cadran et le remet dans la collection */
+  removeFromMerge(position: 'left' | 'right') {
+    const removedToken = this.selectedNFTs[position];
+    if (removedToken) {
+      this.availableTokens[removedToken.tokenId] = removedToken; // Le remet dans la collection
+    }
+    this.selectedNFTs[position] = null;
   }
 
-  // Supprimer temporairement l’élément de la collection
-  delete this.availableTokens[token.tokenId];
-}
-
-/** Retire un NFT d'un cadran et le remet dans la collection */
-removeFromMerge(position: 'left' | 'right') {
-  const removedToken = this.selectedNFTs[position];
-  if (removedToken) {
-    this.availableTokens[removedToken.tokenId] = removedToken; // Le remet dans la collection
+  /** Vérifie si un emplacement est libre */
+  hasFreeSlot(): boolean {
+    return !this.selectedNFTs.left || !this.selectedNFTs.right;
   }
-  this.selectedNFTs[position] = null;
-}
 
-/** Vérifie si un emplacement est libre */
-hasFreeSlot(): boolean {
-  return !this.selectedNFTs.left || !this.selectedNFTs.right;
-}
-
-/** Quitte le mode merge et réinitialise la collection */
-exitMergeMode() {
-  this.mergeMode = false;
-  this.selectedNFTs = { left: null, right: null };
-  this.resetAvailableTokens();
-}
-
-
-
-// Fonction merge (à adapter selon la logique de fusion)
-merge() {
-  if (this.selectedNFTs.left && this.selectedNFTs.right) {
-    console.log("Merging NFTs:", this.selectedNFTs.left, this.selectedNFTs.right);
-    
-    // Ajoute ici l'appel backend pour effectuer la fusion
+  /** Quitte le mode merge et réinitialise la collection */
+  exitMergeMode() {
+    this.mergeMode = false;
+    this.selectedNFTs = { left: null, right: null };
+    this.resetAvailableTokens();
   }
-}
+
+
+
+  // Fonction merge (à adapter selon la logique de fusion)
+  merge() {
+    if (this.selectedNFTs.left && this.selectedNFTs.right) {
+      console.log("Merging NFTs:", this.selectedNFTs.left, this.selectedNFTs.right);
+      
+      // Ajoute ici l'appel backend pour effectuer la fusion
+    }
+  }
 
 }
