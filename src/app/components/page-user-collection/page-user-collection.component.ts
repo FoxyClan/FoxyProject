@@ -151,6 +151,35 @@ getDropZoneClass(position: 'left' | 'right') {
   return this.selectedNFTs[position] ? 'drop-zone has-image' : 'drop-zone';
 }
 
+// Ajoute un NFT au premier emplacement libre
+addToMerge(token: Metadata) {
+  // Vérifier si le NFT est déjà sélectionné
+  if (this.selectedNFTs.left?.tokenId === token.tokenId || this.selectedNFTs.right?.tokenId === token.tokenId) {
+    console.warn("NFT déjà sélectionné !");
+    return;
+  }
+
+  // Ajoute au premier emplacement libre
+  if (!this.selectedNFTs.left) {
+    this.selectedNFTs.left = token;
+  } else if (!this.selectedNFTs.right) {
+    this.selectedNFTs.right = token;
+  } else {
+    console.warn("Les deux emplacements sont déjà remplis !");
+  }
+}
+
+// Supprime un NFT du cadran si on clique dessus
+removeFromMerge(position: 'left' | 'right') {
+  this.selectedNFTs[position] = null;
+}
+
+// Vérifie si un emplacement est disponible
+hasFreeSlot(): boolean {
+  return !this.selectedNFTs.left || !this.selectedNFTs.right;
+}
+
+
 
 // Fonction merge (à adapter selon la logique de fusion)
 merge() {
