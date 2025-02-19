@@ -38,15 +38,17 @@
 
   <!-- MERGE -->
 <div *ngIf="!isLoading && mergeMode" class="merge-container">
+
   <div class="merge-content">
+    <button class="btn exit-btn" *ngIf="mergeMode" (click)="exitMergeMode()">BACK</button>
     <!-- Cadran Gauche -->
     <div class="merge-image drop-zone" [ngClass]="getDropZoneClass('left')" 
      (dragover)="onDragOver($event)" 
      (drop)="onDrop($event, 'left')"
      (click)="selectedNFTs.left ? removeFromMerge('left') : null">
-  <img *ngIf="selectedNFTs.left" [src]="selectedNFTs.left.image" alt="NFT Left">
-  <p *ngIf="!selectedNFTs.left" class="placeholder-text">Drop NFT Here</p>
-</div>
+      <img *ngIf="selectedNFTs.left" [src]="selectedNFTs.left.image" alt="NFT Left">
+      <p *ngIf="!selectedNFTs.left" class="placeholder-text">Drop NFT Here</p>
+    </div>
 
     <div class="merge-info">
       <h2 class="merge-title">Merge Your Foxys</h2>
@@ -59,9 +61,10 @@
      (dragover)="onDragOver($event)" 
      (drop)="onDrop($event, 'right')"
      (click)="selectedNFTs.right ? removeFromMerge('right') : null">
-  <img *ngIf="selectedNFTs.right" [src]="selectedNFTs.right.image" alt="NFT Right">
-  <p *ngIf="!selectedNFTs.right" class="placeholder-text">Drop NFT Here</p>
-</div>
+      <img *ngIf="selectedNFTs.right" [src]="selectedNFTs.right.image" alt="NFT Right">
+      <p *ngIf="!selectedNFTs.right" class="placeholder-text">Drop NFT Here</p>
+    </div>
+
   </div>
 </div>
 
@@ -69,16 +72,17 @@
 <div *ngIf="!isLoading && !noNft" class="nft-collection">
   <h2>{{ mergeMode ? "Select Foxys to Merge :" : "FOXY Collection" }}</h2>
   <div class="nft-grid">
-    <div *ngFor="let token of tokens | keyvalue" 
+    <div *ngFor="let token of availableTokens | keyvalue" 
          class="nft-item" 
          draggable="true" 
          (dragstart)="token.value ? onDragStart($event, token.value) : null"
-         (click)="mergeMode && hasFreeSlot() && token.value ? addToMerge(token.value) : null">
+         (click)="mergeMode && hasFreeSlot() ? addToMerge(token.value) : openModal(token.value)">
       <img [src]="token.value?.image"/>
       <p>#{{ token.value?.tokenId }}</p>
     </div>
   </div>
 </div>
+
 
 
 

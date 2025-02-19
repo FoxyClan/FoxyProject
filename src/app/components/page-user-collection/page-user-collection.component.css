@@ -354,7 +354,23 @@
   box-sizing: border-box;
 }
 
+.exit-btn {
+  font-family: "Orbitron", sans-serif;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 0.9rem;
+  font-weight: 400;
+  padding: 0.4em 1em;
+}
+
+.exit-btn::before {
+  background: #42ddf8 !important;
+}
+
+
 .merge-content {
+  position: relative;
   display: flex;
   width: 100%;
   height: 100%;
@@ -383,6 +399,7 @@
   width: 20%;
   text-align: center;
   color: white;
+  margin: 1rem;
 }
 
 .merge-title {
@@ -398,6 +415,8 @@
 }
 
 .merge-btn {
+  word-spacing: 4px;
+  letter-spacing: 1px;
   font-family: "Orbitron", sans-serif;
   margin-top: 10px;
   background: linear-gradient(45deg, #ffae00, #7e03aa, #00fffb);
