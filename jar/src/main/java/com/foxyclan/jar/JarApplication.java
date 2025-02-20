@@ -1,7 +1,6 @@
 package com.foxyclan.jar;
 
 import java.io.IOException;
-import java.util.Map;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,8 +15,7 @@ public class JarApplication {
 		
 		NftService rand = new NftService();
 
-		Map<String, Object> res = rand.generateMergedDNA(0, 1, 10);
-		System.out.println(res);
+		rand.generateMergedDNA(0, 1, 11);
 		/*
 		int[] tab = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 		for(int i=0; i<20000; i++) {

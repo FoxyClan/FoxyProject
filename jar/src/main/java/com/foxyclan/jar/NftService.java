@@ -26,6 +26,10 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import com.fasterxml.jackson.core.type.TypeReference;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 
 @RestController
 public class NftService {
@@ -324,7 +328,7 @@ public class NftService {
 
     /* MERGE  */
 
-    
+
     @GetMapping("/merge")
     @CrossOrigin(origins = "http://localhost:4200")
     public Map<String, Object> generateMergedDNA(@RequestParam int tokenId1, @RequestParam int tokenId2, @RequestParam int newTokenId) throws IOException {
@@ -370,13 +374,17 @@ public class NftService {
 
         return response;
     }
+    
 
     private Map<String, Object> fetchMetadataFromFilebase(int tokenId) throws IOException {
         String fileUrl = "https://foxyclan.s3.filebase.com/" + tokenId + ".json";
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(new java.net.URL(fileUrl), Map.class);
+            URL url = URI.create(fileUrl).toURL();
+            return objectMapper.readValue(url, new TypeReference<Map<String, Object>>() {});
+        } catch (MalformedURLException e) {
+            throw new IOException("URL malformée pour le token " + tokenId, e);
         } catch (Exception e) {
             System.err.println("Erreur lors de la récupération des métadonnées du token " + tokenId);
             e.printStackTrace();
@@ -385,14 +393,25 @@ public class NftService {
     }
 
     private String getTraitValue(Map<String, Object> metadata, String traitType) {
-    List<Map<String, String>> attributes = (List<Map<String, String>>) metadata.get("attributes");
-
-    for (Map<String, String> attribute : attributes) {
-        if (attribute.get("trait_type").equals(traitType)) {
-            return attribute.get("value");
+        Object attributesObj = metadata.get("attributes");
+    
+        if (attributesObj instanceof List<?>) {
+            List<?> attributesList = (List<?>) attributesObj;
+    
+            for (Object attributeObj : attributesList) {
+                if (attributeObj instanceof Map<?, ?> attributeMap) {
+                    Object traitTypeObj = attributeMap.get("trait_type");
+                    Object valueObj = attributeMap.get("value");
+    
+                    if (traitTypeObj instanceof String traitTypeStr && valueObj instanceof String valueStr) {
+                        if (traitTypeStr.equals(traitType)) {
+                            return valueStr;
+                        }
+                    }
+                }
+            }
         }
-    }
-    return null;
+        return null;
     }
 
     public String getBestTrait(TraitOptionsService traitService, String category, String value1, String value2) {
