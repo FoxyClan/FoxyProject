@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
@@ -40,7 +41,7 @@ public class NftService {
         String Background = generateTraitDNA("background");
 
         Map<String, String> adn = new HashMap<>();
-        adn.put("Head", Head);
+        adn.put("Head Covering", Head);
         adn.put("Mouth", Mouth);
         adn.put("Eyes", Eyes);
         adn.put("Clothes", Clothes);
@@ -108,7 +109,7 @@ public class NftService {
             BufferedImage clothes = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Clothes\\" + adn.get("Clothes") + ".png"));
             BufferedImage eyes = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Eyes\\" + adn.get("Eyes") + ".png"));
             BufferedImage mouth = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Mouth\\" + adn.get("Mouth") + ".png"));
-            BufferedImage headCovering = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Head\\" + adn.get("Head") + ".png"));
+            BufferedImage headCovering = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Head\\" + adn.get("Head Covering") + ".png"));
 
             BufferedImage combined = new BufferedImage(2000, 2000, BufferedImage.TYPE_INT_ARGB);
 
@@ -184,7 +185,7 @@ public class NftService {
             String imageUrl = "https://foxyclan.s3.filebase.com/" + tokenId + ".png";
             String description = "Foxy Clan is a unique collection of adorable and distinctive red pandas, celebrating their playful charm on the blockchain.";
             String name = "Foxy Clan #" + tokenId;
-            String nftADN = adn.get("Head")
+            String nftADN = adn.get("Head Covering")
                             + adn.get("Mouth")
                             + adn.get("Eyes")
                             + adn.get("Clothes")
@@ -196,7 +197,7 @@ public class NftService {
             metadata.put("name", name);
             metadata.put("DNA", nftADN);
             metadata.put("attributes", new Object[]{
-                Map.of("trait_type", "Head Covering", "value", traitOptionsService.getTraitOption("headcovering", Integer.parseInt(adn.get("Head")))),
+                Map.of("trait_type", "Head Covering", "value", traitOptionsService.getTraitOption("headcovering", Integer.parseInt(adn.get("Head Covering")))),
                 Map.of("trait_type", "Mouth", "value", traitOptionsService.getTraitOption("mouth", Integer.parseInt(adn.get("Mouth")))),
                 Map.of("trait_type", "Eyes", "value", traitOptionsService.getTraitOption("eyes", Integer.parseInt(adn.get("Eyes")))),
                 Map.of("trait_type", "Clothes", "value", traitOptionsService.getTraitOption("clothes", Integer.parseInt(adn.get("Clothes")))),
@@ -320,9 +321,88 @@ public class NftService {
         }
     }
 
+
+    /* MERGE  */
+
+    
     @GetMapping("/merge")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Object> generateMergedDNA(@RequestParam int tokenId) throws IOException {
+    public Map<String, Object> generateMergedDNA(@RequestParam int tokenId1, @RequestParam int tokenId2, @RequestParam int newTokenId) throws IOException {
+        if(tokenId1 == tokenId2) throw new IOException("Les deux tokens doivent être différents");
+        // Récupérer les métadonnées des deux tokens depuis Filebase
+        Map<String, Object> metadata1 = fetchMetadataFromFilebase(tokenId1);
+        Map<String, Object> metadata2 = fetchMetadataFromFilebase(tokenId2);
+
+        if (metadata1 == null || metadata2 == null) {
+            throw new IOException("Impossible de récupérer les métadonnées de l'un des tokens");
+        }
+
+        // Comparer les traits et choisir les meilleurs
+        TraitOptionsService traitService = new TraitOptionsService();
+        Map<String, String> mergedTraits = new HashMap<>();
+
+        String[] traitTypes = {"Head Covering", "Mouth", "Eyes", "Clothes", "Fur", "Background"};
+
+        for (String trait : traitTypes) {
+            String traitValue1 = getTraitValue(metadata1, trait);
+            String traitValue2 = getTraitValue(metadata2, trait);
+            
+            // Comparer les indices et prendre le meilleur trait
+            String bestTrait = getBestTrait(traitService, trait, traitValue1, traitValue2);
+            mergedTraits.put(trait, bestTrait);
+        }
+
+        // Générer la nouvelle image du NFT fusionné
+        createNFT(mergedTraits, newTokenId);
+        uploadToFilebase(newTokenId + ".png");
+
+        // Générer les métadonnées du nouveau NFT
+        Map<String, Object> mergedMetadata = createMetadataFile(mergedTraits, newTokenId);
+        uploadToFilebase(newTokenId + ".json");
+
+        // Retourner les nouvelles métadonnées et l'image en Base64
+        Path imagePath = Path.of("jar/src/main/resources/tmp/" + newTokenId + ".png");
+        String imageBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("image", imageBase64);
+        response.put("metadata", mergedMetadata);
+
+        return response;
     }
+
+    private Map<String, Object> fetchMetadataFromFilebase(int tokenId) throws IOException {
+        String fileUrl = "https://foxyclan.s3.filebase.com/" + tokenId + ".json";
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(new java.net.URL(fileUrl), Map.class);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la récupération des métadonnées du token " + tokenId);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String getTraitValue(Map<String, Object> metadata, String traitType) {
+    List<Map<String, String>> attributes = (List<Map<String, String>>) metadata.get("attributes");
+
+    for (Map<String, String> attribute : attributes) {
+        if (attribute.get("trait_type").equals(traitType)) {
+            return attribute.get("value");
+        }
+    }
+    return null;
+    }
+
+    public String getBestTrait(TraitOptionsService traitService, String category, String value1, String value2) {
+        int index1 = traitService.getTraitIndex(category, value1);
+        int index2 = traitService.getTraitIndex(category, value2);
+
+        int bestIndex = Math.min(index1, index2);
+        return String.format("%02d", bestIndex);
+    }
+
+
     
 }

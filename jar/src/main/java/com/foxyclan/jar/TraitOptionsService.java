@@ -125,4 +125,23 @@ public class TraitOptionsService {
         return options.get(index);
     }
 
+    public int getTraitIndex(String category, String trait) {
+        List<String> options = switch (category.toLowerCase()) {
+            case "head covering" -> headCoveringOptions;
+            case "eyes" -> eyesOptions;
+            case "mouth" -> mouthOptions;
+            case "clothes" -> clothesOptions;
+            case "fur" -> furOptions;
+            case "background" -> backgroundOptions;
+            default -> throw new IllegalArgumentException("Invalid category: " + category);
+        };
+
+        int index = options.indexOf(trait);
+        if (index == -1) {
+            throw new IllegalArgumentException("Trait not found in category: " + category);
+        }
+
+        return index;
+    }
+
 }
