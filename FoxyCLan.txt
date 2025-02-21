@@ -50,6 +50,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
     function airdrop(address[] calldata addresses) external onlyOwner {
         for (uint256 i = 0; i < addresses.length; i++) {
             uint tokenId = totalSupply() + burnedToken;
+            tokenInitialization(tokenId);
             _safeMint(addresses[i], tokenId);
         }
     }
@@ -208,6 +209,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         for (uint256 i = 0; i < numberOfTokens; i++) {
             uint256 tokenId = totalSupply() + burnedToken;
             _AllowList[msg.sender] --;
+            tokenInitialization(tokenId);
             _safeMint(msg.sender, tokenId);
         }
     }
@@ -237,6 +239,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
 
         for (uint256 i = 0; i < numberOfTokens; i++) {
             uint256 tokenId = totalSupply() + burnedToken;
+            tokenInitialization(tokenId);
             _safeMint(msg.sender, tokenId);
         }
         currentSaleMinted += numberOfTokens;
@@ -264,19 +267,20 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         level[tokenId] = newLevel;
 
         uint256 mergePoints = level[tokenId] == 2 ? 100 : 250;
-
         _foxyPoints[tokenId] = tokenPoints1 + tokenPoints2 + mergePoints;
+        _pointsTimestamp[tokenId] = block.timestamp;
+        level[tokenId] = newLevel;
 
         _safeMint(msg.sender, tokenId);
     }
 
 
-    function _safeMint(address to, uint256 tokenId, bytes memory data) internal override {
+    function tokenInitialization(uint256 tokenId) internal {
         level[tokenId] = 1;
         _foxyPoints[tokenId] = 50;
         _pointsTimestamp[tokenId] = block.timestamp;
-        super._safeMint(to, tokenId, data);
     }
+    
 
     /**
      * @dev Checks if the contract implements a specific interface. 
@@ -311,6 +315,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         require(supply + n <= MAX_SUPPLY, "Purchase would exceed max tokens");
         for (uint256 i = 0; i < n; i++) {
             uint256 tokenId = totalSupply() + burnedToken;
+            tokenInitialization(tokenId);
             _safeMint(msg.sender, tokenId);
         }
     }

@@ -561,12 +561,11 @@ export class Web3Service {
     let tokenIdsAfter: number[] = [];
     try {
       do {
-          tokenIdsAfter = await this.tokenOfOwnerByIndex(fromAddress);
+        tokenIdsAfter = await this.tokenOfOwnerByIndex(fromAddress);
       } while (tokenIdsAfter.length === tokenIdsBefore.length);
       const newTokenIds: number[] = tokenIdsAfter.filter(
-          (id) => !tokenIdsBefore.includes(id)
-      );
-      console.log(newTokenIds)
+        (id) => !tokenIdsBefore.includes(id)
+      );                                                                  
       const nftData = await Promise.all(
         newTokenIds.map(async (tokenId) => {
           try {

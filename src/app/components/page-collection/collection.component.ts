@@ -264,10 +264,10 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
         const tokenId = jsonFiles[i].replace('.json', '');
         const imageKey = `${tokenId}.png`;
 
-        // Vérifier si l'image PNG correspondante existe
         if (!keys.includes(imageKey)) continue;
 
         try {
+
           const response = await axios.get<Metadata>(`${this.baseUri}${jsonFiles[i]}` + `?t=${this.cacheVersion}`, { signal });
           const metadata = response.data;
           metadata.tokenId = parseInt(tokenId);

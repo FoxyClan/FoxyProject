@@ -6,6 +6,7 @@ HEADER
 
 WEB3SERVICE
 - enlever le commentaire de switchethaccount
+- merge : on recupere le tableau tokenIdsAfter et on le compare a tokenIdsBefore, ce devrait etre trois token retourné 2 burn et le nouveau
 
 MODAL-WALLET
 - mettre le wallet recent en haut
@@ -37,4 +38,4 @@ JAR
 
 
 ACTUAL :
-- probleme apres avoir activé le mint impossible de cliquer sur mint (pas de message d'erreur)
+- probleme actualisation isPublicSaleActive prend du temps a demarrer

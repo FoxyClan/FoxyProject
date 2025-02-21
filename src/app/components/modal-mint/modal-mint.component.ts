@@ -247,7 +247,6 @@ export class ModalMint implements OnInit, OnDestroy {
       console.info('Minting successful : ' + numberOfTokens + ' token(s) minted');
       const nftDataPromises = result.map(async (nft: { tokenId: number; image: string; metadata: any }) => {
         try {
-          // Utilisez les valeurs de l'objet nft (tokenId, image, metadata)
           const response = {
             tokenId: nft.tokenId,
             image: nft.image, // L'image en base64
@@ -265,9 +264,7 @@ export class ModalMint implements OnInit, OnDestroy {
         this.isLoading = false;
         return
       }
-      // Attendre que toutes les promesses soient résolues
       const nftData = await Promise.all(nftDataPromises);
-      // Filtrer les résultats valides (pas de null)
       this.mintedNfts = nftData.filter(data => data !== null);
       this.success = true;
       setTimeout(() => {

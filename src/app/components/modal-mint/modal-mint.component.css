@@ -30,6 +30,11 @@
 	gap: 0;
 }
 
+.block.success:before, 
+.block.success:after {
+    content: none !important;
+}
+
 .block.closeAnimation {
 	animation: closeAnimation 0.5s ease-in-out forwards;
 }
