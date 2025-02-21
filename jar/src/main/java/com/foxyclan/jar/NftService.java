@@ -132,7 +132,7 @@ public class NftService {
             Map<String, Object> metadata = new HashMap<>();
             TraitOptionsService traitOptionsService = new TraitOptionsService();
             
-            String imageUrl = endpointUrl + tokenId + ".png";
+            String imageUrl = baseUrl + tokenId + ".png";
             String description = "Foxy Clan is a unique collection of adorable and distinctive red pandas, celebrating their playful charm on the blockchain.";
             String name = "Foxy Clan #" + tokenId;
             String nftADN = adn.get("Head Covering")

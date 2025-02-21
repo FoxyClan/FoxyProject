@@ -537,14 +537,10 @@ export class Web3Service {
 
     const owner1: string = await this.ownerOf(tokenId1);
         const owner2: string = await this.ownerOf(tokenId2);
-
-        // Vérifier si l'utilisateur est propriétaire des deux tokens
         const userWallet: string | null = this.walletAddressSubject.value;
         if (!userWallet) throw new Error("Wallet address not found");
 
-        if (owner1 !== userWallet || owner2 !== userWallet) {
-            throw new Error("You are not the owner of one of the tokens");
-        }
+        if (owner1 !== userWallet || owner2 !== userWallet) throw new Error("You are not the owner of one of the tokens");
 
     const contract = this.web3Modifier();
     const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(this.walletAddressSubject.value);
@@ -574,7 +570,7 @@ export class Web3Service {
       const nftData = await Promise.all(
         newTokenIds.map(async (tokenId) => {
           try {
-            const response = await axios.get(`http://localhost:8080/merge?tokenId1=${tokenId1}&tokenId2=${tokenId2}&tokenId=${tokenId}`);
+            const response = await axios.get(`http://localhost:8080/merge?tokenId1=${tokenId1}&tokenId2=${tokenId2}&newTokenId=${tokenId}`);
             return {
                 tokenId,
                 image: response.data.image, // Image en base64
