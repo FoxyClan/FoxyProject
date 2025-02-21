@@ -1,5 +1,7 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
     "comments.collapseOnResolve": true,
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "explorer.openEditors.visible": 9,
+    "explorer.sortOrderReverse": true
 }

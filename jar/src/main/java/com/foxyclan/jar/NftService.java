@@ -3,6 +3,8 @@ package com.foxyclan.jar;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.annotation.PostConstruct;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -12,6 +14,7 @@ import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
@@ -24,9 +27,35 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class NftService {
+
+    @Value("${filebase.accessKey}")
+    private String accessKey;
+
+    @Value("${filebase.secretKey}")
+    private String secretKey;
+
+    @Value("${filebase.endpointUrl}")
+    private String endpointUrl;
+
+    @Value("${filebase.bucketName}")
+    private String bucketName;
+
+    @Value("${filebase.baseUrl}")
+    private String baseUrl;
+
+    @PostConstruct
+    public void testConfig() {
+        System.out.println("Access Key : " + accessKey);
+        System.out.println("Secret Key : " + secretKey);
+        System.out.println("Endpoint URL : " + endpointUrl);
+        System.out.println("Bucket Name : " + bucketName);
+        System.out.println("Base URL : " + baseUrl);
+    }
+
     
     public void createNFT(Map<String, String> adn, int tokenId) throws IOException {
         try {
@@ -64,11 +93,6 @@ public class NftService {
 
 
     public void uploadToFilebase(String fileName) throws IOException {
-        String accessKey = "14BF7594BA96ADCC021B";
-        String secretKey = "1mSomlS0ABFMBWA0kRb59iNzUxGDkjAW5pbXecHR";
-        String endpointUrl = "https://s3.filebase.com";
-        String bucketName = "foxyclan";
-
         try {
             S3Client s3Client = S3Client.builder()
                 .region(Region.US_EAST_1)
@@ -76,7 +100,7 @@ public class NftService {
                 .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
                 .build();
 
-            uploadFile(s3Client, bucketName, fileName, Path.of("jar\\src\\main\\resources\\tmp\\" + fileName));
+            uploadFile(s3Client, fileName, Path.of("jar\\src\\main\\resources\\tmp\\" + fileName));
         } catch(Exception e) {
             e.printStackTrace();
             throw new IOException("Erreur lors du téléversement du fichier : " + fileName, e);
@@ -86,7 +110,7 @@ public class NftService {
 
 
 
-    private void uploadFile(S3Client s3Client, String bucketName, String key, Path filePath) throws Exception {
+    private void uploadFile(S3Client s3Client, String key, Path filePath) throws Exception {
         try {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
@@ -108,7 +132,7 @@ public class NftService {
             Map<String, Object> metadata = new HashMap<>();
             TraitOptionsService traitOptionsService = new TraitOptionsService();
             
-            String imageUrl = "https://foxyclan.s3.filebase.com/" + tokenId + ".png";
+            String imageUrl = endpointUrl + tokenId + ".png";
             String description = "Foxy Clan is a unique collection of adorable and distinctive red pandas, celebrating their playful charm on the blockchain.";
             String name = "Foxy Clan #" + tokenId;
             String nftADN = adn.get("Head Covering")
@@ -154,7 +178,8 @@ public class NftService {
     }
 
     public Map<String, Object> fetchMetadataFromFilebase(int tokenId) throws IOException {
-        String fileUrl = "https://foxyclan.s3.filebase.com/" + tokenId + ".json";
+        String fileUrl = baseUrl + tokenId + ".json";
+        System.out.println(fileUrl);
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -206,7 +231,7 @@ public class NftService {
         try {
             Map<String, Object> metadata = new HashMap<>();
             
-            String imageUrl = "https://foxyclan.s3.filebase.com/undiscovered.png";
+            String imageUrl = endpointUrl + "undiscovered.png";
             String description = "A mysterious member of the Foxy Clan, waiting to reveal its unique traits. Will it be a rare gem or a playful companion? Only time will tell as the secrets of this red panda are uncovered. Visit our website to unveil it !";
             String name = "Foxy Clan #" + tokenId;
     
@@ -236,11 +261,6 @@ public class NftService {
     }
 
     private void uploadUndiscoveredToFilebase(String fileName, File file) throws IOException {
-        String accessKey = "14BF7594BA96ADCC021B";
-        String secretKey = "1mSomlS0ABFMBWA0kRb59iNzUxGDkjAW5pbXecHR";
-        String endpointUrl = "https://s3.filebase.com";
-        String bucketName = "foxyclan";
-
         try {
             S3Client s3Client = S3Client.builder()
                 .region(Region.US_EAST_1)

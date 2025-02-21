@@ -268,6 +268,7 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!keys.includes(imageKey)) continue;
 
         try {
+          console.log(signal)
           const response = await axios.get<Metadata>(`${this.baseUri}${jsonFiles[i]}` + `?t=${this.cacheVersion}`, { signal });
           const metadata = response.data;
           metadata.tokenId = parseInt(tokenId);

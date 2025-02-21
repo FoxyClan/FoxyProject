@@ -204,6 +204,7 @@ export class ModalAccount implements OnInit, OnDestroy {
     for (const tokenId of this.tokenIds) {
       try {
         const url = this.baseUri + tokenId + '.json';
+        console.log(url)
         const response = await axios.get<Metadata>(url + `?t=${this.cacheVersion}`);
         this.tokens[tokenId] = response.data;
         this.tokens[tokenId].tokenId = tokenId;

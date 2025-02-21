@@ -1,0 +1,7 @@
+filebase:
+  accessKey: "14BF7594BA96ADCC021B"
+  secretKey: "1mSomlS0ABFMBWA0kRb59iNzUxGDkjAW5pbXecHR"
+  endpointUrl: "https://s3.filebase.com/"
+  bucketName: "foxyclan"
+  baseUrl: "https://foxyclan.s3.filebase.com/"
+

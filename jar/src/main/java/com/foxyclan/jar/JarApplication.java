@@ -2,20 +2,21 @@ package com.foxyclan.jar;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import jakarta.annotation.PostConstruct;
 
 
 @SpringBootApplication
 public class JarApplication {
 
+	//@Autowired
+    //private MergeService mergeService; // Injecte MergeService
+
 	public static void main(String[] args) throws IOException {
 		SpringApplication.run(JarApplication.class, args);
-		
-		
-		MergeService merge = new MergeService();
-
-		merge.generateMergedDNA(0, 1, 15);
 		/*
 		NftService rand = new NftService();
 		int[] tab = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -38,5 +39,10 @@ public class JarApplication {
 		*/
 		
 	}
+
+	@PostConstruct
+    public void runAfterStartup() throws IOException {
+        //mergeService.generateMergedDNA(0, 1, 15);
+    }
 
 }

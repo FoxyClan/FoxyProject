@@ -602,6 +602,7 @@ export class Web3Service {
       const result = await contract.methods['flipPublicSaleState'](maxMintAmount, state).send({
         from: this.walletAddressSubject.value
       });
+      console.log(result)
       return result;
     } catch (error) {
       console.error("Fliping Sale failed:", error);

@@ -1,0 +1,27 @@
+{"properties": [
+  {
+    "name": "filebase.access-key",
+    "type": "java.lang.String",
+    "description": "A description for 'filebase.access-key'"
+  },
+  {
+    "name": "filebase.endpointUrl",
+    "type": "java.lang.String",
+    "description": "A description for 'filebase.endpointUrl'"
+  },
+  {
+    "name": "filebase.secretKey",
+    "type": "java.lang.String",
+    "description": "A description for 'filebase.secretKey'"
+  },
+  {
+    "name": "filebase.bucketName",
+    "type": "java.lang.String",
+    "description": "A description for 'filebase.bucketName'"
+  },
+  {
+    "name": "filebase.baseUrl",
+    "type": "java.lang.String",
+    "description": "A description for 'filebase.baseUrl'"
+  }
+]}

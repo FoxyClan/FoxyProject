@@ -37,3 +37,4 @@ JAR
 
 
 ACTUAL :
+- probleme apres avoir activé le mint impossible de cliquer sur mint (pas de message d'erreur)

@@ -9,18 +9,21 @@ import java.util.Map;
 
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
+@Service
 public class MergeService {
 
+    @Autowired
     private final NftService nftService;
 
-    public MergeService() {
-        NftService _nftService = new NftService();
-        this.nftService = _nftService;
+    public MergeService(NftService nftService) {
+        this.nftService = nftService;
     }
 
     @GetMapping("/merge")
