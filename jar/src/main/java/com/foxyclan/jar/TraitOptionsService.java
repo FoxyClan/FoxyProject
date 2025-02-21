@@ -2,6 +2,7 @@ package com.foxyclan.jar;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class TraitOptionsService {
 
@@ -142,6 +143,36 @@ public class TraitOptionsService {
         }
 
         return index;
+    }
+
+    public String getBestTrait(String category, String value1, String value2) {
+        int index1 = this.getTraitIndex(category, value1);
+        int index2 = this.getTraitIndex(category, value2);
+
+        int bestIndex = Math.min(index1, index2);
+        return String.format("%02d", bestIndex);
+    }
+
+    public String getTraitValue(Map<String, Object> metadata, String traitType) {
+        Object attributesObj = metadata.get("attributes");
+    
+        if (attributesObj instanceof List<?>) {
+            List<?> attributesList = (List<?>) attributesObj;
+    
+            for (Object attributeObj : attributesList) {
+                if (attributeObj instanceof Map<?, ?> attributeMap) {
+                    Object traitTypeObj = attributeMap.get("trait_type");
+                    Object valueObj = attributeMap.get("value");
+    
+                    if (traitTypeObj instanceof String traitTypeStr && valueObj instanceof String valueStr) {
+                        if (traitTypeStr.equals(traitType)) {
+                            return valueStr;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }

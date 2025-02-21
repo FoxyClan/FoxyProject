@@ -13,10 +13,11 @@ public class JarApplication {
 		SpringApplication.run(JarApplication.class, args);
 		
 		
-		NftService rand = new NftService();
+		MergeService merge = new MergeService();
 
-		rand.generateMergedDNA(0, 1, 11);
+		merge.generateMergedDNA(0, 1, 15);
 		/*
+		NftService rand = new NftService();
 		int[] tab = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 		for(int i=0; i<20000; i++) {
 			tab[Integer.parseInt(rand.generateTraitDNA("background"))] += 1;

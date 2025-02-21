@@ -2,16 +2,11 @@ package com.foxyclan.jar;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
@@ -19,7 +14,6 @@ import java.awt.image.BufferedImage;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -31,82 +25,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-@RestController
+
 public class NftService {
     
-    @GetMapping("/adn")
-    @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Object> generateDNA(@RequestParam int tokenId) throws IOException {        // @Todo gerer les meme adn, modifier les 
-        String Head = generateTraitDNA("");                                                 // noms dans le json, faire les traits impossible a combiner 
-        String Mouth = generateTraitDNA("");
-        String Eyes = generateTraitDNA("");
-        String Clothes = generateTraitDNA("");
-        String Fur = generateTraitDNA("fur");
-        String Background = generateTraitDNA("background");
-
-        Map<String, String> adn = new HashMap<>();
-        adn.put("Head Covering", Head);
-        adn.put("Mouth", Mouth);
-        adn.put("Eyes", Eyes);
-        adn.put("Clothes", Clothes);
-        adn.put("Fur", Fur);
-        adn.put("Background", Background);
-
-        Map<String, Object> response = new HashMap<>();
-        try {
-            createNFT(adn, tokenId);
-            uploadToFilebase(tokenId + ".png");
-
-            createMetadataFile(adn, tokenId);
-            uploadToFilebase(tokenId + ".json");
-
-            Path imagePath = Path.of("jar/src/main/resources/tmp/" + tokenId + ".png");
-            String imageBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath));
-    
-            Map<String, Object> metadata = createMetadataFile(adn, tokenId);
-    
-            response.put("image", imageBase64);
-            response.put("metadata", metadata);
-
-            return response;
-        } catch(IOException e) {
-            e.printStackTrace();
-            throw e;
-        }
-    }
-
-    public String generateTraitDNA(String type) {
-        String[] numbers;
-        double[] probabilities;
-        if (type.equals("fur")) {
-            numbers = new String[]{"00", "01", "02", "03", "04", "05", "06", "07", "08", "09"};
-            probabilities = new double[]{1,2,3,5,7,9,13,16,19,25};
-        } 
-        else if (type.equals("background")) {
-            numbers = new String[]{"00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
-            probabilities = new double[]{1,2,3,4,5,6,7,8,9,11,13,15,16};
-        } 
-        else {
-            numbers = new String[]{"00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"};
-            probabilities = new double[]{1, 2, 3, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.75, 9.5, 10.25, 11.5};
-        }
-        double totalWeight = 0;
-        for (double probability : probabilities) {
-            totalWeight += probability;
-        }
-        double random = Math.random() * totalWeight;
-        double cumulativeWeight = 0;
-        for (int i = 0; i < probabilities.length; i++) {
-            cumulativeWeight += probabilities[i];
-            if (random <= cumulativeWeight) {
-                return numbers[i];
-            }
-        }
-        // Par défaut, retourner le dernier nombre (ne devrait pas se produire normalement)
-        return numbers[numbers.length - 1];
-    }
-
-    private void createNFT(Map<String, String> adn, int tokenId) throws IOException {
+    public void createNFT(Map<String, String> adn, int tokenId) throws IOException {
         try {
             BufferedImage background = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Background\\" + adn.get("Background") + ".png"));
             BufferedImage fur = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Fur\\" + adn.get("Fur") + ".png"));
@@ -141,7 +63,7 @@ public class NftService {
 
 
 
-    private void uploadToFilebase(String fileName) throws IOException {
+    public void uploadToFilebase(String fileName) throws IOException {
         String accessKey = "14BF7594BA96ADCC021B";
         String secretKey = "1mSomlS0ABFMBWA0kRb59iNzUxGDkjAW5pbXecHR";
         String endpointUrl = "https://s3.filebase.com";
@@ -181,7 +103,7 @@ public class NftService {
 
 
 
-    private Map<String, Object> createMetadataFile(Map<String, String> adn, int tokenId) throws IOException {
+    public Map<String, Object> createMetadataFile(Map<String, String> adn, int tokenId) throws IOException {
         try {
             Map<String, Object> metadata = new HashMap<>();
             TraitOptionsService traitOptionsService = new TraitOptionsService();
@@ -231,6 +153,24 @@ public class NftService {
         }
     }
 
+    public Map<String, Object> fetchMetadataFromFilebase(int tokenId) throws IOException {
+        String fileUrl = "https://foxyclan.s3.filebase.com/" + tokenId + ".json";
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            URL url = URI.create(fileUrl).toURL();
+            return objectMapper.readValue(url, new TypeReference<Map<String, Object>>() {});
+        } catch (MalformedURLException e) {
+            throw new IOException("URL malformée pour le token " + tokenId, e);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la récupération des métadonnées du token " + tokenId);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /* CLEAR TMP */
+
     @DeleteMapping("/clear-tmp")
     @CrossOrigin(origins = "http://localhost:4200")
     public void clearOldTmpFiles() {
@@ -259,10 +199,7 @@ public class NftService {
     }
 
 
-
     /* UNDISCOVERED */
-
-
 
 
     public void createUndiscoveredMetadataFile(int tokenId) throws IOException {
@@ -324,104 +261,6 @@ public class NftService {
             throw new IOException("Erreur lors du téléversement du fichier : " + fileName, e);
         }
     }
-
-
-    /* MERGE  */
-
-
-    @GetMapping("/merge")
-    @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Object> generateMergedDNA(@RequestParam int tokenId1, @RequestParam int tokenId2, @RequestParam int newTokenId) throws IOException {
-        if(tokenId1 == tokenId2) throw new IOException("Les deux tokens doivent être différents");
-        // Récupérer les métadonnées des deux tokens depuis Filebase
-        Map<String, Object> metadata1 = fetchMetadataFromFilebase(tokenId1);
-        Map<String, Object> metadata2 = fetchMetadataFromFilebase(tokenId2);
-
-        if (metadata1 == null || metadata2 == null) {
-            throw new IOException("Impossible de récupérer les métadonnées de l'un des tokens");
-        }
-
-        // Comparer les traits et choisir les meilleurs
-        TraitOptionsService traitService = new TraitOptionsService();
-        Map<String, String> mergedTraits = new HashMap<>();
-
-        String[] traitTypes = {"Head Covering", "Mouth", "Eyes", "Clothes", "Fur", "Background"};
-
-        for (String trait : traitTypes) {
-            String traitValue1 = getTraitValue(metadata1, trait);
-            String traitValue2 = getTraitValue(metadata2, trait);
-            
-            // Comparer les indices et prendre le meilleur trait
-            String bestTrait = getBestTrait(traitService, trait, traitValue1, traitValue2);
-            mergedTraits.put(trait, bestTrait);
-        }
-
-        // Générer la nouvelle image du NFT fusionné
-        createNFT(mergedTraits, newTokenId);
-        uploadToFilebase(newTokenId + ".png");
-
-        // Générer les métadonnées du nouveau NFT
-        Map<String, Object> mergedMetadata = createMetadataFile(mergedTraits, newTokenId);
-        uploadToFilebase(newTokenId + ".json");
-
-        // Retourner les nouvelles métadonnées et l'image en Base64
-        Path imagePath = Path.of("jar/src/main/resources/tmp/" + newTokenId + ".png");
-        String imageBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath));
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("image", imageBase64);
-        response.put("metadata", mergedMetadata);
-
-        return response;
-    }
-    
-
-    private Map<String, Object> fetchMetadataFromFilebase(int tokenId) throws IOException {
-        String fileUrl = "https://foxyclan.s3.filebase.com/" + tokenId + ".json";
-
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            URL url = URI.create(fileUrl).toURL();
-            return objectMapper.readValue(url, new TypeReference<Map<String, Object>>() {});
-        } catch (MalformedURLException e) {
-            throw new IOException("URL malformée pour le token " + tokenId, e);
-        } catch (Exception e) {
-            System.err.println("Erreur lors de la récupération des métadonnées du token " + tokenId);
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private String getTraitValue(Map<String, Object> metadata, String traitType) {
-        Object attributesObj = metadata.get("attributes");
-    
-        if (attributesObj instanceof List<?>) {
-            List<?> attributesList = (List<?>) attributesObj;
-    
-            for (Object attributeObj : attributesList) {
-                if (attributeObj instanceof Map<?, ?> attributeMap) {
-                    Object traitTypeObj = attributeMap.get("trait_type");
-                    Object valueObj = attributeMap.get("value");
-    
-                    if (traitTypeObj instanceof String traitTypeStr && valueObj instanceof String valueStr) {
-                        if (traitTypeStr.equals(traitType)) {
-                            return valueStr;
-                        }
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    public String getBestTrait(TraitOptionsService traitService, String category, String value1, String value2) {
-        int index1 = traitService.getTraitIndex(category, value1);
-        int index2 = traitService.getTraitIndex(category, value2);
-
-        int bestIndex = Math.min(index1, index2);
-        return String.format("%02d", bestIndex);
-    }
-
 
     
 }
