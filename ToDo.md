@@ -18,7 +18,6 @@ SMART CONTRACT
 - voir si rareté FoxyPoint par jour
 - a tester nombre d'addresse passable dans airdrop (test net) (100)
 - award fonctions usePoints
-- si des trous dans tokenByIndex, probleme dans les affichage style opensea ?? -> micka
 
 
 
@@ -27,18 +26,13 @@ GANACHE
 - supprimer commentaire web3service getBalance / modal account loadBalance -> catch consol error
 
 MODAL MINT
-- probleme rotation instant quand discover de temps en temps
 - border rarity en fonction des chiffres a passer en fonction des traits
-- voir animation boutton add et discover ??
 
 
-MINT PAGE
-- probleme swap box image decalage de temps en temps
 
-
-JAR 
-- generateTraitDNA en private
+JAR
 - traits png -> jpeg ?
+- JAVA securisé avec toutes les fonctions en public ?
 
 
 
