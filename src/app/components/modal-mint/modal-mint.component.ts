@@ -481,4 +481,14 @@ export class ModalMint implements OnInit, OnDestroy {
     const numericValue = parseInt(value, 10);
     return numericValue >= 6 && numericValue <= 8;
   }
+
+  /* MERGE */
+
+  merge(mergedNft: any) {
+    this.mintedNfts = mergedNft;
+    this.success = true;
+    setTimeout(() => {
+      this.discover = true; // attend que le block.success grandisse pour apparaitre
+    }, 2000);
+  }
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Web3Service } from "../../services/web3.service";
 import axios from 'axios';
@@ -29,6 +29,7 @@ interface Metadata {
 })
 
 export class PageUserCollectionComponent implements OnInit {
+  @ViewChild(ModalMint) modalMint!: ModalMint;
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
   cacheVersion: string = '';
   private walletCheckedSubscription: any;
@@ -75,7 +76,6 @@ export class PageUserCollectionComponent implements OnInit {
     });
     this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
       this.creatingNftLoading = creatingNftLoading;
-      console.log(creatingNftLoading)
       if(creatingNftLoading) {
         this.showMergeModal = true;
       }
@@ -205,15 +205,36 @@ export class PageUserCollectionComponent implements OnInit {
     this.resetAvailableTokens();
   }
 
-  merge() {
-    if (this.selectedNFTs.left && this.selectedNFTs.right) {
+  async merge() {
+    if (!this.selectedNFTs.left || !this.selectedNFTs.right) return //message erreur à afficher !!!!!!!!!!!!!!!!
+    try {
       console.log("Merging NFTs:", this.selectedNFTs.left.tokenId, this.selectedNFTs.right.tokenId);
-      this.web3Service.merge(this.selectedNFTs.left.tokenId, this.selectedNFTs.right.tokenId).then((result) => {
-        
-      }).catch((error: any) => {
-        throw error;
+      const result = await this.web3Service.merge(this.selectedNFTs.left.tokenId, this.selectedNFTs.right.tokenId);
+      const nftDataPromises = result.map(async (nft: { tokenId: number; image: string; metadata: any }) => {
+        try {
+          const response = {
+            tokenId: nft.tokenId,
+            image: nft.image, // L'image en base64
+            metadata: nft.metadata // Métadonnées
+          };
+          return response;
+        } catch (error) {
+          console.error(`Erreur lors de la récupération des données pour le Token ID ${nft.tokenId}:`, error);
+          return null;
+        }
       });
-      // Ajoute ici l'appel backend pour effectuer la fusion
+
+      if(null === nftDataPromises || nftDataPromises.length === 0) {
+        //this.errorAfterMint = true;
+        this.isLoading = false;
+        return
+      }
+
+      const nftData = await Promise.all(nftDataPromises);
+      const mergedNft = nftData.filter(data => data !== null);
+      this.modalMint.merge(mergedNft);
+    } catch(error) {
+      throw error;
     }
   }
 
