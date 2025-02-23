@@ -110,6 +110,7 @@ export class PageUserCollectionComponent implements OnInit {
         const response = await axios.get<Metadata>(url + `?t=${this.cacheVersion}`);
         this.tokens[tokenId] = response.data;
         this.tokens[tokenId].tokenId = tokenId;
+        console.log(Object.keys(this.tokens)[0]);
       } catch (error) {
         console.error(`Failed to fetch data for token ${tokenId} : `, error);
         this.tokens[tokenId] = null;

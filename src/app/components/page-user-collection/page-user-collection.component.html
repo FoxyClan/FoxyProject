@@ -1,9 +1,8 @@
 
-  <div *ngIf="!isLoading" class="logo-background"><img src="FoxyLogoNoBackground.png" alt=""></div>
-    
-  <div class="page-container">
-  <div *ngIf="isLoading" class="spinner"></div>
-
+<div *ngIf="!isLoading" class="logo-background"><img src="FoxyLogoNoBackground.png" alt=""></div>
+  
+<div class="page-container">
+<div *ngIf="isLoading" class="spinner"></div>
   <!-- ADDRESS INFO -->
   <div *ngIf="!isLoading && !mergeMode" class="owner">
 
@@ -25,18 +24,17 @@
           </div></span></p>
         </div>
         <div class="btn-container">
-          <button *ngIf="!noNft && isOwner" class="btn" (click)="mergeMode = true
-          ">Merge</button>
+          <button *ngIf="!noNft && isOwner" class="btn" (click)="mergeMode = true">Merge</button>
         </div>
       </div>
       <h2 *ngIf="noNft && !isOwner" class="no-nft-message">This address is not yet part of the foxy family</h2>
     </div>
-    <div class="owner-image">
-      <img [src]="noNft ? 'FoxyLogo.jpeg' : tokens[0]?.image"/>
+    <div *ngIf="tokens[0]" class="owner-image">
+      <img [src]="noNft ? 'FoxyLogo.jpeg' : tokens[0].image"/>
     </div>
   </div>
 
-  <!-- MERGE -->
+<!-- MERGE -->
 <div *ngIf="!isLoading && mergeMode" class="merge-container">
 
   <div class="merge-content">
