@@ -238,8 +238,12 @@ export class PageUserCollectionComponent implements OnInit {
     }
   }
 
-  closeMergeModal() {
+  async closeMergeModal() {
     this.showMergeModal = false;
+    this.exitMergeMode();
+    this.isLoading = true;
+    await this.fetchNFTs(this.walletAddress!);
+    this.isLoading = false;
   }
 
 }
