@@ -635,7 +635,6 @@ export class Web3Service {
 
   public async owner() {
     const contract = this.web3Modifier();
-    
     const owner = await contract.methods['owner']().call();
     return owner;
   }

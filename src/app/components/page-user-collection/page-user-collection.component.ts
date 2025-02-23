@@ -5,6 +5,7 @@ import { Web3Service } from "../../services/web3.service";
 import axios from 'axios';
 import { CacheService } from '../../services/cache.service';
 import { ModalCollection } from "../modal-collection/modal-collection.component";
+import { ModalMint } from "../modal-mint/modal-mint.component";
 import Web3 from 'web3';
 
 interface Metadata {
@@ -22,7 +23,7 @@ interface Metadata {
 @Component({
   selector: 'app-page-user-collection',
   standalone: true,
-  imports: [CommonModule, ModalCollection],
+  imports: [CommonModule, ModalCollection, ModalMint],
   templateUrl: './page-user-collection.component.html',
   styleUrl: './page-user-collection.component.css'
 })
@@ -46,6 +47,8 @@ export class PageUserCollectionComponent implements OnInit {
 
   selectedToken: Metadata | null = null
   showModal: boolean = false;
+  showMergeModal: boolean = false;
+  creatingNftLoading: boolean = false;
 
   mergeMode: boolean = false;
   availableTokens: { [key: number]: Metadata | null } = {}; // Liste des NFTs visibles dans la collection
@@ -69,6 +72,13 @@ export class PageUserCollectionComponent implements OnInit {
       const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
       this.walletAddress = checksumAddress;
       this.isOwner = this.walletAddress === this.address;
+    });
+    this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
+      this.creatingNftLoading = creatingNftLoading;
+      console.log(creatingNftLoading)
+      if(creatingNftLoading) {
+        this.showMergeModal = true;
+      }
     });
     this.walletCheckedSubscription = this.web3Service.isWalletCheckedSubject$.subscribe(async (isWalletChecked) => {
       if(isWalletChecked) {
@@ -199,12 +209,16 @@ export class PageUserCollectionComponent implements OnInit {
     if (this.selectedNFTs.left && this.selectedNFTs.right) {
       console.log("Merging NFTs:", this.selectedNFTs.left.tokenId, this.selectedNFTs.right.tokenId);
       this.web3Service.merge(this.selectedNFTs.left.tokenId, this.selectedNFTs.right.tokenId).then((result) => {
-        console.log(result)
+        
       }).catch((error: any) => {
         throw error;
       });
       // Ajoute ici l'appel backend pour effectuer la fusion
     }
+  }
+
+  closeMergeModal() {
+    this.showMergeModal = false;
   }
 
 }
