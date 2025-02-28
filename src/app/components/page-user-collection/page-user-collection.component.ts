@@ -150,8 +150,29 @@ export class PageUserCollectionComponent implements OnInit {
   
 
   onDragStart(event: DragEvent, token: Metadata) {
-    event.dataTransfer?.setData("text/plain", JSON.stringify(token));
+    if (!event.dataTransfer) return;
+    
+    // Stocker les données du NFT
+    event.dataTransfer.setData("text/plain", JSON.stringify(token));
+  
+    // Créer une prévisualisation personnalisée
+    const img = new Image();
+    img.src = token.image;
+    img.style.width = "80px"; // Taille réduite de l'image
+    img.style.height = "80px";
+    img.style.borderRadius = "10px";
+    img.style.position = "absolute";
+    img.style.pointerEvents = "none"; // Évite les interférences avec l'événement drag
+    
+    document.body.appendChild(img);
+  
+    // Définir comme image de drag
+    event.dataTransfer.setDragImage(img, 40, 40); // Position au centre
+  
+    // Nettoyage après le drag
+    setTimeout(() => document.body.removeChild(img), 0);
   }
+  
 
   onDragOver(event: DragEvent) {
     event.preventDefault();

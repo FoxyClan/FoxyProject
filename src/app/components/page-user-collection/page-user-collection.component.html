@@ -73,7 +73,8 @@
   <h2>{{ mergeMode ? "Select Foxys to Merge :" : "FOXY Collection" }}</h2>
   <div class="nft-grid">
     <div *ngFor="let token of availableTokens | keyvalue" 
-         class="nft-item" 
+         class="nft-item"
+         [ngStyle]="{'cursor': mergeMode ? 'all-scroll' : 'pointer'}"
          draggable="true" 
          (dragstart)="token.value ? onDragStart($event, token.value) : null"
          (click)="mergeMode && hasFreeSlot() ? addToMerge(token.value) : openModal(token.value)">
