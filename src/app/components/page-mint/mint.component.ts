@@ -39,6 +39,9 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   currentFront: number = 0;
   currentBack: number = 1;
 
+  currentSaleMinted: any = "Load...";
+  saleMintLimit: any = "Load...";
+
   currentImages = {
     front: this.images[this.currentFront],
     back: this.images[this.currentBack],
@@ -70,6 +73,8 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
       if (walletAddress) {
         const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
         this.walletAddress = checksumAddress;
+        this._saleMintLimit();
+        this._currentSaleMint();
         this.publicSaleIsActive();
         this.allowListisActive();
       }
@@ -157,6 +162,25 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.cdr.detectChanges();
     } catch (error) {
       console.error("Error during rotation:", error);
+    }
+  }
+
+  private async _currentSaleMint() {
+    try {
+       const result = await this.web3Service.currentSaleMinted();
+       this.currentSaleMinted = Number(result);
+    } catch (error) {
+       console.error("currentSaleMinted error:", error);
+    }
+  }
+
+  
+  private async _saleMintLimit() {
+    try {
+       const result = await this.web3Service.saleMintLimit();
+       this.saleMintLimit = Number(result) == 0 ? "No limit" : Number(result);
+    } catch (error) {
+       console.error("saleMintLimit error:", error);
     }
   }
   

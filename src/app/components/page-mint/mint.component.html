@@ -9,6 +9,7 @@
                     <div class="sale-status" [ngClass]="{'active-sale': isPublicSaleActive, 'inactive-sale': !isPublicSaleActive}">
                         <span class="sale-status-text">{{ isPublicSaleActive ? 'Public Sale is Active' : 'Public Sale Starts Soon' }}</span>
                     </div>
+                    <p *ngIf="isPublicSaleActive" class="saleLimit" title="(Current Sale Minted)">{{ currentSaleMinted }} / {{ saleMintLimit }}</p>
                     <div class="btn-container">
                         <a (click)="isPublicSaleActive ? showMintModal(false) : cantMint()" class="btn blue-btn" style="--clr1:rgba(168, 239, 255, 1);--clr2:rgba(168, 239, 255, 0.1)"><span>{{ isPublicSaleActive ? "Mint now" : "Mint soon" }}</span></a>
                         <a (click)="isAllowListActive ? showMintModal(true) : cantAllowList()" class="btn black-btn" style="--clr1:rgba(168, 239, 255, 1);--clr2:rgba(168, 239, 255, 0.1)"><span>Allow List</span></a>
@@ -17,9 +18,8 @@
                         {{ errorMessage }}
                     </div>
                     <ul class="panel-1-ul">
-                        <li>Max 2 NFTs per wallet . Price 0.09 ETH + gas</li>
-                        <li>MINT IS LIVE <span>UNTIL 25 APR 04:00H</span></li>
-                        <li>Presale : SOLDOUT</li>
+                        <li>Max 20 NFTs per wallet<br>Public sale price : 0.0125 ETH</li>
+                        <li>Presale : SOON</li>
                     </ul>
                 </div>
                 

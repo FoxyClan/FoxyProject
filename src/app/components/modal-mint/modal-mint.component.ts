@@ -94,7 +94,6 @@ export class ModalMint implements OnInit, OnDestroy {
     this.walletAddressSubscription = this.web3Service.walletAddress$.subscribe((isReady) => {
       if (isReady) {
         this.initializeMintData();
-        //this.walletAddressSubscription?.unsubscribe();
       }
     });
   }

@@ -461,6 +461,8 @@ export class Web3Service {
 
   public async mint(numberOfTokens: number): Promise<any> {
     const contract = this.web3Modifier();
+    const balance = await this.balanceOf(this.walletAddressSubject.value);
+    if(numberOfTokens + Number(balance) > 20) throw new Error("You can't mint more than 20 NFTs");
     try {
       const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(this.walletAddressSubject.value);
       
