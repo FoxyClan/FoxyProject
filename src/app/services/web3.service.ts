@@ -462,13 +462,20 @@ export class Web3Service {
   public async mint(numberOfTokens: number): Promise<any> {
     const contract = this.web3Modifier();
     const balance = await this.balanceOf(this.walletAddressSubject.value);
+    const totalSupply = await this.Supply();
+    const currentSaleMinted = await this.currentSaleMinted();
+    const saleMintLimit = await this.saleMintLimit();
+
+    if(numberOfTokens > 20) throw new Error("You can't mint more than 20 NFTs at a time");
     if(numberOfTokens + Number(balance) > 20) throw new Error("You can't mint more than 20 NFTs");
+    if(Number(totalSupply) + numberOfTokens > 20000) throw new Error("Exceeded max supply");
+    if(Number(currentSaleMinted) + numberOfTokens > Number(saleMintLimit)) throw new Error("Exceeded max mint limit for this sale");
+    
     try {
       const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(this.walletAddressSubject.value);
-      
       const totalPrice = (numberOfTokens * FoxyPrice).toString();
   
-      const result = await contract.methods['mint'](numberOfTokens).send({
+      await contract.methods['mint'](numberOfTokens).send({
         from: this.walletAddressSubject.value,
         value: this.web3?.utils.toWei(totalPrice, 'ether'),
       });
@@ -483,7 +490,9 @@ export class Web3Service {
 
   public async mintAllowList(numberOfTokens: number): Promise<any> {
     const contract = this.web3Modifier();
-    if(numberOfTokens > Number(await this.numAvailableToMint())) throw new Error("Exceeded max available to purchase"); 
+    const totalSupply = await this.Supply();
+    if(numberOfTokens > Number(await this.numAvailableToMint())) throw new Error("Exceeded max available to purchase");
+    if(Number(totalSupply) + numberOfTokens > 20000) throw new Error("Exceeded max supply");
     try {
       const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(this.walletAddressSubject.value);
       
@@ -536,6 +545,10 @@ export class Web3Service {
 
   public async merge(tokenId1: number, tokenId2: number): Promise<any> {
     if(tokenId1 === tokenId2) throw new Error("Cannot merge the same token");
+    const tokenLevel1 = await this.level(tokenId1);
+    const tokenLevel2 = await this.level(tokenId2);
+    if(Number(tokenLevel1) !== 1 && Number(tokenLevel2) !== 1) throw new Error("Cannot merge 2 tokens that are above level 1");
+    if(Number(tokenLevel1) === 3 || Number(tokenLevel2) === 3) throw new Error("Cannot merge a token that is level 3");
 
     const owner1: string = await this.ownerOf(tokenId1);
         const owner2: string = await this.ownerOf(tokenId2);

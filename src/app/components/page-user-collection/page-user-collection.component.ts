@@ -59,6 +59,7 @@ export class PageUserCollectionComponent implements OnInit {
   availableTokens: { [key: number]: Metadata | null } = {}; // Liste des NFTs visibles dans la collection
   selectedNFTs: { left: Metadata | null, right: Metadata | null } = { left: null, right: null };
   profileImage: string | undefined = "";
+  errorMessage: any;
 
   constructor(private route: ActivatedRoute,
     private web3Service: Web3Service, 
@@ -150,29 +151,29 @@ export class PageUserCollectionComponent implements OnInit {
   
 
   onDragStart(event: DragEvent, token: Metadata) {
-    if (!event.dataTransfer) return;
-    
-    // Stocker les données du NFT
-    event.dataTransfer.setData("text/plain", JSON.stringify(token));
+  if (!event.dataTransfer) return;
   
-    // Créer une prévisualisation personnalisée
-    const img = new Image();
-    img.src = token.image;
-    img.style.width = "80px"; // Taille réduite de l'image
-    img.style.height = "80px";
-    img.style.borderRadius = "10px";
-    img.style.position = "absolute";
-    img.style.pointerEvents = "none"; // Évite les interférences avec l'événement drag
-    
-    document.body.appendChild(img);
+  // Stocker les données du NFT
+  event.dataTransfer.setData("text/plain", JSON.stringify(token));
+
+  // Créer une prévisualisation personnalisée
+  const img = new Image();
+  img.src = token.image;
+  img.style.width = "80px"; // Taille réduite de l'image
+  img.style.height = "80px";
+  img.style.borderRadius = "10px";
+  img.style.position = "absolute";
+  img.style.pointerEvents = "none"; // Évite les interférences avec l'événement drag
   
-    // Définir comme image de drag
-    event.dataTransfer.setDragImage(img, 40, 40); // Position au centre
-  
-    // Nettoyage après le drag
-    setTimeout(() => document.body.removeChild(img), 0);
-  }
-  
+  document.body.appendChild(img);
+
+  // Définir comme image de drag
+  event.dataTransfer.setDragImage(img, 40, 40); // Position au centre
+
+  // Nettoyage après le drag
+  setTimeout(() => document.body.removeChild(img), 0);
+}
+
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -180,6 +181,7 @@ export class PageUserCollectionComponent implements OnInit {
 
   onDrop(event: DragEvent, position: 'left' | 'right') {
     event.preventDefault();
+    this.errorMessage = "";
     const data = event.dataTransfer?.getData("text/plain");
     
     if (data) {
@@ -207,6 +209,7 @@ export class PageUserCollectionComponent implements OnInit {
 
   addToMerge(token: Metadata | null) {
     if(!token) return
+    this.errorMessage = "";
     if (this.selectedNFTs.left?.tokenId === token.tokenId || this.selectedNFTs.right?.tokenId === token.tokenId) {
       console.warn("NFT déjà sélectionné !");
       return;
@@ -225,6 +228,7 @@ export class PageUserCollectionComponent implements OnInit {
 
   removeFromMerge(position: 'left' | 'right') {
     const removedToken = this.selectedNFTs[position];
+    this.errorMessage = "";
     if (removedToken) {
       this.availableTokens[removedToken.tokenId] = removedToken;
     }
@@ -236,12 +240,14 @@ export class PageUserCollectionComponent implements OnInit {
   }
 
   exitMergeMode() {
+    this.errorMessage = "";
     this.mergeMode = false;
     this.selectedNFTs = { left: null, right: null };
     this.resetAvailableTokens();
   }
 
   async merge() {
+    this.errorMessage = "";
     if (!this.selectedNFTs.left || !this.selectedNFTs.right) return //message erreur à afficher !!!!!!!!!!!!!!!!
     try {
       console.log("Merging NFTs:", this.selectedNFTs.left.tokenId, this.selectedNFTs.right.tokenId);
@@ -261,7 +267,6 @@ export class PageUserCollectionComponent implements OnInit {
       });
 
       if(null === nftDataPromises || nftDataPromises.length === 0) {
-        //this.errorAfterMint = true;
         this.isLoading = false;
         return
       }
@@ -269,12 +274,14 @@ export class PageUserCollectionComponent implements OnInit {
       const nftData = await Promise.all(nftDataPromises);
       const mergedNft = nftData.filter(data => data !== null);
       this.modalMint.merge(mergedNft);
-    } catch(error) {
-      throw error;
+    } catch(error: any) {
+      console.error("Merging error:", error);
+      this.errorMessage = error.message;
     }
   }
 
   async closeMergeModal() {
+    this.errorMessage = "";
     this.showMergeModal = false;
     this.exitMergeMode();
     this.isLoading = true;
