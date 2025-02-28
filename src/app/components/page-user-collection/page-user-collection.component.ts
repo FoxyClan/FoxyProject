@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Web3Service } from "../../services/web3.service";
 import axios from 'axios';
 import { CacheService } from '../../services/cache.service';
 import { ModalCollection } from "../modal-collection/modal-collection.component";
 import { ModalMint } from "../modal-mint/modal-mint.component";
+import { ErrorComponent } from "../page-error/error.component";
 import Web3 from 'web3';
-import { Url } from 'node:url';
+import { isAddress } from 'web3-validator';
+
 
 interface Metadata {
   tokenId: number;
@@ -24,17 +26,18 @@ interface Metadata {
 @Component({
   selector: 'app-page-user-collection',
   standalone: true,
-  imports: [CommonModule, ModalCollection, ModalMint],
+  imports: [CommonModule, ModalCollection, ModalMint, ErrorComponent],
   templateUrl: './page-user-collection.component.html',
   styleUrl: './page-user-collection.component.css'
 })
 
 export class PageUserCollectionComponent implements OnInit {
   @ViewChild(ModalMint) modalMint!: ModalMint;
-  private baseUri : string = 'https://foxyclan.s3.filebase.com/';
+  private baseUri: string = 'https://foxyclan.s3.filebase.com/';
   cacheVersion: string = '';
   private walletCheckedSubscription: any;
   isLoading: boolean = false;
+  errorPage: boolean = false;
 
   address: string | null = null;
   walletAddress: string | null = null;
@@ -69,6 +72,10 @@ export class PageUserCollectionComponent implements OnInit {
     });
     this.route.queryParams.subscribe((params) => {
       this.address = params['address'] || null;
+      if (this.address && !isAddress(this.address)) {
+        this.errorPage = true;
+        return;
+      }
     });
     this.web3Service.walletAddress$.subscribe((walletAddress) => {
       if (!walletAddress) return;

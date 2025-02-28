@@ -16,7 +16,6 @@ MODAL-ACCOUNT
 
 SMART CONTRACT
 - mettre a jour les commentaires
-- voir si rareté FoxyPoint par jour
 - a tester nombre d'addresse passable dans airdrop (test net) (100)
 - award fonctions usePoints
 
@@ -28,12 +27,13 @@ GANACHE
 
 MODAL MINT
 - border rarity en fonction des chiffres a passer en fonction des traits
-
+- niveau et points du token ?
 
 
 JAR
 - traits png -> jpeg ?
 - JAVA securisé avec toutes les fonctions en public ?
+- CORS probleme clear-tmp after merge
 
 
 

@@ -88,3 +88,4 @@
 
 <app-modal-collection *ngIf="showModal" [token]="selectedToken" (closeModalEvent)="closeModal()"></app-modal-collection>
 <app-modal-mint [hidden]="!showMergeModal" (close)="closeMergeModal()"></app-modal-mint>
+<app-error *ngIf="errorPage"></app-error>
