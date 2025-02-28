@@ -118,7 +118,8 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-      this.tokens = [];
+    if (this.controller) this.controller.abort();
+    this.tokens = [];
   }
 
 
@@ -135,7 +136,7 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
     const bottomReached = element.scrollTop + element.clientHeight >= element.scrollHeight - 10;
 
     if (bottomReached && !this.isLoading && this.tokenIndex != -1) {
-      this.filteredTokens(this.tokenIndex);
+      setTimeout(() => this.filteredTokens(this.tokenIndex), 100);
     }
   }
 
@@ -218,6 +219,7 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   async filteredTokens(tokenIndex: number = 0) {
+    if (this.isLoading) return;
     this.isLoading = true;
     if (this.controller) this.controller.abort();
     this.controller = new AbortController();
@@ -267,7 +269,6 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!keys.includes(imageKey)) continue;
 
         try {
-
           const response = await axios.get<Metadata>(`${this.baseUri}${jsonFiles[i]}` + `?t=${this.cacheVersion}`, { signal });
           const metadata = response.data;
           metadata.tokenId = parseInt(tokenId);
