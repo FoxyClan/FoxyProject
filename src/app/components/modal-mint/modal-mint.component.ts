@@ -5,6 +5,7 @@ import { CacheService } from "../../services/cache.service";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { TraitOptionsService } from '../../services/trait-options.service';
 
 @Component({
   selector: 'app-modal-mint',
@@ -86,7 +87,9 @@ export class ModalMint implements OnInit, OnDestroy {
   private animationFrame: number | null = null;
   private lastCallTime = 0;
 
-  constructor(private web3Service: Web3Service, private cacheService: CacheService) {
+  constructor(private web3Service: Web3Service,
+    private cacheService: CacheService,
+    private traitOptionsService: TraitOptionsService) {
     this.subscription = new Subscription();
   }
 
@@ -441,7 +444,20 @@ export class ModalMint implements OnInit, OnDestroy {
 
     // start effect
     setTimeout(() => {
-      this.effect = 'legendary';
+      let legendary = 0;
+      let epic = 0;
+      let rare = 0;
+
+      for(let attribute of this.mintedNfts[this.tokenIndex]?.metadata?.attributes) {
+        const rarity = this.getTraitRarity(attribute.value, attribute.trait_type);
+        if (rarity === "legendary") legendary ++;
+        else if (rarity === "epic") epic ++;
+        else if (rarity === "rare") rare ++;
+      }
+      if (legendary >= 1) this.effect = 'legendary';
+      else if (epic >= 1) this.effect = 'epic';
+      else if (rare >= 1) this.effect = 'rare';
+      else this.effect = "";
     }, 2000);
 
     // stop light background
@@ -453,32 +469,54 @@ export class ModalMint implements OnInit, OnDestroy {
 
     // stop effect
     setTimeout(() => {
-      this.stopEffect();
+      this.effect = '';
     }, 9000);
   }
 
   stopVideo() {
     this.showButton = true;
-    if(!this.showAddWalletButton) this.showAddWalletButton = true;
+    if (!this.showAddWalletButton) this.showAddWalletButton = true;
   }
 
-  stopEffect() {
-    this.effect = '';
+  getTraitRarity(trait: string, type: string) {
+    const index = this.getTraitIndex(trait, type);
+    if (index === null) {
+      console.error("Trait not found");
+      return "";
+    }
+    if (index <= 2) return "legendary";
+    if (index <= 5) return "epic";
+    if (index <= 8) return "rare";
+    return "";
   }
 
-  isGoldBorder(value: string): boolean {
-    const numericValue = parseInt(value, 10);
-    return numericValue < 3;
-  }
-
-  isEpicBorder(value: string): boolean {
-    const numericValue = parseInt(value, 10);
-    return numericValue >= 3 && numericValue <= 5;
-  }
-
-  isRareBorder(value: string): boolean {
-    const numericValue = parseInt(value, 10);
-    return numericValue >= 6 && numericValue <= 8;
+  getTraitIndex(trait: string, type: string) {
+    let options: any[] = [];
+    switch (type.toLowerCase()) {
+      case 'head covering':
+        options = this.traitOptionsService.headCoveringOptions;
+        break;
+      case 'eyes':
+        options = this.traitOptionsService.eyesOptions;
+        break;
+      case 'mouth':
+        options = this.traitOptionsService.mouthOptions;
+        break;
+      case 'clothes':
+        options = this.traitOptionsService.clothesOptions;
+        break;
+      case 'fur':
+        options = this.traitOptionsService.furOptions;
+        break;
+      case 'background':
+        options = this.traitOptionsService.backgroundOptions;
+        break;
+      default:
+        console.error('Type de trait invalide:', type);
+        return null;
+    }
+    const index = options.findIndex(option => option.name.toLowerCase() === trait.toLowerCase());
+    return index !== -1 ? index : null;
   }
 
   /* MERGE */

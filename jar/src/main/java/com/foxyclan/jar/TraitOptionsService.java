@@ -46,7 +46,7 @@ public class TraitOptionsService {
     private final List<String> mouthOptions = Arrays.asList(
         "Long Fangs", 
         "Biting Lip", 
-        "Black And Gold", 
+        "Gold Mustache", 
         "Gas Mask", 
         "Engraved Samurai Mask",
         "Robot Mask", 

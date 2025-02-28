@@ -692,7 +692,7 @@
 }
 
 
-.gold-border {
+.legendary-border {
     position: relative;
     border: 3px solid rgb(205, 174, 0);
     overflow: hidden; 
@@ -708,7 +708,7 @@
     overflow: hidden;
 }
 
-.gold-border video {
+.legendary-border video {
     position: absolute;
     top: 0;
     left: 0;

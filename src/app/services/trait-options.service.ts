@@ -53,7 +53,7 @@ export class TraitOptionsService {
   mouthOptions: MouthOption[] = [
     { name: 'Long Fangs', selected: false },
     { name: 'Biting Lip', selected: false }, //change
-    { name: 'Black And Gold', selected: false },
+    { name: 'Gold Mustache', selected: false },
     { name: 'Gas Mask', selected: false },
     { name: 'Engraved Samurai Mask', selected: false },
     { name: 'Robot Mask', selected: false },
