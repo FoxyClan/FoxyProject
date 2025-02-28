@@ -487,7 +487,7 @@ export class Web3Service {
       
       const privaleSaleIsActive = await this.privateSaleIsActive();
       const totalPrice = (numberOfTokens * (privaleSaleIsActive ? PrivateSaleFoxyPrice : FoxyPrice)).toString();
-      const result = await contract.methods['mintAllowList'](numberOfTokens).send({
+      await contract.methods['mintAllowList'](numberOfTokens).send({
         from: this.walletAddressSubject.value,
         value: this.web3?.utils.toWei(totalPrice, 'ether'),
       });
@@ -545,7 +545,7 @@ export class Web3Service {
     const contract = this.web3Modifier();
     const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(this.walletAddressSubject.value);
     try {
-      const result = await contract.methods['merge'](tokenId1, tokenId2).send({
+      await contract.methods['merge'](tokenId1, tokenId2).send({
         from: this.walletAddressSubject.value
       });
       this.creatingNftLoadingSubject.next(true);

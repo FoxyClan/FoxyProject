@@ -7,6 +7,7 @@ import { CacheService } from '../../services/cache.service';
 import { ModalCollection } from "../modal-collection/modal-collection.component";
 import { ModalMint } from "../modal-mint/modal-mint.component";
 import Web3 from 'web3';
+import { Url } from 'node:url';
 
 interface Metadata {
   tokenId: number;
@@ -30,7 +31,7 @@ interface Metadata {
 
 export class PageUserCollectionComponent implements OnInit {
   @ViewChild(ModalMint) modalMint!: ModalMint;
-  baseUri : string = 'https://foxyclan.s3.filebase.com/';
+  private baseUri : string = 'https://foxyclan.s3.filebase.com/';
   cacheVersion: string = '';
   private walletCheckedSubscription: any;
   isLoading: boolean = false;
@@ -54,6 +55,7 @@ export class PageUserCollectionComponent implements OnInit {
   mergeMode: boolean = false;
   availableTokens: { [key: number]: Metadata | null } = {}; // Liste des NFTs visibles dans la collection
   selectedNFTs: { left: Metadata | null, right: Metadata | null } = { left: null, right: null };
+  profileImage: string | undefined = "";
 
   constructor(private route: ActivatedRoute,
     private web3Service: Web3Service, 
@@ -102,8 +104,12 @@ export class PageUserCollectionComponent implements OnInit {
 
 
   async fetchNFTs(address: string): Promise<void> {
+    this.cacheService.updateCacheVersion();
     const result = await this.web3Service.tokenOfOwnerByIndex(address);
-    if(result.length === 0) this.noNft = true;
+    if(result.length === 0) {
+      this.noNft = true;
+      return;
+    }
     for (const tokenId of result) {
       try {
         const url = this.baseUri + tokenId + '.json';
@@ -114,6 +120,8 @@ export class PageUserCollectionComponent implements OnInit {
         console.error(`Failed to fetch data for token ${tokenId} : `, error);
         this.tokens[tokenId] = null;
       } finally {
+        const minTokenIdIndex = result.findIndex(tokenId => Number(tokenId) === Math.min(...result.map(tokenId => Number(tokenId))));
+        this.profileImage = this.tokens[result[minTokenIdIndex]]?.image;
       }
     }
   }

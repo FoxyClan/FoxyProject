@@ -29,8 +29,8 @@
       </div>
       <h2 *ngIf="noNft && !isOwner" class="no-nft-message">This address is not yet part of the foxy family</h2>
     </div>
-    <div *ngIf="tokens[0]" class="owner-image">
-      <img [src]="noNft ? 'FoxyLogo.jpeg' : tokens[0].image"/>
+    <div class="owner-image">
+      <img [src]="noNft ? 'FoxyLogo.jpeg' : profileImage"/>
     </div>
   </div>
 

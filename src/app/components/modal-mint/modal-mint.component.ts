@@ -134,7 +134,7 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   closeModal() {
-    if(this.isLoading) return
+    if(this.isLoading || this.creatingNftLoading) return
     this.errorMessage = "";
     this.counterValue = 1;
     if(!this.success) {
