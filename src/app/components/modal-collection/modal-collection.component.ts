@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Web3Service } from "../../services/web3.service";
 import { Router } from '@angular/router';
 import { CacheService } from '../../services/cache.service';
+import { TraitOptionsService } from '../../services/trait-options.service';
 
 interface Metadata {
   tokenId: number;
@@ -47,7 +48,8 @@ export class ModalCollection implements OnInit {
 
   constructor(private web3Service: Web3Service, 
     private router: Router,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private traitOptionsService: TraitOptionsService
   ) {}
 
   async ngOnInit() {
@@ -114,5 +116,46 @@ export class ModalCollection implements OnInit {
       queryParams: { trait: attribute.trait_type, value: attribute.value }, 
       queryParamsHandling: 'merge'
     });
+  }
+
+  getTraitRarity(trait: string, type: string) {
+    const index = this.getTraitIndex(trait, type);
+    if (index === null) {
+      console.error("Trait not found");
+      return "";
+    }
+    if (index <= 2) return "legendary";
+    if (index <= 5) return "epic";
+    if (index <= 8) return "rare";
+    return "";
+  }
+
+  getTraitIndex(trait: string, type: string) {
+    let options: any[] = [];
+    switch (type.toLowerCase()) {
+      case 'head covering':
+        options = this.traitOptionsService.headCoveringOptions;
+        break;
+      case 'eyes':
+        options = this.traitOptionsService.eyesOptions;
+        break;
+      case 'mouth':
+        options = this.traitOptionsService.mouthOptions;
+        break;
+      case 'clothes':
+        options = this.traitOptionsService.clothesOptions;
+        break;
+      case 'fur':
+        options = this.traitOptionsService.furOptions;
+        break;
+      case 'background':
+        options = this.traitOptionsService.backgroundOptions;
+        break;
+      default:
+        console.error('Type de trait invalide:', type);
+        return null;
+    }
+    const index = options.findIndex(option => option.name.toLowerCase() === trait.toLowerCase());
+    return index !== -1 ? index : null;
   }
 }

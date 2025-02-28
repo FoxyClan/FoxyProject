@@ -22,13 +22,10 @@ SMART CONTRACT
 - verifier que les token burn sont bien calculé dans les prochains mint pour la totale supply
 
 
-
-
 GANACHE
 - supprimer commentaire web3service getBalance / modal account loadBalance -> catch consol error
 
 MODAL MINT
-- border rarity en fonction des chiffres a passer en fonction des traits
 - niveau et points du token ?
 
 

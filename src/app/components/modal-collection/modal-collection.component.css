@@ -220,6 +220,33 @@
   color: white;
 }
 
+.legendary-border {
+  position: relative;
+  border: 3px solid rgb(205, 174, 0);
+  overflow: hidden; 
+}
+
+.epic-border {
+  border: 3px solid rgb(95, 0, 143);
+  overflow: hidden;
+}
+
+.rare-border {
+  border: 3px solid rgb(140, 68, 0);
+  overflow: hidden;
+}
+
+.legendary-border video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1; 
+  pointer-events: none; 
+}
+
   
   
   
