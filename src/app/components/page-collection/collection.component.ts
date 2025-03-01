@@ -99,7 +99,6 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isTraitOpen = new Array(this.traits.length).fill(false);
   
     this.resetFilters();
-    this.clearAllFilters();
   
     this.route.queryParams.subscribe(params => {
       const trait = params['trait'];
@@ -136,7 +135,7 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
     const bottomReached = element.scrollTop + element.clientHeight >= element.scrollHeight - 10;
 
     if (bottomReached && !this.isLoading && this.tokenIndex != -1) {
-      setTimeout(() => this.filteredTokens(this.tokenIndex), 100);
+      this.filteredTokens(this.tokenIndex);
     }
   }
 
@@ -219,7 +218,6 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   async filteredTokens(tokenIndex: number = 0) {
-    if (this.isLoading) return;
     this.isLoading = true;
     if (this.controller) this.controller.abort();
     this.controller = new AbortController();
