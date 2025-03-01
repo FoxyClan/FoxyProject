@@ -37,4 +37,4 @@ JAR
 
 
 ACTUAL :
-- probleme actualisation isPublicSaleActive prend du temps a demarrer
+- probleme modam collection click sur attribut
