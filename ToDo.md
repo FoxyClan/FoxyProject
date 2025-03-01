@@ -37,4 +37,3 @@ JAR
 
 
 ACTUAL :
-- probleme modam collection click sur attribut

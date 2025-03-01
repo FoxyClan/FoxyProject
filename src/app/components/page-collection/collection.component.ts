@@ -245,7 +245,10 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
     ];
 
     try {
-      const bucketResponse = await axios.get(this.baseUri + `?t=${this.cacheVersion}`, { responseType: 'text' });
+      const bucketResponse = await axios.get(this.baseUri + `?t=${this.cacheVersion}`, { 
+        responseType: 'text',
+        withCredentials: false // Empêche l'envoi de cookies tiers 
+      });
       if (typeof window === 'undefined' || typeof DOMParser === 'undefined') return;
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(bucketResponse.data, 'application/xml');
@@ -267,7 +270,10 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!keys.includes(imageKey)) continue;
 
         try {
-          const response = await axios.get<Metadata>(`${this.baseUri}${jsonFiles[i]}` + `?t=${this.cacheVersion}`, { signal });
+          const response = await axios.get<Metadata>(`${this.baseUri}${jsonFiles[i]}` + `?t=${this.cacheVersion}`, { 
+            signal, 
+            withCredentials: false  
+          });
           const metadata = response.data;
           metadata.tokenId = parseInt(tokenId);
 
