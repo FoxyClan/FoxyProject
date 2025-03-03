@@ -467,9 +467,9 @@ export class Web3Service {
     const saleMintLimit = await this.saleMintLimit();
 
     if(numberOfTokens > 20) throw new Error("You can't mint more than 20 NFTs at a time");
-    if(numberOfTokens + Number(balance) > 20) throw new Error("You can't mint more than 20 NFTs");
+    //if(numberOfTokens + Number(balance) > 20) throw new Error("You can't mint more than 20 NFTs");
     if(Number(totalSupply) + numberOfTokens > 20000) throw new Error("Exceeded max supply");
-    if(Number(currentSaleMinted) + numberOfTokens > Number(saleMintLimit)) throw new Error("Exceeded max mint limit for this sale");
+    if(Number(saleMintLimit) !== 0 && Number(currentSaleMinted) + numberOfTokens > Number(saleMintLimit)) throw new Error("Exceeded max mint limit for this sale");
     
     try {
       const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(this.walletAddressSubject.value);

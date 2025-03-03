@@ -700,11 +700,13 @@
 
 .epic-border {
     border: 3px solid rgb(95, 0, 143);
+	background: rgba(95, 0, 143, 0.2);
     overflow: hidden;
 }
 
 .rare-border {
     border: 3px solid rgb(140, 68, 0);
+	background: rgba(140, 68, 0, 0.2);
     overflow: hidden;
 }
 

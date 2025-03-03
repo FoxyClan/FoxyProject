@@ -8,6 +8,7 @@ HEADER
 WEB3SERVICE
 - enlever le commentaire de switchethaccount
 - merge : on recupere le tableau tokenIdsAfter et on le compare a tokenIdsBefore, ce devrait etre trois token retourné 2 burn et le nouveau
+- enelever commentaire sur la limite de mint par wallet
 
 MODAL-WALLET
 - mettre le wallet recent en haut

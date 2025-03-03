@@ -137,6 +137,7 @@ export class ModalMint implements OnInit, OnDestroy {
 
   closeModal() {
     if(this.isLoading || this.creatingNftLoading) return
+    if(this.success && !this.discover) return
     this.errorMessage = "";
     this.counterValue = 1;
     if(!this.success) {
@@ -444,19 +445,19 @@ export class ModalMint implements OnInit, OnDestroy {
 
     // start effect
     setTimeout(() => {
-      let legendary = 0;
-      let epic = 0;
-      let rare = 0;
+      let rarity = 0;
 
       for(let attribute of this.mintedNfts[this.tokenIndex]?.metadata?.attributes) {
-        const rarity = this.getTraitRarity(attribute.value, attribute.trait_type);
-        if (rarity === "legendary") legendary ++;
-        else if (rarity === "epic") epic ++;
-        else if (rarity === "rare") rare ++;
+        const trait = this.getTraitRarity(attribute.value, attribute.trait_type);
+        if (trait === "legendary") rarity += 1;
+        else if (trait === "epic") rarity += 2;
+        else if (trait === "rare") rarity += 3;
+        else rarity += 4;
       }
-      if (legendary >= 1) this.effect = 'legendary';
-      else if (epic >= 1) this.effect = 'epic';
-      else if (rare >= 1) this.effect = 'rare';
+      console.log(rarity)
+      if (rarity <= 15) this.effect = 'legendary';
+      else if (rarity <= 17) this.effect = 'epic';
+      else if (rarity <= 20) this.effect = 'rare';
       else this.effect = "";
     }, 2000);
 

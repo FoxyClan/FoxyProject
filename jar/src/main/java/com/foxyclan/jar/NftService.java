@@ -48,16 +48,6 @@ public class NftService {
 
     @Value("${filebase.baseUrl}")
     private String baseUrl;
-
-    @PostConstruct
-    public void testConfig() {
-        System.out.println("Access Key : " + accessKey);
-        System.out.println("Secret Key : " + secretKey);
-        System.out.println("Endpoint URL : " + endpointUrl);
-        System.out.println("Bucket Name : " + bucketName);
-        System.out.println("Base URL : " + baseUrl);
-    }
-
     
     public void createNFT(Map<String, String> adn, int tokenId) throws IOException {
         try {

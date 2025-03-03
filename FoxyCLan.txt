@@ -250,7 +250,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         require(ownerOf(tokenId1) == msg.sender, "You must own tokenId1");
         require(ownerOf(tokenId2) == msg.sender, "You must own tokenId2");
         require(tokenId1 != tokenId2, "Cannot merge the same token");
-        require(level[tokenId1] == 1 && level[tokenId2] <= 3 || level[tokenId1] == 1 && level[tokenId2] <= 3, "Cannot merge this tokens");
+        require(level[tokenId1] == 1 && level[tokenId2] <= 3 || level[tokenId1] == 1 && level[tokenId2] <= 3, "At least one of the two tokens must be level 1");
 
         uint256 tokenPoints1 = getTokenPoints(tokenId1);
         uint256 tokenPoints2 = getTokenPoints(tokenId2);
