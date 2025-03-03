@@ -175,4 +175,13 @@ export class ModalCollection implements OnInit {
     const index = options.findIndex(option => option.name.toLowerCase() === trait.toLowerCase());
     return index !== -1 ? index : null;
   }
+
+  formatDNA(dna: string | undefined): string {
+    if(dna == null) return "Fail to fetch";
+    if (dna.length !== 12 || !/^\d{12}$/.test(dna)) {
+        throw new Error("Le DNA doit être une chaîne de 12 chiffres.");
+    }
+    return dna.replace(/(\d{2})(?=\d)/g, "$1 ");
+  }
+
 }
