@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Web3Service } from "../../services/web3.service";
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CacheService } from '../../services/cache.service';
 import { TraitOptionsService } from '../../services/trait-options.service';
 
@@ -18,7 +18,7 @@ interface Metadata {
 @Component({
   selector: 'app-modal-collection',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './modal-collection.component.html',
   styleUrl: './modal-collection.component.css',
   animations: [
@@ -43,6 +43,8 @@ export class ModalCollection implements OnInit {
   ownerOfToken: string = "Loading...";
   backgroundColor: string = '';
   isLoading: boolean = true;
+  showTooltip: boolean = false;
+  rarity: any = "Loading...";
   
   cacheVersion: string = '';
 
@@ -61,6 +63,7 @@ export class ModalCollection implements OnInit {
         this.setBackground(),
         this.level(this.token.tokenId),
         this.getTokenPoints(this.token.tokenId),
+        this.getRarity(this.token.attributes),
         this.ownerOf(this.token.tokenId)
       ]);
       this.isLoading = false;
@@ -116,6 +119,20 @@ export class ModalCollection implements OnInit {
       queryParams: { trait: attribute.trait_type, value: attribute.value }, 
       queryParamsHandling: 'merge'
     });
+  }
+
+  getRarity(attributes: Array<{ value: string; trait_type: string }>) {
+    let total = 0;
+    for(let item of attributes) {
+      let index = this.getTraitIndex(item.value, item.trait_type);
+      if (index === null) {
+        console.error("Trait not found");
+        index = 15;
+      }
+      total += index;
+    }
+    total = (total / 85 * 100);
+    this.rarity = parseFloat(total.toFixed(1));
   }
 
   getTraitRarity(trait: string, type: string) {

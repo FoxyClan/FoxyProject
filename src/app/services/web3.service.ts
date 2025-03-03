@@ -415,7 +415,6 @@ export class Web3Service {
     try {
       const contract = this.web3Modifier();
       const result = await contract.methods['ownerOf'](tokenId).call();
-      console.log(result, this.walletAddressSubject.value)
       return String(result);
     } catch (error) {
       console.error("Fail to fetch owner of " + "tokenId", error);

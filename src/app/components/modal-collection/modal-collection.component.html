@@ -14,10 +14,23 @@
         <div class="metadata-block">
           <h2 class="nft-name">{{ token?.name }}</h2>
           <div class="metadata">
-            <div class="specialities">
-              <h4>LEVEL : {{ tokenLevel }}</h4>
-              <h4>FOXY POINTS : {{ foxyPoints }}</h4>
+            <div class="info-container">
+              <div class="info">
+                <span>{{ tokenLevel }}</span>
+                <p>Level</p>
+              </div>
+              <div class="info">
+                <span>{{ foxyPoints }}</span>
+                <p>FoxyPoints <span class="info-icon" (mouseenter)="showTooltip=true" (mouseleave)="showTooltip=false">&#9432;<div *ngIf="showTooltip" class="tooltip">
+                  FoxyPoints are loyalty points earned by holding Foxy NFTs<br>( Dependent on token level ) or by completing missions.<br>Nobody knows what these mysterious points are for...  
+                </div></span></p>
+              </div>
+              <div class="info ">
+                <span class="width-fix">{{ rarity }}%</span>
+                <p>Rarity</p>
+              </div>
             </div>
+            <h5>DNA : {{ token?.DNA }}</h5>
             <div class="attributes">
               <div *ngFor="let attr of token?.attributes" class="attribute-card" (click)="filterByAttribute(attr)"
               [ngClass]="getTraitRarity(attr.value, attr.trait_type) + '-border'">
@@ -29,7 +42,7 @@
               </div>
             </div>
           </div>
-          <h4>OWNER : {{ ownerOfToken !== "Fail to fetch" ? (ownerOfToken.substring(0, 6) + '...' + ownerOfToken.substring(38)) : ownerOfToken }}</h4>
+          <h4 title="View owner's collection" [routerLink]="['/profil']" [queryParams]="{ address: ownerOfToken }" (click)="closeModal()">OWNER : <span class="owner">{{ ownerOfToken !== "Fail to fetch" ? (ownerOfToken.substring(0, 6) + '...' + ownerOfToken.substring(38)) : ownerOfToken }}</span></h4>
         </div>
         
       </div>
