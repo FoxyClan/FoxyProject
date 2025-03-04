@@ -3,10 +3,12 @@ package com.foxyclan.jar;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
+import java.util.Random;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +49,32 @@ public class MergeService {
         for (String trait : traitTypes) {
             String traitValue1 = traitService.getTraitValue(metadata1, trait);
             String traitValue2 = traitService.getTraitValue(metadata2, trait);
-            
-            // Comparer les indices et prendre le meilleur trait
             String bestTrait = traitService.getBestTrait(trait, traitValue1, traitValue2);
             mergedTraits.put(trait, bestTrait);
         }
 
+        // Vérification et ajustement de l'ADN s'il existe déjà
+        int maxAttempts = 20000;
+        int attempts = 0;
+        boolean addDna = false;
+        while (!addDna && attempts < maxAttempts) {
+            String stringDna = buildDNAString(mergedTraits);
+            
+            try {
+                addDna = nftService.addDna(stringDna, newTokenId);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            }
+
+            if (!addDna) {
+                mergedTraits = modifyTraits(mergedTraits, traitTypes);
+                if (mergedTraits == null) {
+                    throw new IOException("Merge Impossible");
+                }
+            }
+            attempts++;
+        }
         // Générer la nouvelle image du NFT fusionné
         nftService.createNFT(mergedTraits, newTokenId);
         nftService.uploadToFilebase(newTokenId + ".png");
@@ -70,5 +92,43 @@ public class MergeService {
         response.put("metadata", mergedMetadata);
 
         return response;
+    }
+
+    private String buildDNAString(Map<String, String> traits) {
+        return traits.get("Head Covering") +
+               traits.get("Mouth") +
+               traits.get("Eyes") +
+               traits.get("Clothes") +
+               traits.get("Fur") +
+               traits.get("Background");
+    }
+
+    private Map<String, String> modifyTraits(Map<String, String> mergedTraits, String[] traitTypes) {
+        List<String> modifiableTraits = new ArrayList<>();
+    
+        // Copier la map pour ne pas modifier l'originale
+        Map<String, String> modifiedTraits = new HashMap<>(mergedTraits);
+    
+        // Récupérer tous les traits sauf "Background" et ceux qui sont déjà à 00
+        for (String trait : traitTypes) {
+            if (!trait.equals("Background") && Integer.parseInt(modifiedTraits.get(trait)) > 0) {
+                modifiableTraits.add(trait);
+            }
+        }
+    
+        // Si aucun trait n'est modifiable, on retourne null (fusion impossible)
+        if (modifiableTraits.isEmpty()) {
+            return null;
+        }
+    
+        // Sélectionner un trait aléatoire à diminuer
+        Random rand = new Random();
+        String traitToModify = modifiableTraits.get(rand.nextInt(modifiableTraits.size()));
+    
+        // Diminuer la valeur de ce trait
+        int newValue = Integer.parseInt(modifiedTraits.get(traitToModify)) - 1;
+        modifiedTraits.put(traitToModify, String.format("%02d", newValue)); // Format 2 chiffres
+    
+        return modifiedTraits;
     }
 }

@@ -27,7 +27,7 @@ public class MintService {
     @GetMapping("/adn")
     @CrossOrigin(origins = "http://localhost:4200")
     public Map<String, Object> generateDNA(@RequestParam int tokenId) throws IOException {
-        int maxAttempts = 20001;
+        int maxAttempts = 20000;
         int attempts = 0;
         boolean addDna = false;
         String stringDna = "";

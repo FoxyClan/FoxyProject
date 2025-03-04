@@ -223,8 +223,12 @@ public class NftService {
             return false;
         }
 
+        Map<Integer, String> adnMapping = new HashMap<>();
+        adnMapping.put(tokenId, newAdn);
+
+        // Création d'un fichier temporaire contenant le mapping
         File tempFile = new File("jar/src/main/resources/tmp/" + fileName);
-        objectMapper.writeValue(tempFile, tokenId);
+        objectMapper.writeValue(tempFile, adnMapping);
         
         try {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
