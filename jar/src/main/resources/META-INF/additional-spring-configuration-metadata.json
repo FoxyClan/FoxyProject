@@ -15,13 +15,23 @@
     "description": "A description for 'filebase.secretKey'"
   },
   {
-    "name": "filebase.bucketName",
+    "name": "filebase.foxyBucket",
     "type": "java.lang.String",
-    "description": "A description for 'filebase.bucketName'"
+    "description": "A description for 'filebase.foxyBucket'"
   },
   {
-    "name": "filebase.baseUrl",
+    "name": "filebase.foxyBaseUrl",
     "type": "java.lang.String",
-    "description": "A description for 'filebase.baseUrl'"
+    "description": "A description for 'filebase.foxyBaseUrl'"
+  },
+  {
+    "name": "filebase.dnaBaseUrl",
+    "type": "java.lang.String",
+    "description": "A description for 'filebase.dnaBaseUrl'"
+  },
+  {
+    "name": "filebase.dnaBucket",
+    "type": "java.lang.String",
+    "description": "A description for 'filebase.dnaBucket'"
   }
 ]}

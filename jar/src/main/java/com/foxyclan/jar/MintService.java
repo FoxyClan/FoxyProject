@@ -26,21 +26,39 @@ public class MintService {
 
     @GetMapping("/adn")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Object> generateDNA(@RequestParam int tokenId) throws IOException {        // @Todo gerer les meme adn, modifier les 
-        String Head = generateTraitDNA("");                                                 // noms dans le json, faire les traits impossible a combiner 
-        String Mouth = generateTraitDNA("");
-        String Eyes = generateTraitDNA("");
-        String Clothes = generateTraitDNA("");
-        String Fur = generateTraitDNA("fur");
-        String Background = generateTraitDNA("background");
-
+    public Map<String, Object> generateDNA(@RequestParam int tokenId) throws IOException {
+        int maxAttempts = 20001;
+        int attempts = 0;
+        boolean addDna = false;
+        String stringDna = "";
         Map<String, String> adn = new HashMap<>();
-        adn.put("Head Covering", Head);
-        adn.put("Mouth", Mouth);
-        adn.put("Eyes", Eyes);
-        adn.put("Clothes", Clothes);
-        adn.put("Fur", Fur);
-        adn.put("Background", Background);
+
+        while (!addDna && attempts < maxAttempts) {
+            String Head = generateTraitDNA("");
+            String Mouth = generateTraitDNA("");
+            String Eyes = generateTraitDNA("");
+            String Clothes = generateTraitDNA("");
+            String Fur = generateTraitDNA("fur");
+            String Background = generateTraitDNA("background");
+
+            stringDna = Head + Mouth + Eyes + Clothes + Fur;
+            try {
+                addDna = nftService.addDna(stringDna, tokenId);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            }
+            
+            if (addDna) {
+                adn.put("Head Covering", Head);
+                adn.put("Mouth", Mouth);
+                adn.put("Eyes", Eyes);
+                adn.put("Clothes", Clothes);
+                adn.put("Fur", Fur);
+                adn.put("Background", Background);
+            }
+            attempts++;
+        }
 
         Map<String, Object> response = new HashMap<>();
         try {

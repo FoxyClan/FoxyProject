@@ -3,12 +3,12 @@ package com.foxyclan.jar;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -21,8 +21,11 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import com.fasterxml.jackson.core.type.TypeReference;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -41,11 +44,17 @@ public class NftService {
     @Value("${filebase.endpointUrl}")
     private String endpointUrl;
 
-    @Value("${filebase.bucketName}")
-    private String bucketName;
+    @Value("${filebase.foxyBucket}")
+    private String foxyBucket;
 
-    @Value("${filebase.baseUrl}")
-    private String baseUrl;
+    @Value("${filebase.foxyBaseUrl}")
+    private String foxyBaseUrl;
+
+    @Value("${filebase.dnaBucket}")
+    private String dnaBucket;
+
+    @Value("${filebase.dnaBaseUrl}")
+    private String dnaBaseUrl;
     
     public void createNFT(Map<String, String> adn, int tokenId) throws IOException {
         try {
@@ -103,7 +112,7 @@ public class NftService {
     private void uploadFile(S3Client s3Client, String key, Path filePath) throws Exception {
         try {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .bucket(bucketName)
+                    .bucket(foxyBucket)
                     .key(key)
                     .build();
 
@@ -122,7 +131,7 @@ public class NftService {
             Map<String, Object> metadata = new HashMap<>();
             TraitOptionsService traitOptionsService = new TraitOptionsService();
             
-            String imageUrl = baseUrl + tokenId + ".png";
+            String imageUrl = foxyBaseUrl + tokenId + ".png";
             String description = "Foxy Clan is a unique collection of adorable and distinctive red pandas, celebrating their playful charm on the blockchain.";
             String name = "Foxy Clan #" + tokenId;
             String nftADN = adn.get("Head Covering")
@@ -167,8 +176,9 @@ public class NftService {
         }
     }
 
+
     public Map<String, Object> fetchMetadataFromFilebase(int tokenId) throws IOException {
-        String fileUrl = baseUrl + tokenId + ".json";
+        String fileUrl = foxyBaseUrl + tokenId + ".json";
         System.out.println(fileUrl);
 
         try {
@@ -184,7 +194,60 @@ public class NftService {
         }
     }
 
+
+
+    public boolean addDna(String newAdn, int tokenId) throws IOException {
+        String bucket = dnaBucket; // Bucket sur Filebase
+        String fileName = newAdn + ".json"; // Fichier ADN unique
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        S3Client s3Client = S3Client.builder()
+                .region(Region.US_EAST_1)
+                .endpointOverride(URI.create(endpointUrl))
+                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
+                .build();
+
+        try {
+            HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
+                .bucket(bucket)
+                .key(fileName)
+                .build();
+            s3Client.headObject(headObjectRequest);
+            System.out.println("L'ADN " + newAdn + " existe déjà sur Filebase");
+            return false; // ADN déjà existant
+        } catch (NoSuchKeyException e) {
+            System.out.println("L'ADN " + newAdn + " n'existe pas encore. Création du fichier...");
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la vérification du fichier ADN sur Filebase.");
+            e.printStackTrace();
+            return false;
+        }
+
+        File tempFile = new File("jar/src/main/resources/tmp/" + fileName);
+        objectMapper.writeValue(tempFile, tokenId);
+        
+        try {
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(fileName)
+                .build();
+
+            s3Client.putObject(putObjectRequest, Path.of(tempFile.getPath()));
+            System.out.println("ADN ajouté avec succès : " + newAdn + " -> TokenID: " + tokenId);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'upload du fichier ADN sur Filebase !");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+
     /* CLEAR TMP */
+
+
 
     @GetMapping("/clear-tmp")
     public void clearOldTmpFiles() {
@@ -257,9 +320,9 @@ public class NftService {
                 .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
                 .build();
 
-                Path filePath = file.toPath();
-                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucketName)
+            Path filePath = file.toPath();
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(foxyBucket)
                 .key(fileName)
                 .build();
 
