@@ -20,12 +20,14 @@
                 <span>{{ tokenLevel }}</span>
                 <p>Level</p>
               </div>
+              
               <div class="info">
                 <span>{{ foxyPoints }}</span>
                 <p>FoxyPoints <span class="info-icon" (mouseenter)="showTooltip=true" (mouseleave)="showTooltip=false">&#9432;<div *ngIf="showTooltip" class="tooltip">
                   FoxyPoints are loyalty points earned by holding Foxy NFTs<br>( Dependent on token level ) or by completing missions.<br>Nobody knows what these mysterious points are for...  
                 </div></span></p>
               </div>
+
               <div class="info ">
                 <span class="width-fix">{{ rarity }}</span>
                 <p>Rarity</p>

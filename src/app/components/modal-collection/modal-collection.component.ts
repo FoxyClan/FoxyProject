@@ -131,7 +131,7 @@ export class ModalCollection implements OnInit {
       }
       total += index;
     }
-    total = (total / 85 * 100);
+    total = (total / 87 * 100);
     this.rarity = parseFloat(total.toFixed(1));
   }
 

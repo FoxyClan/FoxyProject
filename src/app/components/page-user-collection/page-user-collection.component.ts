@@ -9,6 +9,7 @@ import { ModalMint } from "../modal-mint/modal-mint.component";
 import { ErrorComponent } from "../page-error/error.component";
 import Web3 from 'web3';
 import { isAddress } from 'web3-validator';
+import { TraitOptionsService } from '../../services/trait-options.service';
 
 
 interface Metadata {
@@ -44,6 +45,7 @@ export class PageUserCollectionComponent implements OnInit {
   isOwner: boolean = false;
   tokens: { [key: number]: Metadata | null } = {};
   selectedNFT: Metadata | null = null;
+  rarities: { [key: number]: number } = {};
 
   userFoxyPoints: any = "Loading...";
   numberOfFoxys: any = "Loading...";
@@ -59,11 +61,13 @@ export class PageUserCollectionComponent implements OnInit {
   availableTokens: { [key: number]: Metadata | null } = {}; // Liste des NFTs visibles dans la collection
   selectedNFTs: { left: Metadata | null, right: Metadata | null } = { left: null, right: null };
   profileImage: string | undefined = "";
+  profilImageRarity: number = 101;
   errorMessage: any;
 
   constructor(private route: ActivatedRoute,
     private web3Service: Web3Service, 
     private cacheService : CacheService,
+    private traitOptionsService: TraitOptionsService
   ) {}
 
   ngOnInit(): void {
@@ -128,10 +132,60 @@ export class PageUserCollectionComponent implements OnInit {
         console.error(`Failed to fetch data for token ${tokenId} : `, error);
         this.tokens[tokenId] = null;
       } finally {
-        const minTokenIdIndex = result.findIndex(tokenId => Number(tokenId) === Math.min(...result.map(tokenId => Number(tokenId))));
-        this.profileImage = this.tokens[result[minTokenIdIndex]]?.image;
+        for (const tokenId in this.tokens) {
+          if (this.tokens[tokenId]) {
+            this.getRarity(this.tokens[tokenId]!);
+          }
+        }
       }
     }
+  }
+
+  getRarity(metadata: Metadata) {
+    let total = 0;
+    for(let item of metadata.attributes) {
+      let index = this.getTraitIndex(item.value, item.trait_type);
+      if (index === null) {
+        console.error("Trait not found");
+        index = 15;
+      }
+      total += index;
+    }
+    total = (total / 87 * 100);
+    this.rarities[metadata.tokenId] = parseFloat(total.toFixed(1));
+    if(this.rarities[metadata.tokenId] <= this.profilImageRarity) {
+      this.profilImageRarity = this.rarities[metadata.tokenId];
+      this.profileImage = metadata.image;
+    }  
+  }
+
+  getTraitIndex(trait: string, type: string) {
+    let options: any[] = [];
+    switch (type.toLowerCase()) {
+      case 'head covering':
+        options = this.traitOptionsService.headCoveringOptions;
+        break;
+      case 'eyes':
+        options = this.traitOptionsService.eyesOptions;
+        break;
+      case 'mouth':
+        options = this.traitOptionsService.mouthOptions;
+        break;
+      case 'clothes':
+        options = this.traitOptionsService.clothesOptions;
+        break;
+      case 'fur':
+        options = this.traitOptionsService.furOptions;
+        break;
+      case 'background':
+        options = this.traitOptionsService.backgroundOptions;
+        break;
+      default:
+        console.error('Type de trait invalide:', type);
+        return null;
+    }
+    const index = options.findIndex(option => option.name.toLowerCase() === trait.toLowerCase());
+    return index !== -1 ? index : null;
   }
 
   openModal(token: Metadata | null) {
