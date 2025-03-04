@@ -82,7 +82,7 @@ export class ModalCollection implements OnInit {
       this.tokenLevel = Number(result);
     } catch (error) {
       console.error("Level fetch failed:", error);
-      this.tokenLevel = "Fail to fetch";
+      this.tokenLevel = "xxx";
     }
   }
 
@@ -92,7 +92,7 @@ export class ModalCollection implements OnInit {
       this.foxyPoints = Number(result);
     } catch (error) {
       console.error("Token Points fetch failed:", error);
-      this.foxyPoints = "Fail to fetch";
+      this.foxyPoints = "xxx";
     }
   }
 

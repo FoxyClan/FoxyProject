@@ -38,3 +38,5 @@ JAR
 
 
 ACTUAL :
+- commencer merge
+- discover nft

@@ -337,10 +337,7 @@ export class PageUserCollectionComponent implements OnInit {
   async closeMergeModal() {
     this.errorMessage = "";
     this.showMergeModal = false;
-    this.exitMergeMode();
-    this.isLoading = true;
-    await this.fetchNFTs(this.walletAddress!);
-    this.isLoading = false;
+    window.location.reload();
   }
 
 }

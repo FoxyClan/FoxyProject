@@ -3,7 +3,6 @@ package com.foxyclan.jar;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.annotation.PostConstruct;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +15,6 @@ import java.awt.image.BufferedImage;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
