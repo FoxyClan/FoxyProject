@@ -51,9 +51,14 @@
     <div class="merge-info">
       <div class="merge-description">
         <img src="FoxyLogoNoBackground.png" alt="">
-        <p [ngStyle]="{'color': errorMessage ? 'red' : '', 'font-weight': 'bold'}">{{ errorMessage ? errorMessage : "Drag and drop two NFTs to create something unique." }}</p>
+        <p [ngStyle]="{'color': errorMessage ? 'red' : '',
+        'font-weight':  errorMessage ? '400' : 'bold',
+        'letter-spacing': '1px'}">{{ errorMessage ? errorMessage : "Drag and drop two NFTs to create something unique." }}</p>
       </div>
-      <button class="btn merge-btn" [disabled]="!selectedNFTs.left || !selectedNFTs.right" (click)="merge()">Confirm Merge</button>
+      <button class="btn merge-btn" (click)="merge()" [disabled]="mergingLoad">
+        <span [ngStyle]="{'opacity': mergingLoad ? '0' : '1'}">Confirm Merge</span>
+        <span *ngIf="mergingLoad" class="loading-spinner"></span>
+      </button>
     </div>
 
     <!-- Cadran Droit -->
@@ -77,7 +82,7 @@
          [ngStyle]="{'cursor': mergeMode ? 'all-scroll' : 'pointer'}"
          draggable="true" 
          (dragstart)="token.value ? onDragStart($event, token.value) : null"
-         (click)="mergeMode && hasFreeSlot() ? addToMerge(token.value) : openModal(token.value)">
+         (click)="mergeMode && (!this.selectedNFTs.left || !this.selectedNFTs.right) ? addToMerge(token.value) : openModal(token.value)">
       <img [src]="token.value?.image"/>
       <p>#{{ token.value?.tokenId }}</p>
     </div>

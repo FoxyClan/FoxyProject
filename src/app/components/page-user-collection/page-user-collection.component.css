@@ -214,6 +214,7 @@ app-modal-mint {
     /* bottom-right 2 */ 0 100%
   );
   transition: color 250ms;
+  overflow: hidden;
 }
 
 .btn::after,
@@ -414,7 +415,20 @@ app-modal-mint {
   width: 50%;
   height: auto;
   display: block;
-  margin: 0 auto;
+  margin: 0 auto 1rem auto;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+      transform: translateY(0);
+  }
+  50% {
+      transform: translateY(-20px);
+  }
+  100% {
+      transform: translateY(0);
+  }
 }
 
 
@@ -442,6 +456,30 @@ app-modal-mint {
 .merge-btn:hover {
   background: linear-gradient(45deg, #7e03aa, #00fffb, #ffae00);
 }
+
+
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid #a877ba;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: mergeSpin 0.8s linear infinite;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes mergeSpin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
 
 .drop-zone {
   aspect-ratio: 1 / 1;

@@ -10,6 +10,8 @@ import { ErrorComponent } from "../page-error/error.component";
 import Web3 from 'web3';
 import { isAddress } from 'web3-validator';
 import { TraitOptionsService } from '../../services/trait-options.service';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 
 interface Metadata {
@@ -63,11 +65,15 @@ export class PageUserCollectionComponent implements OnInit {
   profileImage: string | undefined = "";
   profilImageRarity: number = 101;
   errorMessage: any;
+  mergingLoad: boolean = false;
+
+  private filebaseUrl = 'https://dnastore.s3.filebase.com/';
 
   constructor(private route: ActivatedRoute,
     private web3Service: Web3Service, 
     private cacheService : CacheService,
-    private traitOptionsService: TraitOptionsService
+    private traitOptionsService: TraitOptionsService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -177,28 +183,12 @@ export class PageUserCollectionComponent implements OnInit {
   
 
   onDragStart(event: DragEvent, token: Metadata) {
-  if (!event.dataTransfer) return;
-  
-  // Stocker les données du NFT
-  event.dataTransfer.setData("text/plain", JSON.stringify(token));
+    if (!event.dataTransfer) return;
+    
+    // Stocker les données du NFT
+    event.dataTransfer.setData("text/plain", JSON.stringify(token));
 
-  // Créer une prévisualisation personnalisée
-  const img = new Image();
-  img.src = token.image;
-  img.style.width = "80px"; // Taille réduite de l'image
-  img.style.height = "80px";
-  img.style.borderRadius = "10px";
-  img.style.position = "absolute";
-  img.style.pointerEvents = "none"; // Évite les interférences avec l'événement drag
-  
-  document.body.appendChild(img);
-
-  // Définir comme image de drag
-  event.dataTransfer.setDragImage(img, 40, 40); // Position au centre
-
-  // Nettoyage après le drag
-  setTimeout(() => document.body.removeChild(img), 0);
-}
+  }
 
 
   onDragOver(event: DragEvent) {
@@ -261,9 +251,7 @@ export class PageUserCollectionComponent implements OnInit {
     this.selectedNFTs[position] = null;
   }
 
-  hasFreeSlot(): boolean {
-    return !this.selectedNFTs.left || !this.selectedNFTs.right;
-  }
+
 
   exitMergeMode() {
     this.errorMessage = "";
@@ -272,11 +260,22 @@ export class PageUserCollectionComponent implements OnInit {
     this.resetAvailableTokens();
   }
 
+
+
   async merge() {
+    this.mergingLoad = true;
     this.errorMessage = "";
-    if (!this.selectedNFTs.left || !this.selectedNFTs.right) return //message erreur à afficher !!!!!!!!!!!!!!!!
+    if (!this.selectedNFTs.left || !this.selectedNFTs.right) {
+      this.mergingLoad = false;
+      this.errorMessage = "Please select 2 tokens";
+      return
+    }
+
+    const canMerge = this.canMerge(this.selectedNFTs.left.DNA.substring(0, 10), this.selectedNFTs.right.DNA.substring(0, 10));
+    if(!canMerge) return
+
     try {
-      console.log("Merging NFTs:", this.selectedNFTs.left.tokenId, this.selectedNFTs.right.tokenId);
+      console.log("Merging NFTs:", this.selectedNFTs.left.tokenId + " + " + this.selectedNFTs.right.tokenId);
       const result = await this.web3Service.merge(this.selectedNFTs.left.tokenId, this.selectedNFTs.right.tokenId);
       const nftDataPromises = result.map(async (nft: { tokenId: number; image: string; metadata: any }) => {
         try {
@@ -293,7 +292,8 @@ export class PageUserCollectionComponent implements OnInit {
       });
 
       if(null === nftDataPromises || nftDataPromises.length === 0) {
-        this.isLoading = false;
+        this.closeMergeModal();
+        this.errorMessage = "Error retrieving merge token";
         return
       }
 
@@ -303,7 +303,83 @@ export class PageUserCollectionComponent implements OnInit {
     } catch(error: any) {
       console.error("Merging error:", error);
       this.errorMessage = error.message;
+    }finally {
+      this.mergingLoad = false;
     }
+  }
+
+  
+
+
+
+  async canMerge(adn1: string, adn2: string): Promise<boolean> {
+    if (adn1 === adn2) {
+      this.errorMessage = 'The two DNAs must be different';
+      return false;
+    }
+
+    try {
+      let mergedAdn = this.mergeAdn(adn1, adn2);
+      let isDnaExists = await this.checkIfDnaExists(mergedAdn);
+
+      if (!isDnaExists) {
+        console.log('ADN fusionné unique, la fusion est possible.');
+        return true;
+      }
+      console.log('ADN déjà existant, tentative d\'ajustement...');
+      const traitPositions = [0, 2, 4, 6, 8];
+
+      for (let pos of traitPositions) {
+        let modifiedAdn = mergedAdn;
+
+        while (parseInt(modifiedAdn.substring(pos, pos + 2)) > 0) {
+          modifiedAdn = this.decrementTrait(modifiedAdn, pos);
+          isDnaExists = await this.checkIfDnaExists(modifiedAdn);
+
+          if (!isDnaExists) {
+            return true;
+          }
+        }
+      }
+
+      this.errorMessage = 'These tokens cannot be merged';
+      return false;
+
+    } catch (error) {
+      this.errorMessage = 'Error checking merge';
+      console.error('Error checking merge :', error);
+      return false;
+    }
+  }
+
+  private mergeAdn(adn1: string, adn2: string): string {
+    let mergedAdn = '';
+    for (let i = 0; i < adn1.length; i += 2) {
+      const traitValue1 = parseInt(adn1.substring(i, i + 2));
+      const traitValue2 = parseInt(adn2.substring(i, i + 2));
+      mergedAdn += Math.min(traitValue1, traitValue2).toString().padStart(2, '0');
+    }
+    return mergedAdn;
+  }
+
+
+
+  private async checkIfDnaExists(dna: string): Promise<boolean> {
+    const fileName = dna + '.json';
+    const url = `${this.filebaseUrl}${fileName}`;
+
+    try {
+        await firstValueFrom(this.http.get(url));
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+  private decrementTrait(dna: string, position: number): string {
+    const currentValue = parseInt(dna.substring(position, position + 2));
+    const newValue = Math.max(0, currentValue - 1).toString().padStart(2, '0');
+    return dna.substring(0, position) + newValue + dna.substring(position + 2);
   }
 
   async closeMergeModal() {
