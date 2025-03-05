@@ -108,6 +108,10 @@ public class TraitOptionsService {
     "Soft Mauve"
     ); //13
 
+    private final List<String> mutationOptions = Arrays.asList(
+    "Electrified"
+    ); //1
+
     public String getTraitOption(String category, int index) {
         List<String> options = switch (category.toLowerCase()) {
             case "headcovering" -> headCoveringOptions;
@@ -116,6 +120,7 @@ public class TraitOptionsService {
             case "clothes" -> clothesOptions;
             case "fur" -> furOptions;
             case "background" -> backgroundOptions;
+            case "mutation" -> mutationOptions;
             default -> throw new IllegalArgumentException("Invalid category: " + category);
         };
 
@@ -134,6 +139,7 @@ public class TraitOptionsService {
             case "clothes" -> clothesOptions;
             case "fur" -> furOptions;
             case "background" -> backgroundOptions;
+            case "mutation" -> mutationOptions;
             default -> throw new IllegalArgumentException("Invalid category: " + category);
         };
 

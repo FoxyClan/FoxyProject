@@ -52,6 +52,7 @@ public class MergeService {
             String bestTrait = traitService.getBestTrait(trait, traitValue1, traitValue2);
             mergedTraits.put(trait, bestTrait);
         }
+        mergedTraits = applyMutation(mergedTraits, traitTypes);
 
         // Vérification et ajustement de l'ADN s'il existe déjà
         int maxAttempts = 20000;
@@ -94,41 +95,58 @@ public class MergeService {
         return response;
     }
 
+
+
     private String buildDNAString(Map<String, String> traits) {
-        return traits.get("Head Covering") +
-               traits.get("Mouth") +
-               traits.get("Eyes") +
-               traits.get("Clothes") +
-               traits.get("Fur") +
-               traits.get("Background");
+        String dnaString = traits.get("Head Covering") +
+                           traits.get("Mouth") +
+                           traits.get("Eyes") +
+                           traits.get("Clothes") +
+                           traits.get("Fur") +
+                           traits.get("Background");
+
+        if (traits.containsKey("Mutation")) {
+            dnaString += traits.get("Mutation");
+        }
+        return dnaString;
     }
+
+
 
     private Map<String, String> modifyTraits(Map<String, String> mergedTraits, String[] traitTypes) {
         List<String> modifiableTraits = new ArrayList<>();
-    
-        // Copier la map pour ne pas modifier l'originale
         Map<String, String> modifiedTraits = new HashMap<>(mergedTraits);
-    
         // Récupérer tous les traits sauf "Background" et ceux qui sont déjà à 00
         for (String trait : traitTypes) {
-            if (!trait.equals("Background") && Integer.parseInt(modifiedTraits.get(trait)) > 0) {
+            if (!trait.equals("Background") && !trait.equals("Mutation") && Integer.parseInt(modifiedTraits.get(trait)) > 0) {
                 modifiableTraits.add(trait);
             }
         }
-    
         // Si aucun trait n'est modifiable, on retourne null (fusion impossible)
         if (modifiableTraits.isEmpty()) {
             return null;
         }
-    
         // Sélectionner un trait aléatoire à diminuer
         Random rand = new Random();
         String traitToModify = modifiableTraits.get(rand.nextInt(modifiableTraits.size()));
-    
         // Diminuer la valeur de ce trait
         int newValue = Integer.parseInt(modifiedTraits.get(traitToModify)) - 1;
         modifiedTraits.put(traitToModify, String.format("%02d", newValue)); // Format 2 chiffres
     
         return modifiedTraits;
+    }
+
+
+
+    private Map<String, String> applyMutation(Map<String, String> traits, String[] traitTypes) {
+        Random rand = new Random();
+        if (rand.nextDouble() < 1) { // 50% de chance d'appliquer une mutation
+            int mutationValue = 0; //rand.nextInt(10) + 1; // Valeur aléatoire entre 01 et 10
+            traits.put("Mutation", String.format("%02d", mutationValue));
+            System.out.println("Mutation appliquée : " + mutationValue);
+        } else {
+            System.out.println("Aucune mutation appliquée.");
+        }
+        return traits;
     }
 }

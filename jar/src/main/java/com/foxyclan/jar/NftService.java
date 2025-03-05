@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -75,6 +77,18 @@ public class NftService {
             g.drawImage(eyes, 0, 0, null);
             g.drawImage(mouth, 0, 0, null);
             g.drawImage(headCovering, 0, 0, null);
+
+            if (adn.containsKey("Mutation")) {
+                String mutationPath = "jar\\src\\main\\resources\\NFT\\evo\\" + adn.get("Mutation") + ".png";
+                File mutationFile = new File(mutationPath);
+                if (mutationFile.exists()) { // Vérifie si le fichier de mutation existe avant de l'ajouter
+                    BufferedImage mutation = ImageIO.read(mutationFile);
+                    g.drawImage(mutation, 0, 0, null);
+                    System.out.println("Mutation appliquée : " + adn.get("Mutation"));
+                } else {
+                    System.out.println("Fichier de mutation introuvable : " + mutationPath);
+                }
+            }
             
             // Libérer les ressources du Graphics2D
             g.dispose();
@@ -126,7 +140,7 @@ public class NftService {
 
 
 
-    public Map<String, Object> createMetadataFile(Map<String, String> adn, int tokenId) throws IOException {
+    public Map<String, Object> createMetadataFile(Map<String, String> dna, int tokenId) throws IOException {
         try {
             Map<String, Object> metadata = new HashMap<>();
             TraitOptionsService traitOptionsService = new TraitOptionsService();
@@ -134,25 +148,34 @@ public class NftService {
             String imageUrl = foxyBaseUrl + tokenId + ".png";
             String description = "Foxy Clan is a unique collection of adorable and distinctive red pandas, celebrating their playful charm on the blockchain.";
             String name = "Foxy Clan #" + tokenId;
-            String nftADN = adn.get("Head Covering")
-                            + adn.get("Mouth")
-                            + adn.get("Eyes")
-                            + adn.get("Clothes")
-                            + adn.get("Fur")
-                            + adn.get("Background");
+            String nftDna = dna.get("Head Covering")
+                            + dna.get("Mouth")
+                            + dna.get("Eyes")
+                            + dna.get("Clothes")
+                            + dna.get("Fur")
+                            + dna.get("Background");
+            if (dna.containsKey("Mutation")) {
+                nftDna = nftDna + dna.get("Mutation");
+            }
     
             metadata.put("image", imageUrl);
             metadata.put("description", description);
             metadata.put("name", name);
-            metadata.put("DNA", nftADN);
-            metadata.put("attributes", new Object[]{
-                Map.of("trait_type", "Head Covering", "value", traitOptionsService.getTraitOption("headcovering", Integer.parseInt(adn.get("Head Covering")))),
-                Map.of("trait_type", "Mouth", "value", traitOptionsService.getTraitOption("mouth", Integer.parseInt(adn.get("Mouth")))),
-                Map.of("trait_type", "Eyes", "value", traitOptionsService.getTraitOption("eyes", Integer.parseInt(adn.get("Eyes")))),
-                Map.of("trait_type", "Clothes", "value", traitOptionsService.getTraitOption("clothes", Integer.parseInt(adn.get("Clothes")))),
-                Map.of("trait_type", "Fur", "value", traitOptionsService.getTraitOption("fur", Integer.parseInt(adn.get("Fur")))),
-                Map.of("trait_type", "Background", "value", traitOptionsService.getTraitOption("background", Integer.parseInt(adn.get("Background"))))
-            });
+            metadata.put("DNA", nftDna);
+
+            List<Map<String, Object>> attributes = new ArrayList<>();
+            attributes.add(Map.of("trait_type", "Head Covering", "value", traitOptionsService.getTraitOption("headcovering", Integer.parseInt(dna.get("Head Covering")))));
+            attributes.add(Map.of("trait_type", "Mouth", "value", traitOptionsService.getTraitOption("mouth", Integer.parseInt(dna.get("Mouth")))));
+            attributes.add(Map.of("trait_type", "Eyes", "value", traitOptionsService.getTraitOption("eyes", Integer.parseInt(dna.get("Eyes")))));
+            attributes.add(Map.of("trait_type", "Clothes", "value", traitOptionsService.getTraitOption("clothes", Integer.parseInt(dna.get("Clothes")))));
+            attributes.add(Map.of("trait_type", "Fur", "value", traitOptionsService.getTraitOption("fur", Integer.parseInt(dna.get("Fur")))));
+            attributes.add(Map.of("trait_type", "Background", "value", traitOptionsService.getTraitOption("background", Integer.parseInt(dna.get("Background")))));
+
+            if (dna.containsKey("Mutation")) {
+                attributes.add(Map.of("trait_type", "Mutation", "value", traitOptionsService.getTraitOption("mutation", Integer.parseInt(dna.get("Mutation")))));
+            }
+
+            metadata.put("attributes", attributes);
     
             File metadataFile = new File("jar\\src\\main\\resources\\tmp\\" + tokenId + ".json");
     
@@ -198,7 +221,7 @@ public class NftService {
 
     public boolean addDna(String newAdn, int tokenId) throws IOException {
         String bucket = dnaBucket; // Bucket sur Filebase
-        String fileName = newAdn + ".json"; // Fichier ADN unique
+        String fileName = newAdn.substring(0, 10) + ".json"; // Fichier ADN unique
         ObjectMapper objectMapper = new ObjectMapper();
 
         S3Client s3Client = S3Client.builder()
@@ -206,7 +229,6 @@ public class NftService {
                 .endpointOverride(URI.create(endpointUrl))
                 .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
                 .build();
-
         try {
             HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
                 .bucket(bucket)
