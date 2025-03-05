@@ -12,9 +12,9 @@
   
       <div class="modal-right">
         <div class="metadata-block">
-          <h2 class="nft-name">{{ token?.name }}</h2>
 
           <div class="metadata">
+          <h2 class="nft-name">{{ token?.name }}</h2>
             <div class="info-container">
               <div class="info">
                 <span>{{ tokenLevel }}</span>
@@ -46,8 +46,8 @@
               </video>
               </div>
             </div>
+            <h4 title="View owner's collection" [routerLink]="['/profil']" [queryParams]="{ address: ownerOfToken }" (click)="closeModal()">OWNER : <span class="owner blue-title">{{ ownerOfToken !== "Fail to fetch" ? (ownerOfToken.substring(0, 6) + '...' + ownerOfToken.substring(38)) : ownerOfToken }}</span></h4>
           </div>
-          <h4 title="View owner's collection" [routerLink]="['/profil']" [queryParams]="{ address: ownerOfToken }" (click)="closeModal()">OWNER : <span class="owner blue-title">{{ ownerOfToken !== "Fail to fetch" ? (ownerOfToken.substring(0, 6) + '...' + ownerOfToken.substring(38)) : ownerOfToken }}</span></h4>
         </div>
         
       </div>

@@ -87,6 +87,8 @@ export class ModalMint implements OnInit, OnDestroy {
   private animationFrame: number | null = null;
   private lastCallTime = 0;
 
+  asMutation: boolean = false;
+
   constructor(private web3Service: Web3Service,
     private cacheService: CacheService,
     private traitOptionsService: TraitOptionsService) {
@@ -449,6 +451,7 @@ export class ModalMint implements OnInit, OnDestroy {
 
       for(let attribute of this.mintedNfts[this.tokenIndex]?.metadata?.attributes) {
         const trait = this.getTraitRarity(attribute.value, attribute.trait_type);
+        if (attribute.trait_type == "Mutation") this.asMutation = true;
         if (trait === "legendary") rarity += 1;
         else if (trait === "epic") rarity += 2;
         else if (trait === "rare") rarity += 3;
@@ -457,7 +460,7 @@ export class ModalMint implements OnInit, OnDestroy {
       console.log(rarity)
       if (rarity <= 15) this.effect = 'legendary';
       else if (rarity <= 17) this.effect = 'epic';
-      else if (rarity <= 20) this.effect = 'rare';
+      else if (rarity <= 19) this.effect = 'rare';
       else this.effect = "";
     }, 2000);
 
@@ -480,7 +483,7 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   getTraitRarity(trait: string, type: string) {
-    const index = this.getTraitIndex(trait, type);
+    const index = this.traitOptionsService.getTraitIndex(trait, type);
     if (index === null) {
       console.error("Trait not found");
       return "";
@@ -491,34 +494,7 @@ export class ModalMint implements OnInit, OnDestroy {
     return "";
   }
 
-  getTraitIndex(trait: string, type: string) {
-    let options: any[] = [];
-    switch (type.toLowerCase()) {
-      case 'head covering':
-        options = this.traitOptionsService.headCoveringOptions;
-        break;
-      case 'eyes':
-        options = this.traitOptionsService.eyesOptions;
-        break;
-      case 'mouth':
-        options = this.traitOptionsService.mouthOptions;
-        break;
-      case 'clothes':
-        options = this.traitOptionsService.clothesOptions;
-        break;
-      case 'fur':
-        options = this.traitOptionsService.furOptions;
-        break;
-      case 'background':
-        options = this.traitOptionsService.backgroundOptions;
-        break;
-      default:
-        console.error('Type de trait invalide:', type);
-        return null;
-    }
-    const index = options.findIndex(option => option.name.toLowerCase() === trait.toLowerCase());
-    return index !== -1 ? index : null;
-  }
+  
 
   /* MERGE */
 

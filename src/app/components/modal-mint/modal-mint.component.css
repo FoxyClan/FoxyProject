@@ -678,6 +678,14 @@
 	position: relative;
 }
 
+.mutation {
+	width: 70% !important;
+}
+
+.mutation .attributes-if {
+	grid-template-columns: repeat(4, 24.5%) !important;
+}
+
 .metadata-block {
     display: flex;
 	gap: 5px;

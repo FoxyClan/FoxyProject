@@ -124,7 +124,7 @@ export class ModalCollection implements OnInit {
   getRarity(attributes: Array<{ value: string; trait_type: string }>) {
     let total = 0;
     for(let item of attributes) {
-      let index = this.getTraitIndex(item.value, item.trait_type);
+      let index = this.traitOptionsService.getTraitIndex(item.value, item.trait_type);
       if (index === null) {
         console.error("Trait not found");
         index = 15;
@@ -136,7 +136,7 @@ export class ModalCollection implements OnInit {
   }
 
   getTraitRarity(trait: string, type: string) {
-    const index = this.getTraitIndex(trait, type);
+    const index = this.traitOptionsService.getTraitIndex(trait, type);
     if (index === null) {
       console.error("Trait not found");
       return "";
@@ -147,41 +147,11 @@ export class ModalCollection implements OnInit {
     return "";
   }
 
-  getTraitIndex(trait: string, type: string) {
-    let options: any[] = [];
-    switch (type.toLowerCase()) {
-      case 'head covering':
-        options = this.traitOptionsService.headCoveringOptions;
-        break;
-      case 'eyes':
-        options = this.traitOptionsService.eyesOptions;
-        break;
-      case 'mouth':
-        options = this.traitOptionsService.mouthOptions;
-        break;
-      case 'clothes':
-        options = this.traitOptionsService.clothesOptions;
-        break;
-      case 'fur':
-        options = this.traitOptionsService.furOptions;
-        break;
-      case 'background':
-        options = this.traitOptionsService.backgroundOptions;
-        break;
-      default:
-        console.error('Type de trait invalide:', type);
-        return null;
-    }
-    const index = options.findIndex(option => option.name.toLowerCase() === trait.toLowerCase());
-    return index !== -1 ? index : null;
-  }
 
   formatDNA(dna: string | undefined): string {
-    if(dna == null) return "Fail to fetch";
-    if (dna.length !== 12 || !/^\d{12}$/.test(dna)) {
-        throw new Error("Le DNA doit être une chaîne de 12 chiffres.");
-    }
-    return dna.replace(/(\d{2})(?=\d)/g, "$1 ");
-  }
+    if(dna == null || dna == undefined) return "Fail to fetch";
+    return dna.replace(/(.{2})/g, "$1 ");
+}
+
 
 }

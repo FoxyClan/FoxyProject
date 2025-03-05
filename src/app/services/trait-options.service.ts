@@ -6,6 +6,7 @@ interface EyesOption {name: string; selected: boolean;}
 interface ClothesOption {name: string; selected: boolean;}
 interface FurOption {name: string; selected: boolean;}
 interface BackgroundOption {name: string; selected: boolean;}
+interface MutationOption {name: string; selected: boolean;}
 
 @Injectable({
   providedIn: 'root'
@@ -117,6 +118,42 @@ export class TraitOptionsService {
     { name: 'Soft Mauve', selected: false }, //12
   ];
 
+  mutationOptions: MutationOption[] = [
+    { name: 'Electrified', selected: false }, //0
+  ];
+
 
   constructor() {}
+
+  getTraitIndex(trait: string, type: string) {
+    let options: any[] = [];
+    switch (type.toLowerCase()) {
+      case 'head covering':
+        options = this.headCoveringOptions;
+        break;
+      case 'eyes':
+        options = this.eyesOptions;
+        break;
+      case 'mouth':
+        options = this.mouthOptions;
+        break;
+      case 'clothes':
+        options = this.clothesOptions;
+        break;
+      case 'fur':
+        options = this.furOptions;
+        break;
+      case 'background':
+        options = this.backgroundOptions;
+        break;
+      case 'mutation':
+        options = this.mutationOptions;
+        break;
+      default:
+        console.error('Type de trait invalide:', type);
+        return null;
+    }
+    const index = options.findIndex(option => option.name.toLowerCase() === trait.toLowerCase());
+    return index !== -1 ? index : null;
+  }
 }

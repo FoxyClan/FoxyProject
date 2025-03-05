@@ -124,7 +124,7 @@
                     <button *ngIf="!showAddWalletButton && showButton" (click)="animateButton($event); discoverNFT()" class="btn-play">Discover my NFT<span *ngIf="mintedNfts.length > 1"> ( {{ tokenIndex + 1 }} / {{ mintedNfts.length }} )</span></button>
                 </div>
                 
-                <div class="attributs">
+                <div class="attributs" [ngClass]="{ 'mutation' : asMutation }">
                     <div *ngIf="showMetadata" class="attributes-if">
                         <div *ngFor="let attribute of mintedNfts[tokenIndex]?.metadata?.attributes; let i = index" class="metadata-block" 
                         [ngClass]="getTraitRarity(attribute.value, attribute.trait_type) + '-border'">

@@ -15,6 +15,7 @@ MODAL-WALLET
 
 MODAL-ACCOUNT
 - ne rien afficher si le reseau n'est pas eth
+- transfers
 
 SMART CONTRACT
 - mettre a jour les commentaires
@@ -38,5 +39,10 @@ JAR
 
 
 ACTUAL :
-- commencer merge
+- merge possible ? dans le front
+- rareté avec mutation
 - discover nft
+- different mutation
+- changer nom mutation
+- supprimer nft de filebase quand merge
+- discover / mint / merge ??? : verifier que le nft créé n'existe pas deja et qu'il soit bien undiscovered (verification front aussi)

@@ -144,7 +144,7 @@ export class PageUserCollectionComponent implements OnInit {
   getRarity(metadata: Metadata) {
     let total = 0;
     for(let item of metadata.attributes) {
-      let index = this.getTraitIndex(item.value, item.trait_type);
+      let index = this.traitOptionsService.getTraitIndex(item.value, item.trait_type);
       if (index === null) {
         console.error("Trait not found");
         index = 15;
@@ -159,34 +159,6 @@ export class PageUserCollectionComponent implements OnInit {
     }  
   }
 
-  getTraitIndex(trait: string, type: string) {
-    let options: any[] = [];
-    switch (type.toLowerCase()) {
-      case 'head covering':
-        options = this.traitOptionsService.headCoveringOptions;
-        break;
-      case 'eyes':
-        options = this.traitOptionsService.eyesOptions;
-        break;
-      case 'mouth':
-        options = this.traitOptionsService.mouthOptions;
-        break;
-      case 'clothes':
-        options = this.traitOptionsService.clothesOptions;
-        break;
-      case 'fur':
-        options = this.traitOptionsService.furOptions;
-        break;
-      case 'background':
-        options = this.traitOptionsService.backgroundOptions;
-        break;
-      default:
-        console.error('Type de trait invalide:', type);
-        return null;
-    }
-    const index = options.findIndex(option => option.name.toLowerCase() === trait.toLowerCase());
-    return index !== -1 ? index : null;
-  }
 
   openModal(token: Metadata | null) {
     if(!token || this.mergeMode) return
