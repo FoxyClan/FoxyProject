@@ -132,7 +132,6 @@ export class ModalCollection implements OnInit {
         index = 15;
       }
       if (item.trait_type === "Mutation") index = -3;
-      console.log(index)
       total += index;
     }
     if(total < 0) total = 0;

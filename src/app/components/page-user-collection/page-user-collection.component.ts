@@ -337,7 +337,6 @@ export class PageUserCollectionComponent implements OnInit {
 
         while (parseInt(modifiedAdn.substring(pos, pos + 2)) > 0) {
           modifiedAdn = this.decrementTrait(modifiedAdn, pos);
-          console.log(modifiedAdn)
           isDnaExists = await this.checkIfDnaExists(modifiedAdn);
 
           if (!isDnaExists) return true;
@@ -361,7 +360,6 @@ export class PageUserCollectionComponent implements OnInit {
       const traitValue2 = parseInt(adn2.substring(i, i + 2));
       mergedAdn += Math.min(traitValue1, traitValue2).toString().padStart(2, '0');
     }
-    console.log(mergedAdn)
     return mergedAdn;
   }
 
