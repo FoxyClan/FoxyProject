@@ -112,6 +112,7 @@ export class ModalCollection implements OnInit {
       this.backgroundColor = backgroundAttr ? "Background/" + backgroundAttr.value + ".png" : 'linear-gradient(to bottom,rgba(1, 2, 4, 0.9),rgba(50, 166, 186, 0.9))';
     }
   }
+  
 
   filterByAttribute(attribute: { trait_type: string, value: string }) {
     this.closeModal(true);
@@ -121,6 +122,7 @@ export class ModalCollection implements OnInit {
     });
   }
 
+
   getRarity(attributes: Array<{ value: string; trait_type: string }>) {
     let total = 0;
     for(let item of attributes) {
@@ -129,11 +131,15 @@ export class ModalCollection implements OnInit {
         console.error("Trait not found");
         index = 15;
       }
+      if (item.trait_type === "Mutation") index = -3;
+      console.log(index)
       total += index;
     }
+    if(total < 0) total = 0;
     total = (total / 87 * 100);
     this.rarity = parseFloat(total.toFixed(1));
   }
+  
 
   getTraitRarity(trait: string, type: string) {
     const index = this.traitOptionsService.getTraitIndex(trait, type);

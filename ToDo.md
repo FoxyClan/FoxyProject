@@ -22,6 +22,7 @@ SMART CONTRACT
 - a tester nombre d'addresse passable dans airdrop (test net) (100)
 - award fonctions usePoints
 - verifier que les token burn sont bien calculé dans les prochains mint pour la totale supply
+- foxyAward.sol
 
 
 GANACHE
@@ -39,7 +40,6 @@ JAR
 
 
 ACTUAL :
-- merge possible ? dans le front
 - rareté avec mutation
 - discover nft
 - different mutation
@@ -48,3 +48,5 @@ ACTUAL :
 - discover / mint / merge ??? : verifier que le nft créé n'existe pas deja et qu'il soit bien undiscovered (verification front aussi)
 - trait mutation dans collection
 - quand je clique sur my collection apres avoir ete deco ça ne retest pas le owner
+- merge / mint colision des traits
+- mutation lors du deuxieme merge marche bien ou c'est juste rerajouté ? amelioration de la mutation lors d'un secon merge ?

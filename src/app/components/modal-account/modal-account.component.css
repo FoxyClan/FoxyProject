@@ -165,8 +165,8 @@
 .border-button {
     width: 50%;
     height: 100%;
-    background: linear-gradient(to right, #42ddf8, #091d20);
-    border-radius: 15px;
+    background: #42ddf8;
+    border-radius: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -176,7 +176,7 @@
 .mint-button {
     width: calc(100% - 5px);
     height: calc(100% - 5px);
-    border-radius: 13px;
+    border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.817);
     color: #fff;
     cursor: pointer;

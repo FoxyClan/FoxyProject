@@ -84,6 +84,8 @@ public class MergeService {
         Map<String, Object> mergedMetadata = nftService.createMetadataFile(mergedTraits, newTokenId);
         nftService.uploadToFilebase(newTokenId + ".json");
 
+        nftService.deleteNftFiles(tokenId1, tokenId2);
+
         // Retourner les nouvelles métadonnées et l'image en Base64
         Path imagePath = Path.of("jar/src/main/resources/tmp/" + newTokenId + ".png");
         String imageBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath));

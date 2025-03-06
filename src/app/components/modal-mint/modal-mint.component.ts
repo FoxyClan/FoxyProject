@@ -451,8 +451,11 @@ export class ModalMint implements OnInit, OnDestroy {
 
       for(let attribute of this.mintedNfts[this.tokenIndex]?.metadata?.attributes) {
         const trait = this.getTraitRarity(attribute.value, attribute.trait_type);
-        if (attribute.trait_type == "Mutation") this.asMutation = true;
-        if (trait === "legendary") rarity += 1;
+        if (attribute.trait_type == "Mutation") {
+          this.asMutation = true;
+          rarity -= 1;
+        }
+        else if (trait === "legendary") rarity += 1;
         else if (trait === "epic") rarity += 2;
         else if (trait === "rare") rarity += 3;
         else rarity += 4;

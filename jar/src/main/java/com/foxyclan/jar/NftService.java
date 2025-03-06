@@ -269,6 +269,34 @@ public class NftService {
     }
 
 
+    public void deleteNftFiles(int tokenId1, int tokenId2) throws IOException {
+        try {
+            S3Client s3Client = S3Client.builder()
+                .region(Region.US_EAST_1)
+                .endpointOverride(java.net.URI.create(endpointUrl))
+                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
+                .build();
+    
+            //deleteFileFromFilebase(s3Client, foxyBucket, tokenId1 + ".png");
+            deleteFileFromFilebase(s3Client, foxyBucket, tokenId1 + ".json");
+            //deleteFileFromFilebase(s3Client, foxyBucket, tokenId2 + ".png");
+            deleteFileFromFilebase(s3Client, foxyBucket, tokenId2 + ".json");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("Erreur lors de la suppression des fichiers pour les tokens " + tokenId1 + " et " + tokenId2, e);
+        }
+    }
+    
+    private void deleteFileFromFilebase(S3Client s3Client, String bucketName, String fileName) throws Exception {
+        try {
+            s3Client.deleteObject(builder -> builder.bucket(bucketName).key(fileName).build());
+            System.out.println("Fichier supprimé : " + fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Erreur lors de la suppression du fichier : " + fileName, e);
+        }
+    }
 
 
     /* CLEAR TMP */

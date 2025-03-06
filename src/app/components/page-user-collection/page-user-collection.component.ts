@@ -271,8 +271,11 @@ export class PageUserCollectionComponent implements OnInit {
       return
     }
 
-    const canMerge = this.canMerge(this.selectedNFTs.left.DNA.substring(0, 10), this.selectedNFTs.right.DNA.substring(0, 10));
-    if(!canMerge) return
+    const canMerge = await this.canMerge(this.selectedNFTs.left.DNA.substring(0, 10), this.selectedNFTs.right.DNA.substring(0, 10));
+    if(!canMerge) {
+      this.mergingLoad = false;
+      return
+    }
 
     try {
       console.log("Merging NFTs:", this.selectedNFTs.left.tokenId + " + " + this.selectedNFTs.right.tokenId);
@@ -334,11 +337,10 @@ export class PageUserCollectionComponent implements OnInit {
 
         while (parseInt(modifiedAdn.substring(pos, pos + 2)) > 0) {
           modifiedAdn = this.decrementTrait(modifiedAdn, pos);
+          console.log(modifiedAdn)
           isDnaExists = await this.checkIfDnaExists(modifiedAdn);
 
-          if (!isDnaExists) {
-            return true;
-          }
+          if (!isDnaExists) return true;
         }
       }
 
@@ -359,6 +361,7 @@ export class PageUserCollectionComponent implements OnInit {
       const traitValue2 = parseInt(adn2.substring(i, i + 2));
       mergedAdn += Math.min(traitValue1, traitValue2).toString().padStart(2, '0');
     }
+    console.log(mergedAdn)
     return mergedAdn;
   }
 
