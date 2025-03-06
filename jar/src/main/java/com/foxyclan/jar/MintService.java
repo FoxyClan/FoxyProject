@@ -28,10 +28,16 @@ public class MintService {
     @CrossOrigin(origins = "http://localhost:4200")
     public Map<String, Object> mint(@RequestParam int tokenId) throws IOException {
         try {
-            nftService.isUndiscoveredNft(tokenId);
+            if(!nftService.existNft(tokenId)) throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket.");
         } catch (Exception e) {
             throw e;
         } 
+
+        try {
+            if(!nftService.isUndiscoveredNft(tokenId)) throw new IOException("Les metadata du tokenId " + tokenId + " existent deja");
+        } catch (Exception e) {
+            throw e;
+        }
 
         int maxAttempts = 20000;
         int attempts = 0;

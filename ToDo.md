@@ -44,7 +44,6 @@ ACTUAL :
 - discover nft
 - different mutation
 - changer nom mutation
-- discover / mint / merge ??? : verifier que le nft créé n'existe pas deja et qu'il soit bien undiscovered (verification front aussi)
 - trait mutation dans collection
 - quand je clique sur my collection apres avoir ete deco ça ne retest pas le owner
 - merge / mint colision des traits

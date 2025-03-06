@@ -333,7 +333,7 @@ public class NftService {
 
     /* UNDISCOVERED */
 
-    public boolean isUndiscoveredNft(int tokenId) throws IOException {
+    public boolean existNft(int tokenId) throws IOException { // faire return false ou true a la place
         try {
             S3Client s3Client = S3Client.builder()
                 .region(Region.US_EAST_1)
@@ -349,8 +349,18 @@ public class NftService {
                     .build();
                 s3Client.headObject(headObjectRequest);
             } catch (NoSuchKeyException e) {
-                throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket.");
+                return false;
             }
+            return true;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public boolean isUndiscoveredNft(int tokenId) throws IOException {
+        try {
+            String fileName = tokenId + ".json";
+            
             String fileUrl = foxyBaseUrl + fileName;
             ObjectMapper objectMapper = new ObjectMapper();
             URL url = URI.create(fileUrl).toURL();
@@ -361,7 +371,7 @@ public class NftService {
             if (metadata.containsKey("image") && expectedImageUrl.equals(metadata.get("image"))) {
                 return true;
             }
-            else throw new IOException("Les metadata du tokenId " + tokenId + " existent deja");
+            return false;
         } catch (MalformedURLException e) {
             throw new IOException("URL malformée pour le token " + tokenId);
         } catch (Exception e) {
