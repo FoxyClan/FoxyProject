@@ -26,7 +26,13 @@ public class MintService {
 
     @GetMapping("/adn")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Object> generateDNA(@RequestParam int tokenId) throws IOException {
+    public Map<String, Object> mint(@RequestParam int tokenId) throws IOException {
+        try {
+            nftService.isUndiscoveredNft(tokenId);
+        } catch (Exception e) {
+            throw e;
+        } 
+
         int maxAttempts = 20000;
         int attempts = 0;
         boolean addDna = false;
@@ -45,7 +51,6 @@ public class MintService {
             try {
                 addDna = nftService.addDna(stringDna, tokenId);
             } catch (Exception e) {
-                e.printStackTrace();
                 throw e;
             }
             
@@ -62,7 +67,7 @@ public class MintService {
 
         Map<String, Object> response = new HashMap<>();
         try {
-            nftService.createNFT(adn, tokenId);
+            nftService.createImageFile(adn, tokenId);
             nftService.uploadToFilebase(tokenId + ".png");
 
             nftService.createMetadataFile(adn, tokenId);

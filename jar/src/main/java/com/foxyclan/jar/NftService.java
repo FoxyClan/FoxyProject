@@ -58,7 +58,7 @@ public class NftService {
     @Value("${filebase.dnaBaseUrl}")
     private String dnaBaseUrl;
     
-    public void createNFT(Map<String, String> adn, int tokenId) throws IOException {
+    public void createImageFile(Map<String, String> adn, int tokenId) throws IOException {
         try {
             BufferedImage background = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Background\\" + adn.get("Background") + ".png"));
             BufferedImage fur = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Fur\\" + adn.get("Fur") + ".png"));
@@ -164,7 +164,7 @@ public class NftService {
             metadata.put("DNA", nftDna);
 
             List<Map<String, Object>> attributes = new ArrayList<>();
-            attributes.add(Map.of("trait_type", "Head Covering", "value", traitOptionsService.getTraitOption("headcovering", Integer.parseInt(dna.get("Head Covering")))));
+            attributes.add(Map.of("value", traitOptionsService.getTraitOption("headcovering", Integer.parseInt(dna.get("Head Covering"))), "trait_type", "Head Covering"));
             attributes.add(Map.of("trait_type", "Mouth", "value", traitOptionsService.getTraitOption("mouth", Integer.parseInt(dna.get("Mouth")))));
             attributes.add(Map.of("trait_type", "Eyes", "value", traitOptionsService.getTraitOption("eyes", Integer.parseInt(dna.get("Eyes")))));
             attributes.add(Map.of("trait_type", "Clothes", "value", traitOptionsService.getTraitOption("clothes", Integer.parseInt(dna.get("Clothes")))));
@@ -332,6 +332,42 @@ public class NftService {
 
 
     /* UNDISCOVERED */
+
+    public boolean isUndiscoveredNft(int tokenId) throws IOException {
+        try {
+            S3Client s3Client = S3Client.builder()
+                .region(Region.US_EAST_1)
+                .endpointOverride(URI.create(endpointUrl))
+                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
+                .build();
+    
+            String fileName = tokenId + ".json";
+            try {
+                HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
+                    .bucket(foxyBucket)
+                    .key(fileName)
+                    .build();
+                s3Client.headObject(headObjectRequest);
+            } catch (NoSuchKeyException e) {
+                throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket.");
+            }
+            String fileUrl = foxyBaseUrl + fileName;
+            ObjectMapper objectMapper = new ObjectMapper();
+            URL url = URI.create(fileUrl).toURL();
+            Map<String, Object> metadata = objectMapper.readValue(url, new TypeReference<Map<String, Object>>() {});
+    
+            // Vérifier si l'image correspond à undiscovered.png
+            String expectedImageUrl = foxyBaseUrl + "undiscovered.png";
+            if (metadata.containsKey("image") && expectedImageUrl.equals(metadata.get("image"))) {
+                return true;
+            }
+            else throw new IOException("Les metadata du tokenId " + tokenId + " existent deja");
+        } catch (MalformedURLException e) {
+            throw new IOException("URL malformée pour le token " + tokenId);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
 
     public void createUndiscoveredMetadataFile(int tokenId) throws IOException {

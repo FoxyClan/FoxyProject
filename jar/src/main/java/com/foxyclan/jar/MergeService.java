@@ -30,7 +30,7 @@ public class MergeService {
 
     @GetMapping("/merge")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Object> generateMergedDNA(@RequestParam int tokenId1, @RequestParam int tokenId2, @RequestParam int newTokenId) throws IOException {
+    public Map<String, Object> merge(@RequestParam int tokenId1, @RequestParam int tokenId2, @RequestParam int newTokenId) throws IOException {
         if(tokenId1 == tokenId2) throw new IOException("Les deux tokens doivent être différents");
         // Récupérer les métadonnées des deux tokens depuis Filebase
         Map<String, Object> metadata1 = nftService.fetchMetadataFromFilebase(tokenId1);
@@ -77,7 +77,7 @@ public class MergeService {
             attempts++;
         }
         // Générer la nouvelle image du NFT fusionné
-        nftService.createNFT(mergedTraits, newTokenId);
+        nftService.createImageFile(mergedTraits, newTokenId);
         nftService.uploadToFilebase(newTokenId + ".png");
 
         // Générer les métadonnées du nouveau NFT

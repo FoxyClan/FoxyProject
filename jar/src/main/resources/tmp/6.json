@@ -1,0 +1,32 @@
+{
+    "image": "https://foxyclan.s3.filebase.com/6.png",
+    "DNA": "05140408020600",
+    "name": "Foxy Clan #31",
+    "description": "Foxy Clan is a unique collection of adorable and distinctive red pandas, celebrating their playful charm on the blockchain.",
+    "attributes": [
+        {
+            "value": "Undiscovered",
+            "trait_type": "Head Covering"
+        },
+        {
+            "value": "Undiscovered",
+            "trait_type": "Mouth"
+        },
+        {
+            "value": "Undiscovered",
+            "trait_type": "Eyes"
+        },
+        {
+            "value": "Undiscovered",
+            "trait_type": "Clothes"
+        },
+        {
+            "value": "Undiscovered",
+            "trait_type": "Fur"
+        },
+        {
+            "value": "Undiscovered",
+            "trait_type": "Background"
+        }
+    ]
+}
