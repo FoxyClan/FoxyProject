@@ -120,7 +120,7 @@ export class TraitOptionsService {
 
   transcendenceOptions: TranscendenceOption[] = [
     { name: 'Electrified', selected: false }, //0
-    { name: 'Leon Nose', selected: false }, //1
+    { name: 'Neon Nose', selected: false }, //1
   ];
 
 

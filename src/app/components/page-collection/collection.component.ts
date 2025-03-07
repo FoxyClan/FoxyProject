@@ -71,7 +71,7 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
   private controller: AbortController | null = null;
   cacheVersion: string = '';
 
-  traits: string[] = ['HEAD COVERING', 'EYES', 'MOUTH', 'CLOTHES', 'FUR', 'BACKGROUND'];
+  traits: string[] = ['HEAD COVERING', 'EYES', 'MOUTH', 'CLOTHES', 'FUR', 'BACKGROUND', 'TRANSCENDENCE'];
   isTraitOpen: boolean[] = [];
 
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
@@ -187,6 +187,7 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
     this.traitOptionsService.clothesOptions.forEach(option => option.selected = false);
     this.traitOptionsService.furOptions.forEach(option => option.selected = false);
     this.traitOptionsService.backgroundOptions.forEach(option => option.selected = false);
+    this.traitOptionsService.transcendenceOptions.forEach(option => option.selected = false);
   }
 
   applyQueryFilter(trait: string, value: string) {
@@ -207,6 +208,7 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
       case 'CLOTHES': return this.traitOptionsService.clothesOptions;
       case 'FUR': return this.traitOptionsService.furOptions;
       case 'BACKGROUND': return this.traitOptionsService.backgroundOptions;
+      case 'TRANSCENDENCE': return this.traitOptionsService.transcendenceOptions;
       default: return null;
     }
   }
@@ -234,6 +236,7 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
     const selectedClothes = this.traitOptionsService.clothesOptions.filter(option => option.selected).map(option => option.name);
     const selectedFur = this.traitOptionsService.furOptions.filter(option => option.selected).map(option => option.name);
     const selectedBackground = this.traitOptionsService.backgroundOptions.filter(option => option.selected).map(option => option.name);
+    const selectedTranscendence = this.traitOptionsService.transcendenceOptions.filter(option => option.selected).map(option => option.name);
   
     const filters = [
       { type: 'Mouth', selected: selectedMouth },
@@ -241,7 +244,8 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
       { type: 'EYES', selected: selectedEyes },
       { type: 'CLOTHES', selected: selectedClothes },
       { type: 'FUR', selected: selectedFur },
-      { type: 'BACKGROUND', selected: selectedBackground }
+      { type: 'BACKGROUND', selected: selectedBackground },
+      { type: 'TRANSCENDENCE', selected: selectedTranscendence }
     ];
 
     try {

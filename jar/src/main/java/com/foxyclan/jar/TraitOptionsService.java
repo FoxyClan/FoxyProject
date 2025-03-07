@@ -110,7 +110,7 @@ public class TraitOptionsService {
 
     private final List<String> transcendenceOptions = Arrays.asList(
     "Electrified",
-    "Leon Nose"
+    "Neon Nose"
     ); //1
 
     public String getTraitOption(String category, int index) {

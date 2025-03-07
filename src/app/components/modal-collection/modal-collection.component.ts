@@ -116,6 +116,7 @@ export class ModalCollection implements OnInit {
 
   filterByAttribute(attribute: { trait_type: string, value: string }) {
     this.closeModal(true);
+    console.log(attribute)
     this.router.navigate(['/collection'], { 
       queryParams: { trait: attribute.trait_type, value: attribute.value }, 
       queryParamsHandling: 'merge'

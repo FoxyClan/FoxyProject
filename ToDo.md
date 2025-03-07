@@ -32,6 +32,9 @@ MODAL MINT
 - niveau et points du token ?
 - empecher le scroll
 
+COLLECTION:
+- no result quand ça charge encore
+- probleme click sur neon nose sur MODAL-COLLECTION quand on est sur la collection
 
 JAR
 - traits png -> jpeg ?
