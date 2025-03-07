@@ -131,7 +131,10 @@ export class ModalCollection implements OnInit {
         console.error("Trait not found");
         index = 15;
       }
-      if (item.trait_type === "Transcendence") index = -3;
+      if (item.trait_type === "Transcendence") {
+        if(index == 1) index = -3;
+        else if(index == 0) index = -5;
+      }
       total += index;
     }
     if(total < 0) total = 0;

@@ -64,6 +64,13 @@
                     <label for="{{ option.name }}">{{ option.name }}</label>
                   </li>
                 </ul>
+
+                <ul *ngIf="trait === 'TR'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                  <li *ngFor="let option of traitOptionsService.backgroundOptions">
+                    <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'BACKGROUND')">
+                    <label for="{{ option.name }}">{{ option.name }}</label>
+                  </li>
+                </ul>
               </div>
             </div>
         </div>

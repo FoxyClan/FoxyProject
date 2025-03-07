@@ -42,8 +42,5 @@ JAR
 
 
 ACTUAL :
-- rareté avec mutation
 - discover nft
-- different mutation
 - trait mutation dans collection
-- mutation lors du deuxieme merge marche bien ou c'est juste rerajouté ? amelioration de la mutation lors d'un secon merge ?

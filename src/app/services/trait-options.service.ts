@@ -164,6 +164,7 @@ export class TraitOptionsService {
       console.error("Trait not found");
       return "";
     }
+    if (type == "Transcendence" && index == 1) return "epic";
     if (index <= 2) return "legendary";
     if (index <= 5) return "epic";
     if (index <= 8) return "rare";
