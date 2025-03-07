@@ -152,6 +152,10 @@ export class ModalCollection implements OnInit {
     return "";
   }
 
+  getTraitIndex(trait: string, type: string) {
+    return this.traitOptionsService.getTraitIndex(trait, type);
+  }
+
 
   formatDNA(dna: string | undefined): string {
     if(dna == null || dna == undefined) return "Fail to fetch";

@@ -308,7 +308,7 @@ public class NftService {
 
             if (tmpDir.exists() && tmpDir.isDirectory()) {
                 for (File file : tmpDir.listFiles()) {
-                    if (currentTime - file.lastModified() > 60 * 60 * 1000) { // 1h
+                    if (currentTime - file.lastModified() > 30 * 60 * 1000) { // 30 min
                         if (!file.delete()) {
                             System.err.println("Impossible de supprimer le fichier : " + file.getName());
                         }

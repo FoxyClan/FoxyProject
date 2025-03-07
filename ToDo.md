@@ -30,6 +30,7 @@ GANACHE
 
 MODAL MINT
 - niveau et points du token ?
+- empecher le scroll
 
 
 JAR

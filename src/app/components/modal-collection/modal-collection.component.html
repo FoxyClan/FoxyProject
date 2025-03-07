@@ -41,12 +41,13 @@
               [ngClass]="getTraitRarity(attr.value, attr.trait_type) + '-border'">
                 <p class="trait-type">{{ attr.trait_type }}</p>
                 <p class="trait-value">{{ attr.value }}</p>
+                <span class="trait-index">{{ getTraitIndex(attr.value, attr.trait_type) }}</span>
                 <video *ngIf="getTraitRarity(attr.value, attr.trait_type) === 'legendary' ? true : false" autoplay muted loop>
                   <source src="metaGold.mp4" type="video/mp4">
               </video>
               </div>
             </div>
-            <h4 title="View owner's collection" [routerLink]="['/profil']" [queryParams]="{ address: ownerOfToken }" (click)="closeModal()">OWNER : <span class="owner blue-title">{{ ownerOfToken !== "Fail to fetch" ? (ownerOfToken.substring(0, 6) + '...' + ownerOfToken.substring(38)) : ownerOfToken }}</span></h4>
+            <h4>OWNER : <span [routerLink]="['/profil']" [queryParams]="{ address: ownerOfToken }" (click)="closeModal()" title="View owner's collection" class="owner blue-title">{{ ownerOfToken !== "Fail to fetch" ? (ownerOfToken.substring(0, 6) + '...' + ownerOfToken.substring(38)) : ownerOfToken }}</span></h4>
           </div>
         </div>
         

@@ -249,6 +249,7 @@
 
 
 .attribute-card {
+  position: relative;
   box-sizing: border-box;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
@@ -279,6 +280,19 @@
   font-weight: bold;
   color: white;
 }
+
+.trait-index {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 3rem;
+  font-weight: bold;
+  opacity: 0.3;
+  color: white;
+  z-index: -1;
+}
+
 
 .legendary-border {
   position: relative;
