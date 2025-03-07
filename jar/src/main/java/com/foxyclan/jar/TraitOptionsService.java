@@ -109,7 +109,8 @@ public class TraitOptionsService {
     ); //13
 
     private final List<String> transcendenceOptions = Arrays.asList(
-    "Electrified"
+    "Electrified",
+    "Leon Nose"
     ); //1
 
     public String getTraitOption(String category, int index) {
@@ -120,7 +121,7 @@ public class TraitOptionsService {
             case "clothes" -> clothesOptions;
             case "fur" -> furOptions;
             case "background" -> backgroundOptions;
-            case "Transcendence" -> transcendenceOptions;
+            case "transcendence" -> transcendenceOptions;
             default -> throw new IllegalArgumentException("Invalid category: " + category);
         };
 
@@ -139,7 +140,7 @@ public class TraitOptionsService {
             case "clothes" -> clothesOptions;
             case "fur" -> furOptions;
             case "background" -> backgroundOptions;
-            case "Transcendence" -> transcendenceOptions;
+            case "transcendence" -> transcendenceOptions;
             default -> throw new IllegalArgumentException("Invalid category: " + category);
         };
 
@@ -152,12 +153,17 @@ public class TraitOptionsService {
     }
 
     public String getBestTrait(String category, String value1, String value2) {
+        if (value1 == null && value2 == null) return null;
+        if (value1 == null) return String.format("%02d", this.getTraitIndex(category, value2));
+        if (value2 == null) return String.format("%02d", this.getTraitIndex(category, value1));
+        
         int index1 = this.getTraitIndex(category, value1);
         int index2 = this.getTraitIndex(category, value2);
-
+        
         int bestIndex = Math.min(index1, index2);
         return String.format("%02d", bestIndex);
     }
+    
 
     public String getTraitValue(Map<String, Object> metadata, String traitType) {
         Object attributesObj = metadata.get("attributes");

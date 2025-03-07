@@ -35,8 +35,8 @@ MODAL MINT
 JAR
 - traits png -> jpeg ?
 - JAVA securisé avec toutes les fonctions en public ?
-- CORS probleme clear-tmp after merge
 - superposition des traits non compatibles dans la creation
+- enlever commentaire test si tokenId existe sur file base pour mint / merge
 
 
 
@@ -44,7 +44,5 @@ ACTUAL :
 - rareté avec mutation
 - discover nft
 - different mutation
-- changer nom mutation
 - trait mutation dans collection
-- merge / mint colision des traits
 - mutation lors du deuxieme merge marche bien ou c'est juste rerajouté ? amelioration de la mutation lors d'un secon merge ?

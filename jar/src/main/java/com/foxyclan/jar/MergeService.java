@@ -33,8 +33,10 @@ public class MergeService {
     public Map<String, Object> merge(@RequestParam int tokenId1, @RequestParam int tokenId2, @RequestParam int newTokenId) throws IOException {
         try {
             Boolean exist = nftService.existNft(newTokenId);
-            Boolean isUndiscoveredNft = nftService.isUndiscoveredNft(newTokenId);
-            if(exist && !isUndiscoveredNft) throw new IOException("Les metadata du tokenId " + newTokenId + " existent deja");
+            if(exist) {
+                Boolean isUndiscoveredNft = nftService.isUndiscoveredNft(newTokenId);
+                if(isUndiscoveredNft) throw new IOException("Les metadata du tokenId " + newTokenId + " existent deja");
+            } 
         } catch (Exception e) {
             throw e;
         }
@@ -51,15 +53,15 @@ public class MergeService {
         TraitOptionsService traitService = new TraitOptionsService();
         Map<String, String> mergedTraits = new HashMap<>();
 
-        String[] traitTypes = {"Head Covering", "Mouth", "Eyes", "Clothes", "Fur", "Background"};
+        String[] traitTypes = {"Head Covering", "Mouth", "Eyes", "Clothes", "Fur", "Background", "Transcendence"};
 
         for (String trait : traitTypes) {
             String traitValue1 = traitService.getTraitValue(metadata1, trait);
             String traitValue2 = traitService.getTraitValue(metadata2, trait);
+            if(traitValue1 == null && traitValue2 == null) continue;
             String bestTrait = traitService.getBestTrait(trait, traitValue1, traitValue2);
             mergedTraits.put(trait, bestTrait);
         }
-        mergedTraits = applyTranscendence(mergedTraits, traitTypes);
 
         // Vérification et ajustement de l'ADN s'il existe déjà
         int maxAttempts = 20000;
@@ -83,12 +85,11 @@ public class MergeService {
             }
             attempts++;
         }
-        // Générer la nouvelle image du NFT fusionné
+        mergedTraits = applyTranscendence(mergedTraits, traitTypes);
         nftService.createImageFile(mergedTraits, newTokenId);
-        nftService.uploadToFilebase(newTokenId + ".png");
-
-        // Générer les métadonnées du nouveau NFT
         Map<String, Object> mergedMetadata = nftService.createMetadataFile(mergedTraits, newTokenId);
+
+        nftService.uploadToFilebase(newTokenId + ".png");
         nftService.uploadToFilebase(newTokenId + ".json");
 
         nftService.deleteNftFiles(tokenId1, tokenId2);
@@ -151,13 +152,35 @@ public class MergeService {
 
     private Map<String, String> applyTranscendence(Map<String, String> traits, String[] traitTypes) {
         Random rand = new Random();
-        if (rand.nextDouble() < 1) { // 50% de chance d'appliquer une transcendence
-            int transcendenceValue = 0; //rand.nextInt(10) + 1; // Valeur aléatoire entre 01 et 10
-            traits.put("Transcendence", String.format("%02d", transcendenceValue));
-            System.out.println("Transcendence appliquée : " + transcendenceValue);
+        
+        // Vérifie si la transcendance est déjà présente
+        boolean hasTranscendence = traits.containsKey("Transcendence");
+    
+        // Probabilité de transcendance : 100% si déjà présente, sinon 50%
+        boolean applyTranscendence = hasTranscendence || rand.nextDouble() < 0.5;
+    
+        if (applyTranscendence) {
+            // Récupère la valeur actuelle du trait "Mouth"
+            int mouthValue = Integer.parseInt(traits.getOrDefault("Mouth", "00"));
+    
+            // Détermine la nouvelle valeur de Transcendence
+            int newTranscendenceValue = (mouthValue <= 5) ? 0 : 1;
+    
+            // Vérifie si la valeur doit être mise à jour
+            int currentTranscendenceValue = hasTranscendence ? Integer.parseInt(traits.get("Transcendence")) : -1;
+    
+            // Met à jour seulement si la valeur change ou si elle n'existait pas
+            if (!hasTranscendence || newTranscendenceValue != currentTranscendenceValue) {
+                traits.put("Transcendence", String.format("%02d", newTranscendenceValue));
+                System.out.println("Transcendence mise à jour : " + newTranscendenceValue);
+            } else {
+                System.out.println("Transcendence conservée : " + currentTranscendenceValue);
+            }
         } else {
             System.out.println("Aucune Transcendence appliquée.");
         }
+    
         return traits;
     }
+    
 }
