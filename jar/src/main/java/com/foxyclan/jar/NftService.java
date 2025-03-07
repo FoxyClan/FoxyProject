@@ -17,7 +17,6 @@ import java.awt.image.BufferedImage;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -302,9 +301,6 @@ public class NftService {
 
     /* CLEAR TMP */
 
-
-
-    @GetMapping("/clear-tmp")
     public void clearOldTmpFiles() {
         try {
             File tmpDir = new File("jar\\src\\main\\resources\\tmp");

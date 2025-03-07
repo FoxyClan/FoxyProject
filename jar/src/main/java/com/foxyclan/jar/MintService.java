@@ -82,6 +82,8 @@ public class MintService {
             response.put("image", imageBase64);
             response.put("metadata", metadata);
 
+            nftService.clearOldTmpFiles();
+
             return response;
         } catch(IOException e) {
             e.printStackTrace();

@@ -36,6 +36,7 @@ JAR
 - traits png -> jpeg ?
 - JAVA securisé avec toutes les fonctions en public ?
 - CORS probleme clear-tmp after merge
+- superposition des traits non compatibles dans la creation
 
 
 

@@ -101,6 +101,8 @@ public class MergeService {
         response.put("image", imageBase64);
         response.put("metadata", mergedMetadata);
 
+        nftService.clearOldTmpFiles();
+
         return response;
     }
 

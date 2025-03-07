@@ -391,7 +391,6 @@ export class ModalMint implements OnInit, OnDestroy {
   addNFT() {
     if(this.mintedNfts.length === this.tokenIndex + 1) {
       this.closeModal();
-      this.web3Service.clearTmpDirectory();
       return;
     }
     this.isInteractive = false;

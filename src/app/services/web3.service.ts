@@ -299,12 +299,6 @@ export class Web3Service {
     }
   }
 
-  
-
-  public async clearTmpDirectory() {
-    const response = await axios.delete(`http://localhost:8080/clear-tmp`);
-    return response;
-  }
 
   public web3Modifier() {
     try {
