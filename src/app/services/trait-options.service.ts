@@ -6,7 +6,7 @@ interface EyesOption {name: string; selected: boolean;}
 interface ClothesOption {name: string; selected: boolean;}
 interface FurOption {name: string; selected: boolean;}
 interface BackgroundOption {name: string; selected: boolean;}
-interface MutationOption {name: string; selected: boolean;}
+interface TranscendenceOption {name: string; selected: boolean;}
 
 @Injectable({
   providedIn: 'root'
@@ -118,7 +118,7 @@ export class TraitOptionsService {
     { name: 'Soft Mauve', selected: false }, //12
   ];
 
-  mutationOptions: MutationOption[] = [
+  transcendenceOptions: TranscendenceOption[] = [
     { name: 'Electrified', selected: false }, //0
   ];
 
@@ -146,8 +146,8 @@ export class TraitOptionsService {
       case 'background':
         options = this.backgroundOptions;
         break;
-      case 'mutation':
-        options = this.mutationOptions;
+      case 'transcendence':
+        options = this.transcendenceOptions;
         break;
       default:
         console.error('Type de trait invalide:', type);

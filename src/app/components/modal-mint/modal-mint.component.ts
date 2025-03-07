@@ -87,7 +87,7 @@ export class ModalMint implements OnInit, OnDestroy {
   private animationFrame: number | null = null;
   private lastCallTime = 0;
 
-  asMutation: boolean = false;
+  asTranscendence: boolean = false;
 
   constructor(private web3Service: Web3Service,
     private cacheService: CacheService,
@@ -451,8 +451,8 @@ export class ModalMint implements OnInit, OnDestroy {
 
       for(let attribute of this.mintedNfts[this.tokenIndex]?.metadata?.attributes) {
         const trait = this.getTraitRarity(attribute.value, attribute.trait_type);
-        if (attribute.trait_type == "Mutation") {
-          this.asMutation = true;
+        if (attribute.trait_type == "Transcendence") {
+          this.asTranscendence = true;
           rarity -= 1;
         }
         else if (trait === "legendary") rarity += 1;

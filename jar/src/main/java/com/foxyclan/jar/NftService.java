@@ -78,15 +78,15 @@ public class NftService {
             g.drawImage(mouth, 0, 0, null);
             g.drawImage(headCovering, 0, 0, null);
 
-            if (adn.containsKey("Mutation")) {
-                String mutationPath = "jar\\src\\main\\resources\\NFT\\evo\\" + adn.get("Mutation") + ".png";
-                File mutationFile = new File(mutationPath);
-                if (mutationFile.exists()) { // Vérifie si le fichier de mutation existe avant de l'ajouter
-                    BufferedImage mutation = ImageIO.read(mutationFile);
-                    g.drawImage(mutation, 0, 0, null);
-                    System.out.println("Mutation appliquée : " + adn.get("Mutation"));
+            if (adn.containsKey("Transcendence")) {
+                String transcendencePath = "jar\\src\\main\\resources\\NFT\\evo\\" + adn.get("Transcendence") + ".png";
+                File transcendenceFile = new File(transcendencePath);
+                if (transcendenceFile.exists()) { // Vérifie si le fichier de transcendence existe avant de l'ajouter
+                    BufferedImage transcendence = ImageIO.read(transcendenceFile);
+                    g.drawImage(transcendence, 0, 0, null);
+                    System.out.println("Transcendence appliquée : " + adn.get("Transcendence"));
                 } else {
-                    System.out.println("Fichier de mutation introuvable : " + mutationPath);
+                    System.out.println("Fichier de la transcendence introuvable : " + transcendencePath);
                 }
             }
             
@@ -154,8 +154,8 @@ public class NftService {
                             + dna.get("Clothes")
                             + dna.get("Fur")
                             + dna.get("Background");
-            if (dna.containsKey("Mutation")) {
-                nftDna = nftDna + dna.get("Mutation");
+            if (dna.containsKey("Transcendence")) {
+                nftDna = nftDna + dna.get("Transcendence");
             }
     
             metadata.put("image", imageUrl);
@@ -171,8 +171,8 @@ public class NftService {
             attributes.add(Map.of("trait_type", "Fur", "value", traitOptionsService.getTraitOption("fur", Integer.parseInt(dna.get("Fur")))));
             attributes.add(Map.of("trait_type", "Background", "value", traitOptionsService.getTraitOption("background", Integer.parseInt(dna.get("Background")))));
 
-            if (dna.containsKey("Mutation")) {
-                attributes.add(Map.of("trait_type", "Mutation", "value", traitOptionsService.getTraitOption("mutation", Integer.parseInt(dna.get("Mutation")))));
+            if (dna.containsKey("Transcendence")) {
+                attributes.add(Map.of("trait_type", "Transcendence", "value", traitOptionsService.getTraitOption("transcendence", Integer.parseInt(dna.get("Transcendence")))));
             }
 
             metadata.put("attributes", attributes);

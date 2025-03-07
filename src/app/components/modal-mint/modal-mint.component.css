@@ -678,11 +678,11 @@
 	position: relative;
 }
 
-.mutation {
+.transcendence {
 	width: 70% !important;
 }
 
-.mutation .attributes-if {
+.transcendence .attributes-if {
 	grid-template-columns: repeat(4, 24.5%) !important;
 }
 

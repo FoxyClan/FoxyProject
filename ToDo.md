@@ -45,6 +45,5 @@ ACTUAL :
 - different mutation
 - changer nom mutation
 - trait mutation dans collection
-- quand je clique sur my collection apres avoir ete deco ça ne retest pas le owner
 - merge / mint colision des traits
 - mutation lors du deuxieme merge marche bien ou c'est juste rerajouté ? amelioration de la mutation lors d'un secon merge ?

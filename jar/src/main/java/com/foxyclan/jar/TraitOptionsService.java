@@ -108,7 +108,7 @@ public class TraitOptionsService {
     "Soft Mauve"
     ); //13
 
-    private final List<String> mutationOptions = Arrays.asList(
+    private final List<String> transcendenceOptions = Arrays.asList(
     "Electrified"
     ); //1
 
@@ -120,7 +120,7 @@ public class TraitOptionsService {
             case "clothes" -> clothesOptions;
             case "fur" -> furOptions;
             case "background" -> backgroundOptions;
-            case "mutation" -> mutationOptions;
+            case "Transcendence" -> transcendenceOptions;
             default -> throw new IllegalArgumentException("Invalid category: " + category);
         };
 
@@ -139,7 +139,7 @@ public class TraitOptionsService {
             case "clothes" -> clothesOptions;
             case "fur" -> furOptions;
             case "background" -> backgroundOptions;
-            case "mutation" -> mutationOptions;
+            case "Transcendence" -> transcendenceOptions;
             default -> throw new IllegalArgumentException("Invalid category: " + category);
         };
 

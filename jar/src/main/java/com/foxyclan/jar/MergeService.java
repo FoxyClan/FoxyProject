@@ -31,6 +31,13 @@ public class MergeService {
     @GetMapping("/merge")
     @CrossOrigin(origins = "http://localhost:4200")
     public Map<String, Object> merge(@RequestParam int tokenId1, @RequestParam int tokenId2, @RequestParam int newTokenId) throws IOException {
+        try {
+            Boolean exist = nftService.existNft(newTokenId);
+            Boolean isUndiscoveredNft = nftService.isUndiscoveredNft(newTokenId);
+            if(exist && !isUndiscoveredNft) throw new IOException("Les metadata du tokenId " + newTokenId + " existent deja");
+        } catch (Exception e) {
+            throw e;
+        }
         if(tokenId1 == tokenId2) throw new IOException("Les deux tokens doivent être différents");
         // Récupérer les métadonnées des deux tokens depuis Filebase
         Map<String, Object> metadata1 = nftService.fetchMetadataFromFilebase(tokenId1);
@@ -52,7 +59,7 @@ public class MergeService {
             String bestTrait = traitService.getBestTrait(trait, traitValue1, traitValue2);
             mergedTraits.put(trait, bestTrait);
         }
-        mergedTraits = applyMutation(mergedTraits, traitTypes);
+        mergedTraits = applyTranscendence(mergedTraits, traitTypes);
 
         // Vérification et ajustement de l'ADN s'il existe déjà
         int maxAttempts = 20000;
@@ -107,8 +114,8 @@ public class MergeService {
                            traits.get("Fur") +
                            traits.get("Background");
 
-        if (traits.containsKey("Mutation")) {
-            dnaString += traits.get("Mutation");
+        if (traits.containsKey("Transcendence")) {
+            dnaString += traits.get("Transcendence");
         }
         return dnaString;
     }
@@ -120,7 +127,7 @@ public class MergeService {
         Map<String, String> modifiedTraits = new HashMap<>(mergedTraits);
         // Récupérer tous les traits sauf "Background" et ceux qui sont déjà à 00
         for (String trait : traitTypes) {
-            if (!trait.equals("Background") && !trait.equals("Mutation") && Integer.parseInt(modifiedTraits.get(trait)) > 0) {
+            if (!trait.equals("Background") && !trait.equals("Transcendence") && Integer.parseInt(modifiedTraits.get(trait)) > 0) {
                 modifiableTraits.add(trait);
             }
         }
@@ -140,14 +147,14 @@ public class MergeService {
 
 
 
-    private Map<String, String> applyMutation(Map<String, String> traits, String[] traitTypes) {
+    private Map<String, String> applyTranscendence(Map<String, String> traits, String[] traitTypes) {
         Random rand = new Random();
-        if (rand.nextDouble() < 1) { // 50% de chance d'appliquer une mutation
-            int mutationValue = 0; //rand.nextInt(10) + 1; // Valeur aléatoire entre 01 et 10
-            traits.put("Mutation", String.format("%02d", mutationValue));
-            System.out.println("Mutation appliquée : " + mutationValue);
+        if (rand.nextDouble() < 1) { // 50% de chance d'appliquer une transcendence
+            int transcendenceValue = 0; //rand.nextInt(10) + 1; // Valeur aléatoire entre 01 et 10
+            traits.put("Transcendence", String.format("%02d", transcendenceValue));
+            System.out.println("Transcendence appliquée : " + transcendenceValue);
         } else {
-            System.out.println("Aucune mutation appliquée.");
+            System.out.println("Aucune Transcendence appliquée.");
         }
         return traits;
     }
