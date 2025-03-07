@@ -484,16 +484,12 @@ export class ModalMint implements OnInit, OnDestroy {
     if (!this.showAddWalletButton) this.showAddWalletButton = true;
   }
 
-  getTraitRarity(trait: string, type: string) {
-    const index = this.traitOptionsService.getTraitIndex(trait, type);
-    if (index === null) {
-      console.error("Trait not found");
-      return "";
-    }
-    if (index <= 2) return "legendary";
-    if (index <= 5) return "epic";
-    if (index <= 8) return "rare";
-    return "";
+  getTraitRarity(trait: string, type: string): any {
+    return this.traitOptionsService.getTraitRarity(trait, type);
+  }
+
+  getTraitIndex(trait: string, type: string) {
+    return this.traitOptionsService.getTraitIndex(trait, type);
   }
 
   

@@ -130,6 +130,7 @@
                         [ngClass]="getTraitRarity(attribute.value, attribute.trait_type) + '-border'">
                             <span>{{ attribute.trait_type }}</span>
                             <p>{{ attribute.value }}</p>
+                            <h4 class="trait-index">{{ getTraitIndex(attribute.value, attribute.trait_type) }}</h4>
                             <video *ngIf="getTraitRarity(attribute.value, attribute.trait_type) === 'legendary' ? true : false" autoplay muted loop>
                                 <source src="metaGold.mp4" type="video/mp4">
                             </video>
