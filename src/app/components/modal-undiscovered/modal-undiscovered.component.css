@@ -24,8 +24,9 @@
 
 .modal-content {
   position: relative;
-  background: linear-gradient(145deg, #1a1a2e, #16213e);
+  background: linear-gradient(145deg, #020202, #151a27);
   border-radius: 10px;
+  border: 1px solid #288899;
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   padding: 1.5rem 3rem;
@@ -50,7 +51,7 @@
   width: 80%;
   max-width: 300px;
   border-radius: 10px;
-  box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.2);
+  box-shadow: 0px 5px 15px rgba(128, 128, 128, 0.2);
 }
 
 
