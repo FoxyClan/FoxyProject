@@ -67,21 +67,80 @@
   opacity: 0.8;
 }
 
-.undiscover-btn {
-  background: linear-gradient(45deg, #ffae00, #7e03aa, #00fffb);
-  color: white;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-  border: none;
-  transition: 0.3s;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.btn-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  user-select: none;
 }
 
-.undiscover-btn:hover {
-  background: linear-gradient(45deg, #7e03aa, #00fffb, #ffae00);
-  transform: scale(1.05);
+.btn {
+  width: 180px;
+  height: 60px;
+  position: relative;
+  text-decoration: none;
+  background: repeating-conic-gradient(from var(--a), var(--clr1) 0%, var(--clr1) 5%, transparent 5%, transparent 35%, var(--clr1) 50%);
+  animation: animate 2.5s linear infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  cursor: pointer;
 }
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  will-change: background;
+  transition: background 0.5s ease;
+}
+
+.blue-btn::after {
+  background-color: #42bbf6;
+  background-size: cover;
+  background-position: center;
+}
+
+
+.btn span {
+  font-weight: 800;
+  position: relative;
+  font-size: 1rem;
+  z-index: 2;
+  text-transform: uppercase;
+  color: black;
+}
+
+.blue-btn span {
+  color: black;
+}
+
+.blue-btn:hover::after {
+  background-image: url('../../../../public/eyes-btn.png');
+  opacity: 1;
+  filter: brightness(0.7);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.blue-btn:hover span {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+@property --a {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+
+@keyframes animate {
+  0% {
+      --a: 0deg;
+  }
+  100% {
+      --a: 360deg;
+  }
+}
+
