@@ -1,0 +1,15 @@
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content undiscovered-modal" (click)="$event.stopPropagation()" [@fadeInOut]>
+    <img class="close" src="close.png" alt="close" (click)="closeModal()">
+    
+    <div class="modal-body">
+      <div class="nft-image-container">
+        <img [src]="image" [alt]="'Undiscovered NFT ' + tokenId" class="nft-image">
+      </div>
+      
+      <h2 class="nft-title">Undiscovered NFT #{{ tokenId }}</h2>
+      <p class="nft-description">This NFT is still shrouded in mystery...<br>Are you ready to uncover its secrets?</p>
+      <button class="undiscover-btn" (click)="undiscoverNFT()">Undiscover my NFT</button>
+    </div>
+  </div>
+</div>

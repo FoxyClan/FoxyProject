@@ -46,4 +46,3 @@ JAR
 
 ACTUAL :
 - discover nft
-- trait mutation dans collection

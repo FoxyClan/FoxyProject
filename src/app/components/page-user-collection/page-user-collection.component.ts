@@ -12,6 +12,7 @@ import { isAddress } from 'web3-validator';
 import { TraitOptionsService } from '../../services/trait-options.service';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { UndiscoveredModal } from "../modal-undiscovered/modal-undiscovered.component";
 
 
 
@@ -30,7 +31,7 @@ interface Metadata {
 @Component({
   selector: 'app-page-user-collection',
   standalone: true,
-  imports: [CommonModule, ModalCollection, ModalMint, ErrorComponent],
+  imports: [CommonModule, ModalCollection, ModalMint, ErrorComponent, UndiscoveredModal],
   templateUrl: './page-user-collection.component.html',
   styleUrl: './page-user-collection.component.css'
 })
@@ -56,8 +57,9 @@ export class PageUserCollectionComponent implements OnInit {
   showTooltip: boolean = false;
 
   selectedToken: Metadata | null = null
-  showModal: boolean = false;
+  showCollectionModal: boolean = false;
   showMergeModal: boolean = false;
+  showUndiscoveredModal: boolean = false;
   creatingNftLoading: boolean = false;
 
   mergeMode: boolean = false;
@@ -109,10 +111,10 @@ export class PageUserCollectionComponent implements OnInit {
           this.resetAvailableTokens();
           this.numberOfFoxys = Object.keys(this.tokens).length;
           const result = await this.web3Service.getUserPoints();
-          this.userFoxyPoints =  Number(result);
+          this.userFoxyPoints = Number(result);
         } catch (error) {
-            this.noNft = true;
-            throw error;
+          this.noNft = true;
+          throw error;
         } finally {
           this.walletCheckedSubscription.unsubscribe();
           this.isLoading = false;
@@ -170,11 +172,17 @@ export class PageUserCollectionComponent implements OnInit {
   openModal(token: Metadata | null) {
     if(!token || this.mergeMode) return
     this.selectedToken = token;
-    this.showModal = true;
+    if(token.image === this.baseUri + "undiscovered.png") this.showUndiscoveredModal = true;
+    else this.showCollectionModal = true;
   }
 
-  closeModal() {
-    this.showModal = false;
+  closeCollectionModal() {
+    this.showCollectionModal = false;
+    this.selectedToken = null;
+  }
+
+  closeUndiscoveredModal() {
+    this.showUndiscoveredModal = false;
     this.selectedToken = null;
   }
 
