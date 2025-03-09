@@ -46,3 +46,4 @@ JAR
 
 ACTUAL :
 - discover nft
+- refresh my collection quand connection du wallet

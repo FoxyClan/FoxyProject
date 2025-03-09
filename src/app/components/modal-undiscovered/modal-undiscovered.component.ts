@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Web3Service } from '../../services/web3.service';
 import { ModalMint } from '../modal-mint/modal-mint.component';
 import { CommonModule } from '@angular/common';
@@ -22,12 +22,13 @@ import { CommonModule } from '@angular/common';
     ])
   ]
 })
-export class UndiscoveredModal {
+
+export class UndiscoveredModal implements OnInit {
   @Input() image: string = '';
   @Input() tokenId: number = 0;
   @Output() closeModalEvent = new EventEmitter<void>();
 
-  @ViewChild('modalDiscover') modalMint!: ModalMint;
+  @ViewChild('modalDiscover') modalDiscoverMint!: ModalMint;
   errorMessage: string = '';
   loading: boolean = false;
   creatingNftLoading: boolean = false;
@@ -35,7 +36,7 @@ export class UndiscoveredModal {
 
   constructor(private web3Service: Web3Service) {}
 
-  ngOninit() {
+  ngOnInit() {
     this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
       this.creatingNftLoading = creatingNftLoading;
       if(creatingNftLoading) {
@@ -43,6 +44,7 @@ export class UndiscoveredModal {
       }
     });
   }
+  
 
   closeModal() {
     this.closeModalEvent.emit();
@@ -69,7 +71,7 @@ export class UndiscoveredModal {
         image: result.image, // Image en base64
         metadata: result.metadata // Métadonnées
       };
-      this.modalMint.unveilNft(nftData);
+      this.modalDiscoverMint.unveilNft(nftData);
     } catch(error: any) {
       console.error("Discover error:", error);
       this.errorMessage = error.message;

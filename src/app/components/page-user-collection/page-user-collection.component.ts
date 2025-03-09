@@ -99,7 +99,7 @@ export class PageUserCollectionComponent implements OnInit {
     });
     this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
       this.creatingNftLoading = creatingNftLoading;
-      if(creatingNftLoading) {
+      if(creatingNftLoading && this.mergeMode) {
         this.showMergeModal = true;
       }
     });

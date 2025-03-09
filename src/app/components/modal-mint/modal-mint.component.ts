@@ -500,7 +500,7 @@ export class ModalMint implements OnInit, OnDestroy {
   /* MERGE / UNDISCOVERED */
 
   unveilNft(nft: any) {
-    console.log("hey")
+    console.log(nft)
     this.mintedNfts = nft;
     this.success = true;
     setTimeout(() => {
