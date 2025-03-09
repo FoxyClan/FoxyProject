@@ -95,7 +95,8 @@ export class PageUserCollectionComponent implements OnInit {
       if (!walletAddress) return;
       const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
       this.walletAddress = checksumAddress;
-      this.isOwner = this.walletAddress === this.address;
+      this.isOwner = this.walletAddress === this.address; 
+      if(this.isOwner) this.initialize();
     });
     this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
       this.creatingNftLoading = creatingNftLoading;
@@ -105,13 +106,8 @@ export class PageUserCollectionComponent implements OnInit {
     });
     this.walletCheckedSubscription = this.web3Service.isWalletCheckedSubject$.subscribe(async (isWalletChecked) => {
       if(isWalletChecked) {
-        if(!this.address) return
         try {
-          await this.fetchNFTs(this.address);
-          this.resetAvailableTokens();
-          this.numberOfFoxys = Object.keys(this.tokens).length;
-          const result = await this.web3Service.getUserPoints();
-          this.userFoxyPoints = Number(result);
+          this.initialize()
         } catch (error) {
           this.noNft = true;
           throw error;
@@ -121,6 +117,15 @@ export class PageUserCollectionComponent implements OnInit {
         }
       }
     });
+  }
+
+  async initialize() {
+    if(!this.address) return
+    await this.fetchNFTs(this.address);
+    this.resetAvailableTokens();
+    this.numberOfFoxys = Object.keys(this.tokens).length;
+    const result = await this.web3Service.getUserPoints();
+    this.userFoxyPoints = Number(result);
   }
 
 
@@ -170,9 +175,12 @@ export class PageUserCollectionComponent implements OnInit {
 
 
   openModal(token: Metadata | null) {
-    if(!token || this.mergeMode) return
+    if (!token || this.mergeMode) return
     this.selectedToken = token;
-    if(token.image === this.baseUri + "undiscovered.png") this.showUndiscoveredModal = true;
+    if (token.image === this.baseUri + "undiscovered.png") {
+      if (!this.isOwner) return
+      this.showUndiscoveredModal = true;
+    }
     else this.showCollectionModal = true;
   }
 
