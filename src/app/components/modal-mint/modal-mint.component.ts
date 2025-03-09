@@ -96,12 +96,15 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log("hey")
     this.walletAddressSubscription = this.web3Service.walletAddress$.subscribe((isReady) => {
       if (isReady) {
         this.initializeMintData();
       }
     });
   }
+
+  
 
   private initializeMintData() {
     this._supply();
@@ -494,13 +497,15 @@ export class ModalMint implements OnInit, OnDestroy {
 
   
 
-  /* MERGE */
+  /* MERGE / UNDISCOVERED */
 
-  merge(mergedNft: any) {
-    this.mintedNfts = mergedNft;
+  unveilNft(nft: any) {
+    console.log("hey")
+    this.mintedNfts = nft;
     this.success = true;
     setTimeout(() => {
       this.discover = true; // attend que le block.success grandisse pour apparaitre
     }, 2000);
   }
+
 }

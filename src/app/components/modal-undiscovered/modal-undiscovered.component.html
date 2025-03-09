@@ -10,8 +10,11 @@
       <h2 class="nft-title">Undiscovered NFT #{{ tokenId }}</h2>
       <p class="nft-description">This NFT is still shrouded in mystery...<br>Are you ready to uncover its secrets?</p>
       <div class="btn-container">
-        <a class="btn blue-btn" style="--clr1:rgba(168, 239, 255, 1);--clr2:rgba(168, 239, 255, 0.1)"><span>Undiscover</span></a>
+        <a class="btn blue-btn" (click)="discover()" [ngStyle]="{'opacity': loading ? '0' : '1'}" style="--clr1:rgba(168, 239, 255, 1);--clr2:rgba(168, 239, 255, 0.1)"><span>Discover</span></a>
+        <span *ngIf="loading" class="loading-spinner"></span>
       </div>
     </div>
   </div>
 </div>
+
+<app-modal-mint #modalDiscover [hidden]="!showMintModal" (close)="closeMintModal()"></app-modal-mint>

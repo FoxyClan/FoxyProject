@@ -37,7 +37,7 @@ interface Metadata {
 })
 
 export class PageUserCollectionComponent implements OnInit {
-  @ViewChild(ModalMint) modalMint!: ModalMint;
+  @ViewChild('modalMerge') modalMint!: ModalMint;
   private baseUri: string = 'https://foxyclan.s3.filebase.com/';
   cacheVersion: string = '';
   private walletCheckedSubscription: any;
@@ -311,11 +311,11 @@ export class PageUserCollectionComponent implements OnInit {
 
       const nftData = await Promise.all(nftDataPromises);
       const mergedNft = nftData.filter(data => data !== null);
-      this.modalMint.merge(mergedNft);
+      this.modalMint.unveilNft(mergedNft);
     } catch(error: any) {
       console.error("Merging error:", error);
       this.errorMessage = error.message;
-    }finally {
+    } finally {
       this.mergingLoad = false;
     }
   }
@@ -379,10 +379,10 @@ export class PageUserCollectionComponent implements OnInit {
     const url = `${this.filebaseUrl}${fileName}`;
 
     try {
-        await firstValueFrom(this.http.get(url));
-        return true;
+      await firstValueFrom(this.http.get(url));
+      return true;
     } catch {
-        return false;
+      return false;
     }
 }
 

@@ -504,6 +504,7 @@ export class Web3Service {
     }
   }
 
+
   private async _createNFT(tokenIdsBefore: number[], fromAddress: string) {
     let tokenIdsAfter: number[] = [];
     try {
@@ -518,9 +519,9 @@ export class Web3Service {
           try {
             const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`);
             return {
-                tokenId,
-                image: response.data.image, // Image en base64
-                metadata: response.data.metadata, // Métadonnées
+              tokenId,
+              image: response.data.image, // Image en base64
+              metadata: response.data.metadata, // Métadonnées
             };
           } catch (error) {
             console.error(`Erreur lors de la récupération de l'ADN pour le Token ID ${tokenId}:`, error);
@@ -530,6 +531,34 @@ export class Web3Service {
       )
       this.creatingNftLoadingSubject.next(false);
       return nftData.filter((data) => data !== null);
+    } catch (error) {
+      console.error("Error while creating NFT:", error);
+      throw error;
+    }
+  }
+
+  public async discoverNft(tokenId: number): Promise<any> {
+    try {
+      const contract = this.web3Modifier();
+      this.creatingNftLoadingSubject.next(true);
+      return this._createDiscoverNft(tokenId);
+    } catch (error) {
+      this.creatingNftLoadingSubject.next(false);
+      console.error(error);
+      throw new Error("Undiscover failed. Please try again.");
+    }
+  }
+
+  private async _createDiscoverNft(tokenId: number) {
+    try {
+      const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`);
+      const nftData = {
+        tokenId,
+        image: response.data.image, // Image en base64
+        metadata: response.data.metadata, // Métadonnées
+      };
+      this.creatingNftLoadingSubject.next(false);
+      return nftData;
     } catch (error) {
       console.error("Error while creating NFT:", error);
       throw error;
