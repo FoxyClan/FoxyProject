@@ -539,7 +539,17 @@ export class Web3Service {
 
   public async discoverNft(tokenId: number): Promise<any> {
     try {
-      const contract = this.web3Modifier();
+      this.web3Modifier();
+      try {
+        const message = "I confirm that I am the owner of this wallet and wish to reveal my undiscovered NFT (tokenId #" + tokenId + "). Signing this message does not perform any blockchain transaction and is only used for verification.";
+        const signature = await this.signMessage(message);
+        if(!signature) throw new Error('Please Connect your wallet');
+
+        const verifySignature = await this.verifySignature(message, signature, tokenId);
+        if(!verifySignature) throw new Error("You are not the owner of the token");
+      } catch (error) {
+        throw error;
+      }
       this.creatingNftLoadingSubject.next(true);
       return this._createDiscoverNft(tokenId);
     } catch (error) {
@@ -616,6 +626,35 @@ export class Web3Service {
       return nftData;
     } catch (error) {
       console.error("Error while creating NFT:", error);
+      throw error;
+    }
+  }
+
+  async signMessage(message: string): Promise<string | null> {
+    if(!this.web3) throw new Error('No web3 instance');
+    if (!this.walletAddressSubject.value) {
+      console.error("Please connect your wallet");
+      return null;
+    }
+
+    try {
+      const signature = await this.web3.eth.personal.sign(message, this.walletAddressSubject.value, '');
+      console.log("Signature obtenue :", signature);
+      return signature;
+    } catch (error) {
+      console.error("Erreur lors de la signature :", error);
+      return null;
+    }
+  }
+
+  async verifySignature(message: string, signature: string, tokenId: number): Promise<boolean> {
+    try {
+      if(!this.web3) throw new Error('No web3 instance');
+      const recoveredAddress = this.web3.eth.accounts.recover(message, signature);
+      const ownerOfToken = await this.ownerOf(tokenId);
+      return recoveredAddress === this.walletAddressSubject.value && recoveredAddress === ownerOfToken;
+    } catch (error) {
+      console.error("Erreur lors de la vérification :", error);
       throw error;
     }
   }

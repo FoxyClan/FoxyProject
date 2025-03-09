@@ -45,5 +45,5 @@ JAR
 
 
 ACTUAL :
-- discover nft
+- verifier qu'il n'est pas possible de merge et discover sur un autre profil
 - refresh my collection quand connection du wallet
