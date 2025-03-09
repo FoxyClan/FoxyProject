@@ -96,7 +96,6 @@ export class PageUserCollectionComponent implements OnInit {
       const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
       this.walletAddress = checksumAddress;
       this.isOwner = this.walletAddress === this.address; 
-      if(this.isOwner) this.initialize();
     });
     this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
       this.creatingNftLoading = creatingNftLoading;
@@ -106,8 +105,13 @@ export class PageUserCollectionComponent implements OnInit {
     });
     this.walletCheckedSubscription = this.web3Service.isWalletCheckedSubject$.subscribe(async (isWalletChecked) => {
       if(isWalletChecked) {
+        if(!this.address) return
         try {
-          this.initialize()
+          await this.fetchNFTs(this.address);
+          this.resetAvailableTokens();
+          this.numberOfFoxys = Object.keys(this.tokens).length;
+          const result = await this.web3Service.getUserPoints();
+          this.userFoxyPoints = Number(result);
         } catch (error) {
           this.noNft = true;
           throw error;
@@ -117,15 +121,6 @@ export class PageUserCollectionComponent implements OnInit {
         }
       }
     });
-  }
-
-  async initialize() {
-    if(!this.address) return
-    await this.fetchNFTs(this.address);
-    this.resetAvailableTokens();
-    this.numberOfFoxys = Object.keys(this.tokens).length;
-    const result = await this.web3Service.getUserPoints();
-    this.userFoxyPoints = Number(result);
   }
 
 
