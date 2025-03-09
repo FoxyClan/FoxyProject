@@ -289,29 +289,17 @@ export class PageUserCollectionComponent implements OnInit {
     try {
       console.log("Merging NFTs:", this.selectedNFTs.left.tokenId + " + " + this.selectedNFTs.right.tokenId);
       const result = await this.web3Service.merge(this.selectedNFTs.left.tokenId, this.selectedNFTs.right.tokenId);
-      const nftDataPromises = result.map(async (nft: { tokenId: number; image: string; metadata: any }) => {
-        try {
-          const response = {
-            tokenId: nft.tokenId,
-            image: nft.image, // L'image en base64
-            metadata: nft.metadata // Métadonnées
-          };
-          return response;
-        } catch (error) {
-          console.error(`Erreur lors de la récupération des données pour le Token ID ${nft.tokenId}:`, error);
-          return null;
-        }
-      });
-
-      if(null === nftDataPromises || nftDataPromises.length === 0) {
+      if (!result) {
         this.closeMergeModal();
         this.errorMessage = "Error retrieving merge token";
-        return
-      }
-
-      const nftData = await Promise.all(nftDataPromises);
-      const mergedNft = nftData.filter(data => data !== null);
-      this.modalMint.unveilNft(mergedNft);
+        return;
+      } 
+      const nftData = {
+        tokenId: result.tokenId,
+        image: result.image, // Image en base64
+        metadata: result.metadata // Métadonnées
+      };
+      this.modalMint.unveilNft(nftData);
     } catch(error: any) {
       console.error("Merging error:", error);
       this.errorMessage = error.message;

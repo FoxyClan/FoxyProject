@@ -600,26 +600,20 @@ export class Web3Service {
       do {
         tokenIdsAfter = await this.tokenOfOwnerByIndex(fromAddress);
       } while (tokenIdsAfter.length === tokenIdsBefore.length);
-      const newTokenIds: number[] = tokenIdsAfter.filter(
+      const newTokenId: number[] = tokenIdsAfter.filter(
         (id) => !tokenIdsBefore.includes(id)
-      );                                                                  
-      const nftData = await Promise.all(
-        newTokenIds.map(async (tokenId) => {
-          try {
-            const response = await axios.get(`http://localhost:8080/merge?tokenId1=${tokenId1}&tokenId2=${tokenId2}&newTokenId=${tokenId}`);
-            return {
-                tokenId,
-                image: response.data.image, // Image en base64
-                metadata: response.data.metadata, // Métadonnées
-            };
-          } catch (error) {
-            console.error(`Erreur lors de la récupération de l'ADN pour le Token ID ${tokenId}:`, error);
-            return null;
-          }
-        })
-      )
+      );
+
+      if(newTokenId.length !== 1) throw new Error("Impossible de recuperer le tokenId");
+      const tokenId = newTokenId[0];
+      const response = await axios.get(`http://localhost:8080/merge?tokenId1=${tokenId1}&tokenId2=${tokenId2}&newTokenId=${tokenId}`);
+      const nftData = {
+        tokenId,
+        image: response.data.image, // Image en base64
+        metadata: response.data.metadata, // Métadonnées
+      };
       this.creatingNftLoadingSubject.next(false);
-      return nftData.filter((data) => data !== null);
+      return nftData;
     } catch (error) {
       console.error("Error while creating NFT:", error);
       throw error;

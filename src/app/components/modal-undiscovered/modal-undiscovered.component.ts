@@ -51,7 +51,10 @@ export class UndiscoveredModal implements OnInit {
   }
 
   closeMintModal() {
+    this.errorMessage = "";
     this.showMintModal = false;
+    this.closeModal();
+    window.location.reload();
   }
 
   async discover() {
@@ -60,7 +63,6 @@ export class UndiscoveredModal implements OnInit {
     try {
       console.log("Discovering Foxy #" + this.tokenId);
       const result = await this.web3Service.discoverNft(this.tokenId);
-      console.log(result)
       if (!result) {
         this.closeMintModal();
         this.errorMessage = "Error retrieving discovered token";
