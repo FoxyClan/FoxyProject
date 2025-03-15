@@ -187,6 +187,7 @@ export class PageUserCollectionComponent implements OnInit {
   closeUndiscoveredModal() {
     this.showUndiscoveredModal = false;
     this.selectedToken = null;
+    window.location.reload();
   }
 
 

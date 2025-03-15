@@ -35,6 +35,8 @@ MODAL MINT
 COLLECTION:
 - no result quand ça charge encore
 - probleme click sur neon nose sur MODAL-COLLECTION quand on est sur la collection
+- mettre undiscoverd en ipfs ou sur filebase ?
+- mettre les undiscovered dans la collection ou pas ?
 
 JAR
 - traits png -> jpeg ?

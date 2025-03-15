@@ -7,6 +7,7 @@ import axios from "axios";
 import { FormsModule } from '@angular/forms';
 import { CacheService } from '../../services/cache.service';
 import { ModalCollection } from "../modal-collection/modal-collection.component";
+import { UndiscoveredModal } from "../modal-undiscovered/modal-undiscovered.component";
 
 interface Metadata {
   tokenId: number;
@@ -27,7 +28,8 @@ interface Metadata {
     CommonModule,
     RouterLink,
     FormsModule,
-    ModalCollection
+    ModalCollection,
+    UndiscoveredModal
   ],
   templateUrl: './modal-account.component.html',
   styleUrl: './modal-account.component.css'
@@ -53,6 +55,7 @@ export class ModalAccount implements OnInit, OnDestroy {
   public networkId: string = '';
   public selectedWallet: string = '';
   selectedOption: string = 'Token';
+  showUndiscoveredModal: boolean = false;
 
   balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
   tokenIds: number[] = [];
@@ -102,6 +105,12 @@ export class ModalAccount implements OnInit, OnDestroy {
     setTimeout(() => {
       this.close.emit();
     }, 300);
+  }
+
+  closeUndiscoveredModal() {
+    this.showUndiscoveredModal = false;
+    this.router.navigate(['/profil'], { queryParams: { address: this.walletAddress } });
+    this.closeModal();
   }
 
 
@@ -189,7 +198,7 @@ export class ModalAccount implements OnInit, OnDestroy {
     }
   }
 
-  loadTransferEvents(): void {
+  async loadTransferEvents() {
     this.web3Service.getContractTransactions().then(events => {
       this.transferEvents = events;
     }).catch(error => {
@@ -228,7 +237,8 @@ export class ModalAccount implements OnInit, OnDestroy {
   }
 
   openNFTModal() {
-    this.showNFTModal = true;
+    if(this.selectedNFT?.image == 'https://foxyclan.s3.filebase.com/undiscovered.png') this.showUndiscoveredModal = true;
+    else this.showNFTModal = true;
   }
 
   closeNFTModal(closeAll?: boolean | void) {

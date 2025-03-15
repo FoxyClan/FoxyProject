@@ -24,7 +24,7 @@ import { CommonModule } from '@angular/common';
 })
 
 export class UndiscoveredModal implements OnInit {
-  @Input() image: string = '';
+  @Input() image: string | undefined = '';
   @Input() tokenId: number = 0;
   @Output() closeModalEvent = new EventEmitter<void>();
 
@@ -54,7 +54,6 @@ export class UndiscoveredModal implements OnInit {
     this.errorMessage = "";
     this.showMintModal = false;
     this.closeModal();
-    window.location.reload();
   }
 
   async discover() {

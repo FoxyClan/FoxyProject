@@ -164,7 +164,7 @@
                     <div *ngIf="!isLoadingNFTs && tokenIds.length > 0" class="token-block">
                         <div *ngFor="let tokenId of tokenIds" class="token-list no-padding" (click)="selectNFT(tokenId)">
                             <div>
-                                <img class="NFTimg" [src]="'https://foxyclan.s3.filebase.com/' + tokens[tokenId]?.tokenId + '.png' + '?t=' + cacheVersion" alt="">
+                                <img class="NFTimg" [src]="tokens[tokenId]?.image == 'https://foxyclan.s3.filebase.com/undiscovered.png' ? tokens[tokenId]?.image : 'https://foxyclan.s3.filebase.com/' + tokens[tokenId]?.tokenId + '.png' + '?t=' + cacheVersion" alt="">
                             </div>
                             <div class="token-text">
                                 <div>   
@@ -196,14 +196,14 @@
         </div>
         <div class="panel nft-detail" *ngIf="selectedNFT">
             <p class="back-arrow" (click)="closeNFTView()">&larr;</p>
-            <img class="nft-image-large" [src]="'https://foxyclan.s3.filebase.com/' + selectedNFT.tokenId + '.png' + '?t=' + cacheVersion" alt="NFT Image">
+            <img class="nft-image-large" [src]="selectedNFT.image == 'https://foxyclan.s3.filebase.com/undiscovered.png' ? selectedNFT.image : 'https://foxyclan.s3.filebase.com/' + selectedNFT.tokenId + '.png' + '?t=' + cacheVersion" alt="NFT Image">
             <p class="nft-detail-text-blue">{{ selectedNFT.name }}</p>
             <div class="stat-container">
                 <p>Level : {{ selectedNFTLevel }}</p>
                 <p>Foxy Points : {{ selectedNFTPoints }}</p>
             </div>
             <div class="button-container">
-                <button class="button-modal" role="button" (click)="openNFTModal()"><span class="text">More details</span></button>
+                <button class="button-modal" role="button" (click)="openNFTModal()"><span class="text">{{ selectedNFT.image == 'https://foxyclan.s3.filebase.com/undiscovered.png' ? "Undiscover" : "More details" }}</span></button>
             </div>
 
         </div>
@@ -212,3 +212,4 @@
 
 
 <app-modal-collection *ngIf="showNFTModal" [token]="selectedNFT" (closeModalEvent)="closeNFTModal($event)"></app-modal-collection>
+<app-modal-undiscovered *ngIf="showUndiscoveredModal" [tokenId]="selectedNFT!.tokenId" [image]="selectedNFT?.image" (closeModalEvent)="closeUndiscoveredModal()"></app-modal-undiscovered>
