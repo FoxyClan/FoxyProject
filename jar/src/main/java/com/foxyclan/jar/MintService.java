@@ -69,15 +69,13 @@ public class MintService {
         Map<String, Object> response = new HashMap<>();
         try {
             nftService.createImageFile(adn, tokenId);
-            nftService.createMetadataFile(adn, tokenId);
-            
             nftService.uploadToFilebase(tokenId + ".png");
+
+            Map<String, Object> metadata = nftService.createMetadataFile(adn, tokenId);
             nftService.uploadToFilebase(tokenId + ".json");
 
             Path imagePath = Path.of("jar/src/main/resources/tmp/" + tokenId + ".png");
             String imageBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath));
-    
-            Map<String, Object> metadata = nftService.createMetadataFile(adn, tokenId);
     
             response.put("image", imageBase64);
             response.put("metadata", metadata);

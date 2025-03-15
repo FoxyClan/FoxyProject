@@ -7,7 +7,7 @@
       <img class="close" src="close.png" alt="close" (click)="closeModal()">
 
       <div class="modal-left">
-        <img [src]="token?.image + '?t=' + cacheVersion" [alt]="token?.name" class="nft-image">
+        <img [src]="'https://foxyclan.s3.filebase.com/' + token?.tokenId + '.png' + '?t=' + cacheVersion" [alt]="token?.name" class="nft-image">
       </div>
   
       <div class="modal-right">

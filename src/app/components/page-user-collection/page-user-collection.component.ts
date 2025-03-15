@@ -152,7 +152,7 @@ export class PageUserCollectionComponent implements OnInit {
 
   getRarity(metadata: Metadata) {
     let total = 0;
-    for(let item of metadata.attributes) {
+    for (let item of metadata.attributes) {
       let index = this.traitOptionsService.getTraitIndex(item.value, item.trait_type);
       if (index === null) {
         console.error("Trait not found");
@@ -162,10 +162,10 @@ export class PageUserCollectionComponent implements OnInit {
     }
     total = (total / 87 * 100);
     this.rarities[metadata.tokenId] = parseFloat(total.toFixed(1));
-    if(this.rarities[metadata.tokenId] <= this.profilImageRarity) {
+    if (this.rarities[metadata.tokenId] <= this.profilImageRarity) {
       this.profilImageRarity = this.rarities[metadata.tokenId];
-      this.profileImage = metadata.image;
-    }  
+      this.profileImage = 'https://foxyclan.s3.filebase.com/' + metadata.tokenId + '.png';
+    }
   }
 
 

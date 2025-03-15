@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
@@ -27,6 +28,7 @@ import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -125,9 +127,9 @@ public class NftService {
     private void uploadFile(S3Client s3Client, String key, Path filePath) throws Exception {
         try {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .bucket(foxyBucket)
-                    .key(key)
-                    .build();
+                .bucket(foxyBucket)
+                .key(key)
+                .build();
 
             s3Client.putObject(putObjectRequest, filePath);
             System.out.println("Fichier téléversé : " + key);
@@ -144,7 +146,7 @@ public class NftService {
             Map<String, Object> metadata = new HashMap<>();
             TraitOptionsService traitOptionsService = new TraitOptionsService();
             
-            String imageUrl = foxyBaseUrl + tokenId + ".png";
+            String imageUrl = "ipfs://" + this.getCIDFromFilebase(tokenId + ".png");
             String description = "Foxy Clan is a unique collection of adorable and distinctive red pandas, celebrating their playful charm on the blockchain.";
             String name = "Foxy Clan #" + tokenId;
             String nftDna = dna.get("Head Covering")
@@ -431,5 +433,33 @@ public class NftService {
         }
     }
 
+    public String getCIDFromFilebase(String fileName) {
+        try {
+            String urlString = foxyBaseUrl + fileName;
+            System.out.println(urlString);
+            URL url = new URL(urlString);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("HEAD");
+            conn.setRequestProperty("X-API-KEY", secretKey);
+
+            // Vérifier la réponse HTTP
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                // Lire l'en-tête x-amz-meta-cid
+                Map<String, java.util.List<String>> headers = conn.getHeaderFields();
+                if (headers.containsKey("x-amz-meta-cid")) {
+                    return headers.get("x-amz-meta-cid").get(0);
+                } else {
+                    System.out.println("CID non trouvé dans les en-têtes.");
+                }
+            } else {
+                System.err.println("Erreur HTTP : " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     
 }
