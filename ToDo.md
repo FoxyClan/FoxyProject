@@ -9,6 +9,7 @@ WEB3SERVICE
 - enlever le commentaire de switchethaccount
 - merge : on recupere le tableau tokenIdsAfter et on le compare a tokenIdsBefore, ce devrait etre trois token retourné 2 burn et le nouveau
 - enelever commentaire sur la limite de mint par wallet
+- clee infura visible de tous ?
 
 MODAL-WALLET
 - mettre le wallet recent en haut
@@ -36,7 +37,6 @@ COLLECTION:
 - no result quand ça charge encore
 - probleme click sur neon nose sur MODAL-COLLECTION quand on est sur la collection
 - mettre undiscoverd en ipfs ou sur filebase ?
-- mettre les undiscovered dans la collection ou pas ?
 
 JAR
 - traits png -> jpeg ?
@@ -49,3 +49,4 @@ JAR
 ACTUAL :
 - verifier qu'il n'est pas possible de merge et discover sur un autre profil
 - refresh my collection quand connection du wallet
+- faire tous les transfers events

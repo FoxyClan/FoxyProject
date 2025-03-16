@@ -93,6 +93,6 @@
 
 
 <app-modal-collection *ngIf="showCollectionModal" [token]="selectedToken" (closeModalEvent)="closeCollectionModal()"></app-modal-collection>
-<app-modal-undiscovered *ngIf="showUndiscoveredModal" [tokenId]="selectedToken!.tokenId" [image]="selectedToken!.image" (closeModalEvent)="closeUndiscoveredModal()"></app-modal-undiscovered>
+<app-modal-undiscovered *ngIf="showUndiscoveredModal" [tokenId]="selectedToken!.tokenId" [image]="selectedToken!.image" (closeModalEvent)="closeUndiscoveredModal($event)"></app-modal-undiscovered>
 <app-modal-mint #modalMerge [hidden]="!showMergeModal" (close)="closeMergeModal()"></app-modal-mint>
 <app-error *ngIf="errorPage"></app-error>

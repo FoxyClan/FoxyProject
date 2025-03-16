@@ -107,8 +107,9 @@ export class ModalAccount implements OnInit, OnDestroy {
     }, 300);
   }
 
-  closeUndiscoveredModal() {
+  closeUndiscoveredModal(isUndiscover: boolean = false) {
     this.showUndiscoveredModal = false;
+    if(!isUndiscover) return
     this.router.navigate(['/profil'], { queryParams: { address: this.walletAddress } });
     this.closeModal();
   }
@@ -187,6 +188,11 @@ export class ModalAccount implements OnInit, OnDestroy {
   
     return sortedBalances;
   }
+
+  getTotalBalanceInUsd(): number {
+    return this.balances.reduce((total, balance) => total + balance.balanceConverted, 0);
+  }
+  
 
 
   async tokenOfOwnerByIndex() {

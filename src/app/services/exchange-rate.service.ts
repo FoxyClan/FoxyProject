@@ -26,7 +26,8 @@
       }
     }
   
-    async convertToUsd(amount: number, symbol: 'ETH' | 'USDC' | 'USDT' | 'WETH'): Promise<number> {
+    async convertToUsd(amount: number, symbol: 'ALL' | 'ETH' | 'USDC' | 'USDT' | 'WETH'): Promise<number> {
+      if (symbol === 'ALL') symbol = 'ETH';
       if (!this.prices[symbol]) {
         await this.fetchPrices();
       }

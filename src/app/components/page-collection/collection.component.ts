@@ -282,11 +282,11 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
           metadata.tokenId = parseInt(tokenId);
 
           const matchesAllFilters = filters.every(filter =>
-            filter.selected.length === 0 ||
+            (filter.selected.length === 0 ||
             metadata.attributes.some(attr =>
               attr.trait_type.trim().toLowerCase() === filter.type.trim().toLowerCase() &&
               filter.selected.includes(attr.value)
-            )
+            )) && metadata.image != this.baseUri + "undiscovered.png"
           );
           if (matchesAllFilters) {
             this.tokens.push(metadata);

@@ -772,7 +772,11 @@ export class Web3Service {
         toBlock: 'latest'
       });
 
-      const filteredEvents = events.filter((event): event is EventLog => typeof event !== 'string');
+      const filteredEvents = events.filter((event): event is EventLog => 
+        typeof event !== 'string' &&
+        (event.returnValues?.['from'] === this.walletAddressSubject.value || 
+         event.returnValues?.['to'] === this.walletAddressSubject.value)
+      );
 
       const transactions = await Promise.all(filteredEvents.map(async (event) => {
         if (!event.transactionHash) return null;
@@ -790,7 +794,7 @@ export class Web3Service {
           const functionSignature = tx.input.slice(0, 10);
           transaction.functionName = this.getFunctionName(functionSignature);
 
-          try {  // @ToDo
+          try {
             let paramTypes: string[] = [];
             switch (functionSignature) {
               case '0xa0712d68': // transfer(address,uint256)
@@ -824,12 +828,14 @@ export class Web3Service {
         }
         return transaction;
       }));
+      
       return transactions.filter((tx) => tx !== null);
     } catch (error) {
       console.error('Error fetching contract events:', error);
       return [];
     }
   }
+
 
   private getFunctionName(signature: string): string {
     const functionSignatures: { [key: string]: string } = {

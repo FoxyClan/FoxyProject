@@ -87,11 +87,11 @@
                 <div *ngIf="selectedOption === 'Token'" class="token">
                     <div class="balance-block">
                         <h3>Balance : </h3>
-                        <p>{{ convertBalance(balances[0])[0] }}</p>
+                        <p>{{ getTotalBalanceInUsd() | number:'1.2-2' }} $</p>
                     </div>
 
                     <div class="token-block">
-                        <div *ngIf="convertBalance(balances[0])[0] != '0'" class="token-list">
+                        <div *ngIf="convertBalance(balances[0])[0] != '0' && convertBalance(balances[0])[0] !== 'Loading ...'" class="token-list">
                             <div>
                                 <img src="{{ convertBalance(balances[0])[1] }}.png" alt="{{ convertBalance(balances[0])[1] }} Logo">
                             </div>
@@ -107,7 +107,7 @@
                             </div>
                         </div>
 
-                        <div *ngIf="convertBalance(balances[1])[0] != '0'" class="token-list">
+                        <div *ngIf="convertBalance(balances[1])[0] !== '0' && convertBalance(balances[1])[0] !== 'Loading ...'" class="token-list">
                             <div>
                                 <img src="{{ convertBalance(balances[1])[1] }}.png" alt="{{ convertBalance(balances[1])[1] }} Logo">
                             </div>
@@ -123,7 +123,7 @@
                             </div>
                         </div>
 
-                        <div *ngIf="convertBalance(balances[2])[0] != '0'" class="token-list">
+                        <div *ngIf="convertBalance(balances[2])[0] != '0' && convertBalance(balances[2])[0] !== 'Loading ...'" class="token-list">
                             <div>
                                 <img src="{{ convertBalance(balances[2])[1] }}.png" alt="{{ convertBalance(balances[2])[1] }} Logo">
                             </div>
@@ -139,7 +139,7 @@
                             </div>
                         </div>
 
-                        <div *ngIf="convertBalance(balances[3])[0] != '0'" class="token-list">
+                        <div *ngIf="convertBalance(balances[3])[0] != '0' && convertBalance(balances[3])[0] !== 'Loading ...'" class="token-list">
                             <div>
                                 <img src="{{ convertBalance(balances[3])[1] }}.png" alt="{{ convertBalance(balances[3])[1] }} Logo">
                             </div>
@@ -175,7 +175,7 @@
                         </div>
                     </div>
                     
-                    <h5 class="no-nft-message" *ngIf="!isLoadingNFTs && tokenIds.length === 0" >No NFTs found</h5>
+                    <h5 class="message" *ngIf="!isLoadingNFTs && tokenIds.length === 0" >No NFTs found</h5>
                 </div>
 
 
@@ -188,6 +188,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        <h5 class="message" *ngIf="transferEvents.length === 0" >No Activity Yet</h5>
                     </div>
                 </div>
                 
@@ -212,4 +214,4 @@
 
 
 <app-modal-collection *ngIf="showNFTModal" [token]="selectedNFT" (closeModalEvent)="closeNFTModal($event)"></app-modal-collection>
-<app-modal-undiscovered *ngIf="showUndiscoveredModal" [tokenId]="selectedNFT!.tokenId" [image]="selectedNFT?.image" (closeModalEvent)="closeUndiscoveredModal()"></app-modal-undiscovered>
+<app-modal-undiscovered *ngIf="showUndiscoveredModal" [tokenId]="selectedNFT!.tokenId" [image]="selectedNFT?.image" (closeModalEvent)="closeUndiscoveredModal($event)"></app-modal-undiscovered>

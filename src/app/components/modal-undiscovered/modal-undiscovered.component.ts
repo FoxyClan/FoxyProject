@@ -26,7 +26,7 @@ import { CommonModule } from '@angular/common';
 export class UndiscoveredModal implements OnInit {
   @Input() image: string | undefined = '';
   @Input() tokenId: number = 0;
-  @Output() closeModalEvent = new EventEmitter<void>();
+  @Output() closeModalEvent = new EventEmitter<boolean>();
 
   @ViewChild('modalDiscover') modalDiscoverMint!: ModalMint;
   errorMessage: string = '';
@@ -46,14 +46,14 @@ export class UndiscoveredModal implements OnInit {
   }
   
 
-  closeModal() {
-    this.closeModalEvent.emit();
+  closeModal(isUndiscover: boolean = false) {
+    this.closeModalEvent.emit(isUndiscover);
   }
 
-  closeMintModal() {
+  closeMintModal(isUndiscover: boolean = false) {
     this.errorMessage = "";
     this.showMintModal = false;
-    this.closeModal();
+    this.closeModal(isUndiscover);
   }
 
   async discover() {
