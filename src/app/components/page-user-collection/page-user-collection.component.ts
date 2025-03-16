@@ -94,6 +94,7 @@ export class PageUserCollectionComponent implements OnInit {
     this.web3Service.walletAddress$.subscribe((walletAddress) => {
       if (!walletAddress) return;
       const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
+      if(this.walletAddress && walletAddress != this.walletAddress) window.location.reload();
       this.walletAddress = checksumAddress;
       this.isOwner = this.walletAddress === this.address; 
     });
