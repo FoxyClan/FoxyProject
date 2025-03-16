@@ -752,6 +752,7 @@ export class Web3Service {
     return result;
   }
 
+
   public async tokenOfOwnerByIndex(owner: String) {
     const contract = this.web3Modifier();
     const numberOfTokens = await this.balanceOf(owner);
@@ -764,6 +765,7 @@ export class Web3Service {
     return result;
   }
 
+
   async getContractTransactions() {
     try {
       const contract = this.web3Modifier();
@@ -775,61 +777,33 @@ export class Web3Service {
       const filteredEvents = events.filter((event): event is EventLog => 
         typeof event !== 'string' &&
         (event.returnValues?.['from'] === this.walletAddressSubject.value || 
-         event.returnValues?.['to'] === this.walletAddressSubject.value)
+         event.returnValues?.['to'] === this.walletAddressSubject.value) &&
+         event.returnValues?.['to'] !== "0x0000000000000000000000000000000000000000" // Ignore les burn
       );
 
-      const transactions = await Promise.all(filteredEvents.map(async (event) => {
-        if (!event.transactionHash) return null;
+      const uniqueTransactions = new Map();
 
-        const transaction = {
-          functionName: '',
-          from: event.returnValues?.['from'] || null,
-          to: event.returnValues?.['to'] || null,
-          tokenId: event.returnValues?.['tokenId'] || null,
-          parameters: [] as { name: string; value: any }[]
-        };
+      await Promise.all(filteredEvents.map(async (event) => {
+        if (!event.transactionHash) return;
 
         const tx = await this.web3!.eth.getTransaction(event.transactionHash);
-        if (tx && tx.input && tx.input.length > 10) {
-          const functionSignature = tx.input.slice(0, 10);
-          transaction.functionName = this.getFunctionName(functionSignature);
+        if (!tx || !tx.input || tx.input.length <= 10) return;
 
-          try {
-            let paramTypes: string[] = [];
-            switch (functionSignature) {
-              case '0xa0712d68': // transfer(address,uint256)
-                paramTypes = ['uint256'];
-                break;
-              case '0x42842e0e': // safeTransferFrom(address,address,uint256)
-                paramTypes = ['address', 'address', 'uint256'];
-                break;
-              case '0x23b872dd': // transferFrom(address,address,uint256)
-                paramTypes = ['address', 'address', 'uint256'];
-                break;
-              case '0x095ea7b3': // approve(address,uint256)
-                paramTypes = ['address', 'uint256'];
-                break;
-              case '0x42843c37': // merge (exemple fictif, adapter selon votre cas)
-                paramTypes = ['address', 'uint256'];
-                break;
-              default:
-                paramTypes = [];
-            }
+        const functionSignature = tx.input.slice(0, 10);
+        const functionName = this.getFunctionName(functionSignature);
 
-            if (paramTypes.length > 0) {
-              const decodedParameters = this.web3!.eth.abi.decodeParameters(paramTypes, tx.input.slice(10));
-              transaction.parameters = Object.keys(decodedParameters)
-                .filter(key => isNaN(Number(key)))
-                .map(key => ({ name: key, value: decodedParameters[key] }));
-            }
-          } catch (decodeError) {
-            console.error('Error decoding parameters:', decodeError);
-          }
+        if (!uniqueTransactions.has(event.transactionHash)) {
+          uniqueTransactions.set(event.transactionHash, {
+            functionName,
+            from: event.returnValues?.['from'] || null,
+            to: event.returnValues?.['to'] || null,
+            tokenId: event.returnValues?.['tokenId'] || null,
+            parameters: []
+          });
         }
-        return transaction;
       }));
-      
-      return transactions.filter((tx) => tx !== null);
+
+      return Array.from(uniqueTransactions.values());
     } catch (error) {
       console.error('Error fetching contract events:', error);
       return [];
@@ -837,11 +811,13 @@ export class Web3Service {
   }
 
 
+
   private getFunctionName(signature: string): string {
     const functionSignatures: { [key: string]: string } = {
       '0xddff5b1c': 'Mint',
       '0xd1c2babb': 'Merge',
       '0xa0712d68': 'Mint',
+      '0x729ad39e': 'Airdrop'
     };
     return functionSignatures[signature] || 'Transfer';
   }

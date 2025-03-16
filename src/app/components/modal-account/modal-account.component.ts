@@ -206,6 +206,7 @@ export class ModalAccount implements OnInit, OnDestroy {
 
   async loadTransferEvents() {
     this.web3Service.getContractTransactions().then(events => {
+      console.log(events)
       this.transferEvents = events;
     }).catch(error => {
       console.error('Error loading Transfer events:', error);

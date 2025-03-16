@@ -47,6 +47,5 @@ JAR
 
 
 ACTUAL :
-- verifier qu'il n'est pas possible de merge et discover sur un autre profil
-- refresh my collection quand connection du wallet
 - faire tous les transfers events
+- mettre plus de details dans les transfer dans modal account
