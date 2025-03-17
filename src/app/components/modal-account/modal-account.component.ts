@@ -69,6 +69,7 @@ export class ModalAccount implements OnInit, OnDestroy {
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
   isLoadingNFTs: boolean = true;
   isLoadingTransactions: boolean = false;
+  isLoadingBalance: boolean = false;
 
 
 
@@ -146,6 +147,7 @@ export class ModalAccount implements OnInit, OnDestroy {
 
   
   async loadBalance() {
+    this.isLoadingBalance = true;
     const balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
     try {
       const symbols: Array<'ETH' | 'WETH' | 'USDT' | 'USDC'> = ['ETH', 'WETH', 'USDT', 'USDC'];
@@ -158,6 +160,7 @@ export class ModalAccount implements OnInit, OnDestroy {
       //console.error("Error loading balances:", error);
     } finally {
       this.balances = this.sortBalances(balances);
+      this.isLoadingBalance = false;
     }
   }
   

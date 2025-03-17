@@ -9,14 +9,15 @@ WEB3SERVICE
 - enlever le commentaire de switchethaccount
 - merge : on recupere le tableau tokenIdsAfter et on le compare a tokenIdsBefore, ce devrait etre trois token retourné 2 burn et le nouveau
 - enelever commentaire sur la limite de mint par wallet
-- clee infura visible de tous ?
+- clée infura visible de tous ?
 
 MODAL-WALLET
 - mettre le wallet recent en haut
 
 MODAL-ACCOUNT
 - ne rien afficher si le reseau n'est pas eth
-- events "transfers" test et test que les points descendent bien etc ...
+- events "transfers" details & test d'envoie de nft & et test que les points descendent bien etc ...
+- event usePoints, et rajouter des fonction dans les transaction (jsp si y a tout la)
 
 SMART CONTRACT
 - mettre a jour les commentaires
@@ -27,7 +28,7 @@ SMART CONTRACT
 
 
 GANACHE
-- supprimer commentaire web3service getBalance / modal account loadBalance -> catch consol error
+- supprimer commentaire web3service getBalance / modal account loadBalance -> catch console error
 
 MODAL MINT
 - niveau et points du token ?
@@ -47,5 +48,4 @@ JAR
 
 
 ACTUAL :
-- faire tous les transfers events
-- mettre plus de details dans les transfer dans modal account
+- isloadingbalance
