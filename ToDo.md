@@ -16,7 +16,7 @@ MODAL-WALLET
 
 MODAL-ACCOUNT
 - ne rien afficher si le reseau n'est pas eth
-- transfers
+- events "transfers" test et test que les points descendent bien etc ...
 
 SMART CONTRACT
 - mettre a jour les commentaires

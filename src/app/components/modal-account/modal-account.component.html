@@ -168,8 +168,8 @@
                             </div>
                             <div class="token-text">
                                 <div>   
-                                    <p class="NFTtext">#{{ tokenId }}</p>
-                                    <p class="NFTtext">DNA : {{ tokens[tokenId]?.DNA }}</p>
+                                    <h4>#{{ tokenId }}</h4>
+                                    <p class="NFT-text">Rarity : {{ getRarity(tokens[tokenId]!.attributes) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -180,19 +180,20 @@
 
 
                 <div *ngIf="selectedOption === 'Activity'" class="token">
+                    <div *ngIf="isLoadingTransactions" class="spinner"></div>
                     <div class="token-block">
                         <div *ngFor="let transaction of transferEvents.reverse()" class="token-list no-padding">
                             <div class="token-list">
                                 <div>   
                                     <h4>{{ transaction.functionName }}</h4>
-                                    <p *ngIf="transaction.functionName == 'Mint'" class="NFTtext transaction-details">{{ transaction.tokenIds.length == 1 ? "TokenId : #" + transaction.tokenIds : "TokenIds : [ " + formatTokenIds(transaction.tokenIds) + " ]" }}</p>
-                                    <p *ngIf="transaction.functionName == 'Merge'" class="NFTtext transaction-details">[ {{ formatTokenIds([transaction.tokenIdBurned1, transaction.tokenIdBurned2]) }} ] ➔ #{{ transaction.newTokenId }}</p>
-                                    <p *ngIf="transaction.functionName == 'Airdrop'" class="NFTtext transaction-details">{{ transaction.tokenIds.length == 1 ? "TokenId : #" + transaction.tokenIds : "TokenIds : [ " + formatTokenIds(transaction.tokenIds) + " ]" }}</p>
+                                    <p *ngIf="transaction.functionName === 'Mint'" class="NFT-text">{{ transaction.tokenIds.length == 1 ? "TokenId : #" + transaction.tokenIds : "TokenIds : [ " + formatTokenIds(transaction.tokenIds) + " ]" }}</p>
+                                    <p *ngIf="transaction.functionName === 'Merge'" class="NFT-text">[ {{ formatTokenIds([transaction.tokenIdBurned1, transaction.tokenIdBurned2]) }} ] ➔ #{{ transaction.newTokenId }}</p>
+                                    <p *ngIf="transaction.functionName === 'Airdrop'" class="NFT-text">{{ transaction.tokenIds.length == 1 ? "TokenId : #" + transaction.tokenIds : "TokenIds : [ " + formatTokenIds(transaction.tokenIds) + " ]" }}</p>
                                 </div>
                             </div>
                         </div>
 
-                        <h5 class="message" *ngIf="transferEvents.length === 0" >No Activity Yet</h5>
+                        <h5 class="message" *ngIf="!isLoadingTransactions && transferEvents.length === 0" >No Activity Yet</h5>
                     </div>
                 </div>
                 

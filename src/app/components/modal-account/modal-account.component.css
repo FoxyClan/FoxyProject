@@ -324,14 +324,12 @@
     letter-spacing: 1px;
 }
 
-.transaction-details {
+.NFT-text {
+    font-size: 0.7rem;
     color: #00d9ff;
     letter-spacing: 0.75px;
 }
 
-.NFTtext {
-    font-size: 0.8rem;
-}
 
 
 /* SPINNER */

@@ -862,7 +862,6 @@ export class Web3Service {
       '0xa0712d68': 'Mint',
       '0x729ad39e': 'Airdrop'
     };
-    console.log(signature)
     return functionSignatures[signature] || 'Transfer';
   }
 

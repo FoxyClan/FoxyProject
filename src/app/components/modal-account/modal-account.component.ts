@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { CacheService } from '../../services/cache.service';
 import { ModalCollection } from "../modal-collection/modal-collection.component";
 import { UndiscoveredModal } from "../modal-undiscovered/modal-undiscovered.component";
+import { TraitOptionsService } from '../../services/trait-options.service';
 
 interface Metadata {
   tokenId: number;
@@ -56,6 +57,7 @@ export class ModalAccount implements OnInit, OnDestroy {
   public selectedWallet: string = '';
   selectedOption: string = 'Token';
   showUndiscoveredModal: boolean = false;
+  showNFTModal: boolean = false;
 
   balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
   tokenIds: number[] = [];
@@ -66,14 +68,15 @@ export class ModalAccount implements OnInit, OnDestroy {
   transferEvents: any[] = [];
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
   isLoadingNFTs: boolean = true;
+  isLoadingTransactions: boolean = false;
 
-  showNFTModal: boolean = false;
 
 
   constructor(private web3Service: Web3Service, 
     private exchangeRateService: ExchangeRateService,
     private cacheService : CacheService,
-    private router: Router  ) {
+    private router: Router,
+    private traitOptionsService: TraitOptionsService) {
   }
 
   async ngOnInit() {
@@ -86,11 +89,13 @@ export class ModalAccount implements OnInit, OnDestroy {
     this.web3Service.selectedWallet$.subscribe((selectedWallet) => {
       this.selectedWallet = selectedWallet;
     });
-    await this.loadBalance();
-    await this.tokenOfOwnerByIndex();
-    await this.loadTransferEvents();
-    await this.getOwner();
-    await this.fetchMetadata();
+    await this.tokenOfOwnerByIndex()
+    await Promise.all([
+      this.loadBalance(),
+      this.loadTransferEvents(),
+      this.fetchMetadata(),
+      this.getOwner()
+    ]);
   }
 
   ngOnDestroy() {
@@ -205,12 +210,13 @@ export class ModalAccount implements OnInit, OnDestroy {
   }
 
   async loadTransferEvents() {
-    this.web3Service.getContractTransactions().then(events => {
-      console.log(events)
+    this.isLoadingTransactions = true;
+    await this.web3Service.getContractTransactions().then(events => {
       this.transferEvents = events;
     }).catch(error => {
       console.error('Error loading Transfer events:', error);
     });
+    this.isLoadingTransactions = false;
   }
 
   formatTokenIds(tokenIds: number[]): string {
@@ -233,6 +239,25 @@ export class ModalAccount implements OnInit, OnDestroy {
       }
     }
     this.isLoadingNFTs = false;
+  }
+
+  getRarity(attributes: Array<{ value: string; trait_type: string }>) {
+    let total = 0;
+    for(let item of attributes) {
+      let index = this.traitOptionsService.getTraitIndex(item.value, item.trait_type);
+      if (index === null) {
+        console.error("Trait not found");
+        index = 15;
+      }
+      if (item.trait_type === "Transcendence") {
+        if(index == 1) index = -3;
+        else if(index == 0) index = -5;
+      }
+      total += index;
+    }
+    if(total < 0) total = 0;
+    total = (total / 87 * 100);
+    return parseFloat(total.toFixed(1));
   }
 
   /* NFT VIEW */
