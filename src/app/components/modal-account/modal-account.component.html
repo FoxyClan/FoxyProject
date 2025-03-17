@@ -185,9 +185,9 @@
                             <div class="token-list">
                                 <div>   
                                     <h4>{{ transaction.functionName }}</h4>
-                                    <p *ngIf="transaction.functionName == 'Mint'" class="NFTtext transaction-details">{{ transaction.tokenIds.length == 1 ? "TokenId : " + transaction.tokenIds : "TokenIds : [ " + transaction.tokenIds + " ]" }}</p>
-                                    <p *ngIf="transaction.functionName == 'Merge'" class="NFTtext transaction-details">{{ transaction.tokenIdBurned1 }} + {{ transaction.tokenIdBurned2 }} ➔ {{ transaction.newTokenId }}</p>
-                                    <p *ngIf="transaction.functionName == 'Airdrop'" class="NFTtext transaction-details">TokenId : #{{ transaction.tokenId }}</p>
+                                    <p *ngIf="transaction.functionName == 'Mint'" class="NFTtext transaction-details">{{ transaction.tokenIds.length == 1 ? "TokenId : #" + transaction.tokenIds : "TokenIds : [ " + formatTokenIds(transaction.tokenIds) + " ]" }}</p>
+                                    <p *ngIf="transaction.functionName == 'Merge'" class="NFTtext transaction-details">[ {{ formatTokenIds([transaction.tokenIdBurned1, transaction.tokenIdBurned2]) }} ] ➔ #{{ transaction.newTokenId }}</p>
+                                    <p *ngIf="transaction.functionName == 'Airdrop'" class="NFTtext transaction-details">{{ transaction.tokenIds.length == 1 ? "TokenId : #" + transaction.tokenIds : "TokenIds : [ " + formatTokenIds(transaction.tokenIds) + " ]" }}</p>
                                 </div>
                             </div>
                         </div>

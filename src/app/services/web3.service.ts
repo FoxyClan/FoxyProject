@@ -774,12 +774,10 @@ export class Web3Service {
             toBlock: 'latest'
         });
 
-        // Fonction pour vérifier explicitement le type
         function isEventLog(event: any): event is EventLog {
             return typeof event !== 'string' && event !== null && typeof event === 'object' && 'returnValues' in event;
         }
 
-        // Filtrer uniquement les événements qui concernent l'utilisateur et ne sont pas des burns
         const filteredEvents = events
             .filter((event): event is EventLog => isEventLog(event))
             .filter((event) => 
@@ -799,9 +797,7 @@ export class Web3Service {
             const functionSignature = tx.input.slice(0, 10);
             const functionName = this.getFunctionName(functionSignature);
 
-            // Vérifier si la transaction est un Mint
-            if (functionName === 'Mint') {
-                // Récupérer tous les tokenIds mintés dans cette transaction
+            if (functionName === 'Mint' || functionName === 'Airdrop') {
                 const mintEvents = events
                     .filter((e): e is EventLog => isEventLog(e))
                     .filter(e => 
@@ -810,17 +806,20 @@ export class Web3Service {
                         e.returnValues?.['from'] === "0x0000000000000000000000000000000000000000"
                     );
 
-                const mintedTokenIds = mintEvents.map(e => e.returnValues['tokenId']);
+                const recipient = event.returnValues?.['to'] || null;
+                const mintedTokenIds = [...new Set(mintEvents.map(e => e.returnValues['tokenId']))];
 
                 if (!uniqueTransactions.has(event.transactionHash)) {
                     uniqueTransactions.set(event.transactionHash, {
                         functionName,
-                        to: event.returnValues?.['to'] || null,
+                        to: recipient,
                         tokenIds: mintedTokenIds
                     });
+                } else {
+                    const existingTokenIds = uniqueTransactions.get(event.transactionHash).tokenIds;
+                    uniqueTransactions.get(event.transactionHash).tokenIds = [...new Set([...existingTokenIds, ...mintedTokenIds])];
                 }
             } else if (functionName === 'Merge') {
-                // Extraire les tokenIds brûlés et le nouveau tokenId
                 const mergeEvent = events.find((e): e is EventLog => 
                     isEventLog(e) && e.event === "Merge" && e.transactionHash === event.transactionHash
                 );
@@ -835,7 +834,6 @@ export class Web3Service {
                     });
                 }
             } else {
-                // Pour les autres transactions
                 if (!uniqueTransactions.has(event.transactionHash)) {
                     uniqueTransactions.set(event.transactionHash, {
                         functionName,
@@ -857,18 +855,14 @@ export class Web3Service {
 
 
 
-
-
-
-
-
   private getFunctionName(signature: string): string {
     const functionSignatures: { [key: string]: string } = {
-      '0xddff5b1c': 'Mint',
+      '0xddff5b1c': 'Mint', // Allow List
       '0xd1c2babb': 'Merge',
       '0xa0712d68': 'Mint',
       '0x729ad39e': 'Airdrop'
     };
+    console.log(signature)
     return functionSignatures[signature] || 'Transfer';
   }
 

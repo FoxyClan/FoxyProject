@@ -213,6 +213,10 @@ export class ModalAccount implements OnInit, OnDestroy {
     });
   }
 
+  formatTokenIds(tokenIds: number[]): string {
+    return tokenIds.map(id => `#${id}`).join(", ");
+  }
+
   
 
   async fetchMetadata(): Promise<void> {
