@@ -184,7 +184,10 @@
                         <div *ngFor="let transaction of transferEvents.reverse()" class="token-list no-padding">
                             <div class="token-list">
                                 <div>   
-                                    <p class="NFTtext">{{ transaction.functionName }}</p>
+                                    <h4>{{ transaction.functionName }}</h4>
+                                    <p *ngIf="transaction.functionName == 'Mint'" class="NFTtext transaction-details">{{ transaction.tokenIds.length == 1 ? "TokenId : " + transaction.tokenIds : "TokenIds : [ " + transaction.tokenIds + " ]" }}</p>
+                                    <p *ngIf="transaction.functionName == 'Merge'" class="NFTtext transaction-details">{{ transaction.tokenIdBurned1 }} + {{ transaction.tokenIdBurned2 }} ➔ {{ transaction.newTokenId }}</p>
+                                    <p *ngIf="transaction.functionName == 'Airdrop'" class="NFTtext transaction-details">TokenId : #{{ transaction.tokenId }}</p>
                                 </div>
                             </div>
                         </div>

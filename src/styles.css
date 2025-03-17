@@ -22,7 +22,8 @@ ul {
 
 *::-webkit-scrollbar {
     width: 8px;
-    background: black;
+    background: #252835;
+    border-radius: 20px;
 }
 
 *::-webkit-scrollbar-track {

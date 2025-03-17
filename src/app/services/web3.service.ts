@@ -768,47 +768,97 @@ export class Web3Service {
 
   async getContractTransactions() {
     try {
-      const contract = this.web3Modifier();
-      const events = await contract.getPastEvents("allEvents", {
-        fromBlock: 0,
-        toBlock: 'latest'
-      });
+        const contract = this.web3Modifier();
+        const events = await contract.getPastEvents("allEvents", {
+            fromBlock: 0,
+            toBlock: 'latest'
+        });
 
-      const filteredEvents = events.filter((event): event is EventLog => 
-        typeof event !== 'string' &&
-        (event.returnValues?.['from'] === this.walletAddressSubject.value || 
-         event.returnValues?.['to'] === this.walletAddressSubject.value) &&
-         event.returnValues?.['to'] !== "0x0000000000000000000000000000000000000000" // Ignore les burn
-      );
-
-      const uniqueTransactions = new Map();
-
-      await Promise.all(filteredEvents.map(async (event) => {
-        if (!event.transactionHash) return;
-
-        const tx = await this.web3!.eth.getTransaction(event.transactionHash);
-        if (!tx || !tx.input || tx.input.length <= 10) return;
-
-        const functionSignature = tx.input.slice(0, 10);
-        const functionName = this.getFunctionName(functionSignature);
-
-        if (!uniqueTransactions.has(event.transactionHash)) {
-          uniqueTransactions.set(event.transactionHash, {
-            functionName,
-            from: event.returnValues?.['from'] || null,
-            to: event.returnValues?.['to'] || null,
-            tokenId: event.returnValues?.['tokenId'] || null,
-            parameters: []
-          });
+        // Fonction pour vérifier explicitement le type
+        function isEventLog(event: any): event is EventLog {
+            return typeof event !== 'string' && event !== null && typeof event === 'object' && 'returnValues' in event;
         }
-      }));
 
-      return Array.from(uniqueTransactions.values());
+        // Filtrer uniquement les événements qui concernent l'utilisateur et ne sont pas des burns
+        const filteredEvents = events
+            .filter((event): event is EventLog => isEventLog(event))
+            .filter((event) => 
+                event.returnValues?.['to'] !== "0x0000000000000000000000000000000000000000" &&
+                (event.returnValues?.['from'] === this.walletAddressSubject.value || 
+                 event.returnValues?.['to'] === this.walletAddressSubject.value)
+            );
+
+        const uniqueTransactions = new Map();
+
+        await Promise.all(filteredEvents.map(async (event) => {
+            if (!event.transactionHash) return;
+
+            const tx = await this.web3!.eth.getTransaction(event.transactionHash);
+            if (!tx || !tx.input || tx.input.length <= 10) return;
+
+            const functionSignature = tx.input.slice(0, 10);
+            const functionName = this.getFunctionName(functionSignature);
+
+            // Vérifier si la transaction est un Mint
+            if (functionName === 'Mint') {
+                // Récupérer tous les tokenIds mintés dans cette transaction
+                const mintEvents = events
+                    .filter((e): e is EventLog => isEventLog(e))
+                    .filter(e => 
+                        e.event === "Transfer" && 
+                        e.transactionHash === event.transactionHash && 
+                        e.returnValues?.['from'] === "0x0000000000000000000000000000000000000000"
+                    );
+
+                const mintedTokenIds = mintEvents.map(e => e.returnValues['tokenId']);
+
+                if (!uniqueTransactions.has(event.transactionHash)) {
+                    uniqueTransactions.set(event.transactionHash, {
+                        functionName,
+                        to: event.returnValues?.['to'] || null,
+                        tokenIds: mintedTokenIds
+                    });
+                }
+            } else if (functionName === 'Merge') {
+                // Extraire les tokenIds brûlés et le nouveau tokenId
+                const mergeEvent = events.find((e): e is EventLog => 
+                    isEventLog(e) && e.event === "Merge" && e.transactionHash === event.transactionHash
+                );
+
+                if (mergeEvent) {
+                    uniqueTransactions.set(event.transactionHash, {
+                        functionName,
+                        from: mergeEvent.returnValues['owner'],
+                        tokenIdBurned1: mergeEvent.returnValues['tokenIdBurned1'],
+                        tokenIdBurned2: mergeEvent.returnValues['tokenIdBurned2'],
+                        newTokenId: mergeEvent.returnValues['newTokenId']
+                    });
+                }
+            } else {
+                // Pour les autres transactions
+                if (!uniqueTransactions.has(event.transactionHash)) {
+                    uniqueTransactions.set(event.transactionHash, {
+                        functionName,
+                        from: event.returnValues?.['from'] || null,
+                        to: event.returnValues?.['to'] || null,
+                        tokenId: event.returnValues?.['tokenId'] || null,
+                        parameters: []
+                    });
+                }
+            }
+        }));
+
+        return Array.from(uniqueTransactions.values());
     } catch (error) {
-      console.error('Error fetching contract events:', error);
-      return [];
+        console.error('Error fetching contract events:', error);
+        return [];
     }
-  }
+}
+
+
+
+
+
 
 
 
