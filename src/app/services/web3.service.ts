@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import Web3, { EventLog } from 'web3';
 import Coinbase from '@coinbase/wallet-sdk';
-import { MetaMaskSDK } from "@metamask/sdk"
+import { MetaMaskSDK } from "@metamask/sdk";
 import { BehaviorSubject } from 'rxjs';
+import { LedgerConnectKit } from "@ledgerhq/connect-kit";
 import axios from 'axios';
 import{ wethContractAddress, usdtContractAddress, usdcContractAddress, FoxyClanContractAddress, FoxyPrice, PrivateSaleFoxyPrice, FoxyClanABI, StableCoinContractABI } from './smart-contract.service';
 
@@ -38,6 +39,7 @@ export class Web3Service {
   private intervalId: any;
   private provider: any = null;
   private iMetaMask: number = 0;
+  private ledgerKit: InstanceType<typeof LedgerConnectKit> | null = null;
   
   constructor() {
     this.checkConnection();
@@ -59,6 +61,7 @@ export class Web3Service {
       if(window.ethereum !== undefined && window.ethereum.isMetaMask) currentWallets.push("MetaMask")
       if(window.ethereum !== undefined && window.ethereum.isTrust) currentWallets.push("TrustWallet")
       if(typeof window.coinbaseWalletExtension !== 'undefined') currentWallets.push("CoinbaseWallet")
+      currentWallets.push("Ledger")
       this.installedWalletsSubject.next(currentWallets);
     } catch(error: any) {
       console.error('Error Detecting Wallets: ', error);
@@ -107,6 +110,9 @@ export class Web3Service {
       }
       else if (typeof window !== 'undefined') {
         try {
+          if (selectedWallet === 'Ledger Live') {
+            await this.connectLedgerLive();
+          }
           if(selectedWallet === 'CoinbaseWallet') {     // Coinbase Wallet
             const CoinbaseWallet = new Coinbase({
               appName: 'FoxyCLan',
@@ -208,6 +214,34 @@ export class Web3Service {
         alert('No web wallets found');
       }
     });
+  }
+
+  async connectLedgerLive() {
+    try {
+      this.ledgerKit = new LedgerConnectKit({
+        dappName: "FoxyClan",
+        walletConnectVersion: 2,
+      });
+
+      this.provider = await this.ledgerKit.connect();
+      this.web3 = new Web3(this.provider);
+
+      const accounts = await this.web3.eth.getAccounts();
+      if (accounts.length === 0) throw new Error("No accounts found");
+
+      const checksumAddress = Web3.utils.toChecksumAddress(accounts[0]);
+      this.walletAddressSubject.next(checksumAddress);
+      this.isConnectedSubject.next(true);
+      this.selectedWalletSubject.next('Ledger Live');
+      this.getNetworkId();
+
+      localStorage.setItem('connectionTime', new Date().getTime().toString());
+      localStorage.setItem('selectedWallet', this.selectedWalletSubject.value);
+
+      console.log("Ledger Live connected:", checksumAddress);
+    } catch (error) {
+      console.error("Error connecting to Ledger Live:", error);
+    }
   }
 
 

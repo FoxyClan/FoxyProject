@@ -49,3 +49,4 @@ JAR
 
 ACTUAL :
 - isloadingbalance
+- https://developers.ledger.com/docs/device-interaction/ledgerjs/beginner/transfer-eth
