@@ -4,7 +4,7 @@
     <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
       
       <label for="address">Wallet Address</label>
-      <input id="address" formControlName="address" type="text" placeholder="Wallet Address" required>
+      <input id="address" formControlName="address" type="text" placeholder="Wallet Address" readonly>
 
       <label for="subject">Subject</label>
       <select id="subject" formControlName="subject" (change)="onSubjectChange($event)">
@@ -30,7 +30,7 @@
 
       
       <label for="description">Description</label>
-      <textarea id="description" formControlName="description" placeholder="Description of the problem..." required></textarea>
+      <textarea id="description" formControlName="description" placeholder="Describe your problem..." required></textarea>
       
       
       

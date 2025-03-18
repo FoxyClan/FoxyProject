@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ContactService } from '../../services/contact.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Web3Service } from '../../services/web3.service';
+import Web3 from 'web3';
 
 @Component({
   selector: 'app-contact',
@@ -13,37 +15,70 @@ import { CommonModule } from '@angular/common';
 })
 
 
-export class ContactComponent {
+export class ContactComponent implements OnInit{
   contactForm: FormGroup;
   selectedSubject: string = '';
 
-  constructor(private fb: FormBuilder, private contactService: ContactService) {
+  isConnected: boolean = false;
+  walletAddress: string = 'Anonymous';
+
+  constructor(private fb: FormBuilder, 
+    private contactService: ContactService, 
+    private web3Service: Web3Service) {
     this.contactForm = this.fb.group({
-      address: ['', Validators.required],
+      address: [{ value: 'Anonymous', disabled: true }],
       description: ['', Validators.required],
       subject: ['', Validators.required],
-      section: ['', Validators.required]
+      section: ['']
+    });
+  }
+
+  ngOnInit() {
+    this.web3Service.isConnected$.subscribe((isConnected) => {
+      this.isConnected = isConnected;
+      if(!isConnected) this.contactForm.get('address')?.setValue('Anonymous');
+    });
+    this.web3Service.walletAddress$.subscribe((walletAddress) => {
+      if (!walletAddress) return;
+      const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
+      this.walletAddress = checksumAddress;
+      this.contactForm.get('address')?.setValue(this.walletAddress);
     });
   }
 
   onSubjectChange(event: any) {
     this.selectedSubject = event.target.value;
+    const sectionControl = this.contactForm.get('section');
 
-    if (this.selectedSubject !== 'bug') {
-      this.contactForm.get('section')?.setValue(''); // Réinitialise si ce n'est pas un bug
+    if (this.selectedSubject === 'bug') {
+      sectionControl?.setValidators(Validators.required); // Rendre obligatoire
+    } else {
+      sectionControl?.clearValidators(); // Retirer la validation
+      sectionControl?.setValue(''); // Réinitialiser la valeur
     }
+
+    sectionControl?.updateValueAndValidity(); // Appliquer les changements
   }
 
   onSubmit() {
     if (this.contactForm.valid) {
-      console.log(this.contactForm.value);
-      this.contactService.sendMessage(this.contactForm.value).subscribe(response => {
+      const formData = {
+        address: this.contactForm.get('address')?.value || 'Anonymous',
+        description: this.contactForm.get('description')?.value || '',
+        subject: this.contactForm.get('subject')?.value || '',
+        section: this.selectedSubject === 'bug' ? this.contactForm.get('section')?.value : null
+      };
+  
+      console.log(formData);
+      this.contactService.sendMessage(formData).subscribe(response => {
         alert('Message envoyé avec succès !');
         this.contactForm.reset();
-        this.selectedSubject = ''; // Réinitialiser le subject après soumission
+        this.selectedSubject = ''; // Réinitialiser après soumission
+        this.contactForm.get('address')?.setValue(this.walletAddress); // Remet l'adresse du wallet après reset
       }, error => {
         alert('Erreur lors de l’envoi du message.');
       });
     }
   }
+  
 }
