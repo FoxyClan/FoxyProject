@@ -1,0 +1,40 @@
+<div class="contact-page">
+  <div class="contact-container">
+    <h2>Contact Support</h2>
+    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+      
+      <label for="address">Wallet Address</label>
+      <input id="address" formControlName="address" type="text" placeholder="Wallet Address" required>
+
+      <label for="subject">Subject</label>
+      <select id="subject" formControlName="subject" (change)="onSubjectChange($event)">
+        <option value="" selected disabled>-- Select a subject --</option>
+        <option value="question">Question</option>
+        <option value="bug">Bug</option>
+        <option value="suggestion">Suggestion</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label *ngIf="selectedSubject === 'bug'" for="section">Bug Section</label>
+      <select *ngIf="selectedSubject === 'bug'" id="section" formControlName="section">
+        <option value="" selected disabled>-- Select a section --</option>
+        <option value="mint">Mint</option>
+        <option value="merge">Merge</option>
+        <option value="foxypoints">Foxy Points</option>
+        <option value="level">Token Level</option>
+        <option value="conenct">Connect Wallet</option>
+        <option value="website">Foxy Website</option>
+        <option value="other">Other</option>
+      </select>
+
+
+      
+      <label for="description">Description</label>
+      <textarea id="description" formControlName="description" placeholder="Description of the problem..." required></textarea>
+      
+      
+      
+      <button type="submit" [disabled]="contactForm.invalid">Send</button>
+    </form>
+  </div>
+</div>

@@ -26,7 +26,7 @@
             <a href="#" [ngClass]="{ 'active-link': isActive('/team') }">Team</a>
         </li>
         <li>
-            <a href="#" [ngClass]="{ 'active-link': isActive('/contact') }">Contact</a>
+            <a [routerLink]="['/contact']" [ngClass]="{ 'active-link': isActive('/contact') }">Contact</a>
         </li>
     </ul>
     <div class="button-container">
