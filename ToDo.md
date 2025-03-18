@@ -10,6 +10,8 @@ WEB3SERVICE
 - merge : on recupere le tableau tokenIdsAfter et on le compare a tokenIdsBefore, ce devrait etre trois token retourné 2 burn et le nouveau
 - enelever commentaire sur la limite de mint par wallet
 - clée infura visible de tous ?
+- Ledger integration : https://developers.ledger.com/docs/device-interaction/ledgerjs/beginner/transfer-eth
+- wallet connect integration : yt playlist NFT
 
 MODAL-WALLET
 - mettre le wallet recent en haut
@@ -35,7 +37,6 @@ MODAL MINT
 - empecher le scroll
 
 COLLECTION:
-- no result quand ça charge encore
 - probleme click sur neon nose sur MODAL-COLLECTION quand on est sur la collection
 - mettre undiscoverd en ipfs ou sur filebase ?
 
@@ -49,4 +50,4 @@ JAR
 
 ACTUAL :
 - isloadingbalance
-- https://developers.ledger.com/docs/device-interaction/ledgerjs/beginner/transfer-eth
+- 

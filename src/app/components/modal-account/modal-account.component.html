@@ -85,11 +85,12 @@
 
             <div class="block3">
                 <div *ngIf="selectedOption === 'Token'" class="token">
-                    <div *ngIf="isLoadingBalance" class="spinner"></div>
                     <div class="balance-block">
                         <h3>Balance : </h3>
                         <p>{{ getTotalBalanceInUsd() | number:'1.2-2' }} $</p>
                     </div>
+                    
+                    <div *ngIf="isLoadingBalance" class="spinner"></div>
 
                     <div class="token-block">
                         <div *ngIf="convertBalance(balances[0])[0] != '0' && convertBalance(balances[0])[0] !== 'Loading ...'" class="token-list">
