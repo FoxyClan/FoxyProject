@@ -6,6 +6,16 @@
       <label for="address">Wallet Address</label>
       <input id="address" formControlName="address" type="text" placeholder="Wallet Address" readonly>
 
+      <label for="email">E-mail</label>
+      <input id="email" formControlName="email" type="text"
+        [ngClass]="{'invalid-border': contactForm.get('email')?.invalid && contactForm.get('email')?.touched}"
+        placeholder="Enter your email">
+
+      <!-- Message d'erreur -->
+      <div class="error-message" *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched">
+        Please enter a valid email address.
+      </div>
+
       <label for="subject">Subject</label>
       <select id="subject" formControlName="subject" (change)="onSubjectChange($event)">
         <option value="" selected disabled>-- Select a subject --</option>

@@ -31,6 +31,7 @@ public class EmailService {
     private String buildEmailContent(ContactRequest contactRequest) {
         return "<h2>New Contact Request</h2>" +
                 "<p><strong>Wallet Address:</strong> " + contactRequest.getAddress() + "</p>" +
+                "<p><strong>E-mail:</strong> " + contactRequest.getEmail() + "</p>" +
                 "<p><strong>Subject:</strong> " + contactRequest.getSubject() + "</p>" +
                 "<p><strong>Bug Section:</strong> " + (contactRequest.getSection() != null ? contactRequest.getSection() : "N/A") + "</p>" +
                 "<p><strong>Description:</strong></p>" +

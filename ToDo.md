@@ -45,8 +45,9 @@ JAR
 - JAVA securisé avec toutes les fonctions en public ?
 - superposition des traits non compatibles dans la creation
 - enlever commentaire test si tokenId existe sur file base pour mint / merge
+- demander a valentin si address gmail risque pour le contact
 
 
 
 ACTUAL :
-- 
+- probleme error envoie du mail
