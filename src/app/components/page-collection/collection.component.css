@@ -8,7 +8,6 @@
     height: 100dvh;
     background: url("../../../../public/background-theme.jpg");
     background-size: cover;
-    filter: drop-shadow(10%);
     font-family: "Orbitron", sans-serif;
     display: flex;
     align-items: end;
