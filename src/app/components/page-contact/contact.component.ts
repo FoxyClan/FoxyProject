@@ -63,26 +63,38 @@
 
 
     onSubmit() {
-      if (this.contactForm.valid) {
-        const formData = {
-          address: this.contactForm.get('address')?.value || 'Anonymous',
-          email: this.contactForm.get('email')?.value || '',
-          description: this.contactForm.get('description')?.value || '',
-          subject: this.contactForm.get('subject')?.value || '',
-          section: this.selectedSubject === 'bug' ? this.contactForm.get('section')?.value : null
-        };
+      if (!this.contactForm.valid) return;
     
-        console.log(formData);
-        this.contactService.sendMessage(formData).subscribe(response => {
-          alert('Message envoyé avec succès !');
+      const formData = {
+        address: this.contactForm.get('address')?.value || 'Anonymous',
+        email: this.contactForm.get('email')?.value || '',
+        description: this.contactForm.get('description')?.value || '',
+        subject: this.contactForm.get('subject')?.value || '',
+        section: this.selectedSubject === 'bug' ? this.contactForm.get('section')?.value : null
+      };
+    
+      console.log("Envoi du formulaire...", formData);
+    
+      this.contactService.sendMessage(formData).subscribe({
+        next: response => {
+          console.log("✅ Réponse du serveur:", response);
+    
+          if (response.status === 200 && response.body?.message) {
+            alert(response.body.message);
+          } else {
+            alert("Erreur lors de l’envoi du message.");
+          }
+    
           this.contactForm.reset();
           this.selectedSubject = ''; // Réinitialiser après soumission
           this.contactForm.get('address')?.setValue(this.walletAddress); // Remet l'adresse du wallet après reset
-        }, error => {
-          alert('Erreur lors de l’envoi du message.');
-        });
-      }
+        },
+        error: error => {
+          console.error("❌ Erreur lors de l'envoi:", error);
+          alert("Erreur lors de l’envoi du message.");
+        }
+      });
     }
     
-    
-  }
+     
+}
