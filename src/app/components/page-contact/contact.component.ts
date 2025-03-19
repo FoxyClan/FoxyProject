@@ -15,86 +15,106 @@
   })
 
 
-  export class ContactComponent implements OnInit{
-    contactForm: FormGroup;
-    selectedSubject: string = '';
+export class ContactComponent implements OnInit {
+  contactForm: FormGroup;
+  selectedSubject: string = '';
 
-    isConnected: boolean = false;
-    walletAddress: string = 'Anonymous';
+  isConnected: boolean = false;
+  walletAddress: string = 'Anonymous';
 
-    constructor(private fb: FormBuilder, 
-      private contactService: ContactService, 
-      private web3Service: Web3Service) {
-      this.contactForm = this.fb.group({
-        address: [{ value: 'Anonymous', disabled: true }],
-        email: ['', [Validators.required, Validators.email]],
-        description: ['', Validators.required],
-        subject: ['', Validators.required],
-        section: ['']
-      });
+  isSending: boolean = false;
+  isSent: boolean = false;
+  confirmationMessage: string = '';
+  successfulSend: boolean |null = true;
+
+
+  constructor(private fb: FormBuilder, 
+    private contactService: ContactService, 
+    private web3Service: Web3Service) {
+    this.contactForm = this.fb.group({
+      address: [{ value: 'Anonymous', disabled: true }],
+      email: ['', [Validators.required, Validators.email]],
+      description: ['', Validators.required],
+      subject: ['', Validators.required],
+      section: ['']
+    });
+  }
+
+  ngOnInit() {
+    this.web3Service.isConnected$.subscribe((isConnected) => {
+      this.isConnected = isConnected;
+      if(!isConnected) this.contactForm.get('address')?.setValue('Anonymous');
+    });
+    this.web3Service.walletAddress$.subscribe((walletAddress) => {
+      if (!walletAddress) return;
+      const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
+      this.walletAddress = checksumAddress;
+      this.contactForm.get('address')?.setValue(this.walletAddress);
+    });
+  }
+
+  onSubjectChange(event: any) {
+    this.selectedSubject = event.target.value;
+    const sectionControl = this.contactForm.get('section');
+
+    if (this.selectedSubject === 'bug') {
+      sectionControl?.setValidators(Validators.required); // Rendre obligatoire
+    } else {
+      sectionControl?.clearValidators(); // Retirer la validation
+      sectionControl?.setValue(''); // Réinitialiser la valeur
     }
 
-    ngOnInit() {
-      this.web3Service.isConnected$.subscribe((isConnected) => {
-        this.isConnected = isConnected;
-        if(!isConnected) this.contactForm.get('address')?.setValue('Anonymous');
-      });
-      this.web3Service.walletAddress$.subscribe((walletAddress) => {
-        if (!walletAddress) return;
-        const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
-        this.walletAddress = checksumAddress;
-        this.contactForm.get('address')?.setValue(this.walletAddress);
-      });
-    }
+    sectionControl?.updateValueAndValidity(); // Appliquer les changements
+  }
 
-    onSubjectChange(event: any) {
-      this.selectedSubject = event.target.value;
-      const sectionControl = this.contactForm.get('section');
 
-      if (this.selectedSubject === 'bug') {
-        sectionControl?.setValidators(Validators.required); // Rendre obligatoire
-      } else {
-        sectionControl?.clearValidators(); // Retirer la validation
-        sectionControl?.setValue(''); // Réinitialiser la valeur
+  onSubmit() {
+    if (!this.contactForm.valid) return;
+    this.isSending = true;
+    this.isSent = false;
+    this.successfulSend = null; // Réinitialisation avant envoi
+
+    const formData = {
+      address: this.contactForm.get('address')?.value || 'Anonymous',
+      email: this.contactForm.get('email')?.value || '',
+      description: this.contactForm.get('description')?.value || '',
+      subject: this.contactForm.get('subject')?.value || '',
+      section: this.selectedSubject === 'bug' ? this.contactForm.get('section')?.value : null
+    };
+  
+    this.contactService.sendMessage(formData).subscribe({
+      next: response => {
+        setTimeout(() => {
+          this.successfulSend = true;
+          this.confirmationMessage = "Your message has been successfully sent !";
+          this.isSent = true;
+
+          setTimeout(() => {
+            this.resetForm();
+          }, 4000);
+        }, 1000); // Attendre 1s pour la transition
+      },
+      error: error => {
+        setTimeout(() => {
+          this.successfulSend = false;
+          this.confirmationMessage = "Something went wrong Please try again";
+          this.isSent = true;
+        }, 1000);
       }
+    });
+  }
 
-      sectionControl?.updateValueAndValidity(); // Appliquer les changements
-    }
-
-
-    onSubmit() {
-      if (!this.contactForm.valid) return;
-    
-      const formData = {
-        address: this.contactForm.get('address')?.value || 'Anonymous',
-        email: this.contactForm.get('email')?.value || '',
-        description: this.contactForm.get('description')?.value || '',
-        subject: this.contactForm.get('subject')?.value || '',
-        section: this.selectedSubject === 'bug' ? this.contactForm.get('section')?.value : null
-      };
-    
-      console.log("Envoi du formulaire...", formData);
-    
-      this.contactService.sendMessage(formData).subscribe({
-        next: response => {
-          console.log("✅ Réponse du serveur:", response);
-    
-          if (response.status === 200 && response.body?.message) {
-            alert(response.body.message);
-          } else {
-            alert("Erreur lors de l’envoi du message.");
-          }
-    
-          this.contactForm.reset();
-          this.selectedSubject = ''; // Réinitialiser après soumission
-          this.contactForm.get('address')?.setValue(this.walletAddress); // Remet l'adresse du wallet après reset
-        },
-        error: error => {
-          console.error("❌ Erreur lors de l'envoi:", error);
-          alert("Erreur lors de l’envoi du message.");
-        }
-      });
-    }
-    
-     
+  resetForm() {
+    this.contactForm.reset();
+    this.selectedSubject = '';
+    this.isSending = false;
+    this.isSent = false;
+    this.successfulSend = null;
+    this.confirmationMessage = '';
+    this.contactForm.get('address')?.setValue(this.walletAddress);
+    this.contactForm.get('subject')?.setValue('');
+    this.contactForm.get('section')?.setValue('');
+  }
+  
+      
 }
