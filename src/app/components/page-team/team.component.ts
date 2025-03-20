@@ -13,23 +13,23 @@ import { Component } from '@angular/core';
 export class TeamComponent {
   teamMembers = [
     {
-      name: 'ShadowFox',
-      description: 'Lead Developer & Blockchain Specialist.',
+      name: 'Mathieu Cazaux',
+      description: 'Lead Developer and Project Manager',
       image: '1.png'
     },
     {
-      name: 'LunaByte',
-      description: 'Smart Contract Engineer & Security Auditor.',
+      name: 'Mickaël',
+      description: 'Smart Contract Engineer & Security Auditor',
       image: '2.png'
     },
     {
-      name: 'NeonFury',
-      description: 'Creative Director & NFT Designer.',
+      name: 'Thalia Ghazal',
+      description: 'Marketing & Community Manager.',
       image: '3.png'
     },
     {
-      name: 'CyberWave',
-      description: 'Marketing & Community Manager.',
+      name: 'Hassan Mian',
+      description: 'Creative Director & NFT Designer.',
       image: '4.png'
     },
     {
