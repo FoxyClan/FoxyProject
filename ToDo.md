@@ -1,6 +1,11 @@
 ALL
 - mettre tout en em ou rem
 - ne pas mettre 20000 mais totalSupply - burnedTokens
+- tout mettre en anglais
+- mettre des animation d'arrivé sur toutesles pages comme home ou collection
+
+HOME
+- modifier les chiffres de la premiere page
 
 HEADER
 - [hidden] donnes un probleme http / injector de trait.service
@@ -27,7 +32,10 @@ SMART CONTRACT
 - award fonctions usePoints
 - verifier que les token burn sont bien calculé dans les prochains mint pour la totale supply
 - foxyAward.sol
+- supprimer la suppression des points quand transfer ?
 
+ROADMAP
+- faire la roadmap
 
 GANACHE
 - supprimer commentaire web3service getBalance / modal account loadBalance -> catch console error
@@ -46,6 +54,7 @@ JAR
 - superposition des traits non compatibles dans la creation
 - enlever commentaire test si tokenId existe sur file base pour mint / merge
 - demander a valentin si address gmail risque pour le contact
+- changer le .gitignore pour le application.yml et changer les private key
 
 TEAM
 - finir les membres

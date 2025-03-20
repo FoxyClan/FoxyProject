@@ -33,12 +33,11 @@ interface Metadata {
   styleUrl: './header.component.css'
 })
 
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
   showAccount: boolean = false;
   showWallet: boolean = false;
   isConnected: boolean = false;
   walletAddress: any;
-  private subscription: Subscription;
   
   selectedToken: Metadata | null = null
   showModal: boolean = false;
@@ -51,11 +50,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @ViewChild('ModalWallet') modalWallet! : ModalWallet;
 
   constructor(private web3Service: Web3Service, private router: Router, private route: ActivatedRoute) {
-    this.subscription = new Subscription();
   }
 
   ngOnInit() {
-    this.subscription = combineLatest([
+    combineLatest([
       this.web3Service.isConnected$,
       this.web3Service.walletAddress$
     ]).subscribe(([isConnected, walletAddress]) => {
@@ -74,9 +72,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
+
 
   connectWallet() {
     this.web3Service.connectWallet("CoinBase Wallet");

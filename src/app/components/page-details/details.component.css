@@ -1,3 +1,8 @@
+::selection {
+    background-color: blueviolet; /* Vert clair/bleu cyan */
+    color: white;
+}
+
 .details {
     width: 100%;
     background: url("../../../../public/background3.jpg");

@@ -1,8 +1,7 @@
-import { Component, Output, OnInit, EventEmitter } from '@angular/core';
+import { Component, Output, OnInit, EventEmitter, OnDestroy } from '@angular/core';
 import { Web3Service } from "../../services/web3.service";
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { log } from 'node:console';
 
 @Component({
   selector: 'app-modal-wallet',
@@ -11,7 +10,7 @@ import { log } from 'node:console';
   templateUrl: './modal-wallet.component.html',
   styleUrl: './modal-wallet.component.css'
 })
-export class ModalWallet implements OnInit {
+export class ModalWallet implements OnInit, OnDestroy {
   @Output() close = new EventEmitter();
   public installedWallets: string[] = [];
   public allWallets: string[] = ["MetaMask", "CoinbaseWallet", "TrustWallet"];
@@ -33,6 +32,10 @@ export class ModalWallet implements OnInit {
     this.subscription = this.web3Service.installedWallets$.subscribe((installedWallets) => {
       this.installedWallets = installedWallets;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   showModal() {

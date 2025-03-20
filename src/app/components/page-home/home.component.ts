@@ -62,6 +62,12 @@ export class HomeComponent {
     }
   }
 
+  scrollToDetails() {
+    window.scrollBy({ top: window.innerHeight*0.01, behavior: 'smooth' });
+  }
+
 
 }
+
+
 

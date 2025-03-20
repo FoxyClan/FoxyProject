@@ -5,6 +5,7 @@
   background-size: cover;
   background-attachment: fixed;
   color: #fff;
+  font-family: 'Orbitron', sans-serif;
 }
 
 
@@ -24,6 +25,7 @@
   -moz-background-clip: text;
   -ms-background-clip: text;
   -webkit-text-fill-color: transparent;
+  word-spacing: 1rem;
 }
 
 .roadmap-header p {
