@@ -29,12 +29,12 @@ export class TeamComponent {
     },
     {
       name: 'Hassan Mian',
-      description: 'Creative Director & NFT Designer.',
+      description: 'NFT Designer.',
       image: '4.png'
     },
     {
-      name: 'PixelPhantom',
-      description: 'Web3 Integration & UX/UI Specialist.',
+      name: 'DoniKudjo',
+      description: 'Creative Director & NFT Designer.',
       image: '5.png'
     }
   ];

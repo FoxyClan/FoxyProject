@@ -19,6 +19,8 @@
     font-size: 2.5rem;
     text-transform: uppercase;
     color: #42ddf8;
+    word-spacing: 0.6rem;
+    letter-spacing: 2px;
 }
   
 .team-container {
@@ -29,7 +31,7 @@
     max-width: 90%;
     box-sizing: border-box;
     overflow: hidden;
-    padding-top: 2rem;
+    padding: 2rem;
 }
 
 .team-card {

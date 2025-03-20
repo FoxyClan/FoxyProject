@@ -59,7 +59,6 @@ export class Web3Service {
       if(window.ethereum !== undefined && window.ethereum.isMetaMask) currentWallets.push("MetaMask")
       if(window.ethereum !== undefined && window.ethereum.isTrust) currentWallets.push("TrustWallet")
       if(typeof window.coinbaseWalletExtension !== 'undefined') currentWallets.push("CoinbaseWallet")
-      currentWallets.push("Ledger")
       this.installedWalletsSubject.next(currentWallets);
     } catch(error: any) {
       console.error('Error Detecting Wallets: ', error);

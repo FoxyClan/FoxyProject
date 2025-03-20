@@ -47,6 +47,8 @@ JAR
 - enlever commentaire test si tokenId existe sur file base pour mint / merge
 - demander a valentin si address gmail risque pour le contact
 
-
+TEAM
+- finir les membres
+- changer les images
 
 ACTUAL :

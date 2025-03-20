@@ -16,8 +16,6 @@ public class JarApplication {
 
 	public static void main(String[] args) throws IOException {
 		SpringApplication.run(JarApplication.class, args);
-		String folderPath = "C:/Users/Matca/Documents/FoxyProject/jar/src/main/resources/NFT/combinaisons"; // Remplace par ton chemin
-        ImageResizer.resizeImagesInFolder(folderPath);
 		/*
 		NftService rand = new NftService();
 		int[] tab = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
