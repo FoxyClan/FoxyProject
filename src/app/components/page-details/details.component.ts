@@ -1,10 +1,12 @@
 import { Component, HostListener, ElementRef, Renderer2 } from '@angular/core';
+import { ProbabilityModalComponent } from "../probability-modal/probability-modal.component";
 
 @Component({
   selector: 'app-details',
   standalone: true,
   templateUrl: './details.component.html',
-  styleUrls: ['./details.component.css']
+  styleUrls: ['./details.component.css'],
+  imports: [ProbabilityModalComponent]
 })
 export class DetailsComponent {
 

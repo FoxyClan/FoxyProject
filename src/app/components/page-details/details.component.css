@@ -99,6 +99,10 @@ p {
     gap: 2rem;
 }
 
+.proba {
+    cursor: pointer;
+}
+
 .block1-adn {
     padding: 50px 0 50px 50px;
     grid-column: 1 / 2;

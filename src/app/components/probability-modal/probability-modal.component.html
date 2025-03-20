@@ -1,0 +1,37 @@
+<div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <img class="close" src="close.png" alt="close" (click)="closeModal()">
+    <h2>Probabilities of Traits (in %)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Trait #</th>
+          <th>Head Covering</th>
+          <th>Eyes</th>
+          <th>Mouth</th>
+          <th>Clothes</th>
+          <th>Fur</th>
+          <th>Background</th>
+          <th>Transcendence <span class="info-icon" (mouseenter)="showTooltip=true" (mouseleave)="showTooltip=false">&#9432;
+          <div *ngIf="showTooltip" class="tooltip">
+            The Transcendence trait can only be obtained during a fusion.<br>
+            There is a <span class="strong">50%</span> chance of obtaining a Transcendence.<br>
+            The rarity of the Transcendence obtained will depend on the rarity<br>of the combination.
+            You cannot lose your Transcendence<br>during a second fusion.
+          </div></span></th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let num of traitNumbers">
+          <td>{{ num }}</td>
+          <td>{{ getProbability('Head Covering', num) }}</td>
+          <td>{{ getProbability('Eyes', num) }}</td>
+          <td>{{ getProbability('Mouth', num) }}</td>
+          <td>{{ getProbability('Clothes', num) }}</td>
+          <td>{{ getProbability('Fur', num) }}</td>
+          <td>{{ getProbability('Background', num) }}</td>
+          <td>{{ getProbability('Transcendence', num) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

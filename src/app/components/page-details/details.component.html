@@ -23,14 +23,16 @@
             <h1>Traits</h1>
             <p class="justified">Each image associated with an NFT consists of several traits that determine its appearance and rarity. Here are the different types of traits you'll find in our collection:</p>
             <p>
-              Head Covering (16 options)<br>
-              Eyes (16 options)<br>
-              Mouths (16 options)<br>
-              Clothes (16 options)<br>
-              Fur (10 options)<br>
-              Background (13 options)<br>
-              Transcendence (2 options)
+              16 Head Covering<br>
+              16 Eyes<br>
+              16 Mouths<br>
+              16 Clothes<br>
+              10 Fur<br>
+              13 Background<br>
+              2 Transcendence
             </p>
+
+            <i (click)="modalTrait.openModal()" class="proba"><span class="strong">Show Trait Probabilities</span></i>
           </div>
         </div>
 
@@ -59,7 +61,7 @@
               Background : 10
             </p>
             <p class="justified">
-              The rarity scale for each trait ranges from 00 (rarest) to 15 (least rare). This means that the rarest combinations are also the most valuable.            </p>
+              The rarity scale for each trait ranges from 00 (rarest) to 15 (least rare). This means that the rarest combinations are also the most valuable.</p>
           </div>
         </div>
 
@@ -88,3 +90,5 @@
       </div>
   </div>
 </section>
+
+<app-probability-modal #modalTrait></app-probability-modal>
