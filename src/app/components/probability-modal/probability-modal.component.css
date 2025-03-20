@@ -50,6 +50,18 @@ th, td {
     text-align: center;
 }
 
+.gold {
+    color: rgb(205, 174, 0) !important;
+}
+
+.epic {
+    color: rgb(95, 0, 143) !important;
+}
+
+.rare {
+    color: rgb(158, 76, 0) !important;
+}
+
 .info-icon {
     cursor: pointer;
     font-size: 1rem !important;

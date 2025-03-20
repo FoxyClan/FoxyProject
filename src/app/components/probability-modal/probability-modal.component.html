@@ -21,8 +21,8 @@
           </div></span></th>
       </thead>
       <tbody>
-        <tr *ngFor="let num of traitNumbers">
-          <td>{{ num }}</td>
+        <tr *ngFor="let num of traitNumbers; let i = index">
+          <td [ngClass]="{'gold': i < 3, 'epic': i >= 3 && i < 6, 'rare': i >= 6 && i < 9}">{{ num }}</td>
           <td>{{ getProbability('Head Covering', num) }}</td>
           <td>{{ getProbability('Eyes', num) }}</td>
           <td>{{ getProbability('Mouth', num) }}</td>
