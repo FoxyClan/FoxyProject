@@ -70,6 +70,10 @@ p {
     grid-template-columns: 50% 50%;
 }
 
+.padding {
+    padding: 0 2.5rem 0 2.5rem;
+}
+
 .block-1-grid-4 {
     display: grid;
     grid-template-columns: 50% 50%;
@@ -87,7 +91,7 @@ p {
 
 
 .block1-right {
-    padding: 50px;
+    padding: 2.5rem 2.5rem 1.5rem 2.5rem;
     position: relative;
     grid-column: 2 / 3;
     display: flex;
@@ -128,17 +132,16 @@ p {
     height: 100%;
     width: 100%;
     gap: 1rem;
-  }
+}
   
-  .nft-merge-row {
+.nft-merge-row {
     display: flex;
     gap: 3rem;
     justify-content: center;
-    flex-wrap: wrap;
-  }
+}
   
-  .nft-card {
-    background-color: rgba(255, 255, 255, 0.05);
+.nft-card {
+    background-color: rgba(0, 0, 0, 0.4);
     border: 2px solid blueviolet;
     padding: 0.5rem;
     border-radius: 1rem;
@@ -149,28 +152,32 @@ p {
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
-  }
+}
+
+.blue-green {
+    color: #00ffcc !important;
+}
   
-  .nft-card img {
+.nft-card img {
     width: 100%;
     height: auto;
     border-radius: 0.5rem;
     border: 1px solid #00d9ff;
-  }
+}
   
-  .merge-arrow {
+.merge-arrow {
     display: flex;
     gap: 6rem;
     justify-content: center;
     font-size: 2rem;
     color: blueviolet;
     margin-top: -1rem;
-  }
+}
   
-  .nft-card.result {
+.nft-card.result {
     border-color: #00ffcc;
     background-color: rgba(0, 255, 204, 0.1);
-  }
+}
   
 
 .proba {
@@ -178,7 +185,7 @@ p {
 }
 
 .block1-adn {
-    padding: 50px 0 50px 50px;
+    padding: 2.5rem 0 0 2.5rem;
     grid-column: 1 / 2;
     display: flex;
     flex-direction: row;
