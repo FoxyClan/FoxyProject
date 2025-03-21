@@ -50,7 +50,11 @@ th, td {
     text-align: center;
 }
 
-.gold {
+.legend {
+    font-weight: 800;
+}
+
+.legendary {
     color: rgb(205, 174, 0) !important;
 }
 

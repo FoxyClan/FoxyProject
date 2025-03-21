@@ -5,7 +5,13 @@
     <table>
       <thead>
         <tr>
-          <th>Trait #</th>
+          <th>Trait # <span class="info-icon" (mouseenter)="showLegendTooltip=true" (mouseleave)="showLegendTooltip=false">&#9432;
+            <div *ngIf="showLegendTooltip" class="tooltip">
+              <span class="legend legendary">&#9644;</span> Legendary<br>
+              <span class="legend epic">&#9644;</span> Epic<br>
+              <span class="legend rare">&#9644;</span> Rare<br>
+              <span>&#9644;</span> Common
+            </div></span></th>
           <th>Head Covering</th>
           <th>Eyes</th>
           <th>Mouth</th>
@@ -22,7 +28,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let num of traitNumbers; let i = index">
-          <td [ngClass]="{'gold': i < 3, 'epic': i >= 3 && i < 6, 'rare': i >= 6 && i < 9}">{{ num }}</td>
+          <td [ngClass]="{'legendary': i < 3, 'epic': i >= 3 && i < 6, 'rare': i >= 6 && i < 9}">{{ num }}</td>
           <td>{{ getProbability('Head Covering', num) }}</td>
           <td>{{ getProbability('Eyes', num) }}</td>
           <td>{{ getProbability('Mouth', num) }}</td>

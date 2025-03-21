@@ -13,6 +13,7 @@ export class ProbabilityModalComponent {
   isModalOpen = false;
   traitNumbers = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15'];
   showTooltip: boolean = false;
+  showLegendTooltip: boolean = false;
 
   probabilities = {
     'Fur': [1, 2, 3, 5, 7, 9, 13, 16, 19, 25],
