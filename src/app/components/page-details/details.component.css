@@ -79,6 +79,12 @@ p {
     padding: 50px;
 }
 
+.full-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
 
 .block1-right {
     padding: 50px;
@@ -98,6 +104,74 @@ p {
     flex-direction: column;
     gap: 2rem;
 }
+
+.block1-left ul {
+    padding-left: 2rem;
+}
+
+.block1-left ul li {
+    margin-bottom: 1rem;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.block1-left ul li span {
+    position: absolute;
+    left: 0;
+}
+
+.merge-example {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    gap: 1rem;
+  }
+  
+  .nft-merge-row {
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .nft-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 2px solid blueviolet;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    width: 200px;
+    text-align: center;
+    color: white;
+    font-family: "Orbitron", sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  
+  .nft-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    border: 1px solid #00d9ff;
+  }
+  
+  .merge-arrow {
+    display: flex;
+    gap: 6rem;
+    justify-content: center;
+    font-size: 2rem;
+    color: blueviolet;
+    margin-top: -1rem;
+  }
+  
+  .nft-card.result {
+    border-color: #00ffcc;
+    background-color: rgba(0, 255, 204, 0.1);
+  }
+  
 
 .proba {
     cursor: pointer;

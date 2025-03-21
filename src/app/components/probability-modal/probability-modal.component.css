@@ -50,6 +50,11 @@ th, td {
     text-align: center;
 }
 
+.strong {
+    color: blueviolet;
+    word-spacing: 0;
+}
+
 .legend {
     font-weight: 800;
 }

@@ -33,6 +33,7 @@ SMART CONTRACT
 - verifier que les token burn sont bien calculé dans les prochains mint pour la totale supply
 - foxyAward.sol
 - supprimer la suppression des points quand transfer ?
+- gain de point uniquement quand level 2 ?
 
 ROADMAP
 - faire la roadmap

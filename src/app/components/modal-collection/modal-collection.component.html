@@ -4,7 +4,7 @@
 
     <div *ngIf="!isLoading" class="modal-content" (click)="$event.stopPropagation()" [@fadeInOut]>
       <div class="background"><div class="filter"></div><img alt="" [src]="backgroundColor"></div>
-      <img class="close" src="close.png" alt="close" (click)="closeModal()">
+      <img class="close" src="close.png" alt="x" (click)="closeModal()">
 
       <div class="modal-left">
         <img [src]="'https://foxyclan.s3.filebase.com/' + token?.tokenId + '.png' + '?t=' + cacheVersion" [alt]="token?.name" class="nft-image">
