@@ -171,7 +171,7 @@ export class HeaderComponent implements OnInit {
 
   /* RESPONSIVE */
 
-  isMobileMenuOpen: boolean = false;
+isMobileMenuOpen: boolean = false;
 
 toggleMobileMenu() {
   this.isMobileMenuOpen = !this.isMobileMenuOpen;

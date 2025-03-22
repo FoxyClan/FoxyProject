@@ -125,7 +125,7 @@ a {
 }
 
 .active-link {
-    color: #42ddf8;
+    color: #42ddf8 !important;
 }
 
 
@@ -259,7 +259,9 @@ app-modal-wallet {
     z-index: 999;
 }
 
-
+.menu-toggle {
+    display: none;
+}
 
 .mobile-menu.open {
     opacity: 1;
@@ -297,5 +299,32 @@ app-modal-wallet {
 
     .menu-toggle {
         display: block;
+        background: transparent;
+        border: none;
+    }
+
+    .menu-toggle-close {
+        position: fixed;
+        top: 25px;
+        left: 25px;
+        display: block;
+        background: transparent;
+        border: none;
+    }
+
+    .menu-toggle img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .menu-toggle-close img {
+        width: 40px;
+        height: 40px;
+    }
+
+    li {
+        width: 100%;
+        text-align: center;
+        margin: 0;
     }
 }

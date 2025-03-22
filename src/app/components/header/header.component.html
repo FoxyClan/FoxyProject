@@ -31,7 +31,7 @@
     </ul>
 
     <button class="menu-toggle" (click)="toggleMobileMenu()">
-        <img src="menu-icon.svg" alt="Menu">
+        <img src="menu-burger.png" alt="">
     </button>
     
     <div class="button-container">
@@ -43,13 +43,16 @@
 </header>
 
 <nav class="mobile-menu" [class.open]="isMobileMenuOpen" (click)="closeMobileMenu()">
+    <button class="menu-toggle-close" (click)="toggleMobileMenu()">
+        <img src="menu-cross.png" alt="">
+    </button>
     <ul (click)="$event.stopPropagation()">
-        <li><a [routerLink]="['/home']" (click)="closeMobileMenu()">Home</a></li>
-        <li><a [routerLink]="['/collection']" (click)="closeMobileMenu()">Collection</a></li>
-        <li><a [routerLink]="['/mint']" (click)="closeMobileMenu()">Mint</a></li>
-        <li><a [routerLink]="['/roadmap']" (click)="closeMobileMenu()">Roadmap</a></li>
-        <li><a [routerLink]="['/team']" (click)="closeMobileMenu()">Team</a></li>
-        <li><a [routerLink]="['/contact']" (click)="closeMobileMenu()">Contact</a></li>
+        <li><a [routerLink]="['/home']" (click)="closeMobileMenu()" [ngClass]="{ 'active-link': isActive('/home')}">Home</a></li>
+        <li><a [routerLink]="['/collection']" (click)="closeMobileMenu()" [ngClass]="{ 'active-link': isActive('/collection')}">Collection</a></li>
+        <li><a [routerLink]="['/mint']" (click)="closeMobileMenu()" [ngClass]="{ 'active-link': isActive('/mint')}">Mint</a></li>
+        <li><a [routerLink]="['/roadmap']" (click)="closeMobileMenu()" [ngClass]="{ 'active-link': isActive('/roadmap')}">Roadmap</a></li>
+        <li><a [routerLink]="['/team']" (click)="closeMobileMenu()" [ngClass]="{ 'active-link': isActive('/team')}">Team</a></li>
+        <li><a [routerLink]="['/contact']" (click)="closeMobileMenu()" [ngClass]="{ 'active-link': isActive('/contact')}">Contact</a></li>
     </ul>
 </nav>
 
