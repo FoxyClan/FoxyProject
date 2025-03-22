@@ -1,8 +1,8 @@
 <header>
-    <a href="#">Foxy <img src="FoxyLogoNoBackground.png" alt="Logo" class="logo"> Clan</a>
+    <a href="#" class="title-logo">Foxy <img src="FoxyLogoNoBackground.png" alt="Logo" class="logo"> Clan</a>
     <div class="input-container">
         <span class="hashtag"># |</span>
-        <input type="text" class="search-bar" placeholder="Search..." (input)="onSearchInput($event)" (keydown.enter)="searchToken()" (blur)="removeBorderRed()">
+        <input type="text" class="search-bar" placeholder="Token ID..." (input)="onSearchInput($event)" (keydown.enter)="searchToken()" (blur)="removeBorderRed()">
         <span class="search-icon" (click)="searchToken()">
             <img *ngIf="!isLoading" src="search.png">
             <div *ngIf="isLoading" class="spinner"></div>
@@ -29,6 +29,11 @@
             <a [routerLink]="['/contact']" [ngClass]="{ 'active-link': isActive('/contact') }">Contact</a>
         </li>
     </ul>
+
+    <button class="menu-toggle" (click)="toggleMobileMenu()">
+        <img src="menu-icon.svg" alt="Menu">
+    </button>
+    
     <div class="button-container">
         <button class="border-button">
             <button *ngIf="!isConnected" (click)="showWalletModal()" class="connect-button">Connect Wallet</button> 
@@ -36,6 +41,17 @@
         </button>
     </div>
 </header>
+
+<nav class="mobile-menu" [class.open]="isMobileMenuOpen" (click)="closeMobileMenu()">
+    <ul (click)="$event.stopPropagation()">
+        <li><a [routerLink]="['/home']" (click)="closeMobileMenu()">Home</a></li>
+        <li><a [routerLink]="['/collection']" (click)="closeMobileMenu()">Collection</a></li>
+        <li><a [routerLink]="['/mint']" (click)="closeMobileMenu()">Mint</a></li>
+        <li><a [routerLink]="['/roadmap']" (click)="closeMobileMenu()">Roadmap</a></li>
+        <li><a [routerLink]="['/team']" (click)="closeMobileMenu()">Team</a></li>
+        <li><a [routerLink]="['/contact']" (click)="closeMobileMenu()">Contact</a></li>
+    </ul>
+</nav>
 
 <app-modal-account *ngIf="showAccount" [walletAddress]="walletAddress" (close)="closeModal()" #ModalAccount></app-modal-account>
 <app-modal-wallet *ngIf="showWallet" (close)="closeModal()" #ModalWallet></app-modal-wallet>

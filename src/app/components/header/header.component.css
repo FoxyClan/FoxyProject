@@ -166,4 +166,136 @@ app-modal-wallet {
     100% { transform: translateY(-50%) rotate(720deg); }
 }
 
+/* MEDIA QUERIES */
 
+@media (max-width: 1500px) {
+    header {
+        padding: 20px 40px;
+    }
+}
+
+@media (max-width: 1500px) {
+    .search-bar {
+        padding: 10px 0px 10px 45px;
+    }
+    .input-container {
+        width: 250px;
+    }
+    li:first-child {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 1350px) {
+    .input-container {
+        width: 180px;
+    }
+}
+
+@media (max-width: 1250px) {
+    .title-logo {
+        display: none;
+    }
+    .input-container {
+        width: 200px;
+    }
+}
+
+@media (max-width: 1150px) {
+    .input-container {
+        width: 170px;
+    }
+}
+
+@media (max-width: 1100px) {
+    .input-container {
+        display: none;
+    }
+    ul {
+        margin: auto;
+    }
+}
+
+@media (max-width: 930px) {
+    .connect-button {
+        width: 155px;
+        height: 40px;
+        font-size: 0.8rem;
+    }
+    .border-button {
+        width: 160px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 850px) {
+    li {
+        margin-left: 35px;
+    }
+}
+
+@media (max-width: 850px) {
+    header {
+        padding: 20px;
+    }
+}
+
+/* Menu mobile en plein écran, flou + transparent */
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100dvh;
+    background: transparent;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 999;
+}
+
+
+
+.mobile-menu.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.mobile-menu ul {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.mobile-menu li a {
+    color: #fff;
+    font-size: 1.8rem;
+    font-family: "Orbitron", sans-serif;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.mobile-menu li a:hover {
+    color: #42ddf8;
+}
+
+
+/* Responsive */
+@media (max-width: 750px) {
+    ul {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+}

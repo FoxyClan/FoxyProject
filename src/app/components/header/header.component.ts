@@ -169,5 +169,18 @@ export class HeaderComponent implements OnInit {
     this.showModal = false;
   }
 
+  /* RESPONSIVE */
+
+  isMobileMenuOpen: boolean = false;
+
+toggleMobileMenu() {
+  this.isMobileMenuOpen = !this.isMobileMenuOpen;
+}
+
+closeMobileMenu() {
+  this.isMobileMenuOpen = false;
+}
+
+
 
 }
