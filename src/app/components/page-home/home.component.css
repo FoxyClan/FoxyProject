@@ -7,6 +7,7 @@
     background-size: cover;
     font-family: "Orbitron", sans-serif;
     overflow-x: auto;
+    background-position: center;
     position: fixed;
     z-index: 2;
 }
@@ -184,8 +185,89 @@ app-details {
 }
 
 
+@media (max-width: 900px) {
+    .title {
+        text-align: center;
+    }
+    .subtitle {
+        width: 80%;
+    }
+}
 
+@media (max-width: 675px) {
+    .block1,
+    .block2 {
+        padding-top: 5vh;
+    }
+    .container {
+        padding-top: 10vh;
+    }
+}
 
+@media (max-width: 675px) {
+    .block2 {
+        display: none;
+    }
+    .inside-block1 {
+        gap: 60px;
+    }
+}
+
+@media (max-width: 600px) {
+    .inside-block1 {
+        width: 50%;
+    }
+    .subtitle {
+        text-align: center;
+    }
+    .title {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 500px) {
+    .search-button {
+        height: 40px;
+        width: 160px;
+    }
+    .border-button,
+    .more-button {
+        width: 165px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 450px) {
+    .inside-block1 {
+        width: 45%;
+    }
+    .title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .inside-block1 {
+        width: 35%;
+    }
+    .subtitle {
+        width: 100%;
+    }
+}
+
+@media (max-width: 390px) {
+    .search-button {
+        height: 35px;
+        width: 140px;
+        font-size: 0.8rem;
+    }
+    .border-button,
+    .more-button {
+        width: 145px;
+        height: 40px;
+        font-size: 0.8rem;
+    }
+}
 
 
 

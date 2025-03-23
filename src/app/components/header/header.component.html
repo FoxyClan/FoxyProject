@@ -1,4 +1,7 @@
 <header>
+    <button class="menu-toggle" (click)="toggleMobileMenu()">
+        <img src="menu-burger.png" alt="">
+    </button>
     <a href="#" class="title-logo">Foxy <img src="FoxyLogoNoBackground.png" alt="Logo" class="logo"> Clan</a>
     <div class="input-container">
         <span class="hashtag"># |</span>
@@ -29,10 +32,6 @@
             <a [routerLink]="['/contact']" [ngClass]="{ 'active-link': isActive('/contact') }">Contact</a>
         </li>
     </ul>
-
-    <button class="menu-toggle" (click)="toggleMobileMenu()">
-        <img src="menu-burger.png" alt="">
-    </button>
     
     <div class="button-container">
         <button class="border-button">
