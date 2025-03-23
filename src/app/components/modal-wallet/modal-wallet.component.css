@@ -38,8 +38,8 @@ li {
 
 .border-container {
     position: fixed;
-    height: 600px;
-    width: 900px;
+    height: 500px;
+    width: 700px;
     background: linear-gradient(to top right, #00d9ff, #0000009c);
     border-radius: 10px;
     display: flex;
@@ -442,12 +442,6 @@ li {
 
 /* MEDIA QUERIES */
 
-@media (max-width: 1050px) {
-    .border-container {
-        height: 500px;
-        width: 700px;
-    }
-}
 
 @media (max-width: 800px) {
     .border-container {
