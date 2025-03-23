@@ -62,3 +62,4 @@ TEAM
 - changer les images
 
 ACTUAL :
+- probleme responsive overflow-x 
