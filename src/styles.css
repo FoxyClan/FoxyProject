@@ -36,6 +36,12 @@ ul {
     border-radius: 20px;
 }
 
+a {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-focus-ring-color: transparent; 
+    outline: none;                         
+  }
+
 @media (max-width: 900px) {
     * {
         font-size: 14px;

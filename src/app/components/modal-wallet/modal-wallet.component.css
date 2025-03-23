@@ -38,16 +38,14 @@ li {
 
 .border-container {
     position: fixed;
-    height: 60%;
-    width: 46%;
+    height: 600px;
+    width: 900px;
     background: linear-gradient(to top right, #00d9ff, #0000009c);
     border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     border: none;
-    min-width: 706px;
-    min-height: 438px;
 }
 
 .container {
@@ -278,7 +276,7 @@ li {
     cursor: pointer;
     position: absolute;
     left: 0;
-    top: 60%;
+    top: 70%;
     transform: translateY(-50%);
 }
 
@@ -441,3 +439,92 @@ li {
     justify-content: center;
 }
 
+
+/* MEDIA QUERIES */
+
+@media (max-width: 1050px) {
+    .border-container {
+        height: 500px;
+        width: 700px;
+    }
+}
+
+@media (max-width: 800px) {
+    .border-container {
+        width: 600px;
+    }
+    .installation-wallet p {
+        display: none;
+    }
+    .logo-div {
+        left: 19%;
+        grid-column: 1 / 3;
+    }
+    .installation-wallet-box-coinbase {
+        grid-template-columns: 100%;
+    }
+}
+
+@media (max-width: 700px) {
+    .border-container {
+        width: 85%;
+    }
+    .list-extension span {
+        display: none;
+    }
+}
+
+@media (max-width: 650px) {
+    .logo-div {
+        left: 15%;
+    }
+}
+
+@media (max-width: 600px) {
+    .border-container {
+        width: 90%;
+    }
+}
+
+@media (max-width: 550px) {
+    .portfolio-container img {
+        width: 20px;
+        height: 20px;
+    }
+    .logo-div {
+        left: 7%;
+    }
+}
+
+@media (max-width: 500px) {
+    .logo-div {
+        left: 5%;
+    }
+}
+
+@media (max-width: 460px) {
+    .wallet-details {
+        display: none;
+    }
+    .wallet {
+        grid-column: 1 / 3;
+        border: none;
+    }
+    .border-container {
+        height: 300px;
+        width: 70%;
+    }
+    .header img {
+        width: 20px;
+        height: 20px;
+    }
+    .list-wallet {
+        border-radius: 5px;
+        margin: 0.5rem 0;
+        background: rgba(128, 128, 128, 0.178);
+    }
+    .titles {
+        align-items: center;
+        display: flex;
+    }
+}
