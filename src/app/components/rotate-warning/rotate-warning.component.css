@@ -1,0 +1,83 @@
+.rotate-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100dvh;
+    background: linear-gradient(135deg, #000000e6, #090d0f);
+    backdrop-filter: blur(15px);
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .rotate-content {
+    text-align: center;
+    color: white;
+    font-family: "Orbitron", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .foxy-logo {
+    width: 100px;
+    height: auto;
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .rotate-title {
+    font-size: 2.2rem;
+    color: #42ddf8;
+    animation: fadeSlideDown 0.8s ease-in-out;
+  }
+  
+  .rotate-subtitle {
+    font-size: 1rem;
+    color: #cccccc;
+    animation: fadeSlideDown 1s ease-in-out;
+  }
+  
+  .phone-animation {
+    margin-top: 1rem;
+  }
+  
+  .phone-icon {
+    width: 100px;
+    height: auto;
+    animation: rotatePhone 2s ease-in-out infinite;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeSlideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  @keyframes rotatePhone {
+    0% { transform: rotate(0deg); }
+    20% { transform: rotate(90deg); }
+    40% { transform: rotate(90deg); }
+    60% { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
+  }
+  

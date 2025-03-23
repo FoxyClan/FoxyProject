@@ -3,6 +3,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { DetailsComponent } from '../page-details/details.component';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { RotateWarningComponent } from '../rotate-warning/rotate-warning.component';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +11,8 @@ import { CommonModule } from '@angular/common';
   imports: [
     DetailsComponent,
     RouterLink,
-    CommonModule
+    CommonModule,
+    RotateWarningComponent
   ],
   animations: [
     trigger('popOut', [
