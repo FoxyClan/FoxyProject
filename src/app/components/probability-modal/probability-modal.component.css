@@ -19,8 +19,8 @@ h2 {
     border-radius: 8px;
     border: 2px solid #42ddf8;
     color: white;
-    width: 50%;
-    height: 75%;
+    max-width: 50%;
+    max-height: 75%;
     text-align: center;
     overflow-y: auto;
     overflow-x: hidden;
@@ -96,4 +96,83 @@ th, td {
 }
 
 
+
+/* RESPONSIVE MODAL */
+
+@media (max-width: 1700px) {
+    .reverse-tooltip {
+        transform: translateX(-102%);
+        clip-path: polygon(0% 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 0% 100%) !important;
+    }
+}
+
+@media (max-width: 1300px) {
+    .modal-content {
+      width: 70%;
+      max-width: 100%;
+      max-height: 100%;
+      font-size: 0.95rem;
+    }
+    .close {
+      width: 1.8rem;
+      top: 0.8rem;
+      right: 0.8rem;
+    }
+    table {
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 3px;
+      white-space: nowrap;
+    }
+}
+
   
+@media (max-width: 1000px) {
+    .modal-content {
+        width: 90%;
+        padding: 1rem;
+    }
+
+    table {
+        font-size: 0.8rem;
+    }
+
+    th, td {
+        padding: 2px;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    .tooltip,
+    .strong {
+        font-size: 0.6rem;
+    }
+    .close {
+        width: 1.3rem;
+    }
+}
+
+@media (max-width: 720px) {
+    th, td {
+        padding: 2px 0px;
+        font-size: 0.8rem;
+    }
+    .info-icon {
+        font-size: 0.7rem !important;
+    }
+}
+
+@media (max-width: 585px) {
+    th, td {
+        padding: 3px 0px;
+        font-size: 0.6rem;
+    }
+    h2 {
+        font-size: 1rem;
+    }
+}
+
+

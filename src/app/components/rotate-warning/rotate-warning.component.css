@@ -48,8 +48,10 @@
   .phone-icon {
     width: 100px;
     height: auto;
-    animation: rotatePhone 2s ease-in-out infinite;
+    animation: rotatePhone 1.5s ease-in-out forwards;
+    transform: rotate(90deg);
   }
+  
   
   /* Animations */
   @keyframes fadeIn {
@@ -74,10 +76,8 @@
   }
   
   @keyframes rotatePhone {
-    0% { transform: rotate(0deg); }
-    20% { transform: rotate(90deg); }
-    40% { transform: rotate(90deg); }
-    60% { transform: rotate(0deg); }
+    0% { transform: rotate(90deg); }
+    30% { transform: rotate(90deg); }
     100% { transform: rotate(0deg); }
   }
   
