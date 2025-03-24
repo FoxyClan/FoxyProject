@@ -64,6 +64,7 @@ interface Metadata {
 
 export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('containerBlock2', { static: true }) containerBlock2!: ElementRef;
+  @ViewChild('container', { static: true }) container!: ElementRef;
   
   addresses: string[] = [];
   adr: string = "";
@@ -123,21 +124,37 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit() {
-    this.containerBlock2.nativeElement.addEventListener('scroll', () => this.onScroll());
+    this.addScrollListener();
   }
 
+  addScrollListener() {
+    const isMobile = window.innerWidth <= 600;
+    const scrollElement = isMobile
+      ? this.container?.nativeElement
+      : this.containerBlock2?.nativeElement;
+    if (scrollElement) {
+      scrollElement.addEventListener('scroll', () => this.onScroll(scrollElement));
+    }
+  }
   
-  @HostListener('window:scroll', [])
-  onScroll(): void {
-    if (!this.containerBlock2) return;
 
-    const element = this.containerBlock2.nativeElement;
-    const bottomReached = element.scrollTop + element.clientHeight >= element.scrollHeight - 10;
-
+  
+  onScroll(scrollElement?: HTMLElement): void {
+    if (!scrollElement) return;
+  
+    const bottomReached =
+      scrollElement.scrollTop + scrollElement.clientHeight >= scrollElement.scrollHeight - 30;
+  
     if (bottomReached && !this.isLoading && this.tokenIndex != -1) {
       this.filteredTokens(this.tokenIndex);
     }
   }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.addScrollListener(); // si l'utilisateur change la taille de la fenêtre
+  }
+
 
   updateSelectedFilters(value: string, type: string) {
     const category = this.getFilterCategory(type);
@@ -172,7 +189,6 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
     this.resetFilters();
     this.filteredTokens();
 
-    // Mise à jour de l'URL sans paramètres
     if (typeof window !== 'undefined') {
       const newUrl = window.location.origin + '/collection';
       window.history.pushState({}, '', newUrl);

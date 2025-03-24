@@ -317,6 +317,7 @@ input {
         flex-direction: column;
         overflow-y: scroll;
         margin-top: 12vh;
+        width: 95vw;
     }
 
     .block2-li {
