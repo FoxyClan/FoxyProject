@@ -318,6 +318,16 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
   
   
   
+  /* RESPONSIVE */
 
+  isFilterModalOpen = false;
+
+  openFilterModal() {
+    this.isFilterModalOpen = true;
+  }
+
+  closeFilterModal() {
+    this.isFilterModalOpen = false;
+  }
 
 }

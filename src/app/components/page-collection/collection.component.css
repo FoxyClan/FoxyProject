@@ -28,7 +28,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 20px;
 }
 
 .title-block {
@@ -253,3 +253,129 @@
     display: block;
 }
 
+.open-filter-btn {
+    display: none;
+}
+
+
+
+/* MEDIA QUERIES */
+
+
+
+@media (max-width: 1100px) {
+    .block2-li {
+        width: calc(33% - 1rem);
+    }
+    .block2 {
+        padding: 10px 20px 50px 30px;
+    }
+}
+
+@media (max-width: 1050px) {
+    .container-block1 {
+        width: 30%;
+    }
+    .container-block2 {
+        width: 70%;
+    }
+}
+
+@media (max-width: 900px) {
+    .block2 {
+        padding: 10px 0 50px 10px;
+    }
+}
+
+@media (max-width: 800px) {
+    .block2-li {
+        width: calc(50% - 1rem);
+    }
+    .container-block1 {
+        width: 40%;
+    }
+    .container-block2 {
+        width: 60%;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        flex-direction: column;
+        overflow-y: scroll;
+    }
+  
+    .container-block1 {
+        width: 100%;
+        height: auto;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+  
+    .title-block {
+        order: 1;
+        text-align: center;
+    }
+  
+    .mobile-filter-header {
+        order: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+  
+    .open-filter-btn {
+        display: block;
+        background-color: #00d9ff;
+        color: #000;
+        font-family: "Orbitron", sans-serif;
+        padding: 5px 15px;
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+  
+    .container-block2 {
+      order: 3;
+      width: 100%;
+      flex-grow: 1;
+      overflow-y: visible;
+    }
+  
+    /* Modal pour le filtre */
+    .filter-modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      backdrop-filter: blur(8px);
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+  
+    .filter-modal {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      border-radius: 10px;
+      width: 90%;
+      height: 90%;
+      overflow-y: auto;
+      position: relative;
+    }
+  
+    .close-btn {
+      width: 25px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+  }
+  
