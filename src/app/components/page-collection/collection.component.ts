@@ -321,8 +321,12 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
   /* RESPONSIVE */
 
   isFilterModalOpen = false;
-
   filterModalAnimation = '';
+  startY: number = 0;
+  currentY: number = 0;
+  isDragging: boolean = false;
+  threshold: number = 100; // distance à parcourir pour déclencher la fermeture
+
 
   openFilterModal() {
     this.isFilterModalOpen = true;
@@ -340,5 +344,43 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
       this.isFilterModalOpen = false;
     }, 300); // doit correspondre à la durée de transition
   }
+
+  onTouchStart(event: TouchEvent) {
+    this.startY = event.touches[0].clientY;
+    this.currentY = this.startY;
+    this.isDragging = true;
+  }
+  
+  onTouchMove(event: TouchEvent) {
+    if (!this.isDragging) return;
+  
+    this.currentY = event.touches[0].clientY;
+    const deltaY = this.currentY - this.startY;
+  
+    const modal = document.querySelector('.filter-modal-overlay') as HTMLElement;
+    if (modal && deltaY > 0) {
+      modal.style.transform = `translateY(${deltaY}px)`;
+      modal.style.transition = 'none';
+    }
+  }
+  
+  onTouchEnd() {
+    if (!this.isDragging) return;
+    this.isDragging = false;
+  
+    const deltaY = this.currentY - this.startY;
+    const modal = document.querySelector('.filter-modal-overlay') as HTMLElement;
+  
+    if (deltaY > this.threshold) {
+      this.closeFilterModal();
+    } else {
+      // Remet la modal en place
+      if (modal) {
+        modal.style.transition = 'transform 0.3s ease-in-out';
+        modal.style.transform = 'translateY(0)';
+      }
+    }
+  }
+  
 
 }
