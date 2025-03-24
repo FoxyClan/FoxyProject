@@ -1,5 +1,4 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
@@ -8,6 +7,7 @@ import { CacheService } from '../../services/cache.service';
 import axios from "axios";
 import { ModalCollection } from "../modal-collection/modal-collection.component";
 import { ActivatedRoute } from '@angular/router';
+import { RotateWarningComponent } from "../rotate-warning/rotate-warning.component";
 
 
 
@@ -26,7 +26,7 @@ interface Metadata {
 @Component({
   selector: 'app-collection',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, ModalCollection],
+  imports: [CommonModule, FormsModule, ModalCollection, RotateWarningComponent],
   templateUrl: './collection.component.html',
   styleUrls: ['./collection.component.css'],
   animations: [
