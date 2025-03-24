@@ -2,67 +2,69 @@
     <div class="container" [@popIn]>
         <div class="container-block1">
             <div class="title-block">
-                <h1>FOXY</h1>
-                <p>The 20,000 red pandas, each unique and generated from more than 80 possible traits.</p>
+              <h1>FOXY</h1>
+              <p>The 20,000 red pandas, each unique and generated from more than 80 possible traits.</p>
             </div>
 
-            <div class="filter-modal-overlay" *ngIf="isFilterModalOpen" (click)="closeFilterModal()">
-              <div class="filter-modal" (click)="$event.stopPropagation()">
-                <img src="close.png" class="close-btn" alt="close" (click)="closeFilterModal()">
-                <div class="filter-block">
-                  <div class="trait-block" *ngFor="let trait of traits; let i = index">
-                    <div class="trait" (click)="toggleTrait(i)">
-                        <p>{{ trait }}</p>
-                        <img [src]="'arrow-down.png'" [class.rotated]="isTraitOpen[i]" alt="arrow icon">
+            <div class="filter-mobile-container" *ngIf="isFilterModalOpen" (click)="closeFilterModal()">
+              <div class="filter-modal-overlay" [ngClass]="filterModalAnimation">
+                <div class="filter-modal" (click)="$event.stopPropagation()">
+                  <img src="close.png" class="close-btn" alt="close" (click)="closeFilterModal()">
+                  <div class="filter-block">
+                    <div class="trait-block" *ngFor="let trait of traits; let i = index">
+                      <div class="trait" (click)="toggleTrait(i)">
+                          <p>{{ trait }}</p>
+                          <img [src]="'arrow-down.png'" [class.rotated]="isTraitOpen[i]" alt="arrow icon">
+                      </div>
+                      <ul *ngIf="trait === 'HEAD COVERING'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                        <li *ngFor="let option of traitOptionsService.headCoveringOptions">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'HEAD COVERING')">
+                          <label for="{{ option.name }}">{{ option.name }}</label>
+                        </li>
+                      </ul>
+                      
+                      <ul *ngIf="trait === 'MOUTH'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                        <li *ngFor="let option of traitOptionsService.mouthOptions">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'MOUTH')">
+                          <label for="{{ option.name }}">{{ option.name }}</label>
+                        </li>
+                      </ul>
+      
+                      <ul *ngIf="trait === 'EYES'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                        <li *ngFor="let option of traitOptionsService.eyesOptions">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'EYES')">
+                          <label for="{{ option.name }}">{{ option.name }}</label>
+                        </li>
+                      </ul>
+      
+                      <ul *ngIf="trait === 'CLOTHES'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                        <li *ngFor="let option of traitOptionsService.clothesOptions">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'CLOTHES')">
+                          <label for="{{ option.name }}">{{ option.name }}</label>
+                        </li>
+                      </ul>
+      
+                      <ul *ngIf="trait === 'FUR'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                        <li *ngFor="let option of traitOptionsService.furOptions">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'FUR')">
+                          <label for="{{ option.name }}">{{ option.name }}</label>
+                        </li>
+                      </ul>
+      
+                      <ul *ngIf="trait === 'BACKGROUND'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                        <li *ngFor="let option of traitOptionsService.backgroundOptions">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'BACKGROUND')">
+                          <label for="{{ option.name }}">{{ option.name }}</label>
+                        </li>
+                      </ul>
+      
+                      <ul *ngIf="trait === 'TRANSCENDENCE'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
+                        <li *ngFor="let option of traitOptionsService.transcendenceOptions">
+                          <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'TRANSCENDENCE')">
+                          <label for="{{ option.name }}">{{ option.name }}</label>
+                        </li>
+                      </ul>
                     </div>
-                    <ul *ngIf="trait === 'HEAD COVERING'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
-                      <li *ngFor="let option of traitOptionsService.headCoveringOptions">
-                        <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'HEAD COVERING')">
-                        <label for="{{ option.name }}">{{ option.name }}</label>
-                      </li>
-                    </ul>
-                    
-                    <ul *ngIf="trait === 'MOUTH'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
-                      <li *ngFor="let option of traitOptionsService.mouthOptions">
-                        <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'MOUTH')">
-                        <label for="{{ option.name }}">{{ option.name }}</label>
-                      </li>
-                    </ul>
-    
-                    <ul *ngIf="trait === 'EYES'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
-                      <li *ngFor="let option of traitOptionsService.eyesOptions">
-                        <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'EYES')">
-                        <label for="{{ option.name }}">{{ option.name }}</label>
-                      </li>
-                    </ul>
-    
-                    <ul *ngIf="trait === 'CLOTHES'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
-                      <li *ngFor="let option of traitOptionsService.clothesOptions">
-                        <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'CLOTHES')">
-                        <label for="{{ option.name }}">{{ option.name }}</label>
-                      </li>
-                    </ul>
-    
-                    <ul *ngIf="trait === 'FUR'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
-                      <li *ngFor="let option of traitOptionsService.furOptions">
-                        <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'FUR')">
-                        <label for="{{ option.name }}">{{ option.name }}</label>
-                      </li>
-                    </ul>
-    
-                    <ul *ngIf="trait === 'BACKGROUND'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
-                      <li *ngFor="let option of traitOptionsService.backgroundOptions">
-                        <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'BACKGROUND')">
-                        <label for="{{ option.name }}">{{ option.name }}</label>
-                      </li>
-                    </ul>
-    
-                    <ul *ngIf="trait === 'TRANSCENDENCE'" class="list-trait" [@slideIn]="isTraitOpen[i] ? 'in' : 'out'">
-                      <li *ngFor="let option of traitOptionsService.transcendenceOptions">
-                        <input type="checkbox" class="input-option" id="{{ option.name }}" [(ngModel)]="option.selected" (change)="updateSelectedFilters(option.name, 'TRANSCENDENCE')">
-                        <label for="{{ option.name }}">{{ option.name }}</label>
-                      </li>
-                    </ul>
                   </div>
                 </div>
               </div>
@@ -75,6 +77,9 @@
                   {{ filter.value }}
                   <span class="remove-filter">&#10005;</span>
                 </div>
+                <span class="clear-filters" (click)="clearAllFilters()">
+                  <i class="fas fa-trash-alt"></i>
+                </span>
               </div>
             </div>
 

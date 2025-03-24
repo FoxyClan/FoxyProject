@@ -88,7 +88,7 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     protected traitOptionsService: TraitOptionsService, 
     private route: ActivatedRoute, 
-    private cacheService: CacheService
+    private cacheService: CacheService,
   ) {}
 
 
@@ -322,12 +322,23 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isFilterModalOpen = false;
 
+  filterModalAnimation = '';
+
   openFilterModal() {
     this.isFilterModalOpen = true;
+  
+    // Petite pause pour que le DOM soit prêt avant d'appliquer l'animation
+    setTimeout(() => {
+      this.filterModalAnimation = 'slide-in';
+    }, 10); // 10ms suffisent pour laisser Angular afficher l’élément
   }
+  
 
   closeFilterModal() {
-    this.isFilterModalOpen = false;
+    this.filterModalAnimation = 'slide-out';
+    setTimeout(() => {
+      this.isFilterModalOpen = false;
+    }, 300); // doit correspondre à la durée de transition
   }
 
 }
