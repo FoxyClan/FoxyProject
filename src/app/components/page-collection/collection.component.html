@@ -6,18 +6,6 @@
                 <p>The 20,000 red pandas, each unique and generated from more than 80 possible traits.</p>
             </div>
 
-            <!-- Ajoute ce bouton dans .container-block1 -->
-            <div class="mobile-filter-header">
-              <div class="selected-filters" *ngIf="selectedFilters.length > 0">
-                <div class="filter-tag" *ngFor="let filter of selectedFilters" (click)="removeFilter(filter)">
-                  {{ filter.value }}
-                  <span class="remove-filter">&#10005;</span>
-                </div>
-              </div>
-              <button class="open-filter-btn" (click)="openFilterModal()">Filters</button>
-            </div>
-
-            <!-- Modal mobile pour les filtres -->
             <div class="filter-modal-overlay" *ngIf="isFilterModalOpen" (click)="closeFilterModal()">
               <div class="filter-modal" (click)="$event.stopPropagation()">
                 <img src="close.png" class="close-btn" alt="close" (click)="closeFilterModal()">
@@ -80,8 +68,17 @@
               </div>
             </div>
 
+            <div class="mobile-filter-header">
+              <button class="open-filter-btn" (click)="openFilterModal()">Filters</button>
+              <div class="selected-filters" *ngIf="selectedFilters.length > 0">
+                <div class="filter-tag" *ngFor="let filter of selectedFilters" (click)="removeFilter(filter)">
+                  {{ filter.value }}
+                  <span class="remove-filter">&#10005;</span>
+                </div>
+              </div>
+            </div>
 
-            <div class="filter-block">
+            <div class="filter-block filters">
               <div class="trait-block" *ngFor="let trait of traits; let i = index">
                 <div class="trait" (click)="toggleTrait(i)">
                     <p>{{ trait }}</p>

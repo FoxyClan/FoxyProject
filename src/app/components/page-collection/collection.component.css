@@ -320,10 +320,13 @@
     .mobile-filter-header {
         order: 2;
         display: flex;
-        justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
         gap: 0.5rem;
+    }
+
+    .selected-filters {
+        margin-bottom: 0;
     }
   
     .open-filter-btn {
@@ -344,6 +347,10 @@
       width: 100%;
       flex-grow: 1;
       overflow-y: visible;
+    }
+  
+    .filters {
+      display: none;
     }
   
     /* Modal pour le filtre */
