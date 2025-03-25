@@ -47,6 +47,7 @@ export class ModalCollection implements OnInit {
   rarity: any = "Loading...";
   
   cacheVersion: string = '';
+  isMobileMini: boolean = false;
 
   constructor(private web3Service: Web3Service, 
     private router: Router,
@@ -55,6 +56,7 @@ export class ModalCollection implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.isMobileMini = window.innerWidth < 400;
     this.cacheService.cacheVersion$.subscribe((version) => {
       this.cacheVersion = version;
     });

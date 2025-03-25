@@ -3,6 +3,7 @@ ALL
 - ne pas mettre 20000 mais totalSupply - burnedTokens
 - tout mettre en anglais
 - mettre des animation d'arrivé sur toutesles pages comme home ou collection
+- tester les icon hover sur mobile
 
 HOME
 - modifier les chiffres de la premiere page
