@@ -76,8 +76,9 @@ h1 {
 .panel-1-block {
     display: flex;
     flex-direction: column;
+    justify-content: center; /* ✅ centre verticalement */
+    gap: 20px;
     flex-grow: 1;
-    justify-content: space-around;
     padding: 0 2rem 0 0;
 }
 
@@ -186,7 +187,6 @@ h2 {
 }
 
 .panel-1-ul {
-    margin-top: 1rem;
     font-style: normal;
     font-weight: 600;
     line-height: 1.5rem;
@@ -507,25 +507,118 @@ app-modal-mint {
 
 @media (max-width: 1870px) {
     h1 {
-      font-size: calc(3rem - 1rem); /* Réduit la taille du h1 de 1rem */
+      font-size: 2rem;
     }
   
     .panel-1 {
-      padding: calc(5rem - 1rem); /* Réduit le padding de .panel-1 de 1rem */
+      padding: 4rem;
+    }
+}
+
+
+
+@media (max-width: 1350px) {
+    .panel {
+        width: 80%;
+    }
+}
+
+@media (max-width: 1275px) {
+    .panel {
+        width: 90%;
+    }
+}
+
+@media (max-width: 1175px) {
+    .panel-1 {
+        padding: 4rem 2rem;
+    }
+    .btn {
+        width: 150px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .sale-status {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .colored,
+    h1 {
+        font-size: 2.5rem;
+    }
+    .sale-status {
+        font-size: 1.5rem;
+    }
+    .panel-2 {
+        width: 95%;
     }
 }
 
 @media (max-aspect-ratio: 1/1) {
     .panel {
-        flex-direction: column;
+        flex-direction: column-reverse;
+        overflow-y: auto;
+        height: auto;
+        margin: 0;  
+        align-items: center;    
+        justify-content: flex-end;
+        padding-top: 150px;
     }
+    .panel-1 {
+        width: 70%;
+        height: auto;    
+        align-items: center;
+        text-align: center;
+    }
+    .panel-2 {    
+        width: 70%;
+        height: auto;
+        min-height: 40vh;
+    }
+    .panel-1-block {
+        align-items: center;
+        padding: 0;
+    }
+    .sale-status::after {
+        bottom: -3px;
+    }
+    .mint {
+        height: auto;
+        min-height: 100dvh;
+        overflow-y: auto;
+      }
+    
+      .container {
+        position: relative;
+        height: auto;
+        min-height: 100dvh;
+      }
+}
 
-    .panel-1,
-    .panel-2 {
-        width: 100%;
-        height: 100dvh;
+@media (max-width: 750px) {
+    .panel-2 {   
+        width: 90%;
     }
 }
 
+@media (max-width: 675px) {
+    .panel-1 {
+        width: 100%;
+        padding: 2rem;
+    }
+    .panel-2 {
+        width: 100%;
+        min-height: 40vh;
+    }
+}
 
-  
+@media (max-width: 400px) {
+    .colored,
+    h1 {
+        font-size: 2rem;
+    }
+}

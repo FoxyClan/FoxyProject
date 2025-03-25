@@ -8,6 +8,7 @@ import { Web3Service } from "../../services/web3.service";
 import { ModalMint } from "../modal-mint/modal-mint.component";
 import { ChangeDetectorRef } from '@angular/core';
 import Web3 from 'web3';
+import { RotateWarningComponent } from "../rotate-warning/rotate-warning.component";
 
 @Component({
   selector: 'app-mint',
@@ -15,8 +16,9 @@ import Web3 from 'web3';
   imports: [
     NotConnectedModal,
     CommonModule,
-    ModalMint
-  ],
+    ModalMint,
+    RotateWarningComponent
+],
   templateUrl: './mint.component.html',
   styleUrl: './mint.component.css'
 })
