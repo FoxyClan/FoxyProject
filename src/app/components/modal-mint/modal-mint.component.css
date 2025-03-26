@@ -14,15 +14,55 @@
 	min-height: 430px;
 	width: 40%;
 	height: 60%;
+	max-width: 720px;
+	max-height: 460px;
 	background: linear-gradient(0deg, #000, #272727);
 	color: white;
 	display: flex;
 	flex-direction: column;
 	gap: 10%;
 	padding: 5% 5% 0 5%;
+	margin-top: 80px;
 	box-sizing: border-box;
 	transition: width 1s ease-in-out, height 1s ease-in-out, background-image 1s ease-in-out;
 }
+
+.nft-preview-wrapper {
+	position: absolute;
+	top: -25%;
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 1rem;
+	z-index: 10;
+}
+  
+.nft-card {
+	height: 160px;
+	aspect-ratio: 1 / 1;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0,0,0,0.6);
+	object-fit: cover;
+	transition: transform 0.3s ease;
+}
+  
+.nft-card.left {
+	transform: rotate(-12deg) translateX(40px) translateY(15px);
+	z-index: 1;
+}
+  
+.nft-card.center {
+	transform: rotate(0deg);
+	z-index: 2;
+}
+  
+.nft-card.right {
+	transform: rotate(12deg) translateX(-40px) translateY(15px);
+	z-index: 1;
+}
+  
 
 .block.success {
     width: 100%;
@@ -757,4 +797,80 @@
 }
 
 
+/* MEDIA QUERIES */
 
+@media (max-width: 1350px) {
+	.block {
+		width: 50%;
+		height: 50%;
+		gap: 5%;
+	}
+}
+
+@media (max-width: 1250px) {
+    .nft-card {
+		height: 140px;
+	}
+	.block {
+		min-height: 400px;
+	}
+}
+
+@media (max-width: 1150px) {
+	.block {
+		height: 40%;
+	}
+}
+
+@media (max-width: 1000px) {
+	.block {
+		min-height: auto;
+		min-width: auto;
+		max-width: auto;
+		max-height: auto;
+		width: 485px;
+		height: 400px;
+		padding: 7% 5% 0 5%;
+	}
+	.message-container {
+		height: 20%;
+	}
+}
+
+@media (max-width: 900px) {
+	.block {
+		padding: 10% 5% 0 5%;
+	}
+}
+
+@media (max-width: 520px) {
+	.block {
+		width: 400px;
+		height: 320px;
+		padding: 15% 5% 0 5%;
+	}
+	.btn-container {
+		min-height: 40px;
+	}
+	.nft-card {
+		height: 130px;
+	}
+}
+
+@media (max-width: 450px) {
+	.block {
+		width: 380px;
+		height: 320px;
+		padding: 15% 5% 0 5%;
+	}
+}
+
+@media (max-width: 400px) {
+	.block {
+		width: 340px;
+		height: 300px;
+	}
+	.nft-preview-wrapper {
+		top: -30%;
+	}
+}

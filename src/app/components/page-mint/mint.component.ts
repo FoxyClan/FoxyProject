@@ -33,7 +33,7 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   isPublicSaleActive: boolean = false;
   isAllowListActive: boolean = false;
   walletAddress: any;
-  showMint: boolean = false;
+  showMint: boolean = true;
   errorMessage: string = "";
   private timeoutId: any; //for the errorMessage
   images = ['1.png', '2.png', '3.png', '4.png', '5.png', '6.png']; // obligatoirement un nombre pair d'image
