@@ -69,6 +69,9 @@
     height: 100dvh;
 	padding: 0;
 	gap: 0;
+	max-height: none;
+	max-width: none;
+	margin: 0;
 }
 
 .block.success:before, 
@@ -380,6 +383,7 @@
 	box-sizing: border-box;
 	background-image: url("../../../../public/background3.jpg");
     background-size: cover;
+    background-position: center;
 }
 
 .card-container {
@@ -641,7 +645,7 @@
 	flex-direction: column;
 	width: 100%;
 	height: 50%;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: center;
 	box-sizing: border-box;
 	z-index: 4;
@@ -699,6 +703,7 @@
 .attributs {
     width: 50%;
     height: 50%;
+	max-height: 200px;
     box-sizing: border-box;
 }
 
@@ -794,6 +799,8 @@
 .metadata-block p {
 	color: white;
 	font-size: 1rem;
+    text-transform: uppercase;
+    text-align: center;
 }
 
 
@@ -814,6 +821,9 @@
 	.block {
 		min-height: 400px;
 	}
+	.attributs {
+		width: 70%;
+	}
 }
 
 @media (max-width: 1150px) {
@@ -826,14 +836,18 @@
 	.block {
 		min-height: auto;
 		min-width: auto;
-		max-width: auto;
-		max-height: auto;
 		width: 485px;
 		height: 400px;
 		padding: 7% 5% 0 5%;
 	}
 	.message-container {
 		height: 20%;
+	}
+	.attributs {
+		width: 90%;
+	}
+	.card-container {
+		height: 40%;
 	}
 }
 
@@ -843,10 +857,22 @@
 	}
 }
 
+@media (max-width: 650px) {
+	.attributs {
+		width: 100%;
+		max-height: 160px;
+	}
+	.metadata-block[_ngcontent-ng-c2237496098] p[_ngcontent-ng-c2237496098] {
+		color: white;
+		font-size: 0.8rem;
+	}
+}
+
+
 @media (max-width: 520px) {
 	.block {
 		width: 400px;
-		height: 320px;
+		height: 350px;
 		padding: 15% 5% 0 5%;
 	}
 	.btn-container {
