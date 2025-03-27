@@ -860,7 +860,7 @@
 @media (max-width: 650px) {
 	.attributs {
 		width: 100%;
-		max-height: 160px;
+		max-height: 160px; /* A VOIR AVEC LES MUTATIONS*/
 	}
 	.metadata-block[_ngcontent-ng-c2237496098] p[_ngcontent-ng-c2237496098] {
 		color: white;
@@ -899,4 +899,20 @@
 	.nft-preview-wrapper {
 		top: -30%;
 	}
+}
+
+@media (max-width: 350px) {
+	.block {
+		width: 300px;
+		height: 280px;
+	}
+	.nft-preview-wrapper {
+		top: -30%;
+	}
+	.card-container {
+		height: 30%;
+	}
+	.nft-card {
+        height: 110px;
+    }
 }

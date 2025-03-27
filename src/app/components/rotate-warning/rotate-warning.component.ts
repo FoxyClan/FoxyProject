@@ -21,6 +21,7 @@ export class RotateWarningComponent {
   }
 
   checkOrientation() {
+    if (typeof window == 'undefined') return
     const isLandscapeNow = window.innerWidth <= 1000 && window.innerWidth > window.innerHeight;
     this.isLandscape = isLandscapeNow;
   }

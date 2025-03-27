@@ -88,6 +88,7 @@ export class ModalMint implements OnInit, OnDestroy {
   private lastCallTime = 0;
 
   asTranscendence: boolean = false;
+  isMobileMini: boolean = false;
 
   constructor(private web3Service: Web3Service,
     private cacheService: CacheService,
@@ -96,6 +97,9 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (typeof window !== 'undefined') {
+      this.isMobileMini = window.innerWidth < 600;
+    }
     this.walletAddressSubscription = this.web3Service.walletAddress$.subscribe((isReady) => {
       if (isReady) {
         this.initializeMintData();

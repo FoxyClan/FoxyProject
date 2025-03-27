@@ -56,7 +56,9 @@ export class ModalCollection implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.isMobileMini = window.innerWidth < 400;
+    if (typeof window !== 'undefined') {
+      this.isMobileMini = window.innerWidth < 400;
+    }
     this.cacheService.cacheVersion$.subscribe((version) => {
       this.cacheVersion = version;
     });
