@@ -40,12 +40,14 @@
   <div class="merge-content">
     <button class="btn exit-btn" *ngIf="mergeMode" (click)="exitMergeMode()">BACK</button>
     <!-- Cadran Gauche -->
-    <div class="merge-image drop-zone" [ngClass]="getDropZoneClass('left')" 
-     (dragover)="onDragOver($event)"
-     (drop)="onDrop($event, 'left')"
-     (click)="selectedNFTs.left ? removeFromMerge('left') : null">
-      <img *ngIf="selectedNFTs.left" [src]="selectedNFTs.left.image == 'https://foxyclan.s3.filebase.com/undiscovered.png' ? selectedNFTs.left.image : 'https://foxyclan.s3.filebase.com/' + selectedNFTs.left.tokenId + '.png'" alt="NFT Left">
-      <p *ngIf="!selectedNFTs.left" class="placeholder-text">Drop NFT Here</p>
+    <div class="cadran left">
+      <div class="merge-image drop-zone" [ngClass]="getDropZoneClass('left')" 
+      (dragover)="onDragOver($event)"
+      (drop)="onDrop($event, 'left')"
+      (click)="selectedNFTs.left ? removeFromMerge('left') : null">
+        <img *ngIf="selectedNFTs.left" [src]="selectedNFTs.left.image == 'https://foxyclan.s3.filebase.com/undiscovered.png' ? selectedNFTs.left.image : 'https://foxyclan.s3.filebase.com/' + selectedNFTs.left.tokenId + '.png'" alt="NFT Left">
+        <p *ngIf="!selectedNFTs.left" class="placeholder-text">Drop NFT Here</p>
+      </div>
     </div>
 
     <div class="merge-info">
@@ -62,14 +64,15 @@
     </div>
 
     <!-- Cadran Droit -->
-    <div class="merge-image drop-zone" [ngClass]="getDropZoneClass('right')" 
-     (dragover)="onDragOver($event)"
-     (drop)="onDrop($event, 'right')"
-     (click)="selectedNFTs.right ? removeFromMerge('right') : null">
-      <img *ngIf="selectedNFTs.right" [src]="selectedNFTs.right.image == 'https://foxyclan.s3.filebase.com/undiscovered.png' ? selectedNFTs.right.image : 'https://foxyclan.s3.filebase.com/' + selectedNFTs.right.tokenId + '.png'" alt="NFT Right">
-      <p *ngIf="!selectedNFTs.right" class="placeholder-text">Drop NFT Here</p>
+    <div class="cadran right">
+      <div class="merge-image drop-zone" [ngClass]="getDropZoneClass('right')" 
+      (dragover)="onDragOver($event)"
+      (drop)="onDrop($event, 'right')"
+      (click)="selectedNFTs.right ? removeFromMerge('right') : null">
+        <img *ngIf="selectedNFTs.right" [src]="selectedNFTs.right.image == 'https://foxyclan.s3.filebase.com/undiscovered.png' ? selectedNFTs.right.image : 'https://foxyclan.s3.filebase.com/' + selectedNFTs.right.tokenId + '.png'" alt="NFT Right">
+        <p *ngIf="!selectedNFTs.right" class="placeholder-text">Drop NFT Here</p>
+      </div>
     </div>
-
   </div>
 </div>
 

@@ -355,7 +355,6 @@ app-modal-mint {
 
 .merge-container {
   z-index: 1;
-  height: 45vh;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -369,7 +368,7 @@ app-modal-mint {
   font-family: "Orbitron", sans-serif;
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 0;
   font-size: 0.9rem;
   font-weight: 400;
   padding: 0.4em 1em;
@@ -411,6 +410,23 @@ app-modal-mint {
   text-align: center;
   color: white;
   margin: 1rem;
+}
+
+.cadran {
+  width: 30%;
+  height: 100%;
+}
+
+.left {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.right {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .merge-info img {
@@ -485,7 +501,9 @@ app-modal-mint {
 
 .drop-zone {
   aspect-ratio: 1 / 1;
-  height: 100%;
+  width: 100%;
+  height: auto;
+  max-height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -522,10 +540,32 @@ app-modal-mint {
 
 
 /* MEDIA QUERIES */
+@media (max-width: 1350px) {
+  .exit-btn {
+    top: 20px;
+    left: -20px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .cadran {
+    width: 40%;
+  }
+  .exit-btn {
+    top: -33px;
+    left: 0;
+  }
+}
 
 @media (max-width: 1100px) {
   .spinner:before {
     width: 6%;
+  }
+  .merge-description p {
+    position: absolute;
+    bottom: -2rem;
+    left: 0;
+    width: 100%;
   }
 }
 
@@ -535,6 +575,12 @@ app-modal-mint {
   }
   .owner-image {
     max-width: 40%;
+  }
+  .logo-background {
+    height: auto;
+  }
+  .logo-background img {
+    width: 60%;
   }
 }
 
@@ -549,6 +595,9 @@ app-modal-mint {
     border: 2px solid #42ddf8;
     transform: translateX(-50%) translateY(-40px);
     clip-path: polygon(0px 0%, 100% 0%, 100% 100%, 0px 100%, 0% 50%);
+  }
+  .merge-container {
+    padding: 10% 1rem 0 1rem;
   }
 }
 
@@ -568,14 +617,54 @@ app-modal-mint {
   .spinner:before {
     width: 10%;
   }
+  .logo-background {
+    width: 100%;
+  }
+  .logo-background img {
+    width: 90%;
+  }
+}
+
+@media (max-width: 600px) {
+  .merge-info {
+    width: 10%;
+  }
+  .cadran {
+    width: 45%;
+  }
+  .merge-btn {
+    position: absolute;
+    bottom: -7rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    margin: 0;
+  }
+  .merge-container {
+    padding: 10% 1rem 15% 1rem;
+  }
+  .merge-info img {
+    width: 100%;
+  }
+
 }
 
 @media (max-width: 550px) {
   .info-container {
     justify-content: space-around;
   }
+  .merge-container {
+    padding: 15% 1rem;
+  }
 }
-
+@media (max-width: 450px) {
+  .merge-description p {
+    font-size: 0.9rem;
+  }
+  .merge-container {
+    padding: 15% 1rem 20% 1rem;
+  }
+}
 @media (max-width: 400px) {
   .nft-grid {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -585,5 +674,8 @@ app-modal-mint {
   }
   .tooltip {
     font-size: 0.7rem;
+  }
+  .merge-description p {
+    font-size: 0.75rem;
   }
 }
