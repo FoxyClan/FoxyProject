@@ -13,6 +13,7 @@ import { TraitOptionsService } from '../../services/trait-options.service';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { UndiscoveredModal } from "../modal-undiscovered/modal-undiscovered.component";
+import { RotateWarningComponent } from "../rotate-warning/rotate-warning.component";
 
 
 
@@ -31,7 +32,7 @@ interface Metadata {
 @Component({
   selector: 'app-page-user-collection',
   standalone: true,
-  imports: [CommonModule, ModalCollection, ModalMint, ErrorComponent, UndiscoveredModal],
+  imports: [CommonModule, ModalCollection, ModalMint, ErrorComponent, UndiscoveredModal, RotateWarningComponent],
   templateUrl: './page-user-collection.component.html',
   styleUrl: './page-user-collection.component.css'
 })

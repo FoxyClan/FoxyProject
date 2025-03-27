@@ -430,6 +430,7 @@
 @media (max-width: 800px) {
   .tooltip {
     top: auto;
+    border: 2px solid #42ddf8;
     transform: translateX(calc(-50% + 0.5rem)) translateY(-55%);
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     padding: 4px 8px;
