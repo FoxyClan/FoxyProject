@@ -70,6 +70,8 @@ export class PageUserCollectionComponent implements OnInit {
   profilImageRarity: number = 101;
   errorMessage: any;
   mergingLoad: boolean = false;
+  
+  isMobileMini: boolean = false;
 
   private filebaseUrl = 'https://dnastore.s3.filebase.com/';
 
@@ -81,6 +83,9 @@ export class PageUserCollectionComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (typeof window !== 'undefined') {
+      this.isMobileMini = window.innerWidth < 600;
+    }
     this.isLoading = true;
     this.cacheService.cacheVersion$.subscribe((version) => {
       this.cacheVersion = version;
@@ -368,7 +373,7 @@ export class PageUserCollectionComponent implements OnInit {
   }
 
 
-
+  /*
   private async checkIfDnaExists(dna: string): Promise<boolean> {
     const fileName = dna + '.json';
     const url = `${this.filebaseUrl}${fileName}`;
@@ -379,7 +384,20 @@ export class PageUserCollectionComponent implements OnInit {
     } catch {
       return false;
     }
-}
+  }
+  */
+
+  private async checkIfDnaExists(dna: string): Promise<boolean> {
+    const fileName = dna + '.json';
+    const url = `${this.filebaseUrl}${fileName}`;
+  
+    try {
+      await axios.get(url);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 
   private decrementTrait(dna: string, position: number): string {
     const currentValue = parseInt(dna.substring(position, position + 2));
