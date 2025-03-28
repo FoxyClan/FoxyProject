@@ -6,7 +6,7 @@
   <!-- ADDRESS INFO -->
   <div *ngIf="!isLoading && !mergeMode" class="owner">
 
-    <div class="owner-info">
+    <div class="owner-info" [ngClass]="noNft ? 'noNft' : ''">
       <div>
         <h3 *ngIf="!isOwner" class="wallet">FOXY WALLET</h3>
         <h2 [ngClass]="isOwner ? 'title' : 'address'">{{ isOwner ? "MY FOXY WALLET" : address }}</h2>
@@ -58,7 +58,7 @@
         'letter-spacing': '1px'}">{{ errorMessage ? errorMessage : "Drag and drop two NFTs to create something unique." }}</p>
       </div>
       <button class="btn merge-btn" (click)="merge()" [disabled]="mergingLoad">
-        <span [ngStyle]="{'opacity': mergingLoad ? '0' : '1'}">Confirm Merge</span>
+        <span class="merge-text" [ngStyle]="{'opacity': mergingLoad ? '0' : '1'}">Confirm Merge</span>
         <span *ngIf="mergingLoad" class="loading-spinner"></span>
       </button>
     </div>

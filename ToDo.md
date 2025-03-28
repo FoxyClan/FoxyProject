@@ -26,6 +26,7 @@ MODAL-ACCOUNT
 - ne rien afficher si le reseau n'est pas eth
 - events "transfers" details & test d'envoie de nft & et test que les points descendent bien etc ...
 - event usePoints, et rajouter des fonction dans les transaction (jsp si y a tout la)
+- reactualiser la page quand je suis sur une autre address e tque je clique sur my collection
 
 SMART CONTRACT
 - mettre a jour les commentaires

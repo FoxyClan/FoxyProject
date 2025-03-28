@@ -463,3 +463,8 @@
 
 
 
+@media (max-width: 1200px) {
+    .palette {
+        display: none;
+    }
+}
