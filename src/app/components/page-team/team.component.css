@@ -1,6 +1,6 @@
 .team-page {
     max-width: 100dvw;
-    min-height: 85dvh;
+    min-height: 100dvh;
     background: url("../../../../public/background-theme.jpg");
     background-size: cover;
     background-attachment: fixed;
@@ -8,7 +8,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     color: white;
     overflow-y: auto;
     padding-top: 15dvh;

@@ -1,7 +1,8 @@
 .contact-page {
   width: 100%;
   min-height: 100dvh;
-  background: url("../../../../public/background-theme.jpg");
+  background: linear-gradient(135deg, #000000e6, #090d0f);
+  /*background: url("../../../../public/background-theme.jpg");*/
   background-size: cover;
   font-family: "Orbitron", sans-serif;
   display: flex;

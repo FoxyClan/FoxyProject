@@ -8,7 +8,7 @@ export const usdtContractAddress: string = '0xdAC17F958D2ee523a2206206994597C13D
 export const usdcContractAddress: string = '0xA0b86991c6218b36c1d19D4a2e9eb0cE3606EB48';
 
 
-export const FoxyClanContractAddress = '0x3603b0b8279b6E3B290165b57Dd27355c5Af8E7B';
+export const FoxyClanContractAddress = '0xd614f8eb44320a414CcDf3D65EC511C9DF40B142';
 
 export const FoxyPrice = 0.0125;
 export const PrivateSaleFoxyPrice = 0.0075;

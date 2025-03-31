@@ -1,7 +1,7 @@
 <section class="modalMint" (click)="closeModal()">
     <div class="block" (click)="stopEvent($event)" [class.success]="success" [class.closeAnimation]="closeAnimation">
 
-        <div *ngIf="!success && !creatingNftLoading && !errorAfterMint" class="nft-preview-wrapper">
+        <div *ngIf="!success" class="nft-preview-wrapper">
             <img src="carte1.png" alt="NFT 1" class="nft-card left">
             <img src="carte2.png" alt="NFT 2" class="nft-card center">
             <img src="carte3.png" alt="NFT 3" class="nft-card right">

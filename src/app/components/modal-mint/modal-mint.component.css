@@ -790,7 +790,7 @@
 }
   
 .metadata-block span {
-	color: rgb(87, 87, 87);
+	color: rgb(144, 144, 144);
 	text-transform: uppercase;
 	font-weight: bold;
 	font-size: 0.8rem;
@@ -801,6 +801,7 @@
 	font-size: 1rem;
     text-transform: uppercase;
     text-align: center;
+	font-weight: bold;
 }
 
 
@@ -829,6 +830,9 @@
 @media (max-width: 1150px) {
 	.block {
 		height: 40%;
+	}
+	.transcendence {
+		width: 100% !important;
 	}
 }
 
@@ -865,6 +869,13 @@
 	.metadata-block p {
 		font-size: 0.8rem;
 	}
+	.transcendence .attributes-if {
+		grid-template-columns: repeat(3, 30.5%) !important;
+		grid-template-rows: repeat(3, 1fr) !important;
+	}
+	.transcendence {
+		max-height: 100% !important;
+	}
 }
 
 
@@ -879,6 +890,9 @@
 	}
 	.nft-card {
 		height: 130px;
+	}
+	.attributes-if {
+		padding: 0.5rem 0;
 	}
 }
 
@@ -904,9 +918,9 @@
 	.metadata-block p {
 		font-size: 0.75rem;
 	}
-}
-
-@media (max-width: 350px) {
+	.metadata-block span {
+		font-size: 0.75rem;
+	}
 	.block {
 		width: 300px;
 		height: 280px;
