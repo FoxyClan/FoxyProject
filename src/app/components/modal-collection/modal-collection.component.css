@@ -334,6 +334,7 @@
 @media (max-width: 1870px) {
   .modal-content {
     height: 650px;
+    max-height: 85%;
   }
 }
 
@@ -355,7 +356,6 @@
 
 @media (max-width: 1300px) {
   .modal-content {
-    height: 600px;
     width: 90%;
   }
 }
@@ -368,6 +368,7 @@
     flex-direction: column;
     border-radius: 0px;
     box-sizing: border-box;
+    max-height: 100%;
   }
   .modal-left,
   .modal-right {

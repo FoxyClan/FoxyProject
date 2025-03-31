@@ -33,6 +33,9 @@ MODAL-ACCOUNT
 - reactualiser la page quand je suis sur une autre address e tque je clique sur my collection
 - probleme change de chain gnosis xdai est noté en eth
 
+USER-COLLECTION
+- check if dna exist -> http
+
 SMART CONTRACT
 - mettre a jour les commentaires
 - a tester nombre d'addresse passable dans airdrop (test net) (100)

@@ -171,7 +171,7 @@ export class PageUserCollectionComponent implements OnInit {
     this.rarities[metadata.tokenId] = parseFloat(total.toFixed(1));
     if (this.rarities[metadata.tokenId] <= this.profilImageRarity) {
       this.profilImageRarity = this.rarities[metadata.tokenId];
-      this.profileImage = 'https://foxyclan.s3.filebase.com/' + metadata.tokenId + '.png';
+      this.profileImage = metadata.image === 'https://foxyclan.s3.filebase.com/undiscovered.png' ? metadata.image : 'https://foxyclan.s3.filebase.com/' + metadata.tokenId + '.png' + '?t=' + this.cacheVersion;
     }
   }
 

@@ -157,7 +157,7 @@ public class MergeService {
         boolean hasTranscendence = traits.containsKey("Transcendence");
     
         // Probabilité de transcendance : 100% si déjà présente, sinon 50%
-        boolean applyTranscendence = hasTranscendence || rand.nextDouble() < 0.5;
+        boolean applyTranscendence = hasTranscendence || rand.nextDouble() < 1;
     
         if (applyTranscendence) {
             // Récupère la valeur actuelle du trait "Mouth"

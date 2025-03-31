@@ -862,8 +862,7 @@
 		width: 100%;
 		max-height: 160px; /* A VOIR AVEC LES MUTATIONS*/
 	}
-	.metadata-block[_ngcontent-ng-c2237496098] p[_ngcontent-ng-c2237496098] {
-		color: white;
+	.metadata-block p {
 		font-size: 0.8rem;
 	}
 }
@@ -889,6 +888,9 @@
 		height: 320px;
 		padding: 15% 5% 0 5%;
 	}
+	.metadata-block p {
+		font-size: 0.8rem;
+	}
 }
 
 @media (max-width: 400px) {
@@ -898,6 +900,9 @@
 	}
 	.nft-preview-wrapper {
 		top: -30%;
+	}
+	.metadata-block p {
+		font-size: 0.75rem;
 	}
 }
 

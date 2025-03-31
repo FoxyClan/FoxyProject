@@ -86,7 +86,7 @@
          draggable="true"
          (dragstart)="token.value ? onDragStart($event, token.value) : null"
          (click)="mergeMode && (!this.selectedNFTs.left || !this.selectedNFTs.right) ? addToMerge(token.value) : openModal(token.value)">
-      <img [src]="token.value?.image == 'https://foxyclan.s3.filebase.com/undiscovered.png' ? token.value?.image : 'https://foxyclan.s3.filebase.com/' + token.value?.tokenId + '.png'"/>
+      <img [src]="token.value?.image === 'https://foxyclan.s3.filebase.com/undiscovered.png' ? token.value?.image : 'https://foxyclan.s3.filebase.com/' + token.value?.tokenId + '.png' + '?t=' + cacheVersion"/>
       <p>#{{ token.value?.tokenId }}</p>
     </div>
   </div>
