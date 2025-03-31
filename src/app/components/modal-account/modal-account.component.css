@@ -127,10 +127,16 @@
     width: 25px;
     height: 25px;
     cursor: pointer;
+    transition: ease 0.2;
 }
 
 .icon:hover {
     filter: invert(20%);
+}
+
+.icon:active {
+    transform: scale(0.6);
+    opacity: 0.9;
 }
 
 .ethLogo {

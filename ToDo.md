@@ -1,12 +1,8 @@
 ALL
-- mettre tout en em ou rem
 - ne pas mettre 20000 mais totalSupply - burnedTokens
-- tout mettre en anglais
-- mettre des animation d'arrivé sur toutesles pages comme home ou collection
-- tester les icon hover sur mobile
+- mettre des animation d'arrivé sur toutes les pages comme home ou collection
 
 RESPONSIVE
-- probleme scroll home mettre une fleche pour retourner a home sur les petites devices
 - probleme background home flou
 
 HOME

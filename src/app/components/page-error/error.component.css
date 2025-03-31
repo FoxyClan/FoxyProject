@@ -206,3 +206,25 @@ div{
     filter: hue-rotate(0deg);
   }
 }
+
+/* MEDIA QUERIES */
+
+@media (max-width: 800px) {
+  #svgWrap_1, 
+  #svgWrap_2 {
+    width: 400px;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  #svgWrap_1, 
+  #svgWrap_2 {
+    width: 250px;
+  }
+  h2 {
+    font-size: 1.2rem;
+  }
+}
