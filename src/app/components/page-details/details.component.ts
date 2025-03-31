@@ -28,6 +28,22 @@ export class DetailsComponent {
     }
   }
 
+  scrollToHome() {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    const appDetails = document.querySelector('app-details');
+    const container = document.querySelector('.container');
+    this.renderer.removeClass(this.el.nativeElement.querySelector('.block1-1'), 'fly-away');
+    if (appDetails) {
+      this.renderer.removeClass(appDetails, 'show-over');
+      this.renderer.removeClass(appDetails, 'index3');
+      this.renderer.addClass(appDetails, 'index1');
+    }
+    if (container) {
+      this.renderer.removeClass(container, 'fly-away');
+    }
+  }
+  
+
   
 }
 

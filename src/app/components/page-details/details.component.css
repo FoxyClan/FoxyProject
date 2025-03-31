@@ -209,7 +209,6 @@ p {
     justify-content: center;
 }
 
-
 .nft-adn {
     width: 100%;
     height: auto;
@@ -220,6 +219,33 @@ p {
 }
 
 
+.arrow-up {
+    position: absolute;
+    top: 10vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    cursor: pointer;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0.7;
+    animation: bounce 2s infinite;
+    z-index: 10000;
+}
+
+.arrow-up:hover {
+    transform: translateX(-50%) translateY(-5px) scale(1.05);
+    opacity: 1;
+}
+ 
+
+@keyframes bounce {
+    0%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    50% {
+      transform: translateX(-50%) translateY(-10px);
+    }
+}
 
 
 

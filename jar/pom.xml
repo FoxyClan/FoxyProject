@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.3</version>
+		<version>3.4.4</version>
 		<relativePath/>
 	</parent>
 	<groupId>com.foxyclan</groupId>
@@ -72,8 +72,7 @@
 		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.30</version> <!-- Vérifie la dernière version sur Maven Repository -->
+			<artifactId>lombok</artifactId> <!-- Vérifie la dernière version sur Maven Repository -->
 			<scope>provided</scope>
 		</dependency>
 
