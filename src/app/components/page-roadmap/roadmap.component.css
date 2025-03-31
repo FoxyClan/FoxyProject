@@ -1,8 +1,7 @@
 .roadmap-container {
-  min-height: 100dvh;
   width: 100%;
   padding: 8rem 2rem;
-  background: url("../../../../public/background-theme.jpg");
+  background: linear-gradient(135deg, #000000, #090d0f);
   background-size: cover;
   background-attachment: fixed;
   background-position: center;

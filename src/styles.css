@@ -9,9 +9,11 @@ html, body {
     /* overflow-x: hidden; */
 }
 
+/*
 :root {
     background: linear-gradient(135deg, #000000e6, #090d0f);
 }
+*/
 
 body.modal-open {
     overflow: hidden;
