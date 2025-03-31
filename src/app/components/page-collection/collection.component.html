@@ -7,12 +7,13 @@
             </div>
 
             <div class="filter-mobile-container" *ngIf="isFilterModalOpen" (click)="closeFilterModal()">
-              <div class="filter-modal-overlay" [ngClass]="filterModalAnimation"
-              (touchstart)="onTouchStart($event)"
-              (touchmove)="onTouchMove($event)"
-              (touchend)="onTouchEnd()">
+              <div class="filter-modal-overlay" [ngClass]="filterModalAnimation">
                 <div class="filter-modal" (click)="$event.stopPropagation()">
-                  <div class="drag-bar" (click)="closeFilterModal()"></div>
+                  <div class="drag-bar"></div>
+                  <div class="drag-block"
+                  (touchstart)="onTouchStart($event)"
+                  (touchmove)="onTouchMove($event)"
+                  (touchend)="onTouchEnd()"></div>
                   <div class="filter-block">
                     <div class="trait-block" *ngFor="let trait of traits; let i = index">
                       <div class="trait" (click)="toggleTrait(i)">

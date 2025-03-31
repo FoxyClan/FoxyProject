@@ -62,7 +62,7 @@
 
 .border-container {
     width: 17vw;
-    height: 50vh;
+    height: 450px;
     background: linear-gradient(to top right, #00d9ff, #0000009c);
     border-radius: 10px;
     display: flex;
@@ -75,7 +75,6 @@
     margin: 20px;
     padding: 5px;
     min-width: 300px;
-    min-height: 450px;
 }
 
 .panel {

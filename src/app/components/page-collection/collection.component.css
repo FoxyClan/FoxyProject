@@ -13,15 +13,21 @@ input {
 
 
 .collection {
-    width: 100%;
-    height: 100dvh;
-    background: url("../../../../public/background-theme.jpg");
-    background-size: cover;
-    font-family: "Orbitron", sans-serif;
-    display: flex;
-    align-items: end;
-    justify-content: center;
+  width: 100%;
+  min-height: 100dvh;
+  height: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-family: "Orbitron", sans-serif;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  background: url("../../../../public/background-theme.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
+
 
 
 .container {
@@ -130,6 +136,7 @@ input {
     height: 1rem;
     border-radius: 10%;
     cursor: pointer;
+    aspect-ratio: 1 / 1;
 }
 
 .input-option:checked {
@@ -447,5 +454,13 @@ input {
         cursor: pointer;
         z-index: 10;
     }  
+    .drag-block {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 50px;
+        z-index: 11;
+    }
 }
   

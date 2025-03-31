@@ -94,7 +94,7 @@ app-details {
 .subtitle {
     font-size: 1rem;
     color: rgb(194, 194, 194);
-    font-weight: 300;
+    font-weight: 500;
 }
 
 .button-container {
@@ -198,6 +198,8 @@ app-details {
     }
     .subtitle {
         width: 80%;
+        font-weight: 600;
+        color: rgb(201, 201, 201);
     }
 }
 
@@ -207,6 +209,9 @@ app-details {
     }
     .stat-item {
         padding: 0 30px;
+    }
+    .home {
+        background-image: url('../../../../public/background4.jpg');
     }
 }
 

@@ -346,20 +346,21 @@ export class CollectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   openFilterModal() {
     this.isFilterModalOpen = true;
+    document.body.classList.add('modal-open');
   
-    // Petite pause pour que le DOM soit prêt avant d'appliquer l'animation
     setTimeout(() => {
       this.filterModalAnimation = 'slide-in';
-    }, 10); // 10ms suffisent pour laisser Angular afficher l’élément
+    }, 10);
   }
   
-
   closeFilterModal() {
     this.filterModalAnimation = 'slide-out';
     setTimeout(() => {
       this.isFilterModalOpen = false;
-    }, 300); // doit correspondre à la durée de transition
+      document.body.classList.remove('modal-open');
+    }, 300);
   }
+  
 
   onTouchStart(event: TouchEvent) {
     this.startY = event.touches[0].clientY;

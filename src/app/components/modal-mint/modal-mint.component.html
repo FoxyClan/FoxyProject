@@ -137,7 +137,7 @@
                             <span>{{ (isMobileMini && attribute.trait_type === 'Head Covering') ? 'Head' : attribute.trait_type }}</span>
                             <p>{{ attribute.value }}</p>
                             <h4 class="trait-index">{{ getTraitIndex(attribute.value, attribute.trait_type) }}</h4>
-                            <video *ngIf="getTraitRarity(attribute.value, attribute.trait_type) === 'legendary' ? true : false" autoplay muted loop>
+                            <video *ngIf="getTraitRarity(attribute.value, attribute.trait_type) === 'legendary' ? true : false" autoplay muted loop playsinline webkit-playsinline>
                                 <source src="metaGold.mp4" type="video/mp4">
                             </video>
                         </div>    

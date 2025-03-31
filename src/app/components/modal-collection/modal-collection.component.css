@@ -329,6 +329,8 @@
 
 
 /* MEDIA QUERIES */
+
+
 @media (max-width: 1870px) {
   .modal-content {
     height: 650px;
@@ -348,7 +350,7 @@
   .tooltip {
     transform: translateX(-101%);
     clip-path: polygon(0% 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 0% 100%);
-}
+  }
 }
 
 @media (max-width: 1300px) {
@@ -364,6 +366,7 @@
     width: 100%;
     overflow-y: auto;
     flex-direction: column;
+    border-radius: 0px;
     box-sizing: border-box;
   }
   .modal-left,

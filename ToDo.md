@@ -5,6 +5,10 @@ ALL
 - mettre des animation d'arrivé sur toutesles pages comme home ou collection
 - tester les icon hover sur mobile
 
+RESPONSIVE
+- probleme scroll home mettre une fleche pour retourner a home sur les petites devices
+- probleme background home flou
+
 HOME
 - modifier les chiffres de la premiere page
 
@@ -27,6 +31,7 @@ MODAL-ACCOUNT
 - events "transfers" details & test d'envoie de nft & et test que les points descendent bien etc ...
 - event usePoints, et rajouter des fonction dans les transaction (jsp si y a tout la)
 - reactualiser la page quand je suis sur une autre address e tque je clique sur my collection
+- probleme change de chain gnosis xdai est noté en eth
 
 SMART CONTRACT
 - mettre a jour les commentaires

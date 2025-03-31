@@ -315,16 +315,16 @@ p {
     .nft-card {
         width: 100px;
     }
-
     .merge-arrow span {
         font-size: 20px;
     }
-
+    .merge {
+        padding: 1.5rem 0 !important;
+    }
     .nft-card p,
     .nft-card span {
         font-size: 0.7rem;
     }
-
     .block-1-grid-3 .block1-adn {
         padding: 0 0 1rem 0;
     }
@@ -337,13 +337,11 @@ p {
     .block1-1 {
         gap: 2.5rem;
     }
-
     .block1-right,
     .block1-left,
     .block-1-grid-5 {
         padding: 1rem;
     }
-
     .padding {
         padding: 0 1rem;
     }
