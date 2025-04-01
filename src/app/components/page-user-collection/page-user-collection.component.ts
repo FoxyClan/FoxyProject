@@ -228,6 +228,7 @@ export class PageUserCollectionComponent implements OnInit {
     if (token.image === this.baseUri + "undiscovered.png") {
       if (!this.isOwner) return
       this.showUndiscoveredModal = true;
+      document.body.style.overflow = 'hidden';
     }
     else this.showCollectionModal = true;
   }
@@ -239,6 +240,7 @@ export class PageUserCollectionComponent implements OnInit {
 
   closeUndiscoveredModal(isUndiscover: boolean = false) {
     this.showUndiscoveredModal = false;
+    document.body.style.overflow = '';
     this.selectedToken = null;
     if(!isUndiscover) return
     window.location.reload();

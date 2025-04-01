@@ -24,10 +24,12 @@ export class ProbabilityModalComponent {
 
   openModal() {
     this.isModalOpen = true;
+    document.body.style.overflow = 'hidden';
   }
 
   closeModal() {
     this.isModalOpen = false;
+    document.body.style.overflow = '';
   }
 
   getProbability(type: string, num: string) {

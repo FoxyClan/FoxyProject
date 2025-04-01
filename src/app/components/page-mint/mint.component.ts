@@ -207,6 +207,7 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   showMintModal(isAllowList: boolean) {
     this.mintModalData = isAllowList;
     this.showMint = true;
+    document.body.style.overflow = 'hidden';
     setTimeout(() => {
       const modal = document.querySelector('.modalMint');
       if (modal) {
@@ -222,6 +223,7 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
       modal.classList.remove('animate-in');
     }
     this.showMint = false;
+    document.body.style.overflow = '';
   }
   
 
