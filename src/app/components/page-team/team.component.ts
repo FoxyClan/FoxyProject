@@ -1,10 +1,23 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-team',
   standalone: true,
   imports: [CommonModule],
+  animations: [
+    trigger('popOut', [
+      state('void', style({
+        transform: 'scale(1.2)',
+        opacity: 0
+      })),
+      transition('void => *', [
+        animate('200ms ease-out',
+          style({transform: 'scale(1)', opacity: 1}))
+      ])
+    ])
+  ],
   templateUrl: './team.component.html',
   styleUrl: './team.component.css'
 })

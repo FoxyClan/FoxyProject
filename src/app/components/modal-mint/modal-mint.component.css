@@ -8,6 +8,22 @@
 	
 }
 
+.modalMint.animate-in {
+	animation: popIn 0.2s ease-out forwards;
+  }
+  
+  @keyframes popIn {
+	0% {
+	  opacity: 0;
+	  transform: scale(1.2);
+	}
+	100% {
+	  opacity: 1;
+	  transform: scale(1);
+	}
+  }
+  
+
 .block {
     position: relative;
 	min-width: 400px;

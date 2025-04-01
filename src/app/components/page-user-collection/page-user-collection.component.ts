@@ -12,7 +12,7 @@ import { isAddress } from 'web3-validator';
 import { TraitOptionsService } from '../../services/trait-options.service';
 import { UndiscoveredModal } from "../modal-undiscovered/modal-undiscovered.component";
 import { RotateWarningComponent } from "../rotate-warning/rotate-warning.component";
-
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 
 interface Metadata {
@@ -31,6 +31,18 @@ interface Metadata {
   selector: 'app-page-user-collection',
   standalone: true,
   imports: [CommonModule, ModalCollection, ModalMint, ErrorComponent, UndiscoveredModal, RotateWarningComponent],
+  animations: [
+    trigger('popIn', [
+      state('void', style({
+        transform: 'scale(0.8)',
+        opacity: 0
+      })),
+      transition('void => *', [
+        animate('200ms ease-out',
+          style({transform: 'scale(1)', opacity: 1}))
+      ])
+    ])
+  ],
   templateUrl: './page-user-collection.component.html',
   styleUrl: './page-user-collection.component.css'
 })

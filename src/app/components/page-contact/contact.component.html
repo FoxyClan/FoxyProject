@@ -1,5 +1,5 @@
 <div class="contact-page">
-  <div class="contact-container" *ngIf="!isSending">
+  <div class="contact-container" *ngIf="!isSending" [@popOut]>
     <h2>Contact Support</h2>
     <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
       

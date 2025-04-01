@@ -9,6 +9,7 @@ import { ModalMint } from "../modal-mint/modal-mint.component";
 import { ChangeDetectorRef } from '@angular/core';
 import Web3 from 'web3';
 import { RotateWarningComponent } from "../rotate-warning/rotate-warning.component";
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-mint',
@@ -18,7 +19,19 @@ import { RotateWarningComponent } from "../rotate-warning/rotate-warning.compone
     CommonModule,
     ModalMint,
     RotateWarningComponent
-],
+  ],
+  animations: [
+    trigger('popOut', [
+      state('void', style({
+        transform: 'scale(1.2)',
+        opacity: 0
+      })),
+      transition('void => *', [
+        animate('200ms ease-out',
+          style({transform: 'scale(1)', opacity: 1}))
+      ])
+    ])
+  ],
   templateUrl: './mint.component.html',
   styleUrl: './mint.component.css'
 })
@@ -192,13 +205,25 @@ export class MintComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   showMintModal(isAllowList: boolean) {
-    this.mintModalData = isAllowList; // Définit la valeur de mintModalData
-    this.showMint = true; // Affiche la modal
+    this.mintModalData = isAllowList;
+    this.showMint = true;
+    setTimeout(() => {
+      const modal = document.querySelector('.modalMint');
+      if (modal) {
+        modal.classList.add('animate-in');
+      }
+    }, 0);
   }
+  
 
   closeMintModal() {
+    const modal = document.querySelector('.modalMint');
+    if (modal) {
+      modal.classList.remove('animate-in');
+    }
     this.showMint = false;
   }
+  
 
   getConnected() {
     return this.isConnected;

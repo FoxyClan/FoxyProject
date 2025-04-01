@@ -1,6 +1,6 @@
 <div class="team-page">
     <h2 class="team-title">Meet the Team</h2>
-    <div class="team-container">
+    <div class="team-container" [@popOut]>
       <div class="team-card" *ngFor="let member of teamMembers">
         <img [src]="member.image" alt="NFT of {{ member.name }}" class="nft-image">
         <h3 class="team-name">{{ member.name }}</h3>

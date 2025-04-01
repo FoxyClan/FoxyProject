@@ -1,8 +1,8 @@
 
 <div *ngIf="!isLoading" class="logo-background"><img src="FoxyLogoNoBackground.png" alt=""></div>
   
-<div class="page-container">
-<div *ngIf="isLoading" class="spinner"></div>
+<div class="page-container" [@popIn]>
+  <div *ngIf="isLoading" class="spinner"></div>
   <!-- ADDRESS INFO -->
   <div *ngIf="!isLoading && !mergeMode" class="owner">
 
@@ -32,10 +32,10 @@
     <div class="owner-image">
       <img [src]="noNft ? 'FoxyLogo.jpeg' : profileImage"/>
     </div>
-  </div>
+</div>
 
 <!-- MERGE -->
-<div *ngIf="!isLoading && mergeMode" class="merge-container">
+<div *ngIf="!isLoading && mergeMode" class="merge-container" [@popIn]>
 
   <div class="merge-content">
     <button class="btn exit-btn" *ngIf="mergeMode" (click)="exitMergeMode()">BACK</button>
@@ -77,7 +77,7 @@
 </div>
 
 <!-- COLLECTION -->
-<div *ngIf="!isLoading && !noNft" class="nft-collection">
+<div *ngIf="!isLoading && !noNft" class="nft-collection" [@popIn]>
   <h2>{{ mergeMode ? "Select Foxys to Merge :" : "FOXY Collection" }}</h2>
   <div class="nft-grid">
     <div *ngFor="let token of availableTokens | keyvalue" 

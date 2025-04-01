@@ -4,11 +4,24 @@
   import { ReactiveFormsModule } from '@angular/forms';
   import { CommonModule } from '@angular/common';
   import { Web3Service } from '../../services/web3.service';
+  import { animate, state, style, transition, trigger } from '@angular/animations';
   import Web3 from 'web3';
 
   @Component({
     selector: 'app-contact',
     standalone: true,
+    animations: [
+      trigger('popOut', [
+        state('void', style({
+          transform: 'scale(1.2)',
+          opacity: 0
+        })),
+        transition('void => *', [
+          animate('200ms ease-out',
+            style({transform: 'scale(1)', opacity: 1}))
+        ])
+      ])
+    ],
     imports: [ReactiveFormsModule, CommonModule],
     templateUrl: './contact.component.html',
     styleUrl: './contact.component.css'
