@@ -24,11 +24,8 @@ MODAL-ACCOUNT
 - ne rien afficher si le reseau n'est pas eth
 - events "transfers" details & test d'envoie de nft & et test que les points descendent bien etc ...
 - event usePoints, et rajouter des fonction dans les transaction (jsp si y a tout la)
-- reactualiser la page quand je suis sur une autre address et que je clique sur my collection
 - probleme change de chain gnosis xdai est noté en eth
 
-USER-COLLECTION
-- check if dna exist -> http
 
 SMART CONTRACT
 - mettre a jour les commentaires
@@ -39,8 +36,10 @@ SMART CONTRACT
 - supprimer la suppression des points quand transfer ?
 - gain de point uniquement quand level 2 ?
 
+
 ROADMAP
 - faire la roadmap
+
 
 GANACHE
 - supprimer commentaire web3service getBalance / modal account loadBalance -> catch console error

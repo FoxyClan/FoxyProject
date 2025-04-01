@@ -10,8 +10,6 @@ import { ErrorComponent } from "../page-error/error.component";
 import Web3 from 'web3';
 import { isAddress } from 'web3-validator';
 import { TraitOptionsService } from '../../services/trait-options.service';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
 import { UndiscoveredModal } from "../modal-undiscovered/modal-undiscovered.component";
 import { RotateWarningComponent } from "../rotate-warning/rotate-warning.component";
 
@@ -80,8 +78,7 @@ export class PageUserCollectionComponent implements OnInit {
   constructor(private route: ActivatedRoute,
     private web3Service: Web3Service, 
     private cacheService : CacheService,
-    private traitOptionsService: TraitOptionsService,
-    private http: HttpClient
+    private traitOptionsService: TraitOptionsService
   ) {}
 
   ngOnInit(): void {
@@ -411,37 +408,25 @@ export class PageUserCollectionComponent implements OnInit {
   }
 
 
-  /*
-  private async checkIfDnaExists(dna: string): Promise<boolean> {
-    const fileName = dna + '.json';
-    const url = `${this.filebaseUrl}${fileName}`;
-
-    try {
-      await firstValueFrom(this.http.get(url));
-      return true;
-    } catch {
-      return false;
-    }
-  }
-  */
-
   private async checkIfDnaExists(dna: string): Promise<boolean> {
     const fileName = dna + '.json';
     const url = `${this.filebaseUrl}${fileName}`;
   
     try {
-      await axios.get(url);
+      const toto = await axios.get(url);
       return true;
     } catch (error) {
       return false;
     }
   }
 
+
   private decrementTrait(dna: string, position: number): string {
     const currentValue = parseInt(dna.substring(position, position + 2));
     const newValue = Math.max(0, currentValue - 1).toString().padStart(2, '0');
     return dna.substring(0, position) + newValue + dna.substring(position + 2);
   }
+
 
   async closeMergeModal() {
     this.errorMessage = "";
