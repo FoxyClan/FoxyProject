@@ -19,14 +19,12 @@ WEB3SERVICE
 - Ledger integration : https://developers.ledger.com/docs/device-interaction/ledgerjs/beginner/transfer-eth
 - wallet connect integration : yt playlist NFT
 
-MODAL-WALLET
-- mettre le wallet recent en haut
 
 MODAL-ACCOUNT
 - ne rien afficher si le reseau n'est pas eth
 - events "transfers" details & test d'envoie de nft & et test que les points descendent bien etc ...
 - event usePoints, et rajouter des fonction dans les transaction (jsp si y a tout la)
-- reactualiser la page quand je suis sur une autre address e tque je clique sur my collection
+- reactualiser la page quand je suis sur une autre address et que je clique sur my collection
 - probleme change de chain gnosis xdai est noté en eth
 
 USER-COLLECTION

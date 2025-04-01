@@ -62,6 +62,8 @@ export class PageUserCollectionComponent implements OnInit {
   showMergeModal: boolean = false;
   showUndiscoveredModal: boolean = false;
   creatingNftLoading: boolean = false;
+  private previousConnectionState: boolean | null = null;
+
 
   mergeMode: boolean = false;
   availableTokens: { [key: number]: Metadata | null } = {}; // Liste des NFTs visibles dans la collection
@@ -83,36 +85,70 @@ export class PageUserCollectionComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (typeof window !== 'undefined') {
-      this.isMobileMini = window.innerWidth < 600;
-    }
-    this.isLoading = true;
-    this.cacheService.cacheVersion$.subscribe((version) => {
-      this.cacheVersion = version;
-    });
     this.route.queryParams.subscribe((params) => {
-      this.address = params['address'] || null;
-      if (this.address && !isAddress(this.address)) {
+      const newAddress = params['address'] || null;
+  
+      if (newAddress && !isAddress(newAddress)) {
         this.errorPage = true;
         return;
       }
+      this.address = newAddress;
+      
+      this.web3Service.isConnected$.subscribe((isConnected: boolean) => {
+        if (this.previousConnectionState === null) {
+          this.previousConnectionState = isConnected;
+          return;
+        }
+        if (this.previousConnectionState !== isConnected) {
+          this.previousConnectionState = isConnected;
+          this.initializeComponent();
+        }
+      });
+      
+      this.initializeComponent();
     });
+  }
+
+  initializeComponent() {
+    if (typeof window !== 'undefined') {
+      this.isMobileMini = window.innerWidth < 600;
+    }
+  
+    this.isLoading = true;
+    this.errorPage = false;
+    this.isOwner = false;
+    this.tokens = {};
+    this.selectedNFT = null;
+    this.noNft = false;
+    this.userFoxyPoints = "Loading...";
+    this.numberOfFoxys = "Loading...";
+    this.availableTokens = {};
+    this.selectedNFTs = { left: null, right: null };
+    this.profileImage = "";
+    this.profilImageRarity = 101;
+  
+    this.cacheService.cacheVersion$.subscribe((version) => {
+      this.cacheVersion = version;
+    });
+  
     this.web3Service.walletAddress$.subscribe((walletAddress) => {
       if (!walletAddress) return;
       const checksumAddress = Web3.utils.toChecksumAddress(walletAddress);
       if(this.walletAddress && walletAddress != this.walletAddress) window.location.reload();
       this.walletAddress = checksumAddress;
-      this.isOwner = this.walletAddress === this.address; 
+      this.isOwner = this.walletAddress === this.address;
     });
+  
     this.web3Service.creatingNftLoading$.subscribe((creatingNftLoading) => {
       this.creatingNftLoading = creatingNftLoading;
-      if(creatingNftLoading && this.mergeMode) {
+      if (creatingNftLoading && this.mergeMode) {
         this.showMergeModal = true;
       }
     });
+  
     this.walletCheckedSubscription = this.web3Service.isWalletCheckedSubject$.subscribe(async (isWalletChecked) => {
-      if(isWalletChecked) {
-        if(!this.address) return
+      if (isWalletChecked) {
+        if (!this.address) return;
         try {
           await this.fetchNFTs(this.address);
           this.resetAvailableTokens();
@@ -129,6 +165,8 @@ export class PageUserCollectionComponent implements OnInit {
       }
     });
   }
+  
+  
 
 
   async fetchNFTs(address: string): Promise<void> {
