@@ -113,6 +113,24 @@ export class PageUserCollectionComponent implements OnInit {
           this.initializeComponent();
         }
       });
+      this.walletCheckedSubscription = this.web3Service.isWalletCheckedSubject$.subscribe(async (isWalletChecked) => {
+        if (isWalletChecked) {
+          if (!this.address) return;
+          try {
+            await this.fetchNFTs(this.address);
+            this.resetAvailableTokens();
+            this.numberOfFoxys = Object.keys(this.tokens).length;
+            const result = await this.web3Service.getUserPoints();
+            this.userFoxyPoints = Number(result);
+          } catch (error) {
+            this.noNft = true;
+            throw error;
+          } finally {
+            this.walletCheckedSubscription.unsubscribe();
+            this.isLoading = false;
+          }
+        }
+      });
       
       this.initializeComponent();
     });
@@ -152,25 +170,6 @@ export class PageUserCollectionComponent implements OnInit {
       this.creatingNftLoading = creatingNftLoading;
       if (creatingNftLoading && this.mergeMode) {
         this.showMergeModal = true;
-      }
-    });
-  
-    this.walletCheckedSubscription = this.web3Service.isWalletCheckedSubject$.subscribe(async (isWalletChecked) => {
-      if (isWalletChecked) {
-        if (!this.address) return;
-        try {
-          await this.fetchNFTs(this.address);
-          this.resetAvailableTokens();
-          this.numberOfFoxys = Object.keys(this.tokens).length;
-          const result = await this.web3Service.getUserPoints();
-          this.userFoxyPoints = Number(result);
-        } catch (error) {
-          this.noNft = true;
-          throw error;
-        } finally {
-          this.walletCheckedSubscription.unsubscribe();
-          this.isLoading = false;
-        }
       }
     });
   }
