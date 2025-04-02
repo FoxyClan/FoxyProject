@@ -518,7 +518,7 @@ export class Web3Service {
       const nftData = await Promise.all(
         newTokenIds.map(async (tokenId) => {
           try {
-            const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`);
+            const response = await axios.get(`https://api.foxyclan.fr/adn?tokenId=${tokenId}`);
             return {
               tokenId,
               image: response.data.image, // Image en base64
@@ -562,7 +562,7 @@ export class Web3Service {
 
   private async _createDiscoverNft(tokenId: number) {
     try {
-      const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`);
+      const response = await axios.get(`https://api.foxyclan.fr/adn?tokenId=${tokenId}`);
       const nftData = {
         tokenId,
         image: response.data.image, // Image en base64
@@ -617,7 +617,7 @@ export class Web3Service {
 
       if(newTokenId.length !== 1) throw new Error("Impossible de recuperer le tokenId");
       const tokenId = newTokenId[0];
-      const response = await axios.get(`http://localhost:8080/merge?tokenId1=${tokenId1}&tokenId2=${tokenId2}&newTokenId=${tokenId}`);
+      const response = await axios.get(`https://api.foxyclan.fr/merge?tokenId1=${tokenId1}&tokenId2=${tokenId2}&newTokenId=${tokenId}`);
       const nftData = {
         tokenId,
         image: response.data.image, // Image en base64

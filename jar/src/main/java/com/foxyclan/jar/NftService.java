@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ import java.net.URL;
 import org.springframework.stereotype.Service;
 
 @Service
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://foxyclan.fr")
 public class NftService {
 
     @Value("${filebase.accessKey}")
@@ -61,12 +62,12 @@ public class NftService {
     
     public void createImageFile(Map<String, String> adn, int tokenId) throws IOException {
         try {
-            BufferedImage background = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Background\\" + adn.get("Background") + ".png"));
-            BufferedImage fur = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Fur\\" + adn.get("Fur") + ".png"));
-            BufferedImage clothes = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Clothes\\" + adn.get("Clothes") + ".png"));
-            BufferedImage eyes = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Eyes\\" + adn.get("Eyes") + ".png"));
-            BufferedImage mouth = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Mouth\\" + adn.get("Mouth") + ".png"));
-            BufferedImage headCovering = ImageIO.read(new File("jar\\src\\main\\resources\\NFT\\Head\\" + adn.get("Head Covering") + ".png"));
+            BufferedImage background = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/Background/" + adn.get("Background") + ".png"));
+            BufferedImage fur = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/Fur/" + adn.get("Fur") + ".png"));
+            BufferedImage clothes = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/Clothes/" + adn.get("Clothes") + ".png"));
+            BufferedImage eyes = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/Eyes/" + adn.get("Eyes") + ".png"));
+            BufferedImage mouth = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/Mouth/" + adn.get("Mouth") + ".png"));
+            BufferedImage headCovering = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/Head/" + adn.get("Head Covering") + ".png"));
 
             BufferedImage combined = new BufferedImage(2000, 2000, BufferedImage.TYPE_INT_ARGB);
 
@@ -80,10 +81,10 @@ public class NftService {
             g.drawImage(headCovering, 0, 0, null);
 
             if (adn.containsKey("Transcendence")) {
-                String transcendencePath = "jar\\src\\main\\resources\\NFT\\evo\\" + adn.get("Transcendence") + ".png";
-                File transcendenceFile = new File(transcendencePath);
-                if (transcendenceFile.exists()) { // Vérifie si le fichier de transcendence existe avant de l'ajouter
-                    BufferedImage transcendence = ImageIO.read(transcendenceFile);
+                String transcendencePath = "NFT/Transcendence/" + adn.get("Transcendence") + ".png";
+                InputStream in = getClass().getClassLoader().getResourceAsStream(transcendencePath);
+                if (in != null) {
+                    BufferedImage transcendence = ImageIO.read(in);
                     g.drawImage(transcendence, 0, 0, null);
                     System.out.println("Transcendence appliquée : " + adn.get("Transcendence"));
                 } else {
@@ -95,7 +96,7 @@ public class NftService {
             g.dispose();
 
             // Sauvegarder le résultat de la superposition dans un nouveau fichier
-            ImageIO.write(combined, "PNG", new File("jar\\src\\main\\resources\\tmp\\" + tokenId + ".png"));
+            ImageIO.write(combined, "PNG", new File("tmp/" + tokenId + ".png"));
             System.out.println("Images superposées et enregistrées dans : " + tokenId + ".png");
 
         } catch (IOException e) {
@@ -114,7 +115,7 @@ public class NftService {
                 .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
                 .build();
 
-            uploadFile(s3Client, fileName, Path.of("jar\\src\\main\\resources\\tmp\\" + fileName));
+            uploadFile(s3Client, fileName, Path.of("tmp/" + fileName));
         } catch(Exception e) {
             e.printStackTrace();
             throw new IOException("Erreur lors du téléversement du fichier : " + fileName, e);
@@ -178,7 +179,7 @@ public class NftService {
 
             metadata.put("attributes", attributes);
     
-            File metadataFile = new File("jar\\src\\main\\resources\\tmp\\" + tokenId + ".json");
+            File metadataFile = new File("tmp/" + tokenId + ".json");
     
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.writeValue(metadataFile, metadata);
@@ -250,7 +251,7 @@ public class NftService {
         adnMapping.put(tokenId, newAdn);
 
         // Création d'un fichier temporaire contenant le mapping
-        File tempFile = new File("jar/src/main/resources/tmp/" + fileName);
+        File tempFile = new File("tmp/" + fileName);
         objectMapper.writeValue(tempFile, adnMapping);
         
         try {
@@ -305,7 +306,7 @@ public class NftService {
 
     public void clearOldTmpFiles() {
         try {
-            File tmpDir = new File("jar\\src\\main\\resources\\tmp");
+            File tmpDir = new File("tmp/");
             long currentTime = System.currentTimeMillis();
 
             if (tmpDir.exists() && tmpDir.isDirectory()) {
@@ -434,32 +435,45 @@ public class NftService {
     }
 
     public String getCIDFromFilebase(String fileName) {
-        try {
-            String urlString = foxyBaseUrl + fileName;
-            System.out.println(urlString);
-            URL url = new URL(urlString);
-
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("HEAD");
-            conn.setRequestProperty("X-API-KEY", secretKey);
-
-            // Vérifier la réponse HTTP
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 200) {
-                // Lire l'en-tête x-amz-meta-cid
-                Map<String, java.util.List<String>> headers = conn.getHeaderFields();
-                if (headers.containsKey("x-amz-meta-cid")) {
-                    return headers.get("x-amz-meta-cid").get(0);
+        String urlString = foxyBaseUrl + fileName;
+        long startTime = System.currentTimeMillis();
+        long timeout = 60000; // max 1 min d'attente
+        int delay = 1000; // 1 seconde entre chaque essai
+    
+        while (true) {
+            try {
+                System.out.println("Tentative de récupération du CID pour : " + urlString);
+                URL url = new URL(urlString);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("HEAD");
+                conn.setRequestProperty("X-API-KEY", secretKey);
+    
+                int responseCode = conn.getResponseCode();
+                if (responseCode == 200) {
+                    Map<String, java.util.List<String>> headers = conn.getHeaderFields();
+                    if (headers.containsKey("x-amz-meta-cid")) {
+                        return headers.get("x-amz-meta-cid").get(0);
+                    } else {
+                        System.out.println("CID introuvable dans les headers... réessai.");
+                    }
                 } else {
-                    System.out.println("CID non trouvé dans les en-têtes.");
+                    System.out.println("Fichier pas encore dispo (HTTP " + responseCode + ")... réessai.");
                 }
-            } else {
-                System.err.println("Erreur HTTP : " + responseCode);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+    
+            // Vérifie timeout
+            if (System.currentTimeMillis() - startTime > timeout) {
+                System.err.println("Timeout : impossible de récupérer le CID après 10 secondes.");
+                return null;
+            }
+    
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException ignored) {}
         }
-        return null;
     }
+    
     
 }

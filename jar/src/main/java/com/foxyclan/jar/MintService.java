@@ -25,7 +25,7 @@ public class MintService {
     }
 
     @GetMapping("/adn")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "https://foxyclan.fr")
     public Map<String, Object> mint(@RequestParam int tokenId) throws IOException {
         try {
             //if(!nftService.existNft(tokenId)) throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket");
@@ -74,7 +74,7 @@ public class MintService {
             Map<String, Object> metadata = nftService.createMetadataFile(adn, tokenId);
             nftService.uploadToFilebase(tokenId + ".json");
 
-            Path imagePath = Path.of("jar/src/main/resources/tmp/" + tokenId + ".png");
+            Path imagePath = Path.of("tmp/" + tokenId + ".png");
             String imageBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath));
     
             response.put("image", imageBase64);

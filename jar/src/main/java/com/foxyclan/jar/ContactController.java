@@ -11,14 +11,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/contact")
-@CrossOrigin(origins = "http://localhost:4200") // Autorise les requêtes depuis Angular
+@CrossOrigin(origins = "https://foxyclan.fr") // Autorise les requêtes depuis Angular
 public class ContactController {
 
     @Autowired
     private EmailService emailService;
 
     @PostMapping
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "https://foxyclan.fr")
     public ResponseEntity<Map<String, Object>> sendContactForm(@Valid @RequestBody ContactRequest contactRequest) {
         Map<String, Object> response = new HashMap<>();
 

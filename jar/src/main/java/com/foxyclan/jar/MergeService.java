@@ -29,7 +29,7 @@ public class MergeService {
     }
 
     @GetMapping("/merge")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "https://foxyclan.fr")
     public Map<String, Object> merge(@RequestParam int tokenId1, @RequestParam int tokenId2, @RequestParam int newTokenId) throws IOException {
         try {
             Boolean exist = nftService.existNft(newTokenId);
@@ -87,15 +87,15 @@ public class MergeService {
         }
         mergedTraits = applyTranscendence(mergedTraits, traitTypes);
         nftService.createImageFile(mergedTraits, newTokenId);
-        Map<String, Object> mergedMetadata = nftService.createMetadataFile(mergedTraits, newTokenId);
-
         nftService.uploadToFilebase(newTokenId + ".png");
+
+        Map<String, Object> mergedMetadata = nftService.createMetadataFile(mergedTraits, newTokenId);
         nftService.uploadToFilebase(newTokenId + ".json");
 
         nftService.deleteNftFiles(tokenId1, tokenId2);
 
         // Retourner les nouvelles métadonnées et l'image en Base64
-        Path imagePath = Path.of("jar/src/main/resources/tmp/" + newTokenId + ".png");
+        Path imagePath = Path.of("tmp/" + newTokenId + ".png");
         String imageBase64 = Base64.getEncoder().encodeToString(Files.readAllBytes(imagePath));
 
         Map<String, Object> response = new HashMap<>();
