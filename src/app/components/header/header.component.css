@@ -240,7 +240,6 @@ app-modal-wallet {
     }
 }
 
-/* Menu mobile en plein écran, flou + transparent */
 .mobile-menu {
     position: fixed;
     top: 0;
@@ -291,7 +290,9 @@ app-modal-wallet {
 }
 
 
-/* Responsive */
+/* MEDIA QUERIES */
+
+
 @media (max-width: 750px) {
     ul {
         display: none;

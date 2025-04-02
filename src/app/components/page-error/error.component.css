@@ -7,12 +7,12 @@ body{
 }
 
 .error {
-    position: absolute;
-    width: 100%;
-    height: 100dvh;
-    top: 0;
-    left: 0;
-    z-index: 11;
+  position: absolute;
+  width: 100%;
+  height: 100dvh;
+  top: 0;
+  left: 0;
+  z-index: 11;
 }
 
 .home {
@@ -208,6 +208,33 @@ div{
 }
 
 /* MEDIA QUERIES */
+
+.code404 {
+  display: none;
+  font-family: Audiowide, sans-serif;
+  font-size: 12rem;
+  color: black;
+  text-shadow: 0px 0px 8px #ff005d;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  animation: fadeInText 3s ease-in 3.5s forwards, flicker4 5s linear 7.5s infinite, hueRotate 6s ease-in-out 3s infinite;
+
+}
+
+/* Responsive: afficher le texte et masquer les SVG pour les petits écrans */
+@media (max-width: 1400px) {
+  #svgWrap_1,
+  #svgWrap_2 {
+    display: none !important;
+  }
+
+  .code404 {
+    display: block;
+  }
+}
 
 @media (max-width: 800px) {
   #svgWrap_1, 

@@ -276,6 +276,11 @@ p {
     }
 }
 
+@media (max-height: 1050px) {
+    .arrow-up {
+        top: 15vh;
+    }
+}
 
     
 @media (max-width: 900px) {
@@ -328,6 +333,12 @@ p {
 @media (max-width: 750px) {
     .arrow-up {
         top: 110px;
+    }
+}
+
+@media (max-height: 750px) {
+    .arrow-up {
+        top: 20vh;
     }
 }
 

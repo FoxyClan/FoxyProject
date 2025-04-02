@@ -249,6 +249,27 @@ app-details {
     }
 }
 
+@media (max-height: 750px) {
+    .container {
+        padding-top: 15vh;
+    }
+    .block2 {
+        padding-top: 5vh;
+    }
+}
+
+@media (max-height: 670px) {
+    .block2 {
+        padding-top: 3vh;
+    }
+}
+
+@media (max-height: 615px) {
+    .container {
+        padding-top: 5vh;
+    }
+}
+
 @media (max-width: 675px) {
     .block1 {
         padding-top: 5vh;
