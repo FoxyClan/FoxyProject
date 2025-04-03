@@ -29,13 +29,13 @@ export class RoadmapComponent implements OnInit {
     {
       phase: 'Phase 2',
       title: 'Awakening of the clan',
-      date: 'Q3 2024',
+      date: 'Q3 2025',
       completed: false,
       items: [
         'Free airdrop of 300 NFTs to reward early supporters and creators',
         'Private Sale : 300 NFTs available at 0.0075 ETH',
-        'Community Events',
-        'Partnerships Announcement'
+        'Public Sale : opens at 0.0125 ETH',
+        'NFTs revealed'
       ]
     },
     {
