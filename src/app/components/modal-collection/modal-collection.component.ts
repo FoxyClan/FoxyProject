@@ -45,6 +45,7 @@ export class ModalCollection implements OnInit {
   isLoading: boolean = true;
   showTooltip: boolean = false;
   rarity: any = "Loading...";
+  asTranscendence: boolean = false;
   
   cacheVersion: string = '';
   isMobileMini: boolean = false;
@@ -58,6 +59,12 @@ export class ModalCollection implements OnInit {
   async ngOnInit() {
     if (typeof window !== 'undefined') {
       this.isMobileMini = window.innerWidth < 400;
+    }
+    for(let attribute of this.token!.attributes) {
+      if (attribute.trait_type == "Transcendence") {
+        this.asTranscendence = true;
+        break;
+      }
     }
     this.cacheService.cacheVersion$.subscribe((version) => {
       this.cacheVersion = version;

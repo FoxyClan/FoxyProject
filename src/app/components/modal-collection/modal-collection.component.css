@@ -241,11 +241,14 @@
 .attributes {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 10px;
   justify-items: center;
 }
 
+.transcendence {
+  grid-template-rows: repeat(3, 1fr) !important;
+}
 
 .attribute-card {
   position: relative;
@@ -456,7 +459,10 @@
   .attributes {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+  .transcendence {
+    grid-template-rows: repeat(4, 1fr) !important;
   }
 }
 

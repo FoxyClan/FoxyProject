@@ -36,7 +36,7 @@
 
             <h4>DNA : <span class="blue-title">{{ formatDNA(token?.DNA) }}</span></h4>
 
-            <div class="attributes">
+            <div class="attributes" [ngClass]="{ 'transcendence' : asTranscendence }">
               <div *ngFor="let attr of token?.attributes" class="attribute-card" (click)="filterByAttribute(attr)"
               [ngClass]="getTraitRarity(attr.value, attr.trait_type) + '-border'">
                 <p class="trait-type">{{ (isMobileMini && attr.trait_type === 'Head Covering') ? 'Head' : attr.trait_type }}</p>
@@ -47,7 +47,18 @@
               </video>
               </div>
             </div>
-            <h4>OWNER : <span [routerLink]="['/profil']" [queryParams]="{ address: ownerOfToken }" (click)="closeModal()" title="View owner's collection" class="owner blue-title">{{ ownerOfToken !== "Fail to fetch" ? (ownerOfToken.substring(0, 6) + '...' + ownerOfToken.substring(38)) : ownerOfToken }}</span></h4>
+            <h4>
+              OWNER : 
+              <span 
+                [routerLink]="ownerOfToken !== 'Fail to fetch' ? ['/profil'] : null"
+                [queryParams]="ownerOfToken !== 'Fail to fetch' ? { address: ownerOfToken } : null"
+                (click)="ownerOfToken !== 'Fail to fetch' ? closeModal() : null"
+                [title]="ownerOfToken !== 'Fail to fetch' ? 'View owner\'s collection' : ''"
+                class="owner blue-title"
+                [ngStyle]="{ cursor: ownerOfToken !== 'Fail to fetch' ? 'pointer' : 'default' }">
+                {{ ownerOfToken !== 'Fail to fetch' ? (ownerOfToken.substring(0, 6) + '...' + ownerOfToken.substring(38)) : ownerOfToken }}
+              </span>
+            </h4>            
           </div>
         </div>
         
