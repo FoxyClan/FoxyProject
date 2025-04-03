@@ -17,23 +17,23 @@ export class RoadmapComponent implements OnInit {
     {
       phase: 'Phase 1',
       title: 'Genesis Launch',
-      date: 'Q1 2024',
+      date: 'Q2 2025',
       completed: true,
       items: [
-        'Initial FoxyClan NFT Collection Launch',
-        'Community Building',
+        'Website Launch',
+        'Official launch of Twitter and Discord',
         'Social Media Presence',
-        'Website Launch'
+        'Giveaway campaigns for our earliest supporters'
       ]
     },
     {
       phase: 'Phase 2',
-      title: 'Expansion',
-      date: 'Q2 2024',
+      title: 'Awakening of the clan',
+      date: 'Q3 2024',
       completed: false,
       items: [
-        'Marketplace Integration',
-        'Staking Platform',
+        'Free airdrop of 300 NFTs to reward early supporters and creators',
+        'Private Sale : 300 NFTs available at 0.0075 ETH',
         'Community Events',
         'Partnerships Announcement'
       ]
