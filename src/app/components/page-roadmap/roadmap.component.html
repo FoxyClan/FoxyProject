@@ -6,34 +6,34 @@
 
   <div class="timeline">
     <div class="line"></div>
-    
-    <div *ngFor="let item of roadmapItems; let i = even" 
-         class="roadmap-item" 
+
+    <div *ngFor="let item of roadmapItems; let i = even"
+         class="roadmap-item"
          [class.even]="+i % 2 === 0">
-      
+
       <div class="roadmap-content">
-        <div class="phase-badge" [class.completed]="item.completed">
-          {{item.phase}}
+        <div class="phase-badge" [class.completed]="isPhaseCompleted(item.items)">
+          {{ item.phase }}
         </div>
-        
+
         <div class="content-box">
           <div class="header">
-            <h2>{{item.title}}</h2>
-            <span class="date">{{item.date}}</span>
+            <h2>{{ item.title }}</h2>
+            <span class="date">{{ item.date }}</span>
           </div>
-          
+
           <ul class="milestone-list">
-            <li *ngFor="let milestone of item.items" 
+            <li *ngFor="let milestone of item.items"
                 class="milestone"
-                [class.completed]="item.completed">
+                [class.completed]="milestone.completed">
               <span class="check-icon">✓</span>
-              {{milestone}}
+              {{ milestone.text }}
             </li>
           </ul>
         </div>
       </div>
-      
-      <div class="timeline-point" [class.completed]="item.completed">
+
+      <div class="timeline-point" [class.completed]="isPhaseCompleted(item.items)">
         <div class="point-inner"></div>
       </div>
     </div>
