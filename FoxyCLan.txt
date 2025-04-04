@@ -1,366 +1,520 @@
-    // SPDX-License-Identifier: GPL-3.0
-    pragma solidity ^0.8.28;
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity ^0.8.28;
 
-    import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-    import "@openzeppelin/contracts/access/Ownable.sol";
-    import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-    import "./FoxyAward.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+
+/**
+* @title FoxyClan contract
+* @dev Extends ERC721 Non-Fungible Token Standard basic implementation
+*/
+contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
+    event Merge(address indexed owner, uint256 indexed tokenIdBurned1, uint256 indexed tokenIdBurned2, uint256 newTokenId);
+
+    event FoxyPointsSpent(uint256 indexed tokenId, uint256 amount, string usage);
+
+    event FoxyPointsTransferred(uint256 indexed fromTokenId, uint256 indexed toTokenId, uint256 amount);
+
+    event ClanDisbanded(uint256 indexed clanId);
+
+    event ClanLeadershipTransferred(uint256 indexed clanId, uint256 oldLeaderTokenId, uint256 newLeaderTokenId);
+
+    event SoulphraseSet(uint256 indexed tokenId, string phrase);
+
+    bool public publicSaleIsActive = false;
+
+    bool public privateSaleIsActive = false;
+
+    string private _BaseURI;
+
+    bool public allowListisActive = false;
+
+    uint256 public constant MAX_SUPPLY = 20000;
+
+    uint256 public constant maxPublicFoxyMint = 20;
+
+    uint256 public constant publicFoxyPrice = 0.0125 ether;
+
+    uint256 public constant privateFoxyPrice = 0.0075 ether;
+
+    uint256 public saleMintLimit = 0;
+
+    uint256 public currentSaleMinted = 0;
+
+    mapping(address => uint8) private _AllowList;
+
+    uint256 private burnedToken = 0;
+
+    mapping(uint256 => uint256) private _pointsTimestamp;
+
+    mapping(uint256 => uint256) private _foxyPoints;
+
+    mapping (uint256 => uint256) public level;
+
+    mapping(uint256 => string) private _soulphrases;
+
+    struct Clan {
+        string name;
+        uint256 leaderTokenId;
+        uint256[] members;
+        bool exists;
+        string description;
+        uint256 maxMembers;
+        uint256 minLevel;
+    }
+    mapping(uint256 => Clan) public clans;
+    mapping(uint256 => uint256) public tokenClan;
+    uint256 private _clanIdCounter = 1;
+
+
+    constructor() ERC721("FoxyClan", "FOXY") Ownable(msg.sender) {}
+
+
+    function airdrop(address[] calldata addresses) external onlyOwner {
+        for (uint256 i = 0; i < addresses.length; i++) {
+            uint tokenId = totalSupply() + burnedToken;
+            tokenInitialization(tokenId, 0);
+            _safeMint(addresses[i], tokenId);
+        }
+    }
+    
+
+    function transferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) {
+        super.transferFrom(from, to, tokenId);
+    }
+
+
+    function getTokenPoints(uint256 tokenId) public view returns (uint256) {
+        _requireOwned(tokenId);
+        uint256 accumulatedPoints = (block.timestamp - _pointsTimestamp[tokenId]) / 1 days * level[tokenId];
+        return _foxyPoints[tokenId] + accumulatedPoints;
+    }
+
+
+    function getUserPoints(address owner) public view returns (uint256) {
+        uint256 balance = balanceOf(owner);
+        uint256 totalPoints = 0;
+
+        for (uint256 i = 0; i < balance; i++) {
+            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
+            totalPoints += getTokenPoints(tokenId);
+        }
+        return totalPoints;
+    }
+
+
+    function spendFoxyPoints(uint256 tokenId, uint256 amount, string calldata usage) external {
+        require(ownerOf(tokenId) == msg.sender, "Not the owner");
+        require(getTokenPoints(tokenId) >= amount, "Not enough points");
+
+        uint256 updatedPoints = getTokenPoints(tokenId);
+        _foxyPoints[tokenId] = updatedPoints - amount;
+        _pointsTimestamp[tokenId] = block.timestamp;
+
+        emit FoxyPointsSpent(tokenId, amount, usage);
+    }
+
+
+    function sendFoxyPointsFromToken(uint256 fromTokenId, uint256 toTokenId, uint256 amount) external {
+        require(ownerOf(fromTokenId) == msg.sender, "You must own the sender token");
+        require(fromTokenId != toTokenId, "Cannot send to the same token");
+        _requireOwned(toTokenId);
+
+        uint256 senderPoints = getTokenPoints(fromTokenId);
+        require(senderPoints >= amount, "Not enough FoxyPoints to transfer");
+
+        _foxyPoints[fromTokenId] = senderPoints - amount;
+        _pointsTimestamp[fromTokenId] = block.timestamp;
+
+        _foxyPoints[toTokenId] += amount;
+        _pointsTimestamp[toTokenId] = block.timestamp;
+
+        emit FoxyPointsTransferred(fromTokenId, toTokenId, amount);
+    }
+
+    function spendFoxyPointsFromCollection(uint256 amount, string calldata usage) external {
+        uint256 balance = balanceOf(msg.sender);
+        require(balance > 0, "You don't own any Foxy tokens");
+
+        uint256 totalAvailable = getUserPoints(msg.sender);
+        require(totalAvailable >= amount, "Not enough total points");
+
+        uint256 remaining = amount;
+
+        for (uint256 i = 0; i < balance && remaining > 0; i++) {
+            uint256 tokenId = tokenOfOwnerByIndex(msg.sender, i);
+            uint256 available = getTokenPoints(tokenId);
+
+            if (available == 0) continue;
+
+            uint256 toSpend = available >= remaining ? remaining : available;
+            _foxyPoints[tokenId] = available - toSpend;
+            _pointsTimestamp[tokenId] = block.timestamp;
+            emit FoxyPointsSpent(tokenId, toSpend, usage);
+
+            remaining -= toSpend;
+        }
+
+        require(remaining == 0, "Internal error: Not enough points deducted");
+    }
+
+
 
     /**
-    * @title FoxyClan contract
-    * @dev Extends ERC721 Non-Fungible Token Standard basic implementation
+    * @dev Adds Foxy Points to a list of specified tokens.
+    * @param tokenIds An array of token IDs to which points will be added.
+    * @param pointsToAdd The number of Foxy Points to add to each token.
     */
-    contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
-        event Merge(address indexed owner, uint256 indexed tokenIdBurned1, uint256 indexed tokenIdBurned2, uint256 newTokenId);
+    function addFoxyPointsToTokens(uint256[] calldata tokenIds, uint256 pointsToAdd) external onlyOwner {
+        require(tokenIds.length > 0, "Token list cannot be empty");
         
-        event SoulphraseSet(uint256 indexed tokenId, string phrase);
-
-        FoxyAward public foxyAwardContract;
-
-        bool public publicSaleIsActive = false;
-
-        bool public privateSaleIsActive = false;
-
-        string private _BaseURI;
-
-        bool public allowListisActive = false;
-
-        uint256 public constant MAX_SUPPLY = 20000;
-
-        uint256 public constant maxPublicFoxyMint = 20;
-
-        uint256 public constant publicFoxyPrice = 0.0125 ether;
-
-        uint256 public constant privateFoxyPrice = 0.0075 ether;
-
-        uint256 public saleMintLimit = 0;
-
-        uint256 public currentSaleMinted = 0;
-
-        mapping(address => uint8) private _AllowList;
-
-        uint256 private burnedToken = 0;
-
-        mapping(uint256 => uint256) private _pointsTimestamp;
-
-        mapping(uint256 => uint256) private _foxyPoints;
-
-        mapping (uint256 => uint256) public level;
-
-        mapping(uint256 => string) private _soulphrases;
-
-        address public foxyAward;
-
-        constructor() ERC721("FoxyClan", "FOXY") Ownable(msg.sender) {}
-
-        function airdrop(address[] calldata addresses) external onlyOwner {
-            for (uint256 i = 0; i < addresses.length; i++) {
-                uint tokenId = totalSupply() + burnedToken;
-                tokenInitialization(tokenId);
-                _safeMint(addresses[i], tokenId);
-            }
-        }
-
-        function transferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) {
-            if (from != address(0) && to != address(0)) {
-                uint256 currentTime = block.timestamp;
-                uint256 timePoints = (currentTime - _pointsTimestamp[tokenId]) / 1 days;
-                uint256 totalPoints = _foxyPoints[tokenId] + timePoints;
-                if (level[tokenId] == 1) {
-                    _foxyPoints[tokenId] = 0;
-                    _pointsTimestamp[tokenId] = currentTime;
-                } else if (level[tokenId] == 2) {
-                    uint256 remainingPoints = (totalPoints + 1) / 2;
-                    _foxyPoints[tokenId] = remainingPoints;
-                    _pointsTimestamp[tokenId] = currentTime;
-                } else if (level[tokenId] == 3) {
-                    _foxyPoints[tokenId] = totalPoints;
-                    _pointsTimestamp[tokenId] = currentTime;
-                }
-            }
-            super.transferFrom(from, to, tokenId);
-        }
-
-        function getTokenPoints(uint256 tokenId) public view returns (uint256) {
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            uint256 tokenId = tokenIds[i];
             _requireOwned(tokenId);
-            uint256 accumulatedPoints = (block.timestamp - _pointsTimestamp[tokenId]) / 1 days * level[tokenId];
-            return _foxyPoints[tokenId] + accumulatedPoints;
+            _foxyPoints[tokenId] += pointsToAdd;
         }
+    }
 
-        function getUserPoints(address owner) public view returns (uint256) {
-            uint256 balance = balanceOf(owner);
-            uint256 totalPoints = 0;
 
-            for (uint256 i = 0; i < balance; i++) {
-                uint256 tokenId = tokenOfOwnerByIndex(owner, i);
-                totalPoints += getTokenPoints(tokenId);
-            }
-            return totalPoints;
+    function flipPublicSaleState(uint256 maxMintAmount, bool state) external onlyOwner {
+        publicSaleIsActive = state;
+        if (publicSaleIsActive) {
+            saleMintLimit = maxMintAmount;
+            currentSaleMinted = 0;
+        } else {
+            saleMintLimit = 0;
         }
+    }
 
-        function setFoxyAward(address adr) external onlyOwner() {
-            foxyAward = adr;
+
+    function flipPrivateSaleState() external onlyOwner {
+        privateSaleIsActive = !privateSaleIsActive;
+    }
+
+
+    function setBaseURI(string memory uri) external onlyOwner() {
+        _BaseURI = uri;
+    }
+
+
+    function _baseURI() internal view override returns (string memory) {
+        return _BaseURI;
+    }
+
+
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        _requireOwned(tokenId);
+
+        string memory baseURI = _baseURI();
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, Strings.toString(tokenId), ".json")) : "";
+    }
+
+
+    function flipAllowListState() external onlyOwner {
+        allowListisActive = !allowListisActive;
+    }
+
+
+    /**
+    * @dev Sets the allow list for addresses and their corresponding mint limits.
+    * @param addresses An array of addresses that will be allowed to mint FoxyClan nfts.
+    * @param numAllowedToMint The number of tokens allowed to be minted for each address.
+    */
+    function setAllowList(address[] calldata addresses, uint8 numAllowedToMint) external onlyOwner {
+        for (uint256 i = 0; i < addresses.length; i++) {
+            _AllowList[addresses[i]] = numAllowedToMint;
         }
+    }
 
 
-        function usePoint(uint256 tokenId, uint256 nbrPoints) public {
-            foxyAwardContract = FoxyAward(foxyAward);
-            _foxyPoints[tokenId] -= nbrPoints;
-            foxyAwardContract.toto();
+    /*
+    * @dev Returns the number of tokens available to mint for a specific address.
+    * @param addr The address to check.
+    * @return The number of tokens available to mint for a specific address.
+    */
+    function numAvailableToMint(address addr) external view returns (uint8) {
+        return _AllowList[addr];
+    }
+
+
+    function mintAllowList(uint8 numberOfTokens) external payable {
+        uint256 supply = totalSupply();
+        uint256 costToMint;
+        if (privateSaleIsActive) {
+            costToMint = privateFoxyPrice * numberOfTokens;
+        } else {
+            costToMint = publicFoxyPrice * numberOfTokens;
         }
+        require(allowListisActive, "Allow list is not active");
+        require(numberOfTokens <= _AllowList[msg.sender], "Exceeded max available to purchase");
+        require(supply + numberOfTokens <= MAX_SUPPLY, "Purchase would exceed max tokens");
+        require(costToMint <= msg.value, "Ether value sent is not correct");
 
-
-        /**
-        * @dev Adds Foxy Points to a list of specified tokens.
-        * @param tokenIds An array of token IDs to which points will be added.
-        * @param pointsToAdd The number of Foxy Points to add to each token.
-        */
-        function addFoxyPointsToTokens(uint256[] calldata tokenIds, uint256 pointsToAdd) external onlyOwner {
-            require(tokenIds.length > 0, "Token list cannot be empty");
-            
-            for (uint256 i = 0; i < tokenIds.length; i++) {
-                uint256 tokenId = tokenIds[i];
-                _requireOwned(tokenId);
-                _foxyPoints[tokenId] += pointsToAdd;
-            }
-        }
-
-        function flipPublicSaleState(uint256 maxMintAmount, bool state) external onlyOwner {
-            publicSaleIsActive = state;
-            if (publicSaleIsActive) {
-                saleMintLimit = maxMintAmount;
-                currentSaleMinted = 0;
-            } else {
-                saleMintLimit = 0;
-            }
-        }
-
-        function flipPrivateSaleState() external onlyOwner {
-            privateSaleIsActive = !privateSaleIsActive;
-        }
-
-        /**
-        * @dev Sets the base URI for token URIs.
-        * @param uri The base URI.
-        */
-        function setBaseURI(string memory uri) external onlyOwner() {
-            _BaseURI = uri;
-        }
-
-        /**
-        * @dev Get the base URI for token URIs.
-        */
-        function _baseURI() internal view override returns (string memory) {
-            return _BaseURI;
-        }
-
-        function tokenURI(uint256 tokenId) public view override returns (string memory) {
-            _requireOwned(tokenId);
-
-            string memory baseURI = _baseURI();
-            return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, Strings.toString(tokenId), ".json")) : "";
-        }
-
-
-        /**
-        * @dev Sets the allow list status.
-        */
-        function flipAllowListState() external onlyOwner {
-            allowListisActive = !allowListisActive;
-        }
-
-        /**
-        * @dev Sets the allow list for addresses and their corresponding mint limits.
-        * @param addresses An array of addresses that will be allowed to mint FoxyClan nfts.
-        * @param numAllowedToMint The number of tokens allowed to be minted for each address.
-        */
-        function setAllowList(address[] calldata addresses, uint8 numAllowedToMint) external onlyOwner {
-            for (uint256 i = 0; i < addresses.length; i++) {
-                _AllowList[addresses[i]] = numAllowedToMint;
-            }
-        }
-
-        /*
-        * @dev Returns the number of tokens available to mint for a specific address.
-        * @param addr The address to check.
-        * @return The number of tokens available to mint for a specific address.
-        */
-        function numAvailableToMint(address addr) external view returns (uint8) {
-            return _AllowList[addr];
-        }
-
-        /**
-        * @dev Mints tokens for addresses on the allow list.
-        * @param numberOfTokens The number of tokens to mint.
-        * 
-        * Requirements:
-        * - The allow list must be active.
-        * - The sender must be on the allow list and have sufficient tokens available.
-        * - The total supply must not exceed the max supply.
-        * - The sender must send enough ether to cover the cost of minting.
-        */
-        function mintAllowList(uint8 numberOfTokens) external payable {
-            uint256 supply = totalSupply();
-            uint256 costToMint;
-            if (privateSaleIsActive) {
-                costToMint = privateFoxyPrice * numberOfTokens;
-            } else {
-                costToMint = publicFoxyPrice * numberOfTokens;
-            }
-            require(allowListisActive, "Allow list is not active");
-            require(numberOfTokens <= _AllowList[msg.sender], "Exceeded max available to purchase");
-            require(supply + numberOfTokens <= MAX_SUPPLY, "Purchase would exceed max tokens");
-            require(costToMint <= msg.value, "Ether value sent is not correct");
-
-            for (uint256 i = 0; i < numberOfTokens; i++) {
-                uint256 tokenId = totalSupply() + burnedToken;
-                _AllowList[msg.sender] --;
-                tokenInitialization(tokenId);
-                _safeMint(msg.sender, tokenId);
-            }
-        }
-
-        /**
-        * @dev Mints tokens for the public sale.
-        * @param numberOfTokens The number of tokens to mint.
-        * 
-        * Requirements:
-        * - The sale must be active.
-        * - The number of tokens to be minted must not exceed the maximum number of public minting.
-        * - The total supply must not exceed the max supply.
-        * - The sender must send enough ether to cover the cost of minting.
-        */
-        function mint(uint256 numberOfTokens) public payable {
-            uint256 supply = totalSupply();
-            uint256 costToMint = publicFoxyPrice * numberOfTokens;
-            
-            require(publicSaleIsActive, "Sale must be active to mint Foxy");
-            require(numberOfTokens <= maxPublicFoxyMint, "Can only mint a limited number of tokens at a time");
-            require(supply + numberOfTokens <= MAX_SUPPLY, "Purchase would exceed max tokens");
-            require(costToMint <= msg.value, "Ether value sent is not correct");
-
-            if (saleMintLimit > 0) {
-                require(currentSaleMinted + numberOfTokens <= saleMintLimit, "Minting limit for this sale reached");
-            }
-
-            for (uint256 i = 0; i < numberOfTokens; i++) {
-                uint256 tokenId = totalSupply() + burnedToken;
-                tokenInitialization(tokenId);
-                _safeMint(msg.sender, tokenId);
-            }
-            currentSaleMinted += numberOfTokens;
-        }
-
-
-        function merge(uint256 tokenId1, uint256 tokenId2) external {
-            require(ownerOf(tokenId1) == msg.sender, "You must own tokenId1");
-            require(ownerOf(tokenId2) == msg.sender, "You must own tokenId2");
-            require(tokenId1 != tokenId2, "Cannot merge the same token");
-            require(level[tokenId1] == 1 && level[tokenId2] <= 3 || level[tokenId2] == 1 && level[tokenId1] <= 3, "At least one of the two tokens must be level 1");
-
-            uint256 tokenPoints1 = getTokenPoints(tokenId1);
-            uint256 tokenPoints2 = getTokenPoints(tokenId2);
-
-            uint256 newLevel = level[tokenId1] > level[tokenId2] 
-                ? level[tokenId1] 
-                : level[tokenId2];
-            newLevel = newLevel == 3 ? newLevel : newLevel + 1;
-
-            _burn(tokenId1);
-            _burn(tokenId2);
-            burnedToken += 2;
-
+        for (uint256 i = 0; i < numberOfTokens; i++) {
             uint256 tokenId = totalSupply() + burnedToken;
-            level[tokenId] = newLevel;
-
-            uint256 mergePoints = level[tokenId] == 2 ? 100 : 250;
-            _foxyPoints[tokenId] = tokenPoints1 + tokenPoints2 + mergePoints;
-            _pointsTimestamp[tokenId] = block.timestamp;
-            level[tokenId] = newLevel;
-
-            emit Merge(msg.sender, tokenId1, tokenId2, tokenId);
+            _AllowList[msg.sender] --;
+            tokenInitialization(tokenId, 50);
             _safeMint(msg.sender, tokenId);
         }
+    }
 
 
-        function tokenInitialization(uint256 tokenId) internal {
-            level[tokenId] = 1;
-            _foxyPoints[tokenId] = 50;
-            _pointsTimestamp[tokenId] = block.timestamp;
+    function mint(uint256 numberOfTokens) public payable {
+        uint256 supply = totalSupply();
+        uint256 costToMint = publicFoxyPrice * numberOfTokens;
+        
+        require(publicSaleIsActive, "Sale must be active to mint Foxy");
+        require(numberOfTokens <= maxPublicFoxyMint, "Can only mint a limited number of tokens at a time");
+        require(supply + numberOfTokens <= MAX_SUPPLY, "Purchase would exceed max tokens");
+        require(costToMint <= msg.value, "Ether value sent is not correct");
+
+        if (saleMintLimit > 0) {
+            require(currentSaleMinted + numberOfTokens <= saleMintLimit, "Minting limit for this sale reached");
         }
 
-        /**
-        * @dev Allows the owner of a level 2+ token to set a soulphrase.
-        *      This feature is only available once at least 30 tokens have been burned.
-        * @param tokenId The token to assign the phrase to.
-        * @param phrase The phrase to be stored in the token.
-        */
-        function setSoulphrase(uint256 tokenId, string calldata phrase) external {
-            require(ownerOf(tokenId) == msg.sender, "You must own this token");
-            require(level[tokenId] >= 2, "Only level 2+ tokens can set a soulphrase");
-            require(burnedToken >= 30, "Soulphrase is locked until 30 tokens are burned");
-            require(bytes(phrase).length <= 100, "Phrase too long (max 100 characters)");
-            
-            _soulphrases[tokenId] = phrase;
-            emit SoulphraseSet(tokenId, phrase);
+        for (uint256 i = 0; i < numberOfTokens; i++) {
+            uint256 tokenId = totalSupply() + burnedToken;
+            tokenInitialization(tokenId, 50);
+            _safeMint(msg.sender, tokenId);
         }
+        currentSaleMinted += numberOfTokens;
+    }
 
 
-        /**
-        * @dev Returns the soulphrase associated with a token.
-        * @param tokenId The token ID to query.
-        * @return The soulphrase string.
-        */
-        function getSoulphrase(uint256 tokenId) public view returns (string memory) {
-            _requireOwned(tokenId);
-            return _soulphrases[tokenId];
-        }
+    /**
+    * @dev Merges two owned tokens into a new one with upgraded level and combined FoxyPoints.
+    * 
+    * Requirements:
+    * - Caller must own both tokens.
+    * - Tokens must be different.
+    * - At least one of the tokens must be level 1.
+    * 
+    * Behavior:
+    * - Burns the two source tokens.
+    * - Mints a new token with:
+    *   - Level increased by 1 (if not already 3), based on the highest level of the two.
+    *   - FoxyPoints from both tokens combined, plus a bonus (100 for level 2, 250 for level 3).
+    *   - A new creation timestamp for points tracking.
+    * - Increments the global burned tokens counter.
+    * - Emits a `Merge` event.
+    */
+    function merge(uint256 tokenId1, uint256 tokenId2) external {
+        require(ownerOf(tokenId1) == msg.sender, "You must own tokenId1");
+        require(ownerOf(tokenId2) == msg.sender, "You must own tokenId2");
+        require(tokenId1 != tokenId2, "Cannot merge the same token");
+        require(level[tokenId1] == 1 && level[tokenId2] <= 3 || level[tokenId2] == 1 && level[tokenId1] <= 3, "At least one of the two tokens must be level 1");
+
+        uint256 tokenPoints1 = getTokenPoints(tokenId1);
+        uint256 tokenPoints2 = getTokenPoints(tokenId2);
+
+        uint256 newLevel = level[tokenId1] > level[tokenId2] 
+            ? level[tokenId1] 
+            : level[tokenId2];
+        newLevel = newLevel == 3 ? newLevel : newLevel + 1;
+
+        _burn(tokenId1);
+        _burn(tokenId2);
+        burnedToken += 2;
+
+        uint256 tokenId = totalSupply() + burnedToken;
+        level[tokenId] = newLevel;
+
+        uint256 mergePoints = level[tokenId] == 2 ? 100 : 250;
+        _foxyPoints[tokenId] = tokenPoints1 + tokenPoints2 + mergePoints;
+        _pointsTimestamp[tokenId] = block.timestamp;
+        level[tokenId] = newLevel;
+
+        emit Merge(msg.sender, tokenId1, tokenId2, tokenId);
+        _safeMint(msg.sender, tokenId);
+    }
 
 
-        /**
-        * @dev Checks if the contract implements a specific interface. 
-        * This function is inherited from ERC721 and ERC721Enumerable and is essential for 
-        * allowing other contracts and interfaces to interact correctly with this contract.
-        */
-        function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable) returns (bool) {
-            return super.supportsInterface(interfaceId);
-        }
+    function tokenInitialization(uint256 tokenId, uint256 initialPoints) internal {
+        level[tokenId] = 1;
+        _foxyPoints[tokenId] = initialPoints;
+        _pointsTimestamp[tokenId] = block.timestamp;
+    }
 
-        /**
-        * @dev Overridden from ERC721Enumerable.
-        */
-        function _update(address to, uint256 tokenId, address auth) internal override(ERC721, ERC721Enumerable) returns (address) {
-            return super._update(to, tokenId, auth);
-        }
 
-        /**
-        * @dev Overridden from ERC721Enumerable.
-        */
-        function _increaseBalance(address account, uint128 amount) internal override(ERC721, ERC721Enumerable) {
-            return super._increaseBalance(account, amount);
-        }
+    /**
+    * @dev Allows the owner of a level 2+ token to set a soulphrase.
+    *      This feature is only available once at least 30 tokens have been burned.
+    * @param tokenId The token to assign the phrase to.
+    * @param phrase The phrase to be stored in the token.
+    */
+    function setSoulphrase(uint256 tokenId, string calldata phrase) external {
+        require(ownerOf(tokenId) == msg.sender, "You must own this token");
+        require(level[tokenId] >= 2, "Only level 2+ tokens can set a soulphrase");
+        require(burnedToken >= 30, "Soulphrase is locked until 30 tokens are burned");
+        require(bytes(phrase).length <= 100, "Phrase too long (max 100 characters)");
+        
+        _soulphrases[tokenId] = phrase;
+        emit SoulphraseSet(tokenId, phrase);
+    }
 
-        /**
-        * @dev Reserves a specified number of tokens for the contract owner.
-        * This function allow the creator to keep a certain number of tokens 
-        * for future uses, such as giveaways, collaborations or special events.
-        */
-        function reserveFoxy(uint256 n) public onlyOwner {
-            uint256 supply = totalSupply();
-            require(supply + n <= MAX_SUPPLY, "Purchase would exceed max tokens");
-            for (uint256 i = 0; i < n; i++) {
-                uint256 tokenId = totalSupply() + burnedToken;
-                tokenInitialization(tokenId);
-                _safeMint(msg.sender, tokenId);
+
+    function getSoulphrase(uint256 tokenId) public view returns (string memory) {
+        _requireOwned(tokenId);
+        return _soulphrases[tokenId];
+    }
+
+
+    /**
+    * @dev Creates a new clan. Only a level 3 token can be used to create one.
+    *      This feature is only available once at least 100 tokens have been burned.
+    * @param tokenId The token used to create the clan (must be level 3).
+    * @param name The name of the clan.
+    */
+    function createClan(
+        uint256 tokenId,
+        string calldata name,
+        string calldata description,
+        uint256 minLevel,
+        uint256 maxMembers
+    ) external {
+        require(burnedToken >= 100, "Clans are locked until 100 tokens are burned");
+        require(ownerOf(tokenId) == msg.sender, "You must own the token");
+        require(level[tokenId] == 3, "Only level 3 tokens can create clans");
+        require(tokenClan[tokenId] == 0, "Token already in a clan");
+        require(minLevel >= 1 && minLevel <= 3, "Invalid min level");
+        require(bytes(name).length > 0 && bytes(name).length <= 32, "Clan name must be 1-32 characters");
+        require(bytes(description).length <= 256, "Description too long (max 256)");
+        require(maxMembers >= 1 && maxMembers <= 100, "Invalid member limit");
+
+        uint256 clanId = _clanIdCounter++;
+        clans[clanId] = Clan({
+            name: name,
+            description: description,
+            leaderTokenId: tokenId,
+            members: new uint256 [](0),
+            exists: true,
+            minLevel: minLevel,
+            maxMembers: maxMembers
+        });
+
+        clans[clanId].members.push(tokenId);
+        tokenClan[tokenId] = clanId;
+    }
+
+
+    function updateClanSettings(
+        uint256 clanId,
+        string calldata name,
+        string calldata description,
+        uint256 minLevel,
+        uint256 maxMembers
+    ) external {
+        require(clans[clanId].exists, "Clan does not exist");
+        uint256 leaderToken = clans[clanId].leaderTokenId;
+        require(ownerOf(leaderToken) == msg.sender, "Only the clan leader can update settings");
+        
+        require(bytes(name).length > 0 && bytes(name).length <= 32, "Clan name must be 1-32 characters");
+        require(bytes(description).length <= 256, "Description too long (max 256)");
+        require(minLevel >= 1 && minLevel <= 3, "Invalid min level");
+        require(maxMembers >= clans[clanId].members.length, "Cannot set maxMembers below current count");
+        require(maxMembers <= 100, "Max members limit exceeded");
+
+        clans[clanId].name = name;
+        clans[clanId].description = description;
+        clans[clanId].minLevel = minLevel;
+        clans[clanId].maxMembers = maxMembers;
+    }
+
+
+    function joinClan(uint256 tokenId, uint256 clanId) external {
+        require(ownerOf(tokenId) == msg.sender, "You must own the token");
+        require(clans[clanId].exists, "Clan does not exist");
+        require(tokenClan[tokenId] == 0, "Token already in a clan");
+        require(level[tokenId] >= clans[clanId].minLevel, "Token level too low for this clan");
+        require(clans[clanId].members.length < clans[clanId].maxMembers, "Clan is full");
+
+        clans[clanId].members.push(tokenId);
+        tokenClan[tokenId] = clanId;
+    }
+
+
+    function leaveClan(uint256 tokenId) external {
+        require(ownerOf(tokenId) == msg.sender, "You must own the token");
+        uint256 clanId = tokenClan[tokenId];
+        require(clanId != 0, "Token is not in a clan");
+
+        Clan storage clan = clans[clanId];
+
+        for (uint256 i = 0; i < clan.members.length; i++) {
+            if (clan.members[i] == tokenId) {
+                clan.members[i] = clan.members[clan.members.length - 1];
+                clan.members.pop();
+                break;
             }
         }
-        
-        /**
-        * @dev Allows the contract owner to withdraw accumulated funds from the contract.
-        */
-        function withdraw() public onlyOwner {
-            uint balance = address(this).balance;
-            payable(msg.sender).transfer(balance);
-        }
+        tokenClan[tokenId] = 0;
 
+        if (clan.leaderTokenId == tokenId) {
+            for (uint256 i = 0; i < clan.members.length; i++) {
+                tokenClan[clan.members[i]] = 0;
+            }
+            delete clans[clanId];
+            emit ClanDisbanded(clanId);
+        }
     }
+
+    function transferClanLeadership(uint256 clanId, uint256 newLeaderTokenId) external {
+        require(clans[clanId].exists, "Clan does not exist");
+        uint256 currentLeaderTokenId = clans[clanId].leaderTokenId;
+        require(ownerOf(currentLeaderTokenId) == msg.sender, "Only the clan leader can transfer leadership");
+        require(tokenClan[newLeaderTokenId] == clanId, "New leader must be a clan member");
+
+        clans[clanId].leaderTokenId = newLeaderTokenId;
+        emit ClanLeadershipTransferred(clanId, currentLeaderTokenId, newLeaderTokenId);
+    }
+
+
+    function getClanMembers(uint256 clanId) public view returns (uint256[] memory) {
+        require(clans[clanId].exists, "Clan does not exist");
+        return clans[clanId].members;
+    }
+
+
+    function getClanOfToken(uint256 tokenId) public view returns (uint256) {
+        return tokenClan[tokenId];
+    }
+
+
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
+
+    function _update(address to, uint256 tokenId, address auth) internal override(ERC721, ERC721Enumerable) returns (address) {
+        return super._update(to, tokenId, auth);
+    }
+
+
+    function _increaseBalance(address account, uint128 amount) internal override(ERC721, ERC721Enumerable) {
+        return super._increaseBalance(account, amount);
+    }
+
+
+    /**
+    * @dev Reserves a specified number of tokens for the contract owner.
+    * This function allow the creator to keep a certain number of tokens 
+    * for future uses, such as giveaways, collaborations or special events.
+    */
+    function reserveFoxy(uint256 n) public onlyOwner {
+        uint256 supply = totalSupply();
+        require(supply + n <= MAX_SUPPLY, "Purchase would exceed max tokens");
+        for (uint256 i = 0; i < n; i++) {
+            uint256 tokenId = totalSupply() + burnedToken;
+            tokenInitialization(tokenId, 50);
+            _safeMint(msg.sender, tokenId);
+        }
+    }
+
+
+    function withdraw() public onlyOwner {
+        uint balance = address(this).balance;
+        payable(msg.sender).transfer(balance);
+    }
+
+}
