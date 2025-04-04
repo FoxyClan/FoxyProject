@@ -19,6 +19,7 @@
         <div class="content-box">
           <div class="header">
             <h2>{{ item.title }}</h2>
+            <span *ngIf="item.describe" class="date">{{ item.describe }}<br><br></span>
             <span class="date">{{ item.date }}</span>
           </div>
 

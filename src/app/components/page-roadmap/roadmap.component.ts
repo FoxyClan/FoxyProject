@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { describe } from 'node:test';
+import { text } from 'stream/consumers';
 
 @Component({
   selector: 'app-roadmap',
@@ -62,34 +64,82 @@ export class RoadmapComponent implements OnInit {
           completed: false
         },
         {
-          text: 'The Echo Unleashed',
-          completed: false
-        },
-        {
-          text: '',
+          text: 'The Echo Unleashed (Soulphrase unlocks after 30 merged token burns)',
           completed: false
         }
       ]
     },    
     {
       phase: 'Phase 4',
-      title: '',
-      date: 'Q3 2025',
+      title: 'Introduction of $FOXY, the utility token of the Foxy ecosystem',
+      date: 'Q4 2025',
       items: [
         {
-          text: '',
+          text: 'Introduction of the $FOXY utility token (Supply, tokenomics, and smart contract revealed)',
           completed: false
         },
         {
-          text: '',
+          text: 'Reward system for loyal and active community members',
           completed: false
         },
         {
-          text: '',
+          text: 'Public launch',
           completed: false
         },
         {
-          text: '',
+          text: 'DAO voting rights',
+          completed: false
+        },
+        {
+          text: 'Secret mechanics begin to unlock across the futur Foxyverse',
+          completed: false
+        }
+      ]
+    },
+    {
+      phase: 'Phase 5',
+      title: 'Enter the Foxyverse',
+      describe: 'The Clan takes form beyond the chain. A world begins to rise...',
+      date: 'Q4 2025',
+      items: [
+        {
+          text: 'Introduction of the Foxyverse in The Sandbox Metaverse',
+          completed: false
+        },
+        {
+          text: 'The Metaverse becomes alive with the spirit of the Clan',
+          completed: false
+        },
+        {
+          text: 'Special powers, traits and levels integrated into gameplay',
+          completed: false
+        },
+        {
+          text: 'Access zones, quests and secrets based on your NFTs',
+          completed: false
+        }
+      ]
+    },
+    {
+      phase: 'Next Chapter',
+      title: 'Beyond the Foxyverse',
+      describe: 'The Clan has settled... but the journey is far from over.',
+      date: 'Q1 2026',
+      items: [
+        {
+          text: 'New paths are being forged',
+          completed: false
+        },
+        {
+          text: 'Echoes of new alliances, technologies, and realms',
+          completed: false
+        },
+        {
+          text: 'The next evolution is already in motion',
+          completed: false
+        },
+        {
+          text: 'Stay alert. The unknown is closer than you think.',
           completed: false
         }
       ]
@@ -117,14 +167,6 @@ export class RoadmapComponent implements OnInit {
 }
 
 /*
-Phase 7 — Launch of $FOXY Token
-Q4 2025
-
-Introduction of $FOXY, the utility token of the Foxy ecosystem
-
-Use $FOXY for fusions, staking, power-ups, and access to events
-
-Reward system for loyal and active community members
 
 Phase 8 — Foxy Clan in the Metaverse
 Q4 2025 - Q1 2026

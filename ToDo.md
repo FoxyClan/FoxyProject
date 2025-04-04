@@ -35,8 +35,7 @@ SMART CONTRACT
 - foxyAward.sol
 - supprimer la suppression des points quand transfer ?
 - gain de point uniquement quand level 2 ?
-- faire un set message
-- deblocage a partir d'un nombre de burned token
+- clans
 
 
 ROADMAP
