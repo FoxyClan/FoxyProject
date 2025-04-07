@@ -17,6 +17,16 @@ import java.awt.image.BufferedImage;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.web3j.abi.FunctionEncoder;
+import org.web3j.abi.FunctionReturnDecoder;
+import org.web3j.abi.datatypes.generated.Uint256;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.EthCall;
+import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
+import org.web3j.protocol.core.methods.response.EthLog;
+import org.web3j.protocol.http.HttpService;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -26,17 +36,27 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import org.springframework.stereotype.Service;
+import org.web3j.abi.TypeReference;
+import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.Address;
+import org.web3j.protocol.core.methods.request.EthFilter;
+import org.web3j.protocol.core.methods.response.Log;
+import java.math.BigInteger;
 
 @Service
 @CrossOrigin(origins = "http://localhost:4200")
 public class NftService {
+    //private final Web3j web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35"));
+    private final Web3j web3 = Web3j.build(new HttpService("https://sepolia.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35"));
+
+    private final String contractAddress = "0x0839A1f8b8742bBD99a7CDD3429D6FA52Bcb2D62";
 
     @Value("${filebase.accessKey}")
     private String accessKey;
@@ -208,7 +228,7 @@ public class NftService {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             URL url = URI.create(fileUrl).toURL();
-            return objectMapper.readValue(url, new TypeReference<Map<String, Object>>() {});
+            return objectMapper.readValue(url, new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
         } catch (MalformedURLException e) {
             throw new IOException("URL malformée pour le token " + tokenId, e);
         } catch (Exception e) {
@@ -362,7 +382,7 @@ public class NftService {
             String fileUrl = foxyBaseUrl + fileName;
             ObjectMapper objectMapper = new ObjectMapper();
             URL url = URI.create(fileUrl).toURL();
-            Map<String, Object> metadata = objectMapper.readValue(url, new TypeReference<Map<String, Object>>() {});
+            Map<String, Object> metadata = objectMapper.readValue(url, new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
     
             // Vérifier si l'image correspond à undiscovered.png
             String expectedImageUrl = foxyBaseUrl + "undiscovered.png";
@@ -436,7 +456,6 @@ public class NftService {
     public String getCIDFromFilebase(String fileName) {
         try {
             String urlString = foxyBaseUrl + fileName;
-            System.out.println(urlString);
             URL url = new URL(urlString);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -460,6 +479,94 @@ public class NftService {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+
+    /* CONTRACT */
+
+    public String getOwnerOf(int tokenId) throws Exception {
+        Function function = new Function(
+                "ownerOf",
+                List.of(new Uint256(BigInteger.valueOf(tokenId))),
+                List.of(new TypeReference<Address>() {})
+        );
+
+        String encodedFunction = FunctionEncoder.encode(function);
+        EthCall response = web3.ethCall(
+                org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction(
+                        null, contractAddress, encodedFunction),
+                DefaultBlockParameterName.LATEST
+        ).send();
+
+        List<Type> result = FunctionReturnDecoder.decode(
+                response.getResult(), function.getOutputParameters());
+
+        if (result.isEmpty()) throw new Exception("Aucun propriétaire trouvé pour le tokenId " + tokenId);
+
+        return result.get(0).getValue().toString();
+    }
+
+    public String getMintTransactionHash(int tokenId) throws Exception {
+        String eventSignature = org.web3j.crypto.Hash.sha3String("Transfer(address,address,uint256)");
+        String tokenIdHex = "0x" + String.format("%064x", tokenId);
+        String fromZeroAddressTopic = "0x0000000000000000000000000000000000000000000000000000000000000000";
+    
+        // On ne filtre que par event signature (topic0)
+        EthFilter filter = new EthFilter(
+                DefaultBlockParameterName.EARLIEST,
+                DefaultBlockParameterName.LATEST,
+                contractAddress
+        );
+        filter.addSingleTopic(eventSignature); // topic[0] = Transfer signature
+    
+        EthLog ethLog = web3.ethGetLogs(filter).send();
+        List<EthLog.LogResult> logs = ethLog.getLogs();
+    
+        if (logs == null || logs.isEmpty()) {
+            throw new Exception("Aucun log trouvé sur le contrat.");
+        }
+    
+        for (EthLog.LogResult rawLog : logs) {
+            if (rawLog instanceof EthLog.LogObject logObj) {
+                Log log = logObj.get();
+                List<String> topics = log.getTopics();
+    
+                // Vérification des conditions de mint
+                if (topics.size() >= 4) {
+                    String fromTopic = topics.get(1);
+                    String tokenIdTopic = topics.get(3);
+    
+                    if (fromTopic.equalsIgnoreCase(fromZeroAddressTopic) && tokenIdTopic.equalsIgnoreCase(tokenIdHex)) {
+                        return log.getTransactionHash();
+                    }
+                }
+            }
+        }
+        throw new Exception("Aucune transaction de mint trouvée pour le tokenId " + tokenId);
+    }
+    
+    
+    
+
+
+    public void verifyMintTransaction(int tokenId) throws Exception {
+        try {
+            EthGetTransactionReceipt receiptResponse = web3.ethGetTransactionReceipt(getMintTransactionHash(tokenId)).send();
+            if (receiptResponse.getTransactionReceipt().isPresent()) {
+                EthBlock block = web3.ethGetBlockByHash(receiptResponse.getTransactionReceipt().get().getBlockHash(), false).send();
+                long timestampBlock = block.getBlock().getTimestamp().longValueExact() * 1000L; // millis
+                long now = System.currentTimeMillis();
+
+                if ((now - timestampBlock) > 180_000) { // 3 minutes
+                    throw new SecurityException("Mint trop ancien : sécurité rejetée.");
+                }
+            } else {
+                throw new SecurityException("Impossible de retrouver la transaction de mint.");
+            }
+        } catch(Exception e) {
+            throw e;
+        }
     }
     
 }

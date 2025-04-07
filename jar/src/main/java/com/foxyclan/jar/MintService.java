@@ -1,6 +1,7 @@
 package com.foxyclan.jar;
 
 import org.springframework.web.bind.annotation.RestController;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,8 +11,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 public class MintService {
@@ -24,9 +25,23 @@ public class MintService {
         this.nftService = _nftService;
     }
 
-    @GetMapping("/adn")
+    @PostMapping("/adn")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Object> mint(@RequestParam int tokenId) throws IOException {
+    public Map<String, Object> mint(@RequestBody Map<String, Integer> payload) throws IOException {
+        int tokenId = payload.get("tokenId");
+        try {
+            String owner = nftService.getOwnerOf(tokenId);
+            if (owner == null || owner.isBlank() || owner.equalsIgnoreCase("0x0000000000000000000000000000000000000000")) {
+                throw new SecurityException("Token non minté ou adresse invalide");
+            }
+
+
+            nftService.verifyMintTransaction(tokenId);
+
+        } catch (Exception e) {
+            throw new IOException("Erreur de validation blockchain : " + e.getMessage(), e);
+        }
+
         try {
             //if(!nftService.existNft(tokenId)) throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket");
             //if(!nftService.isUndiscoveredNft(tokenId)) throw new IOException("Les metadata du tokenId " + tokenId + " existent deja");
@@ -88,6 +103,7 @@ public class MintService {
             throw e;
         }
     }
+    
 
     public String generateTraitDNA(String type) {
         String[] numbers;

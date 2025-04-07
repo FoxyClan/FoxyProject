@@ -304,7 +304,8 @@ export class Web3Service {
   public web3Modifier() {
     try {
       if (!this.web3) {
-        this.web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35'));
+        //this.web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35'));
+        this.web3 = new Web3(new Web3.providers.HttpProvider('https://sepolia.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35'));
         console.log("infura key")
       }
       const contract = new this.web3.eth.Contract(FoxyClanABI, FoxyClanContractAddress);
@@ -469,11 +470,12 @@ export class Web3Service {
       const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(this.walletAddressSubject.value);
       const totalPrice = (numberOfTokens * FoxyPrice).toString();
   
-      await contract.methods['mint'](numberOfTokens).send({
+      const tx = await contract.methods['mint'](numberOfTokens).send({
         from: this.walletAddressSubject.value,
         value: this.web3?.utils.toWei(totalPrice, 'ether'),
       });
       this.creatingNftLoadingSubject.next(true);
+      await this.web3?.eth.getTransactionReceipt(tx.transactionHash);
       return this._createNFT(tokenIdsBefore, this.walletAddressSubject.value);
     } catch (error) {
       this.creatingNftLoadingSubject.next(false);
@@ -497,6 +499,7 @@ export class Web3Service {
         value: this.web3?.utils.toWei(totalPrice, 'ether'),
       });
       this.creatingNftLoadingSubject.next(true);
+      
       return this._createNFT(tokenIdsBefore, this.walletAddressSubject.value);
     } catch (error) {
       this.creatingNftLoadingSubject.next(false);
@@ -518,7 +521,7 @@ export class Web3Service {
       const nftData = await Promise.all(
         newTokenIds.map(async (tokenId) => {
           try {
-            const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`);
+            const response = await axios.post(`http://localhost:8080/adn`, { tokenId });
             return {
               tokenId,
               image: response.data.image, // Image en base64

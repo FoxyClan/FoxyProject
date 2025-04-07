@@ -18,6 +18,7 @@ WEB3SERVICE
 - clée infura visible de tous ?
 - Ledger integration : https://developers.ledger.com/docs/device-interaction/ledgerjs/beginner/transfer-eth
 - wallet connect integration : yt playlist NFT
+- infura mainnet
 
 
 MODAL-ACCOUNT
