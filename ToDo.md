@@ -33,28 +33,19 @@ SMART CONTRACT
 - a tester nombre d'addresse passable dans airdrop (test net) (100)
 - award fonctions usePoints
 - verifier que les token burn sont bien calculé dans les prochains mint pour la totale supply
-- foxyAward.sol
 - supprimer la suppression des points quand transfer ?
 - gain de point uniquement quand level 2 ?
-
-
-ROADMAP
-- faire la roadmap
 
 
 GANACHE
 - supprimer commentaire web3service getBalance / modal account loadBalance -> catch console error
 
-MODAL MINT
-- niveau et points du token ?
-- empecher le scroll
 
 COLLECTION:
 - probleme click sur neon nose sur MODAL-COLLECTION quand on est sur la collection
 - mettre undiscoverd en ipfs ou sur filebase ?
 
 JAR
-- traits png -> jpeg ?
 - JAVA securisé avec toutes les fonctions en public ?
 - superposition des traits non compatibles dans la creation
 - enlever commentaire test si tokenId existe sur file base pour mint / merge
@@ -65,4 +56,5 @@ TEAM
 - finir les membres
 - changer les images
 
-ACTUAL :
+MODAL-MINT
+- tester engraved samourai mask taille dans attributs

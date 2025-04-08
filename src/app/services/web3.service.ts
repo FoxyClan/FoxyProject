@@ -494,12 +494,12 @@ export class Web3Service {
       
       const privaleSaleIsActive = await this.privateSaleIsActive();
       const totalPrice = (numberOfTokens * (privaleSaleIsActive ? PrivateSaleFoxyPrice : FoxyPrice)).toString();
-      await contract.methods['mintAllowList'](numberOfTokens).send({
+      const tx = await contract.methods['mintAllowList'](numberOfTokens).send({
         from: this.walletAddressSubject.value,
         value: this.web3?.utils.toWei(totalPrice, 'ether'),
       });
       this.creatingNftLoadingSubject.next(true);
-      
+      await this.web3?.eth.getTransactionReceipt(tx.transactionHash);
       return this._createNFT(tokenIdsBefore, this.walletAddressSubject.value);
     } catch (error) {
       this.creatingNftLoadingSubject.next(false);
@@ -513,7 +513,7 @@ export class Web3Service {
     let tokenIdsAfter: number[] = [];
     try {
       do {
-          tokenIdsAfter = await this.tokenOfOwnerByIndex(fromAddress);
+        tokenIdsAfter = await this.tokenOfOwnerByIndex(fromAddress);
       } while (tokenIdsAfter.length === tokenIdsBefore.length);
       const newTokenIds: number[] = tokenIdsAfter.filter(
           (id) => !tokenIdsBefore.includes(id)
@@ -521,14 +521,15 @@ export class Web3Service {
       const nftData = await Promise.all(
         newTokenIds.map(async (tokenId) => {
           try {
-            const response = await axios.post(`http://localhost:8080/adn`, { tokenId });
+            const walletAddress = this.walletAddressSubject.value;
+            const response = await axios.post(`http://localhost:8080/dna`, { tokenId, walletAddress });
             return {
               tokenId,
               image: response.data.image, // Image en base64
               metadata: response.data.metadata, // Métadonnées
             };
           } catch (error) {
-            console.error(`Erreur lors de la récupération de l'ADN pour le Token ID ${tokenId}:`, error);
+            console.error(`Erreur while fetching DNA for Token ID ${tokenId}:`, error);
             return null;
           }
         })
@@ -565,7 +566,7 @@ export class Web3Service {
 
   private async _createDiscoverNft(tokenId: number) {
     try {
-      const response = await axios.get(`http://localhost:8080/adn?tokenId=${tokenId}`);
+      const response = await axios.post(`http://localhost:8080/dna`, { tokenId });
       const nftData = {
         tokenId,
         image: response.data.image, // Image en base64

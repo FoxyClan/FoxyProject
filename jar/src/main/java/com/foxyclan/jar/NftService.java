@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +80,8 @@ public class NftService {
 
     @Value("${filebase.dnaBaseUrl}")
     private String dnaBaseUrl;
+
+    
     
     public void createImageFile(Map<String, String> adn, int tokenId) throws IOException {
         try {
@@ -561,6 +565,8 @@ public class NftService {
                 if ((now - timestampBlock) > 180_000) { // 3 minutes
                     throw new SecurityException("Mint trop ancien : sécurité rejetée.");
                 }
+                long delta = now - timestampBlock;
+                System.out.println("Transaction trouvé et récente : Il y a " + delta / 1000 + " secondes");
             } else {
                 throw new SecurityException("Impossible de retrouver la transaction de mint.");
             }

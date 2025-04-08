@@ -25,19 +25,20 @@ public class MintService {
         this.nftService = _nftService;
     }
 
-    @PostMapping("/adn")
+    @PostMapping("/dna")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Map<String, Object> mint(@RequestBody Map<String, Integer> payload) throws IOException {
-        int tokenId = payload.get("tokenId");
+    public Map<String, Object> mintSecurity(@RequestBody Map<String, Object> payload) throws Exception {
+        int tokenId = (int) payload.get("tokenId");
+        String walletAddress = ((String) payload.get("walletAddress")).toLowerCase();
         try {
             String owner = nftService.getOwnerOf(tokenId);
             if (owner == null || owner.isBlank() || owner.equalsIgnoreCase("0x0000000000000000000000000000000000000000")) {
                 throw new SecurityException("Token non minté ou adresse invalide");
             }
-
-
+            if (!owner.equalsIgnoreCase(walletAddress)) {
+                throw new SecurityException("Not the owner");
+            }
             nftService.verifyMintTransaction(tokenId);
-
         } catch (Exception e) {
             throw new IOException("Erreur de validation blockchain : " + e.getMessage(), e);
         }
@@ -45,10 +46,15 @@ public class MintService {
         try {
             //if(!nftService.existNft(tokenId)) throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket");
             //if(!nftService.isUndiscoveredNft(tokenId)) throw new IOException("Les metadata du tokenId " + tokenId + " existent deja");
-        } catch (Exception e) {
+        
+            Map<String, Object> response = generateDna(tokenId);
+            return response;
+        } catch(Exception e) {
             throw e;
         }
+    }
 
+    public Map<String, Object> generateDna(int tokenId) throws Exception {
         int maxAttempts = 20000;
         int attempts = 0;
         boolean addDna = false;
@@ -103,6 +109,7 @@ public class MintService {
             throw e;
         }
     }
+    
     
 
     public String generateTraitDNA(String type) {
