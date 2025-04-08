@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 public class MintService {
 
-    @Autowired
     private final NftService nftService;
-
+    
+    @Autowired
     public MintService() {
         NftService _nftService = new NftService();
         this.nftService = _nftService;
@@ -44,9 +44,6 @@ public class MintService {
         }
 
         try {
-            //if(!nftService.existNft(tokenId)) throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket");
-            //if(!nftService.isUndiscoveredNft(tokenId)) throw new IOException("Les metadata du tokenId " + tokenId + " existent deja");
-        
             Map<String, Object> response = generateDna(tokenId);
             return response;
         } catch(Exception e) {
@@ -54,7 +51,46 @@ public class MintService {
         }
     }
 
+    @PostMapping("/discover")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Map<String, Object> discoverSecurity(@RequestBody Map<String, Object> payload) throws Exception {
+        int tokenId = (int) payload.get("tokenId");
+        String walletAddress = ((String) payload.get("walletAddress")).toLowerCase();
+        String signature = (String) payload.get("signature");
+        String message = (String) payload.get("message");
+
+        try {
+            String owner = nftService.getOwnerOf(tokenId);
+            if (owner == null || owner.isBlank() || owner.equalsIgnoreCase("0x0000000000000000000000000000000000000000")) {
+                throw new SecurityException("Token non minté ou adresse invalide");
+            }
+
+            // Vérifier que l'adresse de la signature est bien celle du propriétaire
+            String recoveredAddress = SignatureUtil.recoverAddress(message, signature);
+            if (!walletAddress.equalsIgnoreCase(recoveredAddress)) {
+                throw new SecurityException("La signature ne correspond pas à l'adresse fournie");
+            }
+
+            if (!walletAddress.equalsIgnoreCase(owner)) {
+                throw new SecurityException("Vous n'êtes pas le propriétaire de ce token");
+            }
+
+            // Générer les vraies métadonnées
+            Map<String, Object> response = generateDna(tokenId);
+            return response;
+
+        } catch (Exception e) {
+            throw new IOException("Erreur lors de la vérification de découverte : " + e.getMessage(), e);
+        }
+    }
+
     public Map<String, Object> generateDna(int tokenId) throws Exception {
+        try {
+            //if(!nftService.existNft(tokenId)) throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket");
+            //if(!nftService.isUndiscoveredNft(tokenId)) throw new IOException("Les metadata du tokenId " + tokenId + " existent deja");
+        } catch (Exception e) {
+            throw e;
+        }
         int maxAttempts = 20000;
         int attempts = 0;
         boolean addDna = false;

@@ -5,10 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -353,7 +351,8 @@ public class NftService {
     }
 
 
-    /* UNDISCOVERED */
+    /* METADATA */
+
 
     public boolean existNft(int tokenId) throws IOException { // faire return false ou true a la place
         try {
@@ -379,6 +378,7 @@ public class NftService {
         }
     }
 
+
     public boolean isUndiscoveredNft(int tokenId) throws IOException {
         try {
             String fileName = tokenId + ".json";
@@ -401,61 +401,6 @@ public class NftService {
         }
     }
 
-
-    public void createUndiscoveredMetadataFile(int tokenId) throws IOException {
-        try {
-            Map<String, Object> metadata = new HashMap<>();
-            
-            String imageUrl = endpointUrl + "undiscovered.png";
-            String description = "A mysterious member of the Foxy Clan, waiting to reveal its unique traits. Will it be a rare gem or a playful companion? Only time will tell as the secrets of this red panda are uncovered. Visit our website to unveil it !";
-            String name = "Foxy Clan #" + tokenId;
-    
-            metadata.put("image", imageUrl);
-            metadata.put("description", description);
-            metadata.put("name", name);
-    
-            File metadataFile = new File(tokenId + ".json");
-    
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.writeValue(metadataFile, metadata);
-    
-            System.out.println("Fichier JSON des métadonnées créé : " + tokenId + ".json");
-            this.uploadUndiscoveredToFilebase(tokenId + ".json", metadataFile);
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la création du fichier JSON pour le token " + tokenId);
-            e.printStackTrace();
-            if (e instanceof JsonProcessingException) {
-                throw new IOException("Erreur lors du traitement JSON pour le token " + tokenId, e);
-            }
-            throw e;
-        } catch (Exception e) {
-            System.err.println("Une erreur inattendue s'est produite lors de la création des métadonnées pour le token " + tokenId);
-            e.printStackTrace();
-            throw new IOException("Erreur inconnue lors de la création des métadonnées pour le token " + tokenId, e);
-        }
-    }
-
-    private void uploadUndiscoveredToFilebase(String fileName, File file) throws IOException {
-        try {
-            S3Client s3Client = S3Client.builder()
-                .region(Region.US_EAST_1)
-                .endpointOverride(java.net.URI.create(endpointUrl))
-                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
-                .build();
-
-            Path filePath = file.toPath();
-            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(foxyBucket)
-                .key(fileName)
-                .build();
-
-            s3Client.putObject(putObjectRequest, filePath);
-            System.out.println("Fichier téléversé : " + fileName);
-        } catch(Exception e) {
-            e.printStackTrace();
-            throw new IOException("Erreur lors du téléversement du fichier : " + fileName, e);
-        }
-    }
 
     public String getCIDFromFilebase(String fileName) {
         try {
@@ -489,6 +434,9 @@ public class NftService {
 
     /* CONTRACT */
 
+
+
+    @SuppressWarnings("rawtypes")
     public String getOwnerOf(int tokenId) throws Exception {
         Function function = new Function(
                 "ownerOf",
@@ -511,6 +459,9 @@ public class NftService {
         return result.get(0).getValue().toString();
     }
 
+
+
+    @SuppressWarnings("rawtypes")
     public String getMintTransactionHash(int tokenId) throws Exception {
         String eventSignature = org.web3j.crypto.Hash.sha3String("Transfer(address,address,uint256)");
         String tokenIdHex = "0x" + String.format("%064x", tokenId);

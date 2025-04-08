@@ -522,6 +522,7 @@ export class Web3Service {
         newTokenIds.map(async (tokenId) => {
           try {
             const walletAddress = this.walletAddressSubject.value;
+            if (!walletAddress) throw new Error("Wallet address is not available");
             const response = await axios.post(`http://localhost:8080/dna`, { tokenId, walletAddress });
             return {
               tokenId,
@@ -545,40 +546,55 @@ export class Web3Service {
   public async discoverNft(tokenId: number): Promise<any> {
     try {
       this.web3Modifier();
-      try {
-        const message = "I confirm that I am the owner of this wallet and wish to reveal my undiscovered NFT (tokenId #" + tokenId + "). Signing this message does not perform any blockchain transaction and is only used for verification.";
-        const signature = await this.signMessage(message);
-        if(!signature) throw new Error('Please Connect your wallet');
+      
+      const message = `I confirm that I am the owner of this wallet and wish to reveal my undiscovered NFT (tokenId #${tokenId}). Signing this message does not perform any blockchain transaction and is only used for verification.`;
+      const signature = await this.signMessage(message);
+      if (!signature) throw new Error('Please connect your wallet');
 
-        const verifySignature = await this.verifySignature(message, signature, tokenId);
-        if(!verifySignature) throw new Error("You are not the owner of the token");
-      } catch (error) {
-        throw error;
-      }
+      const verifySignature = await this.verifySignature(message, signature, tokenId);
+      if(!verifySignature) throw new Error("You are not the owner of the token");
+  
+      const walletAddress = this.walletAddressSubject.value;
+      if (!walletAddress) throw new Error("Wallet address is not available");
+  
+      const payload = {
+        tokenId,
+        walletAddress,
+        signature,
+        message
+      };
+  
       this.creatingNftLoadingSubject.next(true);
-      return this._createDiscoverNft(tokenId);
+      return this._createDiscoverNft(payload);
     } catch (error) {
       this.creatingNftLoadingSubject.next(false);
+      console.log(this.creatingNftLoadingSubject.value)
       console.error(error);
       throw new Error("Undiscover failed. Please try again.");
     }
   }
 
-  private async _createDiscoverNft(tokenId: number) {
+  private async _createDiscoverNft(payload: {
+    tokenId: number,
+    walletAddress: string,
+    signature: string,
+    message: string
+  }) {
     try {
-      const response = await axios.post(`http://localhost:8080/dna`, { tokenId });
+      const response = await axios.post(`http://localhost:8080/discover`, payload);
       const nftData = {
-        tokenId,
+        tokenId: payload.tokenId,
         image: response.data.image, // Image en base64
         metadata: response.data.metadata, // Métadonnées
       };
       this.creatingNftLoadingSubject.next(false);
       return nftData;
     } catch (error) {
-      console.error("Error while creating NFT:", error);
+      console.error("Error while revealing NFT:", error);
       throw error;
     }
   }
+  
 
   public async merge(tokenId1: number, tokenId2: number): Promise<any> {
     if(tokenId1 === tokenId2) throw new Error("Cannot merge the same token");
