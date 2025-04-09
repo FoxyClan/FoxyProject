@@ -43,6 +43,7 @@ public class MergeService {
             if (!owner.equalsIgnoreCase(walletAddress)) {
                 throw new SecurityException("Not the owner of one token");
             }
+            System.out.println("Propriétaire des token OK");
             nftService.verifyMergeTransaction(tokenId1, tokenId2, newTokenId, walletAddress);
         } catch (Exception e) {
             throw new IOException("Erreur de validation blockchain : " + e.getMessage(), e);

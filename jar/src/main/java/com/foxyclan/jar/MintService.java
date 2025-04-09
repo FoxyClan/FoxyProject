@@ -38,6 +38,7 @@ public class MintService {
             if (!owner.equalsIgnoreCase(walletAddress)) {
                 throw new SecurityException("Not the owner");
             }
+            System.out.println("Propriétaire du token OK");
             nftService.verifyMintTransaction(tokenId);
         } catch (Exception e) {
             throw new IOException("Erreur de validation blockchain : " + e.getMessage(), e);
