@@ -637,7 +637,10 @@ export class Web3Service {
 
       if(newTokenId.length !== 1) throw new Error("Impossible de recuperer le tokenId");
       const tokenId = newTokenId[0];
-      const response = await axios.get(`http://localhost:8080/merge?tokenId1=${tokenId1}&tokenId2=${tokenId2}&newTokenId=${tokenId}`);
+      const walletAddress = this.walletAddressSubject.value;
+      if (!walletAddress) throw new Error("Wallet address is not available");
+      const tokenId3 = tokenId;
+      const response = await axios.post(`http://localhost:8080/merge`, { tokenId1, tokenId2, tokenId3, walletAddress });
       const nftData = {
         tokenId,
         image: response.data.image, // Image en base64
@@ -672,7 +675,6 @@ export class Web3Service {
     try {
       if(!this.web3) throw new Error('No web3 instance');
       const recoveredAddress = this.web3.eth.accounts.recover(message, signature);
-      console.log("Adresse récupérée :", recoveredAddress);
       const ownerOfToken = await this.ownerOf(tokenId);
       return recoveredAddress === this.walletAddressSubject.value && recoveredAddress === ownerOfToken;
     } catch (error) {

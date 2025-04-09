@@ -16,6 +16,7 @@ WEB3SERVICE
 - Ledger integration : https://developers.ledger.com/docs/device-interaction/ledgerjs/beginner/transfer-eth
 - wallet connect integration : yt playlist NFT
 - infura mainnet
+- si erreur java pas de loadnft = false pour merge et discover mais oui pour mint
 
 
 MODAL-ACCOUNT

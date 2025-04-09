@@ -527,5 +527,63 @@ public class NftService {
             throw e;
         }
     }
+
+    public void verifyMergeTransaction(int tokenId1, int tokenId2, int newTokenId, String walletAddress) throws Exception {
+        String eventSignature = org.web3j.crypto.Hash.sha3String("Merge(address,uint256,uint256,uint256)");
+        String tokenId1Hex = "0x" + String.format("%064x", tokenId1);
+        String tokenId2Hex = "0x" + String.format("%064x", tokenId2);
+        String newTokenIdHex = "0x" + String.format("%064x", newTokenId);
+        String ownerHex = "0x" + String.format("%064x", new java.math.BigInteger(walletAddress.substring(2), 16));
+    
+        EthFilter filter = new EthFilter(
+            DefaultBlockParameterName.EARLIEST,
+            DefaultBlockParameterName.LATEST,
+            contractAddress
+        );
+        filter.addSingleTopic(eventSignature);
+    
+        EthLog logs = web3.ethGetLogs(filter).send();
+    
+        for (EthLog.LogResult<?> logResult : logs.getLogs()) {
+            EthLog.LogObject log = (EthLog.LogObject) logResult;
+            List<String> topics = log.getTopics();
+    
+            if (topics.size() < 4) continue;
+    
+            // topics[1] = owner, topics[2] = tokenIdBurned1, topics[3] = tokenIdBurned2
+            String ownerTopic = topics.get(1);
+            String tokenBurned1Topic = topics.get(2);
+            String tokenBurned2Topic = topics.get(3);
+    
+            // Check if this event matches the given parameters (order of tokenId1/tokenId2 doesn't matter)
+            boolean matchTokens = (tokenBurned1Topic.equalsIgnoreCase(tokenId1Hex) && tokenBurned2Topic.equalsIgnoreCase(tokenId2Hex)) ||
+                                  (tokenBurned1Topic.equalsIgnoreCase(tokenId2Hex) && tokenBurned2Topic.equalsIgnoreCase(tokenId1Hex));
+    
+            if (ownerTopic.equalsIgnoreCase(ownerHex) && matchTokens) {
+                // Now check the newTokenId in data
+                String data = log.getData();
+                if (data == null || data.length() < 66) continue;
+    
+                String newTokenIdExtractedHex = "0x" + data.substring(data.length() - 64);
+                if (!newTokenIdExtractedHex.equalsIgnoreCase(newTokenIdHex)) continue;
+    
+                EthGetTransactionReceipt receipt = web3.ethGetTransactionReceipt(log.getTransactionHash()).send();
+                if (receipt.getTransactionReceipt().isEmpty()) throw new SecurityException("Impossible de retrouver la transaction de merge.");
+    
+                EthBlock block = web3.ethGetBlockByHash(receipt.getTransactionReceipt().get().getBlockHash(), false).send();
+                long timestampBlock = block.getBlock().getTimestamp().longValueExact() * 1000L; // millis
+                long now = System.currentTimeMillis();
+    
+                if ((now - timestampBlock) > 180_000) {
+                    throw new SecurityException("Merge trop ancien : sécurité rejetée.");
+                }
+    
+                System.out.println("Merge validé. Il y a " + (now - timestampBlock) / 1000 + " secondes");
+                return;
+            }
+        }
+    
+        throw new SecurityException("Aucune transaction de merge valide trouvée pour l'adresse et les tokens donnés.");
+    }
     
 }
