@@ -672,6 +672,7 @@ export class Web3Service {
     try {
       if(!this.web3) throw new Error('No web3 instance');
       const recoveredAddress = this.web3.eth.accounts.recover(message, signature);
+      console.log("Adresse récupérée :", recoveredAddress);
       const ownerOfToken = await this.ownerOf(tokenId);
       return recoveredAddress === this.walletAddressSubject.value && recoveredAddress === ownerOfToken;
     } catch (error) {

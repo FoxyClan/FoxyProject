@@ -1,42 +1,50 @@
 package com.foxyclan.jar;
-
-import org.web3j.crypto.Hash;
 import org.web3j.crypto.Sign;
-import org.web3j.utils.Numeric;
-
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
+import java.security.SignatureException;
 import org.web3j.crypto.Keys;
-
 
 public class SignatureUtil {
 
-    public static String recoverAddress(String message, String signatureHex) throws Exception {
-        // Ethereum ajoute ce préfixe avant de signer
-        byte[] msgHash = Hash.sha3(message.getBytes(StandardCharsets.UTF_8));
+    public static String recover(String textMessage, String hexStringSignature) throws SignatureException {
 
-        byte[] signatureBytes = Numeric.hexStringToByteArray(signatureHex);
-        if (signatureBytes.length != 65) {
-            throw new IllegalArgumentException("Signature invalide. Longueur != 65 octets");
+        if(hexStringSignature.length() != 132 || !hexStringSignature.startsWith("0x")) {
+            throw new SignatureException("Signature must be an hexadecimal string starting with 0x + 130 characters");
         }
+        String r = hexStringSignature.substring(2, 66);
+        String s = hexStringSignature.substring(66, 130);
+        String v = hexStringSignature.substring(130, 132);
 
-        byte v = signatureBytes[64];
-        if (v < 27) v += 27;
+        Sign.SignatureData signatureData = new Sign.SignatureData(hexStringToBytesArray(v), hexStringToBytesArray(r), hexStringToBytesArray(s));
+        BigInteger pubKey = Sign.signedPrefixedMessageToKey(textMessage.getBytes(), signatureData);
+        String recover = Keys.getAddress(pubKey);
+        recover = "0x" + recover;
 
-        Sign.SignatureData signatureData = new Sign.SignatureData(
-                v,
-                java.util.Arrays.copyOfRange(signatureBytes, 0, 32),
-                java.util.Arrays.copyOfRange(signatureBytes, 32, 64)
-        );
-
-        BigInteger publicKey;
-        try {
-            publicKey = Sign.signedMessageToKey(msgHash, signatureData);
-        } catch (Exception e) {
-            throw new Exception("Impossible de récupérer la clé publique depuis la signature", e);
-        }
-
-        String address = "0x" + Keys.getAddress(publicKey);
-        return address.toLowerCase(); // On retourne l'adresse récupérée
+        return recover;
     }
+
+    public static byte[] hexStringToBytesArray(String hexString) {
+
+        // Remove hexadecimal prefix
+        if (hexString.startsWith("0x")) {
+            hexString = hexString.substring(2);
+        }
+
+        // Check that remaining characters number is even, to be able to group them by 2, for a single byte
+        if ((hexString.length() % 2) != 0) {
+            throw new IllegalArgumentException("Invalid hex string (length % 2 != 0)");
+        }
+
+        // Resulted bytes array length will be half of initial hexadecimal characters number
+        byte[] array = new byte[hexString.length() / 2];
+
+        // For each group of 2 hexa characters, convert it into its byte value
+        for (int i = 0, arrayIndex = 0; i < hexString.length(); i += 2, arrayIndex++) {
+            array[arrayIndex] = Integer.valueOf(hexString.substring(i, i + 2), 16).byteValue();
+        }
+        return array;
+    }
+
+
+
 }

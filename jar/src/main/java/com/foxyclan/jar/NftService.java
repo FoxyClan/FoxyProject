@@ -405,7 +405,8 @@ public class NftService {
     public String getCIDFromFilebase(String fileName) {
         try {
             String urlString = foxyBaseUrl + fileName;
-            URL url = new URL(urlString);
+            URI uri = new URI(urlString);
+            URL url = uri.toURL();
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("HEAD");
@@ -417,6 +418,7 @@ public class NftService {
                 // Lire l'en-tête x-amz-meta-cid
                 Map<String, java.util.List<String>> headers = conn.getHeaderFields();
                 if (headers.containsKey("x-amz-meta-cid")) {
+                    System.out.println("CID : " + headers.get("x-amz-meta-cid").get(0));
                     return headers.get("x-amz-meta-cid").get(0);
                 } else {
                     System.out.println("CID non trouvé dans les en-têtes.");

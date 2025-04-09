@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 public class MintService {
 
+    @Autowired
     private final NftService nftService;
     
-    @Autowired
     public MintService() {
         NftService _nftService = new NftService();
         this.nftService = _nftService;
@@ -66,7 +66,7 @@ public class MintService {
             }
 
             // Vérifier que l'adresse de la signature est bien celle du propriétaire
-            String recoveredAddress = SignatureUtil.recoverAddress(message, signature);
+            String recoveredAddress = SignatureUtil.recover(message, signature);
             if (!walletAddress.equalsIgnoreCase(recoveredAddress)) {
                 throw new SecurityException("La signature ne correspond pas à l'adresse fournie");
             }
