@@ -57,3 +57,7 @@ TEAM
 
 MODAL-MINT
 - tester engraved samourai mask taille dans attributs
+
+actual :
+- merge isundiscovered
+- retest avec le mint commentaire exist nft

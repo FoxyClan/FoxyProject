@@ -1,0 +1,5 @@
+ssh root@82.25.116.183
+
+mvn clean package
+scp C:\Users\Mathieu\Documents\FoxyProject\jar\target\jar-0.0.1-SNAPSHOT.jar root@82.25.116.183:/root/foxy-backend.jar
+java -jar foxy-backend.jar
