@@ -80,7 +80,7 @@
 <div *ngIf="!isLoading && !noNft" class="nft-collection" [@popIn]>
   <h2>{{ mergeMode ? "Select Foxys to Merge :" : "FOXY Collection" }}</h2>
   <div class="nft-grid">
-    <div *ngFor="let token of availableTokens | keyvalue" 
+    <div *ngFor="let token of availableTokens | keyvalue : sortByTokenId" 
          class="nft-item"
          [ngStyle]="{'cursor': mergeMode ? 'all-scroll' : 'pointer'}"
          draggable="true"

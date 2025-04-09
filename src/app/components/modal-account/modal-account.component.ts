@@ -68,8 +68,8 @@ export class ModalAccount implements OnInit, OnDestroy {
   transferEvents: any[] = [];
   baseUri : string = 'https://foxyclan.s3.filebase.com/';
   isLoadingNFTs: boolean = true;
-  isLoadingTransactions: boolean = false;
-  isLoadingBalance: boolean = false;
+  isLoadingTransactions: boolean = true;
+  isLoadingBalance: boolean = true;
 
 
 
@@ -90,9 +90,9 @@ export class ModalAccount implements OnInit, OnDestroy {
     this.web3Service.selectedWallet$.subscribe((selectedWallet) => {
       this.selectedWallet = selectedWallet;
     });
+    await this.loadBalance()
     await this.tokenOfOwnerByIndex()
     await Promise.all([
-      this.loadBalance(),
       this.loadTransferEvents(),
       this.fetchMetadata(),
       this.getOwner()
@@ -147,7 +147,6 @@ export class ModalAccount implements OnInit, OnDestroy {
 
   
   async loadBalance() {
-    this.isLoadingBalance = true;
     const balances: { symbol: string, balance: string, balanceConverted: number }[] = [];
     try {
       const symbols: Array<'ETH' | 'WETH' | 'USDT' | 'USDC'> = ['ETH', 'WETH', 'USDT', 'USDC'];
@@ -213,7 +212,6 @@ export class ModalAccount implements OnInit, OnDestroy {
   }
 
   async loadTransferEvents() {
-    this.isLoadingTransactions = true;
     await this.web3Service.getContractTransactions().then(events => {
       this.transferEvents = events;
     }).catch(error => {
@@ -229,7 +227,6 @@ export class ModalAccount implements OnInit, OnDestroy {
   
 
   async fetchMetadata(): Promise<void> {
-    this.isLoadingNFTs = true;
     for (const tokenId of this.tokenIds) {
       try {
         const url = this.baseUri + tokenId + '.json';

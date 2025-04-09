@@ -350,7 +350,7 @@
 .spinner:before {
     content: '';
     aspect-ratio: 1/1;
-    width: 15%;
+    width: 10%;
     height: auto;
     border: 2px solid rgba(0, 0, 0, 0.1);
     border-top: 2px solid #3498db;

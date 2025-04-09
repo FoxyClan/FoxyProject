@@ -8,9 +8,6 @@ RESPONSIVE
 HOME
 - modifier les chiffres de la premiere page
 
-HEADER
-- [hidden] donnes un probleme http / injector de trait.service
-
 WEB3SERVICE
 - enlever le commentaire de switchethaccount
 - merge : on recupere le tableau tokenIdsAfter et on le compare a tokenIdsBefore, ce devrait etre trois token retourné 2 burn et le nouveau

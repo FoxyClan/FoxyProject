@@ -70,10 +70,12 @@ public class MintService {
             if (!walletAddress.equalsIgnoreCase(recoveredAddress)) {
                 throw new SecurityException("La signature ne correspond pas à l'adresse fournie");
             }
+            System.out.println("Signature OK");
 
             if (!walletAddress.equalsIgnoreCase(owner)) {
                 throw new SecurityException("Vous n'êtes pas le propriétaire de ce token");
             }
+            System.out.println("Propriétaire du token OK");
 
             // Générer les vraies métadonnées
             Map<String, Object> response = generateDna(tokenId);
@@ -86,11 +88,15 @@ public class MintService {
 
     public Map<String, Object> generateDna(int tokenId) throws Exception {
         try {
-            //if(!nftService.existNft(tokenId)) throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket");
-            //if(!nftService.isUndiscoveredNft(tokenId)) throw new IOException("Les metadata du tokenId " + tokenId + " existent deja");
+            if(!nftService.existNft(tokenId)) throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket");
+            System.out.println("Verif exist OK");
+            if(!nftService.isUndiscoveredNft(tokenId)) throw new IOException("Les metadata du tokenId " + tokenId + " existent deja");
+            System.out.println("Verif undiscovered OK");
         } catch (Exception e) {
             throw e;
         }
+        System.out.println("Creation en cours pour le tokenId " + tokenId +" :");
+
         int maxAttempts = 20000;
         int attempts = 0;
         boolean addDna = false;
