@@ -89,9 +89,9 @@ public class MintService {
 
     public Map<String, Object> generateDna(int tokenId) throws Exception {
         try {
-            if(!nftService.existNft(tokenId)) throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket");
+            //if(!nftService.existNft(tokenId)) throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket");
             System.out.println("Verif exist OK");
-            if(!nftService.isUndiscoveredNft(tokenId)) throw new IOException("Les metadata du tokenId " + tokenId + " existent deja");
+            //if(!nftService.isUndiscoveredNft(tokenId)) throw new IOException("Les metadata du tokenId " + tokenId + " existent deja");
             System.out.println("Verif undiscovered OK");
         } catch (Exception e) {
             throw e;

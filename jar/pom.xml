@@ -77,7 +77,8 @@
 		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId> <!-- Vérifie la dernière version sur Maven Repository -->
+			<artifactId>lombok</artifactId>
+			<version>1.18.30</version>
 			<scope>provided</scope>
 		</dependency>
 
