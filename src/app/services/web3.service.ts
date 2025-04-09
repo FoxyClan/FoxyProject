@@ -304,7 +304,8 @@ export class Web3Service {
   public web3Modifier() {
     try {
       if (!this.web3) {
-        this.web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35'));
+        //this.web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35'));
+        this.web3 = new Web3(new Web3.providers.HttpProvider('https://sepolia.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35'));
         console.log("infura key")
       }
       const contract = new this.web3.eth.Contract(FoxyClanABI, FoxyClanContractAddress);
@@ -469,11 +470,12 @@ export class Web3Service {
       const tokenIdsBefore: number[] = await this.tokenOfOwnerByIndex(this.walletAddressSubject.value);
       const totalPrice = (numberOfTokens * FoxyPrice).toString();
   
-      await contract.methods['mint'](numberOfTokens).send({
+      const tx = await contract.methods['mint'](numberOfTokens).send({
         from: this.walletAddressSubject.value,
         value: this.web3?.utils.toWei(totalPrice, 'ether'),
       });
       this.creatingNftLoadingSubject.next(true);
+      await this.web3?.eth.getTransactionReceipt(tx.transactionHash);
       return this._createNFT(tokenIdsBefore, this.walletAddressSubject.value);
     } catch (error) {
       this.creatingNftLoadingSubject.next(false);
@@ -492,11 +494,12 @@ export class Web3Service {
       
       const privaleSaleIsActive = await this.privateSaleIsActive();
       const totalPrice = (numberOfTokens * (privaleSaleIsActive ? PrivateSaleFoxyPrice : FoxyPrice)).toString();
-      await contract.methods['mintAllowList'](numberOfTokens).send({
+      const tx = await contract.methods['mintAllowList'](numberOfTokens).send({
         from: this.walletAddressSubject.value,
         value: this.web3?.utils.toWei(totalPrice, 'ether'),
       });
       this.creatingNftLoadingSubject.next(true);
+      await this.web3?.eth.getTransactionReceipt(tx.transactionHash);
       return this._createNFT(tokenIdsBefore, this.walletAddressSubject.value);
     } catch (error) {
       this.creatingNftLoadingSubject.next(false);
@@ -510,7 +513,7 @@ export class Web3Service {
     let tokenIdsAfter: number[] = [];
     try {
       do {
-          tokenIdsAfter = await this.tokenOfOwnerByIndex(fromAddress);
+        tokenIdsAfter = await this.tokenOfOwnerByIndex(fromAddress);
       } while (tokenIdsAfter.length === tokenIdsBefore.length);
       const newTokenIds: number[] = tokenIdsAfter.filter(
           (id) => !tokenIdsBefore.includes(id)
@@ -518,14 +521,16 @@ export class Web3Service {
       const nftData = await Promise.all(
         newTokenIds.map(async (tokenId) => {
           try {
-            const response = await axios.get(`https://api.foxyclan.fr/adn?tokenId=${tokenId}`);
+            const walletAddress = this.walletAddressSubject.value;
+            if (!walletAddress) throw new Error("Wallet address is not available");
+            const response = await axios.post(`https://api.foxyclan.fr/dna`, { tokenId, walletAddress });
             return {
               tokenId,
               image: response.data.image, // Image en base64
               metadata: response.data.metadata, // Métadonnées
             };
           } catch (error) {
-            console.error(`Erreur lors de la récupération de l'ADN pour le Token ID ${tokenId}:`, error);
+            console.error(`Erreur while fetching DNA for Token ID ${tokenId}:`, error);
             return null;
           }
         })
@@ -541,40 +546,56 @@ export class Web3Service {
   public async discoverNft(tokenId: number): Promise<any> {
     try {
       this.web3Modifier();
-      try {
-        const message = "I confirm that I am the owner of this wallet and wish to reveal my undiscovered NFT (tokenId #" + tokenId + "). Signing this message does not perform any blockchain transaction and is only used for verification.";
-        const signature = await this.signMessage(message);
-        if(!signature) throw new Error('Please Connect your wallet');
+      
+      const message = `I confirm that I am the owner of this wallet and wish to reveal my undiscovered NFT (tokenId #${tokenId}). Signing this message does not perform any blockchain transaction and is only used for verification.`;
+      const signature = await this.signMessage(message);
+      if (!signature) throw new Error('Please connect your wallet');
 
-        const verifySignature = await this.verifySignature(message, signature, tokenId);
-        if(!verifySignature) throw new Error("You are not the owner of the token");
-      } catch (error) {
-        throw error;
-      }
+      const verifySignature = await this.verifySignature(message, signature, tokenId);
+      if(!verifySignature) throw new Error("You are not the owner of the token");
+  
+      const walletAddress = this.walletAddressSubject.value;
+      if (!walletAddress) throw new Error("Wallet address is not available");
+  
+      const payload = {
+        tokenId,
+        walletAddress,
+        signature,
+        message
+      };
+  
       this.creatingNftLoadingSubject.next(true);
-      return this._createDiscoverNft(tokenId);
+      return this._createDiscoverNft(payload);
     } catch (error) {
       this.creatingNftLoadingSubject.next(false);
+      console.log(this.creatingNftLoadingSubject.value)
       console.error(error);
       throw new Error("Undiscover failed. Please try again.");
     }
   }
 
-  private async _createDiscoverNft(tokenId: number) {
+  private async _createDiscoverNft(payload: {
+    tokenId: number,
+    walletAddress: string,
+    signature: string,
+    message: string
+  }) {
     try {
-      const response = await axios.get(`https://api.foxyclan.fr/adn?tokenId=${tokenId}`);
+      const response = await axios.post(`https://api.foxyclan.fr/discover`, payload);
+
       const nftData = {
-        tokenId,
+        tokenId: payload.tokenId,
         image: response.data.image, // Image en base64
         metadata: response.data.metadata, // Métadonnées
       };
       this.creatingNftLoadingSubject.next(false);
       return nftData;
     } catch (error) {
-      console.error("Error while creating NFT:", error);
+      console.error("Error while revealing NFT:", error);
       throw error;
     }
   }
+  
 
   public async merge(tokenId1: number, tokenId2: number): Promise<any> {
     if(tokenId1 === tokenId2) throw new Error("Cannot merge the same token");
@@ -617,7 +638,12 @@ export class Web3Service {
 
       if(newTokenId.length !== 1) throw new Error("Impossible de recuperer le tokenId");
       const tokenId = newTokenId[0];
-      const response = await axios.get(`https://api.foxyclan.fr/merge?tokenId1=${tokenId1}&tokenId2=${tokenId2}&newTokenId=${tokenId}`);
+
+      const walletAddress = this.walletAddressSubject.value;
+      if (!walletAddress) throw new Error("Wallet address is not available");
+      const tokenId3 = tokenId;
+      const response = await axios.post(`https://api.foxyclan.fr/merge`, { tokenId1, tokenId2, tokenId3, walletAddress });
+
       const nftData = {
         tokenId,
         image: response.data.image, // Image en base64

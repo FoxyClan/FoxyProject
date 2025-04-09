@@ -171,7 +171,7 @@
                             <div class="token-text">
                                 <div>   
                                     <h4>#{{ tokenId }}</h4>
-                                    <p class="NFT-text">Rarity : {{ getRarity(tokens[tokenId]!.attributes) }}</p>
+                                    <p *ngIf="tokens[tokenId]?.image !== 'https://foxyclan.s3.filebase.com/undiscovered.png'" class="NFT-text">Rarity : {{ getRarity(tokens[tokenId]!.attributes) }}</p>
                                 </div>
                             </div>
                         </div>

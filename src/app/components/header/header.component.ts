@@ -112,17 +112,16 @@ export class HeaderComponent implements OnInit {
   /* SEARCH BAR */
 
   onSearchInput(event: Event) {
-    this.removeBorderRed();
+    this.removeRedBorder();
     this.searchQuery = (event.target as HTMLInputElement).value;
   }
   
-  // Fonction pour rechercher un token
   async searchToken() {
-    this.removeBorderRed();
+    this.removeRedBorder();
     if (!this.searchQuery.trim()) return;
   
     this.isLoading = true;
-    this.searchIconColor = "assets/images/search.png"; // Remettre l'icône par défaut
+    this.searchIconColor = "assets/images/search.png";
   
     const tokenId = this.searchQuery.trim();
     const tokenUri = `https://foxyclan.s3.filebase.com/`;
@@ -140,8 +139,15 @@ export class HeaderComponent implements OnInit {
       const metadata = response.data;
       metadata.tokenId = parseInt(tokenId);
       this.selectedToken = metadata;
-      console.log(metadata)
-      this.openCollectionModal();
+      if(metadata.image == "https://foxyclan.s3.filebase.com/undiscovered.png") {
+        const bar = document.querySelector('.search-bar');
+        if (bar) {
+          bar.classList.add('border-red');
+        }
+      }
+      else {
+        this.openCollectionModal();
+      }
     }
     else {
       const bar = document.querySelector('.search-bar');
@@ -153,7 +159,7 @@ export class HeaderComponent implements OnInit {
     this.isLoading = false;
   }
 
-  removeBorderRed() {
+  removeRedBorder() {
     const bar = document.querySelector('.search-bar');
     if (bar) {
       bar.classList.remove('border-red');

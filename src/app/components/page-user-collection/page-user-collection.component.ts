@@ -74,6 +74,9 @@ export class PageUserCollectionComponent implements OnInit {
   creatingNftLoading: boolean = false;
   private previousConnectionState: boolean | null = null;
 
+  sortByTokenId = (a: any, b: any): number => {
+    return Number(a.key) - Number(b.key);
+  };
 
   mergeMode: boolean = false;
   availableTokens: { [key: number]: Metadata | null } = {}; // Liste des NFTs visibles dans la collection
@@ -205,15 +208,24 @@ export class PageUserCollectionComponent implements OnInit {
 
   getRarity(metadata: Metadata) {
     let total = 0;
-    for (let item of metadata.attributes) {
-      let index = this.traitOptionsService.getTraitIndex(item.value, item.trait_type);
-      if (index === null) {
-        console.error("Trait not found");
-        index = 15;
-      }
-      total += index;
+    if(metadata.image === "https://foxyclan.s3.filebase.com/undiscovered.png") {
+      total = 100;
     }
-    total = (total / 87 * 100);
+    else {
+      for(let item of metadata.attributes) {
+        let index = this.traitOptionsService.getTraitIndex(item.value, item.trait_type);
+        if (index === null) {
+          console.error("Trait not found");
+          index = 15;
+        }
+        if (item.trait_type === "Transcendence") {
+          if(index == 1) index = -3;
+          else if(index == 0) index = -5;
+        }
+        total += index;
+      }
+      total = (total / 87 * 100);
+    }
     this.rarities[metadata.tokenId] = parseFloat(total.toFixed(1));
     if (this.rarities[metadata.tokenId] <= this.profilImageRarity) {
       this.profilImageRarity = this.rarities[metadata.tokenId];

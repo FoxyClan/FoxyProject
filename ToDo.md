@@ -8,9 +8,6 @@ RESPONSIVE
 HOME
 - modifier les chiffres de la premiere page
 
-HEADER
-- [hidden] donnes un probleme http / injector de trait.service
-
 WEB3SERVICE
 - enlever le commentaire de switchethaccount
 - merge : on recupere le tableau tokenIdsAfter et on le compare a tokenIdsBefore, ce devrait etre trois token retourné 2 burn et le nouveau
@@ -18,6 +15,8 @@ WEB3SERVICE
 - clée infura visible de tous ?
 - Ledger integration : https://developers.ledger.com/docs/device-interaction/ledgerjs/beginner/transfer-eth
 - wallet connect integration : yt playlist NFT
+- infura mainnet
+- si erreur java pas de loadnft = false pour merge et discover mais oui pour mint
 
 
 MODAL-ACCOUNT
@@ -32,29 +31,20 @@ SMART CONTRACT
 - a tester nombre d'addresse passable dans airdrop (test net) (100)
 - award fonctions usePoints
 - verifier que les token burn sont bien calculé dans les prochains mint pour la totale supply
-- foxyAward.sol
 - supprimer la suppression des points quand transfer ?
 - gain de point uniquement quand level 2 ?
 - clans
 
 
-ROADMAP
-- faire la roadmap
-
-
 GANACHE
 - supprimer commentaire web3service getBalance / modal account loadBalance -> catch console error
 
-MODAL MINT
-- niveau et points du token ?
-- empecher le scroll
 
 COLLECTION:
 - probleme click sur neon nose sur MODAL-COLLECTION quand on est sur la collection
 - mettre undiscoverd en ipfs ou sur filebase ?
 
 JAR
-- traits png -> jpeg ?
 - JAVA securisé avec toutes les fonctions en public ?
 - superposition des traits non compatibles dans la creation
 - enlever commentaire test si tokenId existe sur file base pour mint / merge
@@ -65,4 +55,5 @@ TEAM
 - finir les membres
 - changer les images
 
-ACTUAL :
+MODAL-MINT
+- tester engraved samourai mask taille dans attributs

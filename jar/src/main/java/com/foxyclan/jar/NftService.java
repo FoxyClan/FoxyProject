@@ -18,6 +18,16 @@ import java.awt.image.BufferedImage;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.web3j.abi.FunctionEncoder;
+import org.web3j.abi.FunctionReturnDecoder;
+import org.web3j.abi.datatypes.generated.Uint256;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.EthCall;
+import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
+import org.web3j.protocol.core.methods.response.EthLog;
+import org.web3j.protocol.http.HttpService;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -27,17 +37,27 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import org.springframework.stereotype.Service;
+import org.web3j.abi.TypeReference;
+import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.Address;
+import org.web3j.protocol.core.methods.request.EthFilter;
+import org.web3j.protocol.core.methods.response.Log;
+import java.math.BigInteger;
 
 @Service
 @CrossOrigin(origins = "https://foxyclan.fr")
 public class NftService {
+    //private final Web3j web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35"));
+    private final Web3j web3 = Web3j.build(new HttpService("https://sepolia.infura.io/v3/16c76dc3448e4b96a41e908703fa0b35"));
+
+    private final String contractAddress = "0x0839A1f8b8742bBD99a7CDD3429D6FA52Bcb2D62";
 
     @Value("${filebase.accessKey}")
     private String accessKey;
@@ -59,6 +79,8 @@ public class NftService {
 
     @Value("${filebase.dnaBaseUrl}")
     private String dnaBaseUrl;
+
+    
     
     public void createImageFile(Map<String, String> adn, int tokenId) throws IOException {
         try {
@@ -115,8 +137,8 @@ public class NftService {
                 .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
                 .build();
 
-            uploadFile(s3Client, fileName, Path.of("tmp/" + fileName));
-        } catch(Exception e) {
+                uploadFile(s3Client, fileName, Path.of("tmp/" + fileName));
+            } catch(Exception e) {
             e.printStackTrace();
             throw new IOException("Erreur lors du téléversement du fichier : " + fileName, e);
         }
@@ -209,7 +231,7 @@ public class NftService {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             URL url = URI.create(fileUrl).toURL();
-            return objectMapper.readValue(url, new TypeReference<Map<String, Object>>() {});
+            return objectMapper.readValue(url, new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
         } catch (MalformedURLException e) {
             throw new IOException("URL malformée pour le token " + tokenId, e);
         } catch (Exception e) {
@@ -330,7 +352,8 @@ public class NftService {
     }
 
 
-    /* UNDISCOVERED */
+    /* METADATA */
+
 
     public boolean existNft(int tokenId) throws IOException { // faire return false ou true a la place
         try {
@@ -356,6 +379,7 @@ public class NftService {
         }
     }
 
+
     public boolean isUndiscoveredNft(int tokenId) throws IOException {
         try {
             String fileName = tokenId + ".json";
@@ -363,7 +387,7 @@ public class NftService {
             String fileUrl = foxyBaseUrl + fileName;
             ObjectMapper objectMapper = new ObjectMapper();
             URL url = URI.create(fileUrl).toURL();
-            Map<String, Object> metadata = objectMapper.readValue(url, new TypeReference<Map<String, Object>>() {});
+            Map<String, Object> metadata = objectMapper.readValue(url, new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
     
             // Vérifier si l'image correspond à undiscovered.png
             String expectedImageUrl = foxyBaseUrl + "undiscovered.png";
@@ -379,61 +403,6 @@ public class NftService {
     }
 
 
-    public void createUndiscoveredMetadataFile(int tokenId) throws IOException {
-        try {
-            Map<String, Object> metadata = new HashMap<>();
-            
-            String imageUrl = endpointUrl + "undiscovered.png";
-            String description = "A mysterious member of the Foxy Clan, waiting to reveal its unique traits. Will it be a rare gem or a playful companion? Only time will tell as the secrets of this red panda are uncovered. Visit our website to unveil it !";
-            String name = "Foxy Clan #" + tokenId;
-    
-            metadata.put("image", imageUrl);
-            metadata.put("description", description);
-            metadata.put("name", name);
-    
-            File metadataFile = new File(tokenId + ".json");
-    
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.writeValue(metadataFile, metadata);
-    
-            System.out.println("Fichier JSON des métadonnées créé : " + tokenId + ".json");
-            this.uploadUndiscoveredToFilebase(tokenId + ".json", metadataFile);
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la création du fichier JSON pour le token " + tokenId);
-            e.printStackTrace();
-            if (e instanceof JsonProcessingException) {
-                throw new IOException("Erreur lors du traitement JSON pour le token " + tokenId, e);
-            }
-            throw e;
-        } catch (Exception e) {
-            System.err.println("Une erreur inattendue s'est produite lors de la création des métadonnées pour le token " + tokenId);
-            e.printStackTrace();
-            throw new IOException("Erreur inconnue lors de la création des métadonnées pour le token " + tokenId, e);
-        }
-    }
-
-    private void uploadUndiscoveredToFilebase(String fileName, File file) throws IOException {
-        try {
-            S3Client s3Client = S3Client.builder()
-                .region(Region.US_EAST_1)
-                .endpointOverride(java.net.URI.create(endpointUrl))
-                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
-                .build();
-
-            Path filePath = file.toPath();
-            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(foxyBucket)
-                .key(fileName)
-                .build();
-
-            s3Client.putObject(putObjectRequest, filePath);
-            System.out.println("Fichier téléversé : " + fileName);
-        } catch(Exception e) {
-            e.printStackTrace();
-            throw new IOException("Erreur lors du téléversement du fichier : " + fileName, e);
-        }
-    }
-
     public String getCIDFromFilebase(String fileName) {
         String urlString = foxyBaseUrl + fileName;
         long startTime = System.currentTimeMillis();
@@ -443,7 +412,8 @@ public class NftService {
         while (true) {
             try {
                 System.out.println("Tentative de récupération du CID pour : " + urlString);
-                URL url = new URL(urlString);
+                URI uri = new URI(urlString);
+                URL url = uri.toURL();
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("HEAD");
                 conn.setRequestProperty("X-API-KEY", secretKey);
@@ -474,6 +444,161 @@ public class NftService {
             } catch (InterruptedException ignored) {}
         }
     }
+    
+
+
+
+    /* CONTRACT */
+
+
+
+    @SuppressWarnings("rawtypes")
+    public String getOwnerOf(int tokenId) throws Exception {
+        Function function = new Function(
+                "ownerOf",
+                List.of(new Uint256(BigInteger.valueOf(tokenId))),
+                List.of(new TypeReference<Address>() {})
+        );
+
+        String encodedFunction = FunctionEncoder.encode(function);
+        EthCall response = web3.ethCall(
+                org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction(
+                        null, contractAddress, encodedFunction),
+                DefaultBlockParameterName.LATEST
+        ).send();
+
+        List<Type> result = FunctionReturnDecoder.decode(
+                response.getResult(), function.getOutputParameters());
+
+        if (result.isEmpty()) throw new Exception("Aucun propriétaire trouvé pour le tokenId " + tokenId);
+
+        return result.get(0).getValue().toString();
+    }
+
+
+
+    @SuppressWarnings("rawtypes")
+    public String getMintTransactionHash(int tokenId) throws Exception {
+        String eventSignature = org.web3j.crypto.Hash.sha3String("Transfer(address,address,uint256)");
+        String tokenIdHex = "0x" + String.format("%064x", tokenId);
+        String fromZeroAddressTopic = "0x0000000000000000000000000000000000000000000000000000000000000000";
+    
+        // On ne filtre que par event signature (topic0)
+        EthFilter filter = new EthFilter(
+                DefaultBlockParameterName.EARLIEST,
+                DefaultBlockParameterName.LATEST,
+                contractAddress
+        );
+        filter.addSingleTopic(eventSignature); // topic[0] = Transfer signature
+    
+        EthLog ethLog = web3.ethGetLogs(filter).send();
+        List<EthLog.LogResult> logs = ethLog.getLogs();
+    
+        if (logs == null || logs.isEmpty()) {
+            throw new Exception("Aucun log trouvé sur le contrat.");
+        }
+    
+        for (EthLog.LogResult rawLog : logs) {
+            if (rawLog instanceof EthLog.LogObject logObj) {
+                Log log = logObj.get();
+                List<String> topics = log.getTopics();
+    
+                // Vérification des conditions de mint
+                if (topics.size() >= 4) {
+                    String fromTopic = topics.get(1);
+                    String tokenIdTopic = topics.get(3);
+    
+                    if (fromTopic.equalsIgnoreCase(fromZeroAddressTopic) && tokenIdTopic.equalsIgnoreCase(tokenIdHex)) {
+                        return log.getTransactionHash();
+                    }
+                }
+            }
+        }
+        throw new Exception("Aucune transaction de mint trouvée pour le tokenId " + tokenId);
+    }
+    
+    
+    
+
+
+    public void verifyMintTransaction(int tokenId) throws Exception {
+        try {
+            EthGetTransactionReceipt receiptResponse = web3.ethGetTransactionReceipt(getMintTransactionHash(tokenId)).send();
+            if (receiptResponse.getTransactionReceipt().isPresent()) {
+                EthBlock block = web3.ethGetBlockByHash(receiptResponse.getTransactionReceipt().get().getBlockHash(), false).send();
+                long timestampBlock = block.getBlock().getTimestamp().longValueExact() * 1000L; // millis
+                long now = System.currentTimeMillis();
+
+                if ((now - timestampBlock) > 180_000) { // 3 minutes
+                    throw new SecurityException("Mint trop ancien : sécurité rejetée.");
+                }
+                long delta = now - timestampBlock;
+                System.out.println("Transaction trouvé et récente : Il y a " + delta / 1000 + " secondes");
+            } else {
+                throw new SecurityException("Impossible de retrouver la transaction de mint.");
+            }
+        } catch(Exception e) {
+            throw e;
+        }
+    }
+    
+    public void verifyMergeTransaction(int tokenId1, int tokenId2, int newTokenId, String walletAddress) throws Exception {
+        String eventSignature = org.web3j.crypto.Hash.sha3String("Merge(address,uint256,uint256,uint256)");
+        String tokenId1Hex = "0x" + String.format("%064x", tokenId1);
+        String tokenId2Hex = "0x" + String.format("%064x", tokenId2);
+        String newTokenIdHex = "0x" + String.format("%064x", newTokenId);
+        String ownerHex = "0x" + String.format("%064x", new java.math.BigInteger(walletAddress.substring(2), 16));
+    
+        EthFilter filter = new EthFilter(
+            DefaultBlockParameterName.EARLIEST,
+            DefaultBlockParameterName.LATEST,
+            contractAddress
+        );
+        filter.addSingleTopic(eventSignature);
+    
+        EthLog logs = web3.ethGetLogs(filter).send();
+    
+        for (EthLog.LogResult<?> logResult : logs.getLogs()) {
+            EthLog.LogObject log = (EthLog.LogObject) logResult;
+            List<String> topics = log.getTopics();
+    
+            if (topics.size() < 4) continue;
+    
+            // topics[1] = owner, topics[2] = tokenIdBurned1, topics[3] = tokenIdBurned2
+            String ownerTopic = topics.get(1);
+            String tokenBurned1Topic = topics.get(2);
+            String tokenBurned2Topic = topics.get(3);
+    
+            // Check if this event matches the given parameters (order of tokenId1/tokenId2 doesn't matter)
+            boolean matchTokens = (tokenBurned1Topic.equalsIgnoreCase(tokenId1Hex) && tokenBurned2Topic.equalsIgnoreCase(tokenId2Hex)) ||
+                                  (tokenBurned1Topic.equalsIgnoreCase(tokenId2Hex) && tokenBurned2Topic.equalsIgnoreCase(tokenId1Hex));
+    
+            if (ownerTopic.equalsIgnoreCase(ownerHex) && matchTokens) {
+                // Now check the newTokenId in data
+                String data = log.getData();
+                if (data == null || data.length() < 66) continue;
+    
+                String newTokenIdExtractedHex = "0x" + data.substring(data.length() - 64);
+                if (!newTokenIdExtractedHex.equalsIgnoreCase(newTokenIdHex)) continue;
+    
+                EthGetTransactionReceipt receipt = web3.ethGetTransactionReceipt(log.getTransactionHash()).send();
+                if (receipt.getTransactionReceipt().isEmpty()) throw new SecurityException("Impossible de retrouver la transaction de merge.");
+    
+                EthBlock block = web3.ethGetBlockByHash(receipt.getTransactionReceipt().get().getBlockHash(), false).send();
+                long timestampBlock = block.getBlock().getTimestamp().longValueExact() * 1000L; // millis
+                long now = System.currentTimeMillis();
+    
+                if ((now - timestampBlock) > 180_000) {
+                    throw new SecurityException("Merge trop ancien : sécurité rejetée.");
+                }
+    
+                System.out.println("Merge validé. Il y a " + (now - timestampBlock) / 1000 + " secondes");
+                return;
+            }
+        }
+    
+        throw new SecurityException("Aucune transaction de merge valide trouvée pour l'adresse et les tokens donnés.");
+    }       
     
     
 }

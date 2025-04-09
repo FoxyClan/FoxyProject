@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @Service
@@ -28,9 +28,26 @@ public class MergeService {
         this.nftService = nftService;
     }
 
-    @GetMapping("/merge")
+    @PostMapping("/merge")
     @CrossOrigin(origins = "https://foxyclan.fr")
-    public Map<String, Object> merge(@RequestParam int tokenId1, @RequestParam int tokenId2, @RequestParam int newTokenId) throws IOException {
+    public Map<String, Object> merge(@RequestBody Map<String, Object> payload) throws IOException {
+        int tokenId1 = (int) payload.get("tokenId1");
+        int tokenId2 = (int) payload.get("tokenId2");
+        int newTokenId = (int) payload.get("tokenId3");
+        String walletAddress = (String) payload.get("walletAddress");
+        try {
+            String owner = nftService.getOwnerOf(newTokenId);
+            if (owner == null || owner.isBlank() || owner.equalsIgnoreCase("0x0000000000000000000000000000000000000000")) {
+                throw new SecurityException("Token non minté ou adresse invalide");
+            }
+            if (!owner.equalsIgnoreCase(walletAddress)) {
+                throw new SecurityException("Not the owner of one token");
+            }
+            System.out.println("Propriétaire des token OK");
+            nftService.verifyMergeTransaction(tokenId1, tokenId2, newTokenId, walletAddress);
+        } catch (Exception e) {
+            throw new IOException("Erreur de validation blockchain : " + e.getMessage(), e);
+        }
         try {
             Boolean exist = nftService.existNft(newTokenId);
             if(exist) {

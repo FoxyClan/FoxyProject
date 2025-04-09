@@ -1,6 +1,7 @@
 package com.foxyclan.jar;
 
 import org.springframework.web.bind.annotation.RestController;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,29 +11,92 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 public class MintService {
 
     @Autowired
     private final NftService nftService;
-
+    
     public MintService() {
         NftService _nftService = new NftService();
         this.nftService = _nftService;
     }
 
-    @GetMapping("/adn")
+    @PostMapping("/dna")
     @CrossOrigin(origins = "https://foxyclan.fr")
-    public Map<String, Object> mint(@RequestParam int tokenId) throws IOException {
+    public Map<String, Object> mintSecurity(@RequestBody Map<String, Object> payload) throws Exception {
+        int tokenId = (int) payload.get("tokenId");
+        String walletAddress = ((String) payload.get("walletAddress")).toLowerCase();
         try {
-            //if(!nftService.existNft(tokenId)) throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket");
-            //if(!nftService.isUndiscoveredNft(tokenId)) throw new IOException("Les metadata du tokenId " + tokenId + " existent deja");
+            String owner = nftService.getOwnerOf(tokenId);
+            if (owner == null || owner.isBlank() || owner.equalsIgnoreCase("0x0000000000000000000000000000000000000000")) {
+                throw new SecurityException("Token non minté ou adresse invalide");
+            }
+            if (!owner.equalsIgnoreCase(walletAddress)) {
+                throw new SecurityException("Not the owner");
+            }
+            System.out.println("Propriétaire du token OK");
+            nftService.verifyMintTransaction(tokenId);
+        } catch (Exception e) {
+            throw new IOException("Erreur de validation blockchain : " + e.getMessage(), e);
+        }
+
+        try {
+            Map<String, Object> response = generateDna(tokenId);
+            return response;
+        } catch(Exception e) {
+            throw e;
+        }
+    }
+
+    @PostMapping("/discover")
+    @CrossOrigin(origins = "https://foxyclan.fr")
+    public Map<String, Object> discoverSecurity(@RequestBody Map<String, Object> payload) throws Exception {
+        int tokenId = (int) payload.get("tokenId");
+        String walletAddress = ((String) payload.get("walletAddress")).toLowerCase();
+        String signature = (String) payload.get("signature");
+        String message = (String) payload.get("message");
+
+        try {
+            String owner = nftService.getOwnerOf(tokenId);
+            if (owner == null || owner.isBlank() || owner.equalsIgnoreCase("0x0000000000000000000000000000000000000000")) {
+                throw new SecurityException("Token non minté ou adresse invalide");
+            }
+
+            // Vérifier que l'adresse de la signature est bien celle du propriétaire
+            String recoveredAddress = SignatureUtil.recover(message, signature);
+            if (!walletAddress.equalsIgnoreCase(recoveredAddress)) {
+                throw new SecurityException("La signature ne correspond pas à l'adresse fournie");
+            }
+            System.out.println("Signature OK");
+
+            if (!walletAddress.equalsIgnoreCase(owner)) {
+                throw new SecurityException("Vous n'êtes pas le propriétaire de ce token");
+            }
+            System.out.println("Propriétaire du token OK");
+
+            // Générer les vraies métadonnées
+            Map<String, Object> response = generateDna(tokenId);
+            return response;
+
+        } catch (Exception e) {
+            throw new IOException("Erreur lors de la vérification de découverte : " + e.getMessage(), e);
+        }
+    }
+
+    public Map<String, Object> generateDna(int tokenId) throws Exception {
+        try {
+            if(!nftService.existNft(tokenId)) throw new IOException("Le fichier " + tokenId + ".json n'existe pas dans le bucket");
+            System.out.println("Verif exist OK");
+            if(!nftService.isUndiscoveredNft(tokenId)) throw new IOException("Les metadata du tokenId " + tokenId + " existent deja");
+            System.out.println("Verif undiscovered OK");
         } catch (Exception e) {
             throw e;
         }
+        System.out.println("Creation en cours pour le tokenId " + tokenId +" :");
 
         int maxAttempts = 20000;
         int attempts = 0;
@@ -88,6 +152,8 @@ public class MintService {
             throw e;
         }
     }
+    
+    
 
     public String generateTraitDNA(String type) {
         String[] numbers;
