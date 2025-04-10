@@ -477,9 +477,20 @@
 		transform: scale(100%);
 	}
 }
-  
+
+
+@keyframes debugSpin {
+	from {
+	  transform: rotateY(0deg);
+	}
+	to {
+	  transform: rotateY(720deg);
+	}
+  }
+
+
 .box.spinning {
-	animation: crescendoDecrescendo 7s forwards;
+	animation: debugSpin 7s forwards;
 }
   
   
@@ -877,6 +888,13 @@
 	}
 }
 
+/*
+@media (max-width: 768px) {
+	.box.spinning {
+	  animation: crescendoDecrescendoMobile 7s ease-in-out forwards;
+	}
+  }
+*/
 @media (max-width: 650px) {
 	.attributs {
 		width: 100%;

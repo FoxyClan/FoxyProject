@@ -226,12 +226,14 @@ export class ModalMint implements OnInit, OnDestroy {
   }
 
   increase() {
+    if(this.isLoading) return
     if (this.counterValue < 20) {
       this.counterValue++;
     }
   }
 
   decrease() {
+    if(this.isLoading) return
     if (this.counterValue > 1) {
       this.counterValue--;
     }
@@ -354,6 +356,7 @@ export class ModalMint implements OnInit, OnDestroy {
     setTimeout(() => {
       this.showButton = false; // For the button animation
     }, 500);
+    
     const box = document.querySelector(".box") as HTMLElement;
     if (!box) return;
     const handleAnimationEnd = (currentRotation: number) => {
@@ -390,8 +393,6 @@ export class ModalMint implements OnInit, OnDestroy {
         handleAnimationEnd(180);
       }
     }, 25);
-    
-      
   }
 
   addNFT() {
