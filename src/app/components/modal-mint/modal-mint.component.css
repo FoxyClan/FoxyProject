@@ -1010,10 +1010,6 @@
 	.metadata-block span {
 		font-size: 0.75rem;
 	}
-	.block {
-		width: 300px;
-		height: 280px;
-	}
 	.nft-preview-wrapper {
 		top: -30%;
 	}
@@ -1024,3 +1020,20 @@
         height: 110px;
     }
 }
+
+@media (max-width: 350px) {
+	.block {
+		width: 300px;
+		height: 300px;
+	}
+}
+
+@media (hover: none) {
+	.blue-btn:hover::after {
+		background-image: none !important;
+		background: linear-gradient(145deg, #020202, #151a27) !important;
+		filter: none !important;
+		border: none !important;
+	}
+  }
+  
