@@ -9,3 +9,9 @@ java -jar foxy-backend.jar
 
 
 ng build --configuration production
+
+
+PERSISTANT :
+screen -S backend
+java -jar foxy-backend.jar
+screen -r backend
