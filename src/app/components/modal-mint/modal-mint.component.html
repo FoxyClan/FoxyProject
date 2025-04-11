@@ -66,11 +66,11 @@
                     <span class="counter3" (click)="increase()">+</span>
                 </div>
 
-                <button *ngIf="!isLoading" (click)="mintNFT(counterValue)" class="btn-mint">
-                    <span>Mint</span>
-                </button>
-                <div *ngIf="isLoading" class="loading-spinner btn-mint">
-                    <span>Loading...</span>
+                <div class="btn-mint-container">
+                    <a class="btn blue-btn" (click)="mintNFT(counterValue)" [class.loading-btn]="isLoading" style="--clr1:rgba(168, 239, 255, 1);--clr2:rgba(168, 239, 255, 0.1)">
+                        <span>Mint</span>
+                    </a>
+                    <span *ngIf="isLoading" class="loading-spinner"></span>
                 </div>
             </div>
 

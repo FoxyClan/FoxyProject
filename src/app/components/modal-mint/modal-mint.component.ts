@@ -59,7 +59,6 @@ export class ModalMint implements OnInit, OnDestroy {
   effect: String = '';
 
   isUnblurred: boolean = false; // Blur du nft
-  isSpinning: boolean = false;
   showMetadata: boolean = false;
   lastLeaveTime: number | null = null; // Stocke le moment où la souris quitte la boîte
   blockAnimation: boolean = false; // Bloque l'animation temporairement
@@ -134,7 +133,6 @@ export class ModalMint implements OnInit, OnDestroy {
     this.showAddWalletButton = false;
     this.effect = '';
     this.isUnblurred = false;
-    this.isSpinning = false;
     this.showMetadata = false;
     this.lastLeaveTime = null;
     this.blockAnimation = false;
@@ -358,6 +356,7 @@ export class ModalMint implements OnInit, OnDestroy {
     }, 500);
     
     const box = document.querySelector(".box") as HTMLElement;
+
     if (!box) return;
     const handleAnimationEnd = (currentRotation: number) => {
       
