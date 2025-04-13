@@ -1,0 +1,13 @@
+{
+  "routes": [
+    "/",
+    "/collection",
+    "/contact",
+    "/ErrorPage",
+    "/home",
+    "/mint",
+    "/profil",
+    "/roadmap",
+    "/team"
+  ]
+}
