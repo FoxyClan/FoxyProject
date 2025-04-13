@@ -184,10 +184,11 @@
                 <div *ngIf="selectedOption === 'Activity'" class="token">
                     <div *ngIf="isLoadingTransactions" class="spinner"></div>
                     <div class="token-block">
-                        <div *ngFor="let transaction of transferEvents.reverse()" class="token-list no-padding">
+                        <div *ngFor="let transaction of transferEvents; trackBy: trackByTx" class="token-list no-padding">
                             <div class="token-list">
                                 <div>   
                                     <h4>{{ transaction.functionName }}</h4>
+                                    <p *ngIf="transaction.functionName === 'Transfer'" class="NFT-text">{{ "TokenId : #" + transaction.tokenId + " to : " + (transaction.to.substring(0, 6) + '...' + transaction.to.substring(38)) }}</p>
                                     <p *ngIf="transaction.functionName === 'Mint'" class="NFT-text">{{ transaction.tokenIds.length == 1 ? "TokenId : #" + transaction.tokenIds : "TokenIds : [ " + formatTokenIds(transaction.tokenIds) + " ]" }}</p>
                                     <p *ngIf="transaction.functionName === 'Merge'" class="NFT-text">[ {{ formatTokenIds([transaction.tokenIdBurned1, transaction.tokenIdBurned2]) }} ] ➔ #{{ transaction.newTokenId }}</p>
                                     <p *ngIf="transaction.functionName === 'Airdrop'" class="NFT-text">{{ transaction.tokenIds.length == 1 ? "TokenId : #" + transaction.tokenIds : "TokenIds : [ " + formatTokenIds(transaction.tokenIds) + " ]" }}</p>

@@ -212,13 +212,26 @@ export class ModalAccount implements OnInit, OnDestroy {
   }
 
   async loadTransferEvents() {
-    await this.web3Service.getContractTransactions().then(events => {
-      this.transferEvents = events;
-    }).catch(error => {
+    try {
+      const events = await this.web3Service.getContractTransactions();
+      
+      this.transferEvents = events.sort((a, b) => {
+        const blockA = Number(a.blockNumber ?? 0);
+        const blockB = Number(b.blockNumber ?? 0);
+        return blockB - blockA;
+      });
+    console.log(this.transferEvents)      
+    } catch (error) {
       console.error('Error loading Transfer events:', error);
-    });
-    this.isLoadingTransactions = false;
+    } finally {
+      this.isLoadingTransactions = false;
+    }
   }
+
+  trackByTx(index: number, transaction: any): string {
+    return transaction.transactionHash || index;
+  }  
+  
 
   formatTokenIds(tokenIds: number[]): string {
     return tokenIds.map(id => `#${id}`).join(", ");

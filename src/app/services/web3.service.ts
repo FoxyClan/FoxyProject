@@ -840,7 +840,8 @@ export class Web3Service {
                     uniqueTransactions.set(event.transactionHash, {
                         functionName,
                         to: recipient,
-                        tokenIds: mintedTokenIds
+                        tokenIds: mintedTokenIds,
+                        blockNumber: event.blockNumber
                     });
                 } else {
                     const existingTokenIds = uniqueTransactions.get(event.transactionHash).tokenIds;
@@ -857,7 +858,8 @@ export class Web3Service {
                         from: mergeEvent.returnValues['owner'],
                         tokenIdBurned1: mergeEvent.returnValues['tokenIdBurned1'],
                         tokenIdBurned2: mergeEvent.returnValues['tokenIdBurned2'],
-                        newTokenId: mergeEvent.returnValues['newTokenId']
+                        newTokenId: mergeEvent.returnValues['newTokenId'],
+                        blockNumber: event.blockNumber
                     });
                 }
             } else {
@@ -867,7 +869,8 @@ export class Web3Service {
                         from: event.returnValues?.['from'] || null,
                         to: event.returnValues?.['to'] || null,
                         tokenId: event.returnValues?.['tokenId'] || null,
-                        parameters: []
+                        parameters: [],
+                        blockNumber: event.blockNumber
                     });
                 }
             }
