@@ -49,7 +49,7 @@ JAR
 - superposition des traits non compatibles dans la creation
 - enlever commentaire test si tokenId existe sur file base pour mint / merge
 - demander a valentin si address gmail risque pour le contact
-- changer le .gitignore pour le application.yml et changer les private key
+- application.yml/.properties changer les private key
 
 TEAM
 - finir les membres
@@ -59,5 +59,3 @@ MODAL-MINT
 - tester engraved samourai mask taille dans attributs
 
 actual :
-- merge isundiscovered
-- retest avec le mint commentaire exist nft
