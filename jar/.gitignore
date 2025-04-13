@@ -34,5 +34,5 @@ build/
 
 
 # Security
-src/main/ressources/application.properties
-src/main/ressources/application.yml
+src/main/resources/application.properties
+src/main/resources/application.yml
