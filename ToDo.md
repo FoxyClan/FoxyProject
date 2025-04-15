@@ -21,7 +21,6 @@ WEB3SERVICE
 
 MODAL-ACCOUNT
 - ne rien afficher si le reseau n'est pas eth
-- events "transfers" details & test d'envoie de nft & et test que les points descendent bien etc ...
 - event usePoints, et rajouter des fonction dans les transaction (jsp si y a tout la)
 - probleme change de chain gnosis xdai est noté en eth
 
@@ -29,7 +28,6 @@ MODAL-ACCOUNT
 SMART CONTRACT
 - mettre a jour les commentaires
 - a tester nombre d'addresse passable dans airdrop (test net) (100)
-- award fonctions usePoints
 - verifier que les token burn sont bien calculé dans les prochains mint pour la totale supply
 - supprimer la suppression des points quand transfer ?
 - gain de point uniquement quand level 2 ?
