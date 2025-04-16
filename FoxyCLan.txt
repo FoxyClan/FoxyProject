@@ -166,7 +166,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
     * @param amount The number of points to deduct.
     * @param usage A string describing the purpose of the point deduction.
     */
-    function spendFoxyPoints(uint256 tokenId, uint256 amount, string calldata usage) external {
+    function spendFoxyPoints(uint256 tokenId, uint256 amount, string memory usage) public {
         require(ownerOf(tokenId) == msg.sender, "Not the owner");
         require(getTokenPoints(tokenId) >= amount, "Not enough points");
 
@@ -189,7 +189,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
     * @param amount The total number of points to spend.
     * @param usage The reason for spending the points.
     */
-    function spendFoxyPointsFromCollection(uint256 amount, string calldata usage) external {
+    function spendFoxyPointsFromCollection(uint256 amount, string memory usage) public {
         uint256 balance = balanceOf(msg.sender);
         require(balance > 0, "You don't own any Foxy tokens");
 
@@ -471,6 +471,7 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
     /**
     * @dev Creates a new clan. Only a level 3 token can be used to create one.
     *      This feature is only available once at least 100 tokens have been burned.
+    *      Requires 30 Foxy Points from the token used.
     * @param tokenId The token used to create the clan (must be level 3).
     * @param name The name of the clan.
     */
@@ -489,6 +490,8 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         require(bytes(name).length > 0 && bytes(name).length <= 32, "Clan name must be 1-32 characters");
         require(bytes(description).length <= 256, "Description too long (max 256)");
         require(maxMembers >= 1 && maxMembers <= 100, "Invalid member limit");
+
+        spendFoxyPoints(tokenId, 30, "Clan creation");
 
         uint256 clanId = _clanIdCounter++;
         clans[clanId] = Clan({
@@ -517,16 +520,26 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
         uint256 leaderToken = clans[clanId].leaderTokenId;
         require(ownerOf(leaderToken) == msg.sender, "Only the clan leader can update settings");
         
-        require(bytes(name).length > 0 && bytes(name).length <= 32, "Clan name must be 1-32 characters");
-        require(bytes(description).length <= 256, "Description too long (max 256)");
-        require(minLevel >= 1 && minLevel <= 3, "Invalid min level");
-        require(maxMembers >= clans[clanId].members.length, "Cannot set maxMembers below current count");
-        require(maxMembers <= 100, "Max members limit exceeded");
+        if (bytes(name).length > 0) {
+            require(bytes(name).length <= 32, "Clan name must be 1-32 characters");
+            clans[clanId].name = name;
+        }
 
-        clans[clanId].name = name;
-        clans[clanId].description = description;
-        clans[clanId].minLevel = minLevel;
-        clans[clanId].maxMembers = maxMembers;
+        if (bytes(description).length > 0) {
+            require(bytes(description).length <= 256, "Description too long (max 256)");
+            clans[clanId].description = description;
+        }
+
+        if (minLevel != 0) {
+            require(minLevel >= 1 && minLevel <= 3, "Invalid min level");
+            clans[clanId].minLevel = minLevel;
+        }
+
+        if (maxMembers != 0) {
+            require(maxMembers >= clans[clanId].members.length, "Cannot set maxMembers below current count");
+            require(maxMembers <= 100, "Max members limit exceeded");
+            clans[clanId].maxMembers = maxMembers;
+        }
     }
 
 
@@ -566,12 +579,28 @@ contract FoxyClan is ERC721, ERC721Enumerable, Ownable {
             emit ClanDisbanded(clanId);
         }
     }
+    
 
+    /**
+    * @dev Transfers leadership of a clan to another member.
+    * 
+    * Requirements:
+    * - The clan must exist.
+    * - The caller must be the current leader of the clan.
+    * - The new leader token must belong to the same clan.
+    * - The new leader token must be of level 3.
+    *
+    * Emits a `ClanLeadershipTransferred` event.
+    *
+    * @param clanId The ID of the clan whose leadership is being transferred.
+    * @param newLeaderTokenId The token ID of the member who will become the new leader.
+    */
     function transferClanLeadership(uint256 clanId, uint256 newLeaderTokenId) external {
         require(clans[clanId].exists, "Clan does not exist");
         uint256 currentLeaderTokenId = clans[clanId].leaderTokenId;
         require(ownerOf(currentLeaderTokenId) == msg.sender, "Only the clan leader can transfer leadership");
         require(tokenClan[newLeaderTokenId] == clanId, "New leader must be a clan member");
+        require(level[newLeaderTokenId] == 3, "New leader must be level 3");
 
         clans[clanId].leaderTokenId = newLeaderTokenId;
         emit ClanLeadershipTransferred(clanId, currentLeaderTokenId, newLeaderTokenId);

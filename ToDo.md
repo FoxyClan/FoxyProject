@@ -48,6 +48,7 @@ JAR
 - enlever commentaire test si tokenId existe sur file base pour mint / merge
 - demander a valentin si address gmail risque pour le contact
 - application.yml/.properties changer les private key
+- background names
 
 TEAM
 - finir les membres
@@ -57,3 +58,8 @@ MODAL-MINT
 - tester engraved samourai mask taille dans attributs
 
 actual :
+
+
+
+TRAITS :
+head : jusqu'a 3 OK

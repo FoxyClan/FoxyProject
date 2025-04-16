@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,19 +102,14 @@ public class NftService {
             BufferedImage EyesHeadMouth = null;
 
             if (Head.equals("05") && Eyes.equals("08")) {
-                switch (Mouth) {
-                    case "00":
-                        EyesHeadMouth = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/050800.png"));
-                        break;
-                    case "02":
-                        EyesHeadMouth = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/050802.png"));
-                        break;
-                
-                    default:
-                        break;
+                String x = null;
+                List<String> validMouths = Arrays.asList("00", "02", "03", "04", "05", "06");
+                if (validMouths.contains(Mouth)) {
+                    x = Mouth;
                 }
+                if(x != null) EyesHeadMouth = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/0408" + x + ".png"));
                 else {
-                    EyesHead = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/0508.png"));
+                    EyesHead = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/0408.png"));
                 }
             }
 
@@ -122,9 +118,18 @@ public class NftService {
             g.drawImage(background, 0, 0, null);
             g.drawImage(fur, 0, 0, null);
             g.drawImage(clothes, 0, 0, null);
-            g.drawImage(eyes, 0, 0, null);
-            g.drawImage(mouth, 0, 0, null);
-            g.drawImage(headCovering, 0, 0, null);
+            if(EyesHead != null) {
+                g.drawImage(mouth, 0, 0, null);
+                g.drawImage(EyesHead, 0, 0, null);
+            }
+            if(EyesHeadMouth != null) {
+                g.drawImage(EyesHeadMouth, 0, 0, null);
+            }
+            else {
+                g.drawImage(eyes, 0, 0, null);
+                g.drawImage(mouth, 0, 0, null);
+                g.drawImage(headCovering, 0, 0, null);
+            }
 
             if (adn.containsKey("Transcendence")) {
                 String transcendencePath = "NFT/Transcendence/" + adn.get("Transcendence") + ".png";

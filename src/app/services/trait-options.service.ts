@@ -18,8 +18,8 @@ export class TraitOptionsService {
     { name: 'Halo', selected: false },
     { name: 'Gold Patterns', selected: false},
     { name: 'Toxic Liquid', selected: false },
-    { name: 'Engraved Samurai Helmet', selected: false },
     { name: 'Robotic Mask', selected: false },
+    { name: 'Engraved Samurai Helmet', selected: false },
     { name: 'Samurai Helmet', selected: false },
     { name: 'Ninja Bandana', selected: false },
     { name: 'Ripple Of Magic', selected: false },
@@ -37,8 +37,8 @@ export class TraitOptionsService {
     { name: 'Scarlet', selected: false },
     { name: 'Gold', selected: false },
     { name: 'Toxic Green', selected: false },
-    { name: 'Striped', selected: false },
     { name: 'Robotic', selected: false },
+    { name: 'Striped', selected: false },
     { name: 'Wisdom (Closed)', selected: false },
     { name: 'Sharingan', selected: false },
     { name: 'Blindfolded', selected: false },
@@ -56,8 +56,8 @@ export class TraitOptionsService {
     { name: 'Biting Lip', selected: false }, //change
     { name: 'Gold Mustache', selected: false },
     { name: 'Gas Mask', selected: false },
-    { name: 'Engraved Samurai Mask', selected: false },
     { name: 'Robot Mask', selected: false },
+    { name: 'Engraved Samurai Mask', selected: false },
     { name: 'Twig', selected: false },
     { name: 'Hate', selected: false },
     { name: 'Smiling', selected: false },
@@ -75,8 +75,8 @@ export class TraitOptionsService {
     { name: 'Winged Golden Armor', selected: false }, //1
     { name: 'Golden Pendant', selected: false }, //2
     { name: 'Military', selected: false }, //3
-    { name: 'Samurai Armor', selected: false }, //4
-    { name: 'Robot', selected: false }, //5
+    { name: 'Robot', selected: false }, //4
+    { name: 'Samurai Armor', selected: false }, //5
     { name: 'Samourai', selected: false }, //6
     { name: 'Coat', selected: false }, //7
     { name: 'Scarf', selected: false }, //8
@@ -94,8 +94,8 @@ export class TraitOptionsService {
     { name: 'Angel', selected: false }, //1
     { name: 'Golden Obsidian', selected: false }, //2
     { name: 'Dirty', selected: false }, //3
-    { name: 'Scarred', selected: false }, //4
-    { name: 'Robot', selected: false }, //5
+    { name: 'Robot', selected: false }, //4
+    { name: 'Scarred', selected: false }, //5
     { name: 'Beige', selected: false }, //6
     { name: 'Brown', selected: false }, //7
     { name: 'Orange', selected: false }, //8
@@ -107,8 +107,8 @@ export class TraitOptionsService {
     { name: 'Heavenly Skies', selected: false }, //1
     { name: 'Ancient Egypt', selected: false }, //2
     { name: 'Green', selected: false }, //3
-    { name: 'Raspberry Red', selected: false }, //4
-    { name: 'Deep Teal', selected: false }, //5
+    { name: 'Deep Teal', selected: false }, //4
+    { name: 'Raspberry Red', selected: false }, //5
     { name: 'Soft Beige', selected: false }, //6
     { name: 'Brown', selected: false }, //7
     { name: 'Light Blue', selected: false }, //8
