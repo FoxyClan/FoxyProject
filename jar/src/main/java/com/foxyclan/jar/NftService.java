@@ -101,7 +101,7 @@ public class NftService {
             BufferedImage EyesHead = null;
             BufferedImage EyesHeadMouth = null;
 
-            if (Head.equals("05") && Eyes.equals("08")) {
+            if (Head.equals("04") && Eyes.equals("08")) {
                 String x = null;
                 List<String> validMouths = Arrays.asList("00", "02", "03", "04", "05", "06");
                 if (validMouths.contains(Mouth)) {
@@ -112,17 +112,29 @@ public class NftService {
                     EyesHead = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/0408.png"));
                 }
             }
+            else if (Head.equals("05")) {
+                String x = null;
+                List<String> validMouths = Arrays.asList("00", "02", "06");
+                if (validMouths.contains(Mouth)) {
+                    x = Mouth;
+                }
+                if(x != null) EyesHeadMouth = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/05" + x + ".png"));
+                else {
+                    EyesHead = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/0408.png"));
+                }
+            }
 
             // Superposition des images
             Graphics2D g = combined.createGraphics();
             g.drawImage(background, 0, 0, null);
             g.drawImage(fur, 0, 0, null);
             g.drawImage(clothes, 0, 0, null);
+
             if(EyesHead != null) {
                 g.drawImage(mouth, 0, 0, null);
                 g.drawImage(EyesHead, 0, 0, null);
             }
-            if(EyesHeadMouth != null) {
+            else if(EyesHeadMouth != null) {
                 g.drawImage(EyesHeadMouth, 0, 0, null);
             }
             else {
