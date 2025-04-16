@@ -93,6 +93,30 @@ public class NftService {
 
             BufferedImage combined = new BufferedImage(2000, 2000, BufferedImage.TYPE_INT_ARGB);
 
+            String Eyes = adn.get("Eyes");
+            String Mouth = adn.get("Mouth");
+            String Head = adn.get("Head Covering");
+
+            BufferedImage EyesHead = null;
+            BufferedImage EyesHeadMouth = null;
+
+            if (Head.equals("05") && Eyes.equals("08")) {
+                switch (Mouth) {
+                    case "00":
+                        EyesHeadMouth = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/050800.png"));
+                        break;
+                    case "02":
+                        EyesHeadMouth = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/050802.png"));
+                        break;
+                
+                    default:
+                        break;
+                }
+                else {
+                    EyesHead = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/0508.png"));
+                }
+            }
+
             // Superposition des images
             Graphics2D g = combined.createGraphics();
             g.drawImage(background, 0, 0, null);
