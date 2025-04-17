@@ -137,6 +137,14 @@ public class NftService {
             else if(EyesHeadMouth != null) {
                 g.drawImage(EyesHeadMouth, 0, 0, null);
             }
+            if(Head.equals("04")) {
+                List<String> validMouths = Arrays.asList("02", "03", "04", "05", "06");
+                if (validMouths.contains(Mouth)) {
+                    g.drawImage(eyes, 0, 0, null);
+                    g.drawImage(headCovering, 0, 0, null);
+                    g.drawImage(mouth, 0, 0, null);
+                }
+            }
             else {
                 g.drawImage(eyes, 0, 0, null);
                 g.drawImage(mouth, 0, 0, null);

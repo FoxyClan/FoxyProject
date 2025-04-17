@@ -63,3 +63,7 @@ actual :
 
 TRAITS :
 head : jusqu'a 3 OK
+
+
+head 4
+mouth 5
