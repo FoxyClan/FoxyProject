@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,98 +84,108 @@ public class NftService {
     
     
     public void createImageFile(Map<String, String> adn, int tokenId) throws IOException {
-        try {
-            BufferedImage background = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/Background/" + adn.get("Background") + ".png"));
-            BufferedImage fur = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/Fur/" + adn.get("Fur") + ".png"));
-            BufferedImage clothes = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/Clothes/" + adn.get("Clothes") + ".png"));
-            BufferedImage eyes = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/Eyes/" + adn.get("Eyes") + ".png"));
-            BufferedImage mouth = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/Mouth/" + adn.get("Mouth") + ".png"));
-            BufferedImage headCovering = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/Head/" + adn.get("Head Covering") + ".png"));
+        TraitOptionsService traitService = new TraitOptionsService();
+        List<Layer> layers = new ArrayList<>();
 
-            BufferedImage combined = new BufferedImage(2000, 2000, BufferedImage.TYPE_INT_ARGB);
+        InputStream in;
+        in = getClass().getClassLoader().getResourceAsStream("NFT/Background/" + adn.get("Background") + ".png");
+        layers.add(new Layer(ImageIO.read(in), traitService.getTraitWeight("Background", adn.get("Background"))));
 
-            String Eyes = adn.get("Eyes");
-            String Mouth = adn.get("Mouth");
-            String Head = adn.get("Head Covering");
+        in = getClass().getClassLoader().getResourceAsStream("NFT/Fur/" + adn.get("Fur") + ".png");
+        layers.add(new Layer(ImageIO.read(in), traitService.getTraitWeight("Fur", adn.get("Fur"))));
 
-            BufferedImage EyesHead = null;
-            BufferedImage EyesHeadMouth = null;
+        in = getClass().getClassLoader().getResourceAsStream("NFT/Clothes/" + adn.get("Clothes") + ".png");
+        layers.add(new Layer(ImageIO.read(in), traitService.getTraitWeight("Clothes", adn.get("Clothes"))));
 
-            if (Head.equals("04") && Eyes.equals("08")) {
-                String x = null;
-                List<String> validMouths = Arrays.asList("00", "02", "03", "04", "05", "06");
-                if (validMouths.contains(Mouth)) {
-                    x = Mouth;
-                }
-                if(x != null) EyesHeadMouth = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/0408" + x + ".png"));
-                else {
-                    EyesHead = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/0408.png"));
-                }
-            }
-            else if (Head.equals("05")) {
-                String x = null;
-                List<String> validMouths = Arrays.asList("00", "02", "06");
-                if (validMouths.contains(Mouth)) {
-                    x = Mouth;
-                }
-                if(x != null) EyesHeadMouth = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/05" + x + ".png"));
-                else {
-                    EyesHead = ImageIO.read(getClass().getClassLoader().getResourceAsStream("NFT/specials/0408.png"));
-                }
-            }
 
-            // Superposition des images
-            Graphics2D g = combined.createGraphics();
-            g.drawImage(background, 0, 0, null);
-            g.drawImage(fur, 0, 0, null);
-            g.drawImage(clothes, 0, 0, null);
+        String head = adn.get("Head Covering");
+        String eyes = adn.get("Eyes");
+        String mouth = adn.get("Mouth");
 
-            if(EyesHead != null) {
-                g.drawImage(mouth, 0, 0, null);
-                g.drawImage(EyesHead, 0, 0, null);
-            }
-            else if(EyesHeadMouth != null) {
-                g.drawImage(EyesHeadMouth, 0, 0, null);
-            }
-            if(Head.equals("04")) {
-                List<String> validMouths = Arrays.asList("02", "03", "04", "05", "06");
-                if (validMouths.contains(Mouth)) {
-                    g.drawImage(eyes, 0, 0, null);
-                    g.drawImage(headCovering, 0, 0, null);
-                    g.drawImage(mouth, 0, 0, null);
-                }
-            }
-            else {
-                g.drawImage(eyes, 0, 0, null);
-                g.drawImage(mouth, 0, 0, null);
-                g.drawImage(headCovering, 0, 0, null);
-            }
 
-            if (adn.containsKey("Transcendence")) {
-                String transcendencePath = "NFT/Transcendence/" + adn.get("Transcendence") + ".png";
-                InputStream in = getClass().getClassLoader().getResourceAsStream(transcendencePath);
-                if (in != null) {
-                    BufferedImage transcendence = ImageIO.read(in);
-                    g.drawImage(transcendence, 0, 0, null);
-                    System.out.println("Transcendence appliquée : " + adn.get("Transcendence"));
-                } else {
-                    System.out.println("Fichier de la transcendence introuvable : " + transcendencePath);
-                }
-            }
-            
-            // Libérer les ressources du Graphics2D
-            g.dispose();
+        if ("07".equals(eyes) && "04".equals(head)) {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/specials/E07H04.png");
+        } else {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/Eyes/" + eyes + ".png");
+        }
+        layers.add(new Layer(ImageIO.read(in), traitService.getTraitWeight("Eyes", eyes)));
 
-            // Sauvegarder le résultat de la superposition dans un nouveau fichier
-            ImageIO.write(combined, "PNG", new File("tmp/" + tokenId + ".png"));
-            System.out.println("Images superposées et enregistrées dans : " + tokenId + ".png");
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new IOException("Erreur lors de la création du NFT : tokenID = " + tokenId, e);
+        if ("04".equals(mouth) && "13".equals(head)) {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/specials/M04H13.png");
         } 
+        else if ("05".equals(mouth) && "13".equals(head)) {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/specials/M05H13.png");
+        }
+        else if ("03".equals(mouth) && "07".equals(eyes)) {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/specials/M03E07.png");
+        }
+        else if ("04".equals(mouth) && "07".equals(head)) {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/specials/M04H07.png");
+        }
+        else if ("05".equals(mouth) && "07".equals(head)) {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/specials/M05H07.png");
+        }
+        else {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/Mouth/" + adn.get("Mouth") + ".png");
+        }
+        layers.add(new Layer(ImageIO.read(in), traitService.getTraitWeight("Mouth", adn.get("Mouth"))));
+
+
+
+        if ("05".equals(head) && "00".equals(mouth)) {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/specials/H05M00.png");
+        }
+        else if ("08".equals(head) && "07".equals(eyes)) {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/specials/H08E07.png");
+        }
+        else if ("11".equals(head) && "07".equals(eyes)) {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/specials/H11E07.png");
+        }
+        else if ("12".equals(head) && "07".equals(eyes)) {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/specials/H12E07.png");
+        }
+        else if ("13".equals(head) && "07".equals(eyes)) {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/specials/H13E07.png");
+        }
+        else {
+            in = getClass().getClassLoader().getResourceAsStream("NFT/Head/" + adn.get("Head Covering") + ".png");
+        }
+        layers.add(new Layer(ImageIO.read(in), traitService.getTraitWeight("HeadCovering", adn.get("Head Covering"))));
+
+
+        if (adn.containsKey("Transcendence")) {
+            String code = adn.get("Transcendence");
+            in = getClass().getClassLoader().getResourceAsStream("NFT/Transcendence/" + code + ".png");
+            if (in != null) {
+                BufferedImage transc = ImageIO.read(in);
+                layers.add(new Layer(transc, traitService.getTraitWeight("Transcendence", code)));
+            }
+        }
+
+
+        layers.sort(Comparator.comparingInt(l -> l.weight));
+        BufferedImage combined = new BufferedImage(2000, 2000, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = combined.createGraphics();
+
+        for (Layer layer : layers) {
+            g.drawImage(layer.image, 0, 0, null);
+        }
+        g.dispose();
+
+        new File("tmp").mkdirs();
+        ImageIO.write(combined, "PNG", new File("tmp/" + tokenId + ".png"));
+        System.out.println("Image créée -> tmp/" + tokenId + ".png");
     }
 
+    private static class Layer {
+        BufferedImage image;
+        int weight;
+        Layer(BufferedImage image, int weight) {
+            this.image = image; this.weight = weight;
+        }
+    }
+    
 
 
     public void uploadToFilebase(String fileName) throws IOException {
