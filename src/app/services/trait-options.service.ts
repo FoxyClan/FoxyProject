@@ -15,11 +15,11 @@ export class TraitOptionsService {
 
   headCoveringOptions: HeadCoveringOption[] = [
     { name: 'Horns', selected: false },
-    { name: 'Halo', selected: false },
+    { name: 'Angel Halo', selected: false },
     { name: 'Golden Tiara', selected: false },
     { name: 'Toxic Liquid', selected: false },
     { name: 'Robotic Mask', selected: false },
-    { name: 'Engraved Helmet', selected: false },
+    { name: 'Engraved Mask', selected: false },
     { name: 'Golden Kabuto', selected: false },
     { name: 'Pilot Helmet', selected: false },
     { name: 'Suit Hat', selected: false },
@@ -62,7 +62,7 @@ export class TraitOptionsService {
     { name: 'Twig Nibbles', selected: false },
     { name: 'Smoking', selected: false },
     { name: 'Tongue Out', selected: false },
-    { name: 'Stunned', selected: false },
+    { name: 'Disgust', selected: false },
     { name: 'Rabbit', selected: false },
     { name: 'Hate', selected: false },
     { name: 'Happy', selected: false },
@@ -85,7 +85,7 @@ export class TraitOptionsService {
     { name: 'Overalls', selected: false },
     { name: 'Blue Coat', selected: false },
     { name: 'Scarf', selected: false },
-    { name: 'T-shirt', selected: false },
+    { name: 'Polo Shirt', selected: false },
     { name: 'Orange Jacket', selected: false },
   ];
 
@@ -110,14 +110,14 @@ export class TraitOptionsService {
     { name: 'Turquoise Gradient', selected: false },
     { name: 'Red Gradient', selected: false },
     { name: 'Soft Beige', selected: false },
-    { name: 'Grey', selected: false },
+    { name: 'Blue Grey', selected: false },
     { name: 'Dark Blue', selected: false },
     { name: 'Red', selected: false },
     { name: 'Soft Mauve', selected: false },
     { name: 'Light Blue', selected: false },
     { name: 'Orange', selected: false },
   ];
-
+  
   transcendenceOptions: TranscendenceOption[] = [
     { name: 'Electrified', selected: false }, //0
     { name: 'Neon Nose', selected: false }, //1

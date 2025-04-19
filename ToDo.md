@@ -1,6 +1,5 @@
 ALL
 - ne pas mettre 20000 mais totalSupply - burnedTokens
-- mettre des animation d'arrivé sur toutes les pages comme home ou collection
 
 RESPONSIVE
 - probleme background home flou
@@ -17,6 +16,7 @@ WEB3SERVICE
 - wallet connect integration : yt playlist NFT
 - infura mainnet
 - si erreur java pas de loadnft = false pour merge et discover mais oui pour mint
+- supprimer commentaire web3service getBalance / modal account loadBalance -> catch console error
 
 
 MODAL-ACCOUNT
@@ -26,16 +26,7 @@ MODAL-ACCOUNT
 
 
 SMART CONTRACT
-- mettre a jour les commentaires
-- a tester nombre d'addresse passable dans airdrop (test net) (100)
-- verifier que les token burn sont bien calculé dans les prochains mint pour la totale supply
-- supprimer la suppression des points quand transfer ?
-- gain de point uniquement quand level 2 ?
 - clans
-
-
-GANACHE
-- supprimer commentaire web3service getBalance / modal account loadBalance -> catch console error
 
 
 COLLECTION:
@@ -44,11 +35,9 @@ COLLECTION:
 
 JAR
 - JAVA securisé avec toutes les fonctions en public ?
-- superposition des traits non compatibles dans la creation
 - enlever commentaire test si tokenId existe sur file base pour mint / merge
 - demander a valentin si address gmail risque pour le contact
 - application.yml/.properties changer les private key
-- background names
 
 TEAM
 - finir les membres

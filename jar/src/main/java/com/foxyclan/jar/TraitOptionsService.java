@@ -8,11 +8,11 @@ public class TraitOptionsService {
 
     private final List<String> headCoveringOptions = Arrays.asList(
         "Horns", 
-        "Halo", 
+        "Angel Halo",
         "Golden Tiara", 
         "Toxic Liquid", 
         "Robotic Mask", 
-        "Engraved Helmet",
+        "Engraved Mask",
         "Golden Kabuto", 
         "Pilot Helmet",
         "Suit Hat", 
@@ -31,7 +31,7 @@ public class TraitOptionsService {
         "Golden Patterns", 
         "Toxic Green",
         "Robotic", 
-        "Striped", 
+        "Striped",
         "Wisdom (Closed)",
         "Blindfolded", 
         "Sunglasses", 
@@ -55,9 +55,9 @@ public class TraitOptionsService {
         "Twig Nibbles",  
         "Smoking", 
         "Tongue Out", 
-        "Stunned", 
+        "Disgust",
         "Rabbit",
-        "Hate", 
+        "Hate",
         "Happy",
         "Confused",
         "Neutral"
@@ -71,14 +71,14 @@ public class TraitOptionsService {
         "Robot", 
         "Samurai",
         "Shoulder Cloak",
-        "Pilot Suit",  
+        "Pilot Suit", 
         "Suit", 
         "King's Cape",
-        "Black Jacket",  
+        "Black Jacket",
         "Overalls",
-        "Blue Coat",  
+        "Blue Coat",
         "Scarf", 
-        "T-shirt",
+        "Polo Shirt",
         "Orange Jacket"
     ); //16
 
@@ -103,11 +103,11 @@ public class TraitOptionsService {
         "Turquoise Gradient", 
         "Red Gradient", 
         "Soft Beige", 
-        "Grey", 
+        "Blue Grey",
         "Dark Blue", 
         "Red", 
         "Soft Mauve", 
-        "Light Blue", 
+        "Light Blue",
         "Orange"
     ); //13
 
