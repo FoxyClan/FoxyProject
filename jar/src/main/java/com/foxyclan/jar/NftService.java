@@ -102,7 +102,7 @@ public class NftService {
         String eyes = adn.get("Eyes");
         String mouth = adn.get("Mouth");
 
-
+        // Eyes
         if ("07".equals(eyes) && "04".equals(head)) {
             in = getClass().getClassLoader().getResourceAsStream("NFT/specials/E07H04.png");
         } else {
@@ -110,7 +110,7 @@ public class NftService {
         }
         layers.add(new Layer(ImageIO.read(in), traitService.getTraitWeight("Eyes", eyes)));
 
-
+        // Mouth
         if ("04".equals(mouth) && "13".equals(head)) {
             in = getClass().getClassLoader().getResourceAsStream("NFT/specials/M04H13.png");
         } 
@@ -132,7 +132,7 @@ public class NftService {
         layers.add(new Layer(ImageIO.read(in), traitService.getTraitWeight("Mouth", adn.get("Mouth"))));
 
 
-
+        // Head
         if ("05".equals(head) && "00".equals(mouth)) {
             in = getClass().getClassLoader().getResourceAsStream("NFT/specials/H05M00.png");
         }

@@ -57,13 +57,8 @@ TEAM
 MODAL-MINT
 - tester engraved samourai mask taille dans attributs
 
+MINT
+- pas les meme chiffres total minted 44/ no limit et modal mint 41 ?? -> merge ?
+
 actual :
 
-
-
-TRAITS :
-head : jusqu'a 3 OK
-
-
-head 4
-mouth 5

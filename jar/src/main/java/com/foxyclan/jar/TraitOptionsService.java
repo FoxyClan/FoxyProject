@@ -9,75 +9,76 @@ public class TraitOptionsService {
     private final List<String> headCoveringOptions = Arrays.asList(
         "Horns", 
         "Halo", 
-        "Gold Patterns", 
+        "Golden Tiara", 
         "Toxic Liquid", 
         "Robotic Mask", 
-        "Engraved Samurai Helmet",
-        "Samurai Helmet", 
-        "Ninja Bandana", 
-        "Ripple Of Magic", 
+        "Engraved Helmet",
+        "Golden Kabuto", 
         "Pilot Helmet",
-        "Bunny Ear", 
-        "Crown", 
-        "Earring", 
-        "Bob", 
         "Suit Hat", 
-        "Headphones"
+        "Crown", 
+        "Ripple Of Magic",  
+        "Straw Hat",
+        "Ninja Bandana",
+        "Headphones",
+        "Bob",  
+        "Earring" 
     ); //16
 
     private final List<String> eyesOptions = Arrays.asList(
         "Bloodshot", 
         "Scarlet", 
-        "Gold", 
+        "Golden Patterns", 
         "Toxic Green",
         "Robotic", 
         "Striped", 
-        "Wisdom (Closed)", 
-        "Sharingan", 
+        "Wisdom (Closed)",
         "Blindfolded", 
-        "Innocent", 
-        "Disdainful",
-        "Dollars", 
-        "Bored", "Hypnotized", 
         "Sunglasses", 
-        "Happy (Closed)"
+        "Dollars", 
+        "Sharingan",  
+        "Happy (Closed)",
+        "Bored",
+        "Disdainful", 
+        "Hypnotized",
+        "Normal"
     ); //16
 
     private final List<String> mouthOptions = Arrays.asList(
-        "Long Fangs", 
-        "Biting Lip", 
+        "Magma Fangs", 
+        "Blue Psyche", 
         "Gold Mustache", 
         "Gas Mask", 
         "Robot Mask", 
-        "Engraved Samurai Mask",
-        "Twig", 
-        "Hate", 
-        "Smiling", 
-        "Neutral",
-        "Tongue", 
+        "Engraved Mask",
         "Gold Teeth",
-        "Amazed", 
-        "Confused", 
+        "Twig Nibbles",  
         "Smoking", 
-        "Happy"
+        "Tongue Out", 
+        "Stunned", 
+        "Rabbit",
+        "Hate", 
+        "Happy",
+        "Confused",
+        "Neutral"
     ); //16
 
     private final List<String> clothesOptions = Arrays.asList(
         "Winged Dark Armor", 
         "Winged Golden Armor", 
-        "Golden Pendant", 
+        "Ornamental Armor", 
         "Military", 
         "Robot", 
-        "Samurai Armor",
-        "Samourai", 
-        "Coat", 
-        "Scarf", 
-        "Pilot",
-        "Overalls", 
-        "King's Cape", 
-        "Black Jacket", 
-        "T-shirt", 
+        "Samurai",
+        "Shoulder Cloak",
+        "Pilot Suit",  
         "Suit", 
+        "King's Cape",
+        "Black Jacket",  
+        "Overalls",
+        "Blue Coat",  
+        "Scarf", 
+        "T-shirt",
         "Orange Jacket"
     ); //16
 
@@ -88,9 +89,9 @@ public class TraitOptionsService {
         "Dirty", 
         "Robot", 
         "Scarred", 
-        "Beige", 
-        "Brown", 
-        "Orange", 
+        "Beige",
+        "Dark Brown",
+        "Light Brown", 
         "Orange"
     ); //10
 
@@ -98,16 +99,16 @@ public class TraitOptionsService {
         "Hell", 
         "Heavenly Skies", 
         "Ancient Egypt", 
-        "Green", 
-        "Deep Teal", 
-        "Raspberry Red", 
+        "Green Gradient", 
+        "Turquoise Gradient", 
+        "Red Gradient", 
         "Soft Beige", 
-        "Brown", 
-        "Light Blue", 
-        "Orange", 
-        "Orange", 
+        "Grey", 
+        "Dark Blue", 
         "Red", 
-        "Soft Mauve"
+        "Soft Mauve", 
+        "Light Blue", 
+        "Orange"
     ); //13
 
     private final List<String> transcendenceOptions = Arrays.asList(
