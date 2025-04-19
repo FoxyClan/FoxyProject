@@ -16,106 +16,106 @@ export class TraitOptionsService {
   headCoveringOptions: HeadCoveringOption[] = [
     { name: 'Horns', selected: false },
     { name: 'Halo', selected: false },
-    { name: 'Gold Patterns', selected: false},
+    { name: 'Golden Tiara', selected: false },
     { name: 'Toxic Liquid', selected: false },
     { name: 'Robotic Mask', selected: false },
-    { name: 'Engraved Samurai Helmet', selected: false },
-    { name: 'Samurai Helmet', selected: false },
-    { name: 'Ninja Bandana', selected: false },
-    { name: 'Ripple Of Magic', selected: false },
+    { name: 'Engraved Helmet', selected: false },
+    { name: 'Golden Kabuto', selected: false },
     { name: 'Pilot Helmet', selected: false },
-    { name: 'Bunny Ear', selected: false },
-    { name: 'Crown', selected: false },
-    { name: 'Earring', selected: false },
-    { name: 'Bob', selected: false },
     { name: 'Suit Hat', selected: false },
+    { name: 'Crown', selected: false },
+    { name: 'Ripple Of Magic', selected: false },
+    { name: 'Straw Hat', selected: false },
+    { name: 'Ninja Bandana', selected: false },
     { name: 'Headphones', selected: false },
+    { name: 'Bob', selected: false },
+    { name: 'Earring', selected: false },
   ];
 
   eyesOptions: EyesOption[] = [
     { name: 'Bloodshot', selected: false },
     { name: 'Scarlet', selected: false },
-    { name: 'Gold', selected: false },
+    { name: 'Golden Patterns', selected: false },
     { name: 'Toxic Green', selected: false },
     { name: 'Robotic', selected: false },
     { name: 'Striped', selected: false },
     { name: 'Wisdom (Closed)', selected: false },
-    { name: 'Sharingan', selected: false },
     { name: 'Blindfolded', selected: false },
-    { name: 'Innocent', selected: false },
-    { name: 'Disdainful', selected: false },
-    { name: 'Dollars', selected: false },
-    { name: 'Bored', selected: false },
-    { name: 'Hypnotized', selected: false },
     { name: 'Sunglasses', selected: false },
+    { name: 'Dollars', selected: false },
+    { name: 'Sharingan', selected: false },
     { name: 'Happy (Closed)', selected: false },
+    { name: 'Bored', selected: false },
+    { name: 'Disdainful', selected: false },
+    { name: 'Hypnotized', selected: false },
+    { name: 'Normal', selected: false },
   ];
 
   mouthOptions: MouthOption[] = [
-    { name: 'Long Fangs', selected: false },
-    { name: 'Biting Lip', selected: false }, //change
+    { name: 'Magma Fangs', selected: false },
+    { name: 'Blue Psyche', selected: false },
     { name: 'Gold Mustache', selected: false },
     { name: 'Gas Mask', selected: false },
     { name: 'Robot Mask', selected: false },
-    { name: 'Engraved Samurai Mask', selected: false },
-    { name: 'Twig', selected: false },
-    { name: 'Hate', selected: false },
-    { name: 'Smiling', selected: false },
-    { name: 'Neutral', selected: false },
-    { name: 'Tongue', selected: false },
+    { name: 'Engraved Mask', selected: false },
     { name: 'Gold Teeth', selected: false },
-    { name: 'Amazed', selected: false },
-    { name: 'Confused', selected: false },
+    { name: 'Twig Nibbles', selected: false },
     { name: 'Smoking', selected: false },
+    { name: 'Tongue Out', selected: false },
+    { name: 'Stunned', selected: false },
+    { name: 'Rabbit', selected: false },
+    { name: 'Hate', selected: false },
     { name: 'Happy', selected: false },
+    { name: 'Confused', selected: false },
+    { name: 'Neutral', selected: false },
   ];
 
   clothesOptions: ClothesOption[] = [
-    { name: 'Winged Dark Armor', selected: false }, //0
-    { name: 'Winged Golden Armor', selected: false }, //1
-    { name: 'Golden Pendant', selected: false }, //2
-    { name: 'Military', selected: false }, //3
-    { name: 'Robot', selected: false }, //4
-    { name: 'Samurai Armor', selected: false }, //5
-    { name: 'Samourai', selected: false }, //6
-    { name: 'Coat', selected: false }, //7
-    { name: 'Scarf', selected: false }, //8
-    { name: 'Pilot', selected: false }, //9
-    { name: 'Overalls', selected: false }, //10
-    { name: 'King\'s Cape', selected: false }, //11
-    { name: 'Black Jacket', selected: false }, //12
-    { name: 'T-shirt', selected: false }, //13
-    { name: 'Suit', selected: false }, //14
-    { name: 'Orange Jacket', selected: false }, //15
+    { name: 'Winged Dark Armor', selected: false },
+    { name: 'Winged Golden Armor', selected: false },
+    { name: 'Ornamental Armor', selected: false },
+    { name: 'Military', selected: false },
+    { name: 'Robot', selected: false },
+    { name: 'Samurai', selected: false },
+    { name: 'Shoulder Cloak', selected: false },
+    { name: 'Pilot Suit', selected: false },
+    { name: 'Suit', selected: false },
+    { name: "King's Cape", selected: false },
+    { name: 'Black Jacket', selected: false },
+    { name: 'Overalls', selected: false },
+    { name: 'Blue Coat', selected: false },
+    { name: 'Scarf', selected: false },
+    { name: 'T-shirt', selected: false },
+    { name: 'Orange Jacket', selected: false },
   ];
 
   furOptions: FurOption[] = [
-    { name: 'Magma', selected: false }, //0
-    { name: 'Angel', selected: false }, //1
-    { name: 'Golden Obsidian', selected: false }, //2
-    { name: 'Dirty', selected: false }, //3
-    { name: 'Robot', selected: false }, //4
-    { name: 'Scarred', selected: false }, //5
-    { name: 'Beige', selected: false }, //6
-    { name: 'Brown', selected: false }, //7
-    { name: 'Orange', selected: false }, //8
-    { name: 'Orange', selected: false }, //9
+    { name: 'Magma', selected: false },
+    { name: 'Angel', selected: false },
+    { name: 'Golden Obsidian', selected: false },
+    { name: 'Dirty', selected: false },
+    { name: 'Robot', selected: false },
+    { name: 'Scarred', selected: false },
+    { name: 'Beige', selected: false },
+    { name: 'Dark Brown', selected: false },
+    { name: 'Light Brown', selected: false },
+    { name: 'Orange', selected: false },
   ];
 
   backgroundOptions: BackgroundOption[] = [
-    { name: 'Hell', selected: false }, //0
-    { name: 'Heavenly Skies', selected: false }, //1
-    { name: 'Ancient Egypt', selected: false }, //2
-    { name: 'Green', selected: false }, //3
-    { name: 'Deep Teal', selected: false }, //4
-    { name: 'Raspberry Red', selected: false }, //5
-    { name: 'Soft Beige', selected: false }, //6
-    { name: 'Brown', selected: false }, //7
-    { name: 'Light Blue', selected: false }, //8
-    { name: 'Orange', selected: false }, //9
-    { name: 'Orange', selected: false }, //10
-    { name: 'Red', selected: false }, //11
-    { name: 'Soft Mauve', selected: false }, //12
+    { name: 'Hell', selected: false },
+    { name: 'Heavenly Skies', selected: false },
+    { name: 'Ancient Egypt', selected: false },
+    { name: 'Green Gradient', selected: false },
+    { name: 'Turquoise Gradient', selected: false },
+    { name: 'Red Gradient', selected: false },
+    { name: 'Soft Beige', selected: false },
+    { name: 'Grey', selected: false },
+    { name: 'Dark Blue', selected: false },
+    { name: 'Red', selected: false },
+    { name: 'Soft Mauve', selected: false },
+    { name: 'Light Blue', selected: false },
+    { name: 'Orange', selected: false },
   ];
 
   transcendenceOptions: TranscendenceOption[] = [
